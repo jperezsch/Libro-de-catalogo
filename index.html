@@ -122,13 +122,31 @@
   .total-conteo .valor{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent);border-bottom:2px solid var(--accent-2);padding-bottom:6px;}
   .total-conteo .name{font-size:14.5px;font-weight:600;color:var(--ink);}
 
-  .dialog-ficha{border:none;border-radius:14px;padding:0;max-width:1000px;width:94vw;max-height:85vh;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+  .dialog-ficha{border:none;border-radius:14px;padding:0;max-width:1560px;width:96vw;max-height:94vh;box-shadow:0 20px 60px rgba(0,0,0,.35);}
   .dialog-ficha::backdrop{background:rgba(20,26,22,.55);}
-  .ficha-caja{display:flex;flex-direction:column;max-height:85vh;}
+  .ficha-caja{display:flex;flex-direction:column;max-height:94vh;}
   .ficha-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:linear-gradient(135deg,var(--ink),#31402f);color:var(--paper);padding:16px 20px;border-radius:14px 14px 0 0;}
   .ficha-header-titulo{font-family:var(--serif);font-size:18px;font-weight:700;}
   .ficha-header-sub{font-size:12.5px;color:var(--paper);opacity:.85;margin-top:2px;}
-  .ficha-header .btn-cerrar-ficha{flex-shrink:0;}
+  .ficha-header .btn-cerrar-ficha{flex-shrink:0;width:40px;height:40px;padding:0;border-radius:50%;border:2px solid #fff;background:#fff;color:var(--danger);font-size:22px;font-weight:900;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.4);}
+  .ficha-header .btn-cerrar-ficha:hover{background:var(--danger);color:#fff;}
+  .ficha-media{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}
+  @media (max-width:820px){ .ficha-media{grid-template-columns:1fr;} }
+  .media-panel{border:1px solid var(--line);border-radius:10px;background:#fffdf8;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .media-titulo{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--accent);}
+  .ficha-mapa{width:100%;height:clamp(300px,52vh,560px);border:1px solid var(--line);border-radius:8px;background:var(--paper-2);}
+  .media-pie{font-size:12.5px;color:var(--ink-soft);display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;}
+  .media-vacio{display:flex;align-items:center;justify-content:center;text-align:center;min-height:200px;height:clamp(300px,52vh,560px);color:var(--ink-soft);font-size:14px;background:var(--paper-2);border:1px dashed var(--line-fuerte);border-radius:8px;padding:14px;}
+  .gal-principal{position:relative;height:clamp(300px,46vh,500px);background:#1d2420;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .gal-principal img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;}
+  .gal-principal .msg-foto{color:#e8e3d0;font-size:13.5px;text-align:center;padding:14px;}
+  .gal-principal .msg-foto .btn{margin-top:8px;}
+  .gal-pie{font-size:12.5px;color:var(--ink-soft);word-break:break-all;min-height:18px;}
+  .gal-minis{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+  .gal-mini{flex:0 0 auto;width:84px;height:64px;padding:0;border:2px solid transparent;border-radius:6px;overflow:hidden;background:#fff;cursor:pointer;opacity:.75;}
+  .gal-mini img{width:100%;height:100%;object-fit:cover;display:block;}
+  .gal-mini.sel{border-color:var(--accent);opacity:1;box-shadow:0 0 0 2px var(--accent-soft);}
+  .gal-mini:hover{opacity:1;}
   .ficha-body{overflow-y:auto;padding:14px 20px;background:var(--paper);}
   .ficha-body details{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;background:#fffdf8;overflow:hidden;}
   .ficha-body summary{cursor:pointer;padding:11px 14px;font-family:var(--serif);font-size:16.5px;font-weight:700;color:var(--ink);list-style:none;display:flex;align-items:center;gap:8px;}
@@ -188,7 +206,7 @@
     <label for="input-operador-actual">Operador actual</label>
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off">
   </div>
-  <span class="ver" id="ver-chip">v0.9.10 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.11 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -258,7 +276,7 @@
     <div class="bloque">
       <h2>Recepción e ingreso</h2>
       <div class="grid">
-        <div class="campo opc"><div class="lbl"><span class="name">Número de accesión</span><span class="key">numeroAccesion</span></div><input class="nav" data-f="numeroAccesion"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Número de entrada</span><span class="key">numeroAccesion</span></div><input class="nav" data-f="numeroAccesion"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Fecha de recepción</span><span class="key">fechaRecepcion</span></div><input type="date" class="nav" data-f="fechaRecepcion"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Procedencia</span><span class="key">procedencia</span></div>
           <select class="nav" data-f="procedencia"><option value="">—</option><option>Colecta</option><option>Donación</option><option>Depósito</option><option>Canje</option><option>Transferencia</option><option>Compra</option><option>Incautación</option><option>Rescate</option><option>Devolución</option><option>Desconocido</option></select>
@@ -551,7 +569,7 @@
 
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.10</strong> (borrador de trabajo)</p>
+      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.11</strong> (borrador de trabajo)</p>
       <footer class="acciones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -574,7 +592,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.10";
+var APP_VERSION = "v0.9.11";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1137,7 +1155,7 @@ function construirFicha(r){
   var tablaFotos = fichaTablaLista("fotos", r.fotos);
   var preparacionHtml = preparacionCampos
     + (tablaSubmuestras ? '<p class="subtitulo-mini">Submuestras</p>'+tablaSubmuestras : "")
-    + (tablaFotos ? '<p class="subtitulo-mini">Fotos</p>'+tablaFotos+galeriaFichaHtml(r.fotos) : "");
+    + (tablaFotos ? '<p class="subtitulo-mini">Fotos</p>'+tablaFotos : "");
 
   var tablaDeterminaciones = fichaTablaLista("determinaciones", r.determinaciones);
   var clasificacion = fichaCampos([
@@ -1170,7 +1188,7 @@ function construirFicha(r){
     + (tablaUsos ? '<p class="subtitulo-mini">Historial de usos</p>'+tablaUsos : "")
     + notas;
 
-  var body = ""
+  var body = bloqueMediaHtml(r)
     + fichaSeccion("Información general", general, true)
     + fichaSeccion("Datos de terreno", terreno, false)
     + fichaSeccion("Recepción e ingreso", recepcion, false)
@@ -1185,42 +1203,81 @@ function construirFicha(r){
   return ''
     + '<div class="ficha-caja">'
     + '<div class="ficha-header"><div><div class="ficha-header-titulo">'+escapeHtml(construirCatalogoCompleto(r) || resumenLinea1(et))+'</div><div class="ficha-header-sub">'+escapeHtml(resumenLinea2(et))+'</div></div>'
-    + '<button class="btn tenue small btn-cerrar-ficha" title="Cerrar">Cerrar ✕</button></div>'
+    + '<button type="button" class="btn-cerrar-ficha" title="Cerrar" aria-label="Cerrar">✕</button></div>'
     + '<div class="ficha-body">'+body+'</div>'
     + '<div class="ficha-footer"><button class="btn small btn-editar-desde-ficha">Editar este registro</button></div>'
     + '</div>';
 }
-function galeriaFichaHtml(fotos){
-  var items=(fotos||[]).filter(function(f){ return /^Fotos\//.test(f.archivo||""); });
-  if(!items.length) return "";
-  return '<div class="ficha-galeria">'+items.map(function(f){
-    var nombre=f.archivo.split("/").pop();
-    return '<figure class="ficha-foto" data-ruta="'+escapeHtml(f.archivo)+'"><div class="msg-foto">Cargando…</div><figcaption>'+escapeHtml((f.tipoFoto?f.tipoFoto+": ":"")+nombre)+'</figcaption></figure>';
-  }).join("")+'</div>';
+function coordenadasRegistro(r){
+  var lat=parseFloat(String(r.lat==null?"":r.lat).replace(",",".")), lng=parseFloat(String(r.lng==null?"":r.lng).replace(",","."));
+  if(isNaN(lat)||isNaN(lng)||Math.abs(lat)>90||Math.abs(lng)>180) return null;
+  return {lat:lat,lng:lng};
+}
+function bloqueMediaHtml(r){
+  var c=coordenadasRegistro(r), mapa;
+  if(c){
+    var d=0.02, bbox=[c.lng-d,c.lat-d,c.lng+d,c.lat+d].map(function(n){ return n.toFixed(5); }).join("%2C");
+    var src="https://www.openstreetmap.org/export/embed.html?bbox="+bbox+"&layer=mapnik&marker="+c.lat.toFixed(5)+"%2C"+c.lng.toFixed(5);
+    var grande="https://www.openstreetmap.org/?mlat="+c.lat.toFixed(5)+"&mlon="+c.lng.toFixed(5)+"#map=14/"+c.lat.toFixed(5)+"/"+c.lng.toFixed(5);
+    mapa='<iframe class="ficha-mapa" loading="lazy" referrerpolicy="no-referrer" title="Mapa del origen del ejemplar" src="'+src+'"></iframe>'
+      +'<div class="media-pie"><span>Lat '+c.lat.toFixed(5)+', Lng '+c.lng.toFixed(5)+'</span><a href="'+grande+'" target="_blank" rel="noopener">Abrir mapa grande ↗</a></div>';
+  } else mapa='<div class="media-vacio">Este ejemplar no tiene coordenadas (latitud y longitud) en Datos de terreno, por eso no se puede mostrar el mapa.</div>';
+  var fotos=(r.fotos||[]).filter(function(f){ return /^Fotos\//.test(f.archivo||""); });
+  var gal;
+  if(fotos.length){
+    var datos=fotos.map(function(f){ return {ruta:f.archivo, tipo:f.tipoFoto||""}; });
+    gal='<div class="ficha-galeria" data-fotos="'+escapeHtml(JSON.stringify(datos))+'"><div class="gal-principal"><div class="msg-foto">Cargando fotos…</div></div><div class="gal-pie"></div><div class="gal-minis"></div></div>';
+  } else gal='<div class="media-vacio">Este ejemplar no tiene fotos asociadas desde la Carpeta local. Se agregan en Preparación, bloque Fotos.</div>';
+  return '<div class="ficha-media"><div class="media-panel"><div class="media-titulo">Origen del ejemplar</div>'+mapa+'</div>'
+    +'<div class="media-panel"><div class="media-titulo">Fotografías'+(fotos.length?' ('+fotos.length+')':'')+'</div>'+gal+'</div></div>';
 }
 var urlsFicha=[];
 function liberarUrlsFicha(){ urlsFicha.forEach(function(u){ URL.revokeObjectURL(u); }); urlsFicha=[]; }
-// Muestra las imágenes de la Carpeta local dentro de la ficha. Si el navegador pide permiso, se ofrece un botón.
+function probarImagen(url){
+  return new Promise(function(res){ var im=new Image(); im.onload=function(){ res(true); }; im.onerror=function(){ res(false); }; im.src=url; });
+}
+// Carga las fotos de la Carpeta local en la galería de la ficha: una imagen principal y miniaturas seleccionables.
 async function cargarFotosFicha(dialogEl){
-  var figs=dialogEl.querySelectorAll(".ficha-foto");
-  if(!figs.length) return;
+  var gal=dialogEl.querySelector(".ficha-galeria");
+  if(!gal) return;
+  var princ=gal.querySelector(".gal-principal"), pie=gal.querySelector(".gal-pie"), minis=gal.querySelector(".gal-minis");
+  var lista=[]; try{ lista=JSON.parse(gal.getAttribute("data-fotos")||"[]"); }catch(e){}
   var ok=await permisoCarpeta(true);
-  figs.forEach(function(fig){
-    var cuerpo=fig.querySelector(".msg-foto");
-    if(!ok){
-      cuerpo.innerHTML='Para ver las fotos, <button type="button" class="btn small">dar acceso a la Carpeta local</button>';
-      cuerpo.querySelector("button").onclick=function(){ cargarFotosFicha(dialogEl); };
-      return;
-    }
-    archivoDeRuta(fig.getAttribute("data-ruta")).then(function(file){
-      var url=URL.createObjectURL(file); urlsFicha.push(url);
-      var img=document.createElement("img"); img.alt=fig.getAttribute("data-ruta"); img.title="Clic para ampliar o reducir";
-      img.onload=function(){ if(cuerpo.parentNode) fig.replaceChild(img, cuerpo); };
-      img.onerror=function(){ cuerpo.textContent="Este navegador no puede mostrar este formato. Usa «Abrir foto» en la pestaña Preparación."; };
-      img.onclick=function(){ fig.classList.toggle("grande"); };
-      img.src=url;
-    }).catch(function(){ cuerpo.textContent="No se encontró el archivo en la Carpeta local."; });
+  if(!ok){
+    princ.innerHTML='<div class="msg-foto">Para ver las fotos hay que dar acceso a la Carpeta local.<br><button type="button" class="btn small">Dar acceso</button></div>';
+    princ.querySelector("button").onclick=function(){ cargarFotosFicha(dialogEl); };
+    return;
+  }
+  var items=[], noMostrables=0, faltan=0;
+  await Promise.all(lista.map(async function(it,i){
+    try{
+      var file=await archivoDeRuta(it.ruta), url=URL.createObjectURL(file); urlsFicha.push(url);
+      if(await probarImagen(url)) items[i]={url:url, ruta:it.ruta, tipo:it.tipo}; else noMostrables++;
+    }catch(e){ faltan++; }
+  }));
+  items=items.filter(Boolean);
+  minis.innerHTML=""; 
+  if(!items.length){
+    princ.innerHTML='<div class="msg-foto">No se pudo mostrar ninguna foto'+(faltan?' (no se encontraron '+faltan+' archivo(s) en la Carpeta local)':'')+(noMostrables?' ('+noMostrables+' en un formato que el navegador no muestra, como TIFF; ábrelos desde Preparación con «Abrir foto»)':'')+'.</div>';
+    return;
+  }
+  function elegir(k){
+    var it=items[k];
+    princ.innerHTML="";
+    var img=document.createElement("img"); img.src=it.url; img.alt=it.ruta; img.title="Clic para abrir en una pestaña nueva";
+    img.onclick=function(){ window.open(it.url,"_blank"); };
+    princ.appendChild(img);
+    pie.textContent=(it.tipo?it.tipo+": ":"")+it.ruta.split("/").pop()+"  ("+(k+1)+" de "+items.length+")"+(faltan||noMostrables?"  · hay "+(faltan+noMostrables)+" foto(s) que no se pueden mostrar":"");
+    Array.prototype.forEach.call(minis.children,function(b,j){ b.classList.toggle("sel", j===k); });
+  }
+  items.forEach(function(it,k){
+    var b=document.createElement("button"); b.type="button"; b.className="gal-mini"; b.title=it.ruta.split("/").pop();
+    var im=document.createElement("img"); im.src=it.url; im.alt=""; b.appendChild(im);
+    b.onclick=function(){ elegir(k); };
+    minis.appendChild(b);
   });
+  if(items.length<2) minis.style.display="none";
+  elegir(0);
 }
 function fichaPdfs(r){
   var lista = r.publicacionesPdf || [];

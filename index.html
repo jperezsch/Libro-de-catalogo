@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Libro de Catálogo · WikiTaxa</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3d5a45">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root{
+    --paper:#f2efe4; --paper-2:#e9e2cd; --ink:#26332b; --ink-soft:#44524a;
+    --accent:#3d5a45; --accent-2:#547a5c; --accent-soft:#dbe6d5; --line:#d8d0b8; --line-fuerte:#a99f80; --ancho-max:1760px; --gutter:clamp(14px,2.2vw,36px);
+    --warn:#8a5a2b; --warn-soft:#ecd9bd; --danger:#8a3324; --danger-soft:#eccfc4;
+    --mono: ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --serif: Georgia,"Iowan Old Style","Times New Roman",serif;
+    --sans: -apple-system,"Segoe UI",system-ui,sans-serif;
+    --radius:10px;
+    --sombra: 0 1px 2px rgba(38,51,43,.07), 0 4px 14px rgba(38,51,43,.05);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:linear-gradient(180deg,var(--paper-2),var(--paper) 220px);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.55;}
+  header{background:var(--ink);border-bottom:3px solid var(--accent);padding:16px var(--gutter);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .header-titulo{display:flex;flex-direction:column;gap:2px;}
+  .header-subtitulo{font-family:var(--sans);font-size:12.5px;color:var(--paper);opacity:.9;letter-spacing:.5px;text-transform:uppercase;}
+  .btn-icono{padding:5px 10px;font-size:15px;line-height:1;border:none;color:#fff;box-shadow:none;}
+  .btn-icono-ver{background:#3b6f8f;}
+  .btn-icono-editar{background:var(--warn);}
+  .btn-icono-duplicar{background:#5c4d8a;}
+  .btn-icono-eliminar{background:var(--danger);}
+  .btn-icono:hover{filter:brightness(1.12);transform:translateY(-1px);}
+  header h1{font-family:var(--serif);font-size:24px;margin:0;color:var(--paper);letter-spacing:.3px;}
+  header .ver{font-family:var(--mono);font-size:12.5px;color:var(--paper);opacity:.75;border:1px solid rgba(242,239,228,.35);border-radius:999px;padding:2px 9px;}
+  .operador-actual-wrap{display:flex;flex-direction:column;gap:2px;margin-left:auto;}
+  .operador-actual-wrap label{font-family:var(--sans);font-size:11.5px;color:var(--paper);opacity:.9;letter-spacing:.4px;text-transform:uppercase;}
+  .operador-actual-wrap input{font-family:var(--sans);font-size:14.5px;padding:5px 9px;border-radius:6px;border:1px solid rgba(242,239,228,.35);background:rgba(242,239,228,.1);color:var(--paper);min-width:170px;}
+  .operador-actual-wrap input::placeholder{color:rgba(242,239,228,.55);}
+  .operador-actual-wrap input:focus{outline:2px solid var(--accent-2);outline-offset:1px;}
+  nav#tabs{background:var(--paper-2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;box-shadow:0 2px 6px rgba(38,51,43,.05);}
+  #tabs-inner{display:flex;overflow-x:auto;max-width:var(--ancho-max);margin:0 auto;padding:8px var(--gutter) 0;gap:6px;}
+  nav#tabs button{font-family:var(--sans);font-size:15px;padding:11px 20px;background:none;border:none;border-bottom:2px solid transparent;border-radius:8px 8px 0 0;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
+  nav#tabs button:hover{background:rgba(61,90,69,.14);color:var(--ink);}
+  nav#tabs button.active{color:#fff;background:var(--accent);border-bottom-color:var(--accent);font-weight:700;box-shadow:0 2px 6px rgba(38,51,43,.25);}
+  nav#tabs button.active:hover{background:var(--accent);}
+  main{max-width:var(--ancho-max);margin:0 auto;padding:24px var(--gutter) 60px;touch-action:pan-y;}
+  #panel-registros-wrap{max-width:var(--ancho-max);margin:0 auto;padding:14px var(--gutter) 0;}
+  .tabpanel{display:none;} .tabpanel.active{display:block;animation:aparecer .15s ease-out;}
+  @keyframes aparecer{ from{opacity:0; transform:translateY(3px);} to{opacity:1; transform:translateY(0);} }
+  .bloque{background:#fffdf8;border:1px solid var(--line);border-left:4px solid var(--accent-2);border-radius:var(--radius);padding:17px 19px;margin-bottom:16px;box-shadow:var(--sombra);}
+  .bloque h2{font-family:var(--serif);font-size:19px;margin:0 0 6px;color:var(--accent);}
+  .bloque .sub{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px;}
+  .bloque .grid.espaciado{margin-top:12px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px 22px;}
+  label{display:block;}
+  .campo .lbl{display:flex;flex-direction:column;gap:2px;margin-bottom:5px;min-height:38px;justify-content:flex-end;}
+  .campo .lbl span.name{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.25;}
+  .campo .lbl span.key{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100%;}
+  .subbloque{margin-top:14px;padding:14px 16px;border:1px dashed var(--line);border-radius:8px;background:var(--paper-2);}
+  .campo{border-left:3px solid transparent;padding-left:9px;}
+  .campo.req{border-left-color:var(--accent);}
+  .campo.req .lbl .name{color:var(--accent);font-weight:700;}
+  .campo.req .lbl .name::after{content:" *";color:var(--danger);font-weight:700;}
+  .campo.opc{border-left:3px dashed var(--line-fuerte);}
+  .campo.opc .lbl .name{color:var(--ink);font-weight:600;}
+  input,select,textarea{width:100%;font-family:var(--sans);font-size:15px;padding:8px 10px;border:1px solid var(--line-fuerte);border-radius:5px;background:#fff;color:var(--ink);}
+  textarea{resize:vertical;min-height:54px;}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent-soft);border-color:var(--accent);}
+  input[readonly],textarea[readonly]{background:var(--paper-2);color:var(--ink);}
+  select:disabled{background:var(--paper-2);color:var(--ink);opacity:1;}
+  button.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none;}
+  .badge-modo{font-size:11px;font-family:var(--mono);border-radius:999px;padding:3px 11px;letter-spacing:.3px;white-space:nowrap;font-weight:700;}
+  .badge-modo-nuevo{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);}
+  .badge-modo-consulta{background:rgba(242,239,228,.15);color:var(--paper);border:1px solid rgba(242,239,228,.4);}
+  .badge-modo-editando{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);}
+  .badge-modo-duplicando{background:#f4e9d8;color:#8a5a2b;border:1px dashed var(--warn);}
+  .full{grid-column:1/-1;}
+  .leyenda-campos{font-size:13px;color:var(--ink-soft);margin:-4px 0 14px;}
+  button.btn{font-family:var(--sans);font-size:14.5px;padding:9px 18px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 1px 2px rgba(38,51,43,.15);transition:transform .08s, box-shadow .08s;}
+  button.btn:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(38,51,43,.18);}
+  button.btn.secundario{background:#fff;color:var(--accent);box-shadow:none;}
+  button.btn.small{padding:6px 13px;font-size:13.5px;}
+  button.btn.tenue{background:none;border-color:var(--line-fuerte);color:var(--ink);box-shadow:none;}
+  .fila-repetible{border:1px dashed var(--line-fuerte);border-radius:8px;padding:12px 14px;margin-bottom:9px;position:relative;background:#fbfaf1;}
+  .fila-repetible.vigente{border:1px solid var(--accent);background:var(--accent-soft);}
+  .fila-repetible .tag-vigente{position:absolute;top:-9px;left:12px;background:var(--accent);color:#fff;font-size:10px;padding:1px 9px;border-radius:999px;font-family:var(--mono);letter-spacing:.3px;}
+  .fila-repetible .quitar{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--danger);cursor:pointer;font-size:17px;line-height:1;}
+  .oculto{display:none !important;}
+  footer.acciones{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
+  .nota{font-size:13.5px;color:var(--ink-soft);margin-top:6px;}
+  .banda-borrador{background:var(--warn-soft);border:1px solid var(--warn);color:var(--warn);padding:8px 12px;border-radius:8px;font-size:12px;margin-bottom:12px;}
+  .banda-baja{background:var(--danger-soft);border:1px solid var(--danger);border-radius:var(--radius);padding:14px 16px;margin-top:10px;}
+
+  .panel-registros{margin-bottom:16px;position:relative;}
+  .barra-nuevo{display:flex;justify-content:flex-end;margin-bottom:8px;}
+  .barra-activo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(135deg,var(--ink),#31402f);border:1px solid var(--ink);border-radius:var(--radius);padding:10px 14px;box-shadow:var(--sombra);}
+  .chip-activo{font-size:14.5px;flex:1;min-width:160px;color:var(--paper);}
+  .chip-titulo{display:block;font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;color:rgba(242,239,228,.85);margin-bottom:2px;}
+  .chip-activo strong{font-family:var(--mono);color:#fff;}
+  .desplegable-registros{position:absolute;top:100%;left:0;right:0;z-index:30;margin-top:4px;background:#fffdf8;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 14px 34px rgba(38,51,43,.22), var(--sombra);padding:9px;}
+  .input-filtro-registros{margin-bottom:8px;}
+  .lista-scroll{max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;background:#fffdf8;}
+  .fila-registro{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);border-left:3px solid transparent;font-size:14px;transition:background .1s;}
+  .fila-registro:hover{background:#f5f2e6;}
+  .fila-registro.activa{background:var(--accent-soft);border-left-color:var(--accent);}
+  .fila-registro .info strong{font-family:var(--mono);}
+  .fila-registro .ts2{font-size:12.5px;color:var(--ink-soft);}
+  .tag-activo-mini{font-size:10px;font-family:var(--mono);color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 7px;margin-right:6px;}
+  .acciones-fila{display:flex;align-items:center;gap:6px;white-space:nowrap;}
+  .archivo-estado{font-size:12px;color:var(--ink-soft);margin-top:6px;}
+  .fila-conteo{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px 22px;}
+  .total-conteo{display:flex;flex-direction:column;justify-content:flex-end;}
+  .total-conteo .valor{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent);border-bottom:2px solid var(--accent-2);padding-bottom:6px;}
+  .total-conteo .name{font-size:14.5px;font-weight:600;color:var(--ink);}
+
+  .dialog-ficha{border:none;border-radius:14px;padding:0;max-width:1000px;width:94vw;max-height:85vh;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+  .dialog-ficha::backdrop{background:rgba(20,26,22,.55);}
+  .ficha-caja{display:flex;flex-direction:column;max-height:85vh;}
+  .ficha-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:linear-gradient(135deg,var(--ink),#31402f);color:var(--paper);padding:16px 20px;border-radius:14px 14px 0 0;}
+  .ficha-header-titulo{font-family:var(--serif);font-size:18px;font-weight:700;}
+  .ficha-header-sub{font-size:12.5px;color:var(--paper);opacity:.85;margin-top:2px;}
+  .ficha-header .btn-cerrar-ficha{flex-shrink:0;}
+  .ficha-body{overflow-y:auto;padding:14px 20px;background:var(--paper);}
+  .ficha-body details{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;background:#fffdf8;overflow:hidden;}
+  .ficha-body summary{cursor:pointer;padding:11px 14px;font-family:var(--serif);font-size:16.5px;font-weight:700;color:var(--ink);list-style:none;display:flex;align-items:center;gap:8px;}
+  .ficha-body summary::-webkit-details-marker{display:none;}
+  .ficha-body summary::before{content:"▸";color:var(--accent-2);font-size:12px;transition:transform .12s;}
+  .ficha-body details[open] summary::before{transform:rotate(90deg);}
+  .ficha-seccion-body{padding:4px 14px 12px;border-top:1px solid var(--line);}
+  .ficha-seccion-body .subtitulo-mini{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 6px;}
+  .ficha-campo{display:grid;grid-template-columns:minmax(160px,230px) 1fr;gap:6px 14px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14.5px;}
+  .ficha-campo:last-child{border-bottom:none;}
+  .ficha-label{color:var(--accent);font-weight:600;}
+  .ficha-valor{color:var(--ink);white-space:pre-wrap;}
+  .ficha-linea-institucion{text-align:center;font-family:var(--serif);font-size:15.5px;font-weight:700;letter-spacing:.3px;color:var(--ink);margin:2px 0;}
+  .ficha-linea-clasificacion{text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.2px;color:var(--ink-soft);margin:6px 0 2px;}
+  .ficha-subtitulo{font-family:var(--serif);font-weight:700;font-style:italic;font-size:16px;color:var(--accent);text-align:center;margin:10px 0 12px;padding-top:10px;border-top:1px solid var(--line);}
+  .ficha-tabla{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0;}
+  .ficha-tabla th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--ink);border-bottom:2px solid var(--line);padding:5px 8px;}
+  .ficha-tabla td{padding:5px 8px;border-bottom:1px solid var(--line);}
+  .ficha-tabla tr.fila-vigente{background:var(--accent-soft);}
+  .ficha-vacio{font-size:12.5px;color:var(--ink-soft);font-style:italic;padding:8px 0;}
+  .ficha-footer{padding:12px 20px;border-top:1px solid var(--line);background:var(--paper-2);border-radius:0 0 14px 14px;display:flex;justify-content:flex-end;}
+  #resumen-datos details{border:1px solid var(--line);border-radius:6px;margin-bottom:6px;background:#fffdf8;overflow:hidden;}
+  #resumen-datos summary{cursor:pointer;padding:8px 12px;font-family:var(--serif);font-size:14.5px;font-weight:700;color:var(--ink);list-style:none;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;column-gap:6px;}
+  #resumen-datos summary::-webkit-details-marker{display:none;}
+  #resumen-datos summary::before{content:"▸";color:var(--accent-2);font-size:10px;transition:transform .12s;}
+  #resumen-datos details[open] summary::before{transform:rotate(90deg);}
+  #resumen-datos .ficha-seccion-body{padding:0;border-top:1px solid var(--line);}
+  .resumen-conteo{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);font-weight:400;}
+  .fila-compacta{display:grid;grid-template-columns:1fr auto auto;align-items:center;column-gap:8px;padding:5px 12px;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .fila-compacta:last-child{border-bottom:none;}
+  .fila-compacta:hover{background:#f5f2e6;}
+  .fila-compacta-texto{min-width:0;color:var(--ink);cursor:pointer;line-height:1.4;}
+  .resumen-grupo-titulo{min-width:0;overflow-wrap:break-word;}
+  .fila-compacta-texto strong{font-family:var(--mono);font-weight:600;}
+  .fila-compacta-texto .sep{color:var(--ink-soft);}
+  .btn-ver-compacto{flex-shrink:0;background:none;border:none;cursor:pointer;font-size:13px;padding:2px 5px;opacity:.65;border-radius:4px;}
+  .btn-ver-compacto:hover{opacity:1;background:var(--accent-soft);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-titulo">
+    <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
+    <span class="header-subtitulo">Proyecto WikiTaxa</span>
+  </div>
+  <div class="operador-actual-wrap">
+    <label for="input-operador-actual">Operador actual</label>
+    <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off">
+  </div>
+  <span class="ver" id="ver-chip">v0.9.6 · borrador</span>
+</header>
+
+<div id="panel-registros-wrap">
+  <div class="panel-registros slot-panel-registros"></div>
+</div>
+
+<nav id="tabs"><div id="tabs-inner">
+  <button data-tab="entrada" class="active">Entrada</button>
+  <button data-tab="preparacion">Preparación</button>
+  <button data-tab="deposito">Depósito</button>
+  <button data-tab="manejo">Manejo</button>
+  <button data-tab="sistema">Sistema</button>
+</div></nav>
+
+<main>
+
+  <!-- ENTRADA -->
+  <section class="tabpanel active" id="tab-entrada">
+    <p class="leyenda-campos">* campo obligatorio para esta etapa · el resto es complementario</p>
+
+    <div class="bloque">
+      <h2>Datos de terreno</h2>
+      <div class="grid">
+        <div class="campo opc"><div class="lbl"><span class="name">Número de campo</span><span class="key">numeroCampo</span></div><input class="nav" data-f="numeroCampo"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Taxón (referencia de terreno)</span><span class="key">taxon</span></div><input class="nav" data-f="taxon"></div>
+        <div class="campo req"><div class="lbl"><span class="name">Localidad (verbatim)</span><span class="key">localidadVerbatim</span></div><input class="nav" data-f="localidadVerbatim"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Localidad</span><span class="key">localidad</span></div><input class="nav" data-f="localidad"></div>
+        <div class="campo opc">
+          <div class="lbl"><span class="name">Región</span><span class="key">region</span></div>
+          <select class="nav" id="sel-region-cl"></select>
+          <input class="nav oculto" data-f="region" id="input-region-cl" placeholder="Escribe la región/zona">
+          <button type="button" class="btn tenue small oculto" id="btn-region-lista" style="margin-top:4px;">▸ Elegir de la lista</button>
+        </div>
+        <div class="campo opc">
+          <div class="lbl"><span class="name">Provincia</span><span class="key">provincia</span></div>
+          <select class="nav" id="sel-provincia-cl" disabled></select>
+          <input class="nav oculto" data-f="provincia" id="input-provincia-cl" placeholder="Escribe la provincia/zona">
+          <button type="button" class="btn tenue small oculto" id="btn-provincia-lista" style="margin-top:4px;">▸ Elegir de la lista</button>
+        </div>
+        <div class="campo opc">
+          <div class="lbl"><span class="name">Comuna</span><span class="key">comuna</span></div>
+          <select class="nav" id="sel-comuna-cl" disabled></select>
+          <input class="nav oculto" data-f="comuna" id="input-comuna-cl" placeholder="Escribe la comuna/zona">
+          <button type="button" class="btn tenue small oculto" id="btn-comuna-lista" style="margin-top:4px;">▸ Elegir de la lista</button>
+        </div>
+        <div class="campo req"><div class="lbl"><span class="name">Fecha de colecta</span><span class="key">fechaColecta</span></div><input type="date" class="nav" data-f="fechaColecta"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Colector</span><span class="key">colector</span></div><input class="nav sugerido" data-f="colector"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Coordenadas originales</span><span class="key">coordenadasOriginales → dwc:verbatimCoordinates</span></div><input class="nav" data-f="coordenadasOriginales"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Latitud</span><span class="key">lat</span></div><input class="nav" data-f="lat"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Longitud</span><span class="key">lng</span></div><input class="nav" data-f="lng"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Altitud (m)</span><span class="key">altitud_m</span></div><input class="nav" data-f="altitud_m"></div>
+      </div>
+      <p class="nota">Sugerencia automática de región/provincia/comuna desde coordenadas: pendiente de implementar.</p>
+    </div>
+
+    <div class="bloque">
+      <h2>Recepción e ingreso</h2>
+      <div class="grid">
+        <div class="campo opc"><div class="lbl"><span class="name">Número de accesión</span><span class="key">numeroAccesion</span></div><input class="nav" data-f="numeroAccesion"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Fecha de recepción</span><span class="key">fechaRecepcion</span></div><input type="date" class="nav" data-f="fechaRecepcion"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Procedencia</span><span class="key">procedencia</span></div>
+          <select class="nav" data-f="procedencia"><option value="">—</option><option>Colecta</option><option>Donación</option><option>Depósito</option><option>Canje</option><option>Transferencia</option><option>Compra</option><option>Incautación</option><option>Rescate</option><option>Devolución</option><option>Desconocido</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Destino</span><span class="key">destino</span></div>
+          <select class="nav" data-f="destino"><option value="">—</option><option>Colección científica</option><option>Colección de referencia</option><option>Exhibición</option><option>Investigación</option><option>Préstamo</option><option>Canje</option><option>Donación</option><option>Transferencia</option><option>Devolución</option><option>Baja</option><option>Almacenamiento temporal</option><option>Otro</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Condición de la accesión</span><span class="key">condicionAccesion</span></div>
+          <select class="nav" data-f="condicionAccesion"><option value="">—</option><option>Bueno</option><option>Regular</option><option>Malo</option><option>Deteriorado</option><option>Fragmentario</option><option>Incompleto</option><option>Daño por conservación</option><option>Daño por manipulación</option><option>Condición desconocida</option></select>
+        </div>
+        <div class="campo req"><div class="lbl"><span class="name">Legatario</span><span class="key">legatario</span></div><input class="nav sugerido" data-f="legatario"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Proyecto / iniciativa de origen</span><span class="key">proyectoOrigen</span></div><input class="nav sugerido" data-f="proyectoOrigen"></div>
+        <div class="campo req"><div class="lbl"><span class="name">Tipo de accesión</span><span class="key">tipoAccesion</span></div>
+          <select class="nav" data-f="tipoAccesion"><option value="">—</option><option>Colecta propia</option><option>Donación</option><option>Compra</option><option>Intercambio</option><option>Depósito</option></select>
+        </div>
+      </div>
+    </div>
+
+    <footer class="acciones" id="footer-acciones-entrada">
+      <button class="btn nav" id="btn-guardar-entrada">Guardar →</button>
+      <button class="btn secundario nav" id="btn-actualizar-entrada">Actualizar →</button>
+      <p class="nota oculto" id="nota-consulta-entrada">Registro en modo consulta. Para modificarlo, ábrelo con "Editar" desde la lista de registros.</p>
+    </footer>
+  </section>
+
+  <!-- PREPARACION -->
+  <section class="tabpanel" id="tab-preparacion">
+    <p class="leyenda-campos">* campo obligatorio para esta etapa · el resto es complementario</p>
+
+    <div class="bloque">
+      <h2>Preparación y Conservación</h2>
+      <div class="grid">
+        <div class="campo opc"><div class="lbl"><span class="name">Tipo de colección</span><span class="key">tipoColeccion</span></div>
+          <select class="nav" data-f="tipoColeccion"><option value="">—</option><option>Húmeda</option><option>Seca</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Medio de fijado</span><span class="key">medioFijado</span></div>
+          <select class="nav" data-f="medioFijado"><option value="">—</option><option>Seco — sin fijación</option><option>Etanol 70 %</option><option>Etanol 75 %</option><option>Etanol 95 %</option><option>Etanol 96 %</option><option>Isopropanol 45–50 %</option><option>Isopropanol 70 %</option><option>Formolina 5 %</option><option>Formolina 10 %</option><option>Formolina tamponada 10 %</option><option>Formaldehído 4 %</option><option>Formaldehído 5 %</option><option>Formaldehído 10 %</option><option>Formol neutro/tamponado — concentración desconocida</option><option>Bouin</option><option>Otro</option><option>Desconocido</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Conservación</span><span class="key">conservacion → dwc:preparations</span></div>
+          <select class="nav" data-f="conservacion"><option value="">—</option><option>Seco</option><option>Etanol 50 %</option><option>Etanol 60 %</option><option>Etanol 70 %</option><option>Etanol 75 %</option><option>Etanol 80 %</option><option>Etanol 90 %</option><option>Etanol 95 %</option><option>Etanol 96 %</option><option>Etanol 100 % / absoluto</option><option>Isopropanol 50 %</option><option>Isopropanol 70 %</option><option>Formolina 5 %</option><option>Formolina 10 %</option><option>Formolina tamponada 10 %</option><option>Formaldehído 4 %</option><option>Formaldehído 5 %</option><option>Formaldehído 10 %</option><option>Glicerina</option><option>Glicerina–etanol</option><option>Otro líquido conservante</option><option>Liofilizado</option><option>Congelado</option><option>Montado en seco</option><option>Preparación microscópica</option><option>Preparación histológica</option><option>Preparación osteológica</option><option>Preparación taxidérmica</option><option>Incluido en resina</option><option>Desconocido</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Preparación</span><span class="key">preparacion</span></div><input class="nav sugerido" data-f="preparacion"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Condición del ejemplar</span><span class="key">condicionEjemplar</span></div>
+          <select class="nav" data-f="condicionEjemplar"><option value="">—</option><option>Excelente</option><option>Bueno</option><option>Regular</option><option>Malo</option><option>Deteriorado</option><option>Dañado</option><option>Fragmentario</option><option>Incompleto</option><option>Desarticulado</option><option>Desmembrado</option><option>Parcial</option><option>Restos</option><option>Sin determinar</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Conteo de individuos</span><span class="key">individuos</span></div><input class="nav" data-f="individuos"></div>
+      </div>
+    </div>
+
+    <div class="bloque">
+      <h2>Submuestras</h2>
+      <p class="sub">Tejidos y otras submuestras derivadas del ejemplar.</p>
+      <div id="lista-submuestras"></div>
+      <button class="btn small secundario" id="btn-add-submuestra">+ Agregar submuestra</button>
+    </div>
+
+    <div class="bloque">
+      <h2>Fotos</h2>
+      <div id="lista-fotos"></div>
+      <button class="btn small secundario" id="btn-add-foto">+ Agregar foto</button>
+      <p class="nota">Captura en resolución completa y conexión con disparo remoto: idea a explorar, no implementada.</p>
+    </div>
+
+    <footer class="acciones" id="footer-acciones-preparacion">
+      <button class="btn nav" id="btn-guardar-preparacion">Guardar →</button>
+      <button class="btn secundario nav" id="btn-actualizar-preparacion">Actualizar →</button>
+      <p class="nota oculto" id="nota-consulta-preparacion">Registro en modo consulta. Para modificarlo, ábrelo con "Editar" desde la lista de registros.</p>
+    </footer>
+  </section>
+
+  <!-- DEPOSITO -->
+  <section class="tabpanel" id="tab-deposito">
+    <p class="leyenda-campos">* campo obligatorio para esta etapa · el resto es complementario</p>
+
+    <div class="bloque">
+      <h2>Catalogado</h2>
+      <p class="sub">Elige una colección del Área de Zoología de Invertebrados para autocompletar los acrónimos, o "Personalizado" para escribir el nombre de la colección y la institución cuando el material no pertenece al MNHNCL.</p>
+      <div class="grid">
+        <div class="campo opc full"><div class="lbl"><span class="name">Nombre completo de la institución</span><span class="key">institucionNombreCompleto</span></div><input class="nav" id="campo-institucion-nombre" data-f="institucionNombreCompleto" readonly></div>
+        <div class="campo opc full">
+          <div class="lbl"><span class="name">Colección</span><span class="key">coleccionNombre</span></div>
+          <select class="nav" id="sel-coleccion">
+            <option value="">—</option>
+            <option value="AMP">Colección de Anfípodos (AMP)</option>
+            <option value="CIR">Colección de Cirripedios (CIR)</option>
+            <option value="DEC">Colección de Decápodos (DEC)</option>
+            <option value="CUM">Colección de Cumáceos (CUM)</option>
+            <option value="ISO">Colección de Isópodos (ISO)</option>
+            <option value="STO">Colección de Estomatópodos (STO)</option>
+            <option value="CRU">Colección de Crustáceos menores (CRU)</option>
+            <option value="COP">Colección de Copépodos (COP)</option>
+            <option value="PYCN">Colección de Picnogónidos (PYCN)</option>
+            <option value="MOL">Colección de Moluscos (MOL)</option>
+            <option value="EQUI">Colección de Equinodermos (EQUI)</option>
+            <option value="POR">Colección de Poríferas (POR)</option>
+            <option value="CNID">Colección de Cnidarios (CNID)</option>
+            <option value="ANN">Colección de Anélidos (ANN)</option>
+            <option value="NEME">Colección de Nemertinos (NEME)</option>
+            <option value="PLAT">Colección de Platelmintos (PLAT)</option>
+            <option value="ACAN">Colección de Acantocéfalos (ACAN)</option>
+            <option value="NEM">Colección de Nemátodos (NEM)</option>
+            <option value="BRY">Colección de Briozoos (BRY)</option>
+            <option value="CHAE">Colección de Chaetognatha (CHAE)</option>
+            <option value="PRO">Colección de Protistas (PRO)</option>
+            <option value="CHO">Colección de Cordados, invertebrados (CHO)</option>
+            <option value="BRA">Colección de Braquiópodos (BRA)</option>
+            <option value="VER">Colección de Vermes menores (VER)</option>
+            <option value="CTEN">Colección de Ctenóforos (CTEN)</option>
+            <option value="MINV">Colección de microinvertebrados (MINV)</option>
+            <option value="__personalizado">Personalizado / otra institución…</option>
+          </select>
+          <input class="nav oculto" data-f="coleccionNombre" id="input-coleccion-nombre" placeholder="Nombre de la colección personalizada">
+          <button type="button" class="btn tenue small oculto" id="btn-coleccion-lista" style="margin-top:4px;">▸ Elegir de la lista</button>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Acrónimo de institución</span><span class="key">institucionAcronimo</span></div><input class="nav" id="campo-institucion-acronimo" data-f="institucionAcronimo" readonly></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Acrónimo de colección</span><span class="key">coleccionAcronimo</span></div><input class="nav" id="campo-coleccion-acronimo" data-f="coleccionAcronimo" readonly></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Catálogo</span><span class="key">catalogo</span></div><input class="nav" data-f="catalogo"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Fecha de catalogación</span><span class="key">fechaCatalogacion</span></div><input type="date" class="nav" data-f="fechaCatalogacion"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Catalogador</span><span class="key">catalogador</span></div><input class="nav" id="campo-catalogador" data-f="catalogador" readonly placeholder="Se completa solo al guardar con N.º de catálogo"></div>
+        <div class="campo req"><div class="lbl"><span class="name">Tipo nomenclatural</span><span class="key">tipoNomenclatural</span></div>
+          <select class="nav" data-f="tipoNomenclatural"><option value="">No aplica</option><option>Holotipo</option><option>Paratipo</option><option>Sintipo</option><option>Neotipo</option></select>
+        </div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Publicación original</span><span class="key">publicacionOriginal</span></div><input class="nav" data-f="publicacionOriginal"></div>
+      </div>
+    </div>
+
+    <div class="bloque">
+      <h2>Determinación</h2>
+      <p class="sub">Historial completo. La última entrada es siempre la vigente; una determinación repetida es una reconfirmación válida.</p>
+
+      <div class="subbloque">
+        <h2>Clasificación</h2>
+        <p class="sub">Alimentada por la determinación vigente. Validación contra GBIF: pendiente de implementar.</p>
+        <div class="grid">
+          <div class="campo opc"><div class="lbl"><span class="name">Phylum</span><span class="key">phylum</span></div><input class="nav" data-f="phylum"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Clase</span><span class="key">clase</span></div><input class="nav" data-f="clase"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Orden</span><span class="key">orden</span></div><input class="nav" data-f="orden"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Familia</span><span class="key">familia</span></div><input class="nav" data-f="familia"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Género</span><span class="key">genero</span></div><input class="nav" data-f="genero"></div>
+        </div>
+      </div>
+
+      <div id="lista-determinaciones"></div>
+      <button class="btn small secundario" id="btn-add-determinacion">+ Agregar determinación</button>
+    </div>
+
+    <div class="bloque">
+      <h2>Datos biológicos</h2>
+      <div class="fila-conteo">
+        <div class="campo opc"><div class="lbl"><span class="name">N.º de machos</span><span class="key">cantidadMachos</span></div><input type="number" min="0" class="nav" data-f="cantidadMachos"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">N.º de hembras</span><span class="key">cantidadHembras</span></div><input type="number" min="0" class="nav" data-f="cantidadHembras"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">N.º de juveniles</span><span class="key">cantidadJuveniles</span></div><input type="number" min="0" class="nav" data-f="cantidadJuveniles"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">N.º no sexados</span><span class="key">cantidadNoSexados</span></div><input type="number" min="0" class="nav" data-f="cantidadNoSexados"></div>
+        <div class="total-conteo"><span class="name">Total del desglose</span><span class="valor" id="total-desglose">0</span></div>
+      </div>
+      <p class="nota" id="aviso-conteo" style="display:none;color:var(--danger);"></p>
+      <p class="nota">Si completas este desglose, la suma de machos + hembras + juveniles + no sexados debe coincidir con "Conteo de individuos" (pestaña Preparación). Es opcional: solo tiene sentido detallarlo cuando la muestra reúne más de un individuo con composición mixta.</p>
+      <div class="grid espaciado">
+        <div class="campo opc full"><div class="lbl"><span class="name">Asociaciones biológicas</span><span class="key">asociacionesBiologicas → dwc:associatedTaxa</span></div>
+          <select class="nav" data-f="asociacionesBiologicas"><option value="">—</option><option>Libre / sin asociación observada</option><option>Hospedador</option><option>Parásito</option><option>Parasitoide</option><option>Comensal</option><option>Mutualista</option><option>Simbionte</option><option>Epibionte</option><option>Endosimbionte</option><option>Ectoparásito</option><option>Endoparásito</option><option>Depredador</option><option>Presa</option><option>Herbívoro</option><option>Detritívoro</option><option>Saprófago</option><option>Necrófago</option><option>Filtrador</option><option>Asociado a madriguera / refugio</option><option>Asociado a nido</option><option>Asociado a colonia</option><option>Asociado a planta</option><option>Asociado a hongo</option><option>Asociado a otro animal</option><option>Asociado a sustrato biológico</option><option>Asociación desconocida</option><option>Otra</option></select>
+        </div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones biológicas</span><span class="key">observacionesBiologicas → dwc:organismRemarks</span></div><textarea class="nav" data-f="observacionesBiologicas"></textarea></div>
+      </div>
+    </div>
+
+    <footer class="acciones" id="footer-acciones-deposito">
+      <button class="btn nav" id="btn-guardar-deposito">Guardar →</button>
+      <button class="btn secundario nav" id="btn-actualizar-deposito">Actualizar →</button>
+      <p class="nota oculto" id="nota-consulta-deposito">Registro en modo consulta. Para modificarlo, ábrelo con "Editar" desde la lista de registros.</p>
+    </footer>
+  </section>
+
+  <!-- MANEJO -->
+  <section class="tabpanel" id="tab-manejo">
+    <p class="leyenda-campos">* campo obligatorio para esta etapa · el resto es complementario</p>
+
+    <div class="bloque">
+      <h2>Estado y ubicación actual</h2>
+      <div class="grid">
+        <div class="campo req"><div class="lbl"><span class="name">Estado</span><span class="key">estadoUbicacion</span></div>
+          <select class="nav" id="sel-estado-ubicacion" data-f="estadoUbicacion">
+            <option value="">—</option><option>En colección</option><option>En préstamo</option><option>En laboratorio</option><option>En campo</option><option>Baja</option>
+          </select>
+        </div>
+        <div class="campo opc" id="campo-ubicacion-coleccion"><div class="lbl"><span class="name">Ubicación en colección</span><span class="key">ubicacionColeccion</span></div><input class="nav" data-f="ubicacionColeccion" placeholder="gabinete, caja…"></div>
+      </div>
+
+      <div class="banda-baja oculto" id="panel-baja">
+        <h2>Baja</h2>
+        <p class="sub">Incluye donaciones del museo hacia otra institución o persona. Sección a revisar más adelante.</p>
+        <div class="grid">
+          <div class="campo opc"><div class="lbl"><span class="name">Número de baja</span><span class="key">numeroBaja</span></div><input class="nav" data-f="numeroBaja"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Fecha de baja</span><span class="key">fechaBaja</span></div><input type="date" class="nav" data-f="fechaBaja"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Tipo de baja</span><span class="key">tipoBaja</span></div>
+            <select class="nav" data-f="tipoBaja"><option value="">—</option><option>Donación a otra institución</option><option>Donación a una persona</option><option>Descarte</option><option>Pérdida</option><option>Intercambio</option></select>
+          </div>
+          <div class="campo opc"><div class="lbl"><span class="name">Destinatario</span><span class="key">destinatario</span></div><input class="nav sugerido" data-f="destinatario"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Responsable de la baja</span><span class="key">responsableBaja</span></div><input class="nav" id="campo-responsable-baja" data-f="responsableBaja"></div>
+          <div class="campo opc full"><div class="lbl"><span class="name">Observaciones</span><span class="key">observacionesBaja</span></div><textarea class="nav" data-f="observacionesBaja"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque">
+      <h2>Préstamos</h2>
+      <div id="lista-prestamos"></div>
+      <button class="btn small secundario" id="btn-add-prestamo">+ Agregar préstamo</button>
+    </div>
+
+    <div class="bloque">
+      <h2>Historial de usos</h2>
+      <div id="lista-usos"></div>
+      <button class="btn small secundario" id="btn-add-uso">+ Agregar uso</button>
+    </div>
+
+    <div class="bloque">
+      <h2>Notas</h2>
+      <div class="grid">
+        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones</span><span class="key">observaciones</span></div><textarea class="nav" data-f="observaciones"></textarea></div>
+      </div>
+    </div>
+
+    <footer class="acciones" id="footer-acciones-manejo">
+      <button class="btn nav" id="btn-guardar-manejo">Finalizar guardado</button>
+      <button class="btn secundario nav" id="btn-actualizar-manejo">Finalizar actualización</button>
+      <p class="nota oculto" id="nota-consulta-manejo">Registro en modo consulta. Para modificarlo, ábrelo con "Editar" desde la lista de registros.</p>
+    </footer>
+  </section>
+
+  <!-- SISTEMA -->
+  <section class="tabpanel" id="tab-sistema">
+    <div class="bloque">
+      <h2>Gestión de Datos</h2>
+      <p class="sub">Resumen de todos los registros ingresados. Agrupa y filtra por colección o sesión de ingreso.</p>
+
+      <div class="grid">
+        <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
+          <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Filtrar por colección</span></div>
+          <select class="nav" id="sel-filtro-coleccion"><option value="">Todas</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Filtrar por sesión</span></div>
+          <select class="nav" id="sel-filtro-sesion"><option value="">Todas</option></select>
+        </div>
+      </div>
+
+      <div id="resumen-datos"></div>
+
+      <div class="banda-borrador">La exportación real a zip / Darwin Core sigue pendiente de definir junto al resto del generador de proyectos.</div>
+      <footer class="acciones">
+        <button class="btn secundario" id="btn-exportar-zip">Descargar zip (pendiente)</button>
+      </footer>
+      <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
+    </div>
+
+    <div class="bloque">
+      <h2>Versión</h2>
+      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.6</strong> (borrador de trabajo)</p>
+      <footer class="acciones">
+        <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
+        <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
+      </footer>
+      <p class="nota" id="estado-actualizacion"></p>
+      <p class="nota" id="estado-almacenamiento"></p>
+    </div>
+
+  </section>
+
+</main>
+
+<datalist id="dl-colector"></datalist><datalist id="dl-procedencia"></datalist><datalist id="dl-destino"></datalist>
+<datalist id="dl-condicionAccesion"></datalist><datalist id="dl-legatario"></datalist><datalist id="dl-proyectoOrigen"></datalist>
+<datalist id="dl-medioFijado"></datalist><datalist id="dl-conservacion"></datalist><datalist id="dl-preparacion"></datalist>
+<datalist id="dl-condicionEjemplar"></datalist><datalist id="dl-destinatario"></datalist>
+
+<dialog id="dialog-ficha" class="dialog-ficha"></dialog>
+
+<script>
+(function(){
+"use strict";
+var APP_VERSION = "v0.9.6";
+var LS_PREFIX = "libroCatalogo_";
+var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
+
+// ---------- operador actual ----------
+var inputOperador = document.getElementById("input-operador-actual");
+inputOperador.value = localStorage.getItem(LS_PREFIX+"operador") || "";
+inputOperador.addEventListener("input", function(){ localStorage.setItem(LS_PREFIX+"operador", inputOperador.value); });
+function operadorActual(){ return inputOperador.value.trim(); }
+
+
+var registros = [];
+var activoId = null;   // id del registro guardado que se está viendo (null = borrador nuevo, sin guardar)
+var borrador = null;   // copia de trabajo del formulario; nada se persiste hasta Guardar o Actualizar
+var editando = true;   // true = campos habilitados (borrador nuevo, o registro existente en edición); false = modo consulta (solo lectura)
+var origenDuplicado = false;   // true = el borrador actual (activoId null) partió de "Duplicar", no es un registro en blanco
+var origenDuplicadoId = null;  // id del registro del que se duplicó, para comparar y advertir si se guarda sin cambios
+
+function nuevoId(){ return "r" + Date.now() + Math.random().toString(36).slice(2,8); }
+function escapeHtml(s){
+  return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+function clonar(obj){ return JSON.parse(JSON.stringify(obj)); }
+function registroVacioBase(){ return {determinaciones:[], submuestras:[], fotos:[], prestamos:[], usos:[]}; }
+function registroActivo(){ return borrador; }
+function registroPorId(id){ return registros.find(function(r){ return r.id===id; }); }
+function indicePorId(id){ return registros.findIndex(function(r){ return r.id===id; }); }
+function sonIguales(a,b){
+  function limpio(o){ var c=clonar(o); delete c.id; delete c.creadoEn; delete c.catalogador; return c; }
+  return JSON.stringify(limpio(a)) === JSON.stringify(limpio(b));
+}
+
+// ---------- IndexedDB ----------
+var dbPromise=null;
+function abrirDB(){
+  if(dbPromise) return dbPromise;
+  dbPromise = new Promise(function(resolve,reject){
+    var req = indexedDB.open(DB_NAME,1);
+    req.onupgradeneeded = function(e){ e.target.result.createObjectStore(DB_STORE,{keyPath:"id"}); };
+    req.onsuccess = function(e){ resolve(e.target.result); };
+    req.onerror = function(e){ reject(e); };
+  });
+  return dbPromise;
+}
+function guardarEnIndexedDB(){
+  abrirDB().then(function(db){
+    var tx = db.transaction(DB_STORE,"readwrite");
+    var store = tx.objectStore(DB_STORE);
+    store.clear();
+    registros.forEach(function(r){ store.put(r); });
+  });
+}
+function cargarDesdeIndexedDB(cb){
+  abrirDB().then(function(db){
+    var tx = db.transaction(DB_STORE,"readonly");
+    tx.objectStore(DB_STORE).getAll().onsuccess = function(e){ cb(e.target.result || []); };
+  }).catch(function(){ cb([]); });
+}
+
+function persistir(){
+  guardarEnIndexedDB();
+}
+
+// ---------- pestañas ----------
+var tabButtons = document.querySelectorAll("#tabs button");
+var panels = document.querySelectorAll(".tabpanel");
+function activarTab(nombre){
+  tabButtons.forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tab")===nombre); });
+  panels.forEach(function(p){ p.classList.toggle("active", p.id==="tab-"+nombre); });
+  var wrapReg = document.getElementById("panel-registros-wrap");
+  if(wrapReg) wrapReg.style.display = (nombre==="sistema") ? "none" : "";
+  var contReg = document.querySelector(".slot-panel-registros");
+  if(contReg) montarPanelRegistros(contReg);
+}
+tabButtons.forEach(function(btn){ btn.addEventListener("click", function(){ activarTab(btn.getAttribute("data-tab")); }); });
+
+// deslizamiento lateral (touch)
+(function(){
+  var startX=0,startY=0,tracking=false;
+  var orden=["entrada","preparacion","deposito","manejo","sistema"];
+  var mainEl=document.querySelector("main");
+  mainEl.addEventListener("touchstart",function(e){
+    if(e.touches.length!==1) return;
+    startX=e.touches[0].clientX; startY=e.touches[0].clientY; tracking=true;
+  },{passive:true});
+  mainEl.addEventListener("touchend",function(e){
+    if(!tracking) return; tracking=false;
+    var dx=e.changedTouches[0].clientX-startX, dy=e.changedTouches[0].clientY-startY;
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5){
+      var actual=document.querySelector("#tabs button.active").getAttribute("data-tab");
+      var i=orden.indexOf(actual);
+      var j=dx<0?i+1:i-1;
+      if(j>=0 && j<orden.length) activarTab(orden[j]);
+    }
+  },{passive:true});
+})();
+
+// ---------- navegación con Enter ----------
+document.addEventListener("keydown", function(e){
+  if(e.key!=="Enter") return;
+  var t=e.target;
+  if(t.tagName==="TEXTAREA") return;
+  if(!t.classList || !t.classList.contains("nav")) return;
+  e.preventDefault();
+  if(t.tagName==="BUTTON"){ t.click(); return; }
+  var activePanel=document.querySelector(".tabpanel.active");
+  var campos=Array.prototype.slice.call(activePanel.querySelectorAll(".nav"));
+  var idx=campos.indexOf(t);
+  if(idx>-1 && idx<campos.length-1){ campos[idx+1].focus(); try{campos[idx+1].select();}catch(err){} }
+});
+
+// ---------- autocompletado ----------
+function claveSug(campo){ return LS_PREFIX+"sug_"+campo; }
+function cargarSug(campo){ try{ return JSON.parse(localStorage.getItem(claveSug(campo))||"[]"); }catch(e){ return []; } }
+function guardarSug(campo,valor){
+  if(!valor) return;
+  var lista=cargarSug(campo).filter(function(v){return v!==valor;});
+  lista.unshift(valor); if(lista.length>40) lista=lista.slice(0,40);
+  localStorage.setItem(claveSug(campo), JSON.stringify(lista));
+  pintarDatalist(campo);
+}
+function pintarDatalist(campo){
+  var dl=document.getElementById("dl-"+campo); if(!dl) return;
+  dl.innerHTML="";
+  cargarSug(campo).forEach(function(v){ var op=document.createElement("option"); op.value=v; dl.appendChild(op); });
+}
+document.querySelectorAll("input.sugerido").forEach(function(input){
+  var campo=input.getAttribute("data-f");
+  input.setAttribute("list","dl-"+campo);
+  pintarDatalist(campo);
+  input.addEventListener("change", function(){ guardarSug(campo, input.value.trim()); });
+});
+
+// ---------- estado/ubicación → panel Baja ----------
+var selEstado=document.getElementById("sel-estado-ubicacion");
+var panelBaja=document.getElementById("panel-baja");
+var campoUbicacion=document.getElementById("campo-ubicacion-coleccion");
+var campoResponsableBaja=document.getElementById("campo-responsable-baja");
+function actualizarVisibilidadEstado(){
+  var v=selEstado.value;
+  panelBaja.classList.toggle("oculto", v!=="Baja");
+  campoUbicacion.classList.toggle("oculto", v==="Baja");
+  if(v==="Baja" && !campoResponsableBaja.value){
+    campoResponsableBaja.value = operadorActual();
+    campoResponsableBaja.dispatchEvent(new Event("input", {bubbles:true}));
+  }
+}
+selEstado.addEventListener("change", actualizarVisibilidadEstado);
+
+// ---------- colección → acrónimos ----------
+var selColeccion=document.getElementById("sel-coleccion");
+var inputColeccionNombre=document.getElementById("input-coleccion-nombre");
+var btnColeccionLista=document.getElementById("btn-coleccion-lista");
+var campoInstitucionAcr=document.getElementById("campo-institucion-acronimo");
+var campoColeccionAcr=document.getElementById("campo-coleccion-acronimo");
+var campoInstitucionNombre=document.getElementById("campo-institucion-nombre");
+var NOMBRE_MNHNCL="Museo Nacional de Historia Natural de Chile";
+var ACRONIMOS_COLECCION_AZI = Array.prototype.slice.call(selColeccion.options)
+  .map(function(o){ return o.value; })
+  .filter(function(v){ return v && v!=="__personalizado"; });
+function actualizarColeccionUI(){
+  var v=inputColeccionNombre.value;
+  if(!editando){
+    campoInstitucionAcr.readOnly=true;
+    campoColeccionAcr.readOnly=true;
+    campoInstitucionNombre.readOnly=true;
+    return;
+  }
+  if(v && ACRONIMOS_COLECCION_AZI.indexOf(v)>-1){
+    campoInstitucionAcr.value="MNHNCL"; campoInstitucionAcr.readOnly=true;
+    campoColeccionAcr.value=v; campoColeccionAcr.readOnly=true;
+    campoInstitucionNombre.value=NOMBRE_MNHNCL; campoInstitucionNombre.readOnly=true;
+    if(borrador){ borrador.institucionAcronimo="MNHNCL"; borrador.coleccionAcronimo=v; borrador.institucionNombreCompleto=NOMBRE_MNHNCL; }
+    refrescarPanelesRegistros();
+  } else {
+    campoInstitucionAcr.readOnly=false;
+    campoColeccionAcr.readOnly=false;
+    campoInstitucionNombre.readOnly=false;
+  }
+}
+// Muestra el desplegable o el campo de texto libre de Colección según el valor guardado
+// (mismo patrón que la cascada Región/Provincia/Comuna, ver más abajo).
+function sincronizarColeccionCatalogado(){
+  selColeccion.disabled = !editando;
+  var v = inputColeccionNombre.value;
+  if(v && ACRONIMOS_COLECCION_AZI.indexOf(v)>-1){
+    selColeccion.value = v;
+    activarModoSelectCl(selColeccion, inputColeccionNombre, btnColeccionLista);
+  } else if(v){
+    selColeccion.value = "__personalizado";
+    activarModoTextoCl(selColeccion, inputColeccionNombre, btnColeccionLista);
+  } else {
+    selColeccion.value = "";
+    activarModoSelectCl(selColeccion, inputColeccionNombre, btnColeccionLista);
+  }
+  if(!editando) btnColeccionLista.classList.add("oculto");
+}
+selColeccion.addEventListener("change", function(){
+  var v = selColeccion.value;
+  if(v==="__personalizado"){
+    inputColeccionNombre.value = "";
+    inputColeccionNombre.dispatchEvent(new Event("input", {bubbles:true}));
+    activarModoTextoCl(selColeccion, inputColeccionNombre, btnColeccionLista);
+    inputColeccionNombre.focus();
+    actualizarColeccionUI();
+    return;
+  }
+  inputColeccionNombre.value = v;
+  inputColeccionNombre.dispatchEvent(new Event("input", {bubbles:true}));
+  actualizarColeccionUI();
+});
+btnColeccionLista.addEventListener("click", function(){ selColeccion.value=""; activarModoSelectCl(selColeccion, inputColeccionNombre, btnColeccionLista); });
+
+// ---------- región → provincia → comuna (Chile) ----------
+var DATOS_CHILE = [
+  {region:"Arica y Parinacota", provincias:[
+    {provincia:"Arica", comunas:["Arica","Camarones"]},
+    {provincia:"Parinacota", comunas:["Putre","General Lagos"]}
+  ]},
+  {region:"Tarapacá", provincias:[
+    {provincia:"Iquique", comunas:["Iquique","Alto Hospicio"]},
+    {provincia:"Tamarugal", comunas:["Pozo Almonte","Camiña","Colchane","Huara","Pica"]}
+  ]},
+  {region:"Antofagasta", provincias:[
+    {provincia:"Antofagasta", comunas:["Antofagasta","Mejillones","Sierra Gorda","Taltal"]},
+    {provincia:"El Loa", comunas:["Calama","Ollagüe","San Pedro de Atacama"]},
+    {provincia:"Tocopilla", comunas:["Tocopilla","María Elena"]}
+  ]},
+  {region:"Atacama", provincias:[
+    {provincia:"Copiapó", comunas:["Copiapó","Caldera","Tierra Amarilla"]},
+    {provincia:"Chañaral", comunas:["Chañaral","Diego de Almagro"]},
+    {provincia:"Huasco", comunas:["Vallenar","Alto del Carmen","Freirina","Huasco"]}
+  ]},
+  {region:"Coquimbo", provincias:[
+    {provincia:"Elqui", comunas:["La Serena","Coquimbo","Andacollo","La Higuera","Paiguano","Vicuña"]},
+    {provincia:"Choapa", comunas:["Illapel","Canela","Los Vilos","Salamanca"]},
+    {provincia:"Limarí", comunas:["Ovalle","Combarbalá","Monte Patria","Punitaqui","Río Hurtado"]}
+  ]},
+  {region:"Valparaíso", provincias:[
+    {provincia:"Valparaíso", comunas:["Valparaíso","Casablanca","Concón","Juan Fernández","Puchuncaví","Quintero","Viña del Mar"]},
+    {provincia:"Isla de Pascua", comunas:["Isla de Pascua"]},
+    {provincia:"Los Andes", comunas:["Los Andes","Calle Larga","Rinconada","San Esteban"]},
+    {provincia:"Petorca", comunas:["La Ligua","Cabildo","Papudo","Petorca","Zapallar"]},
+    {provincia:"Quillota", comunas:["Quillota","La Cruz","La Calera","Hijuelas","Nogales"]},
+    {provincia:"San Antonio", comunas:["San Antonio","Algarrobo","Cartagena","El Quisco","El Tabo","Santo Domingo"]},
+    {provincia:"San Felipe de Aconcagua", comunas:["San Felipe","Catemu","Llaillay","Panquehue","Putaendo","Santa María"]},
+    {provincia:"Marga Marga", comunas:["Quilpué","Limache","Olmué","Villa Alemana"]}
+  ]},
+  {region:"Metropolitana de Santiago", provincias:[
+    {provincia:"Santiago", comunas:["Santiago","Cerrillos","Cerro Navia","Conchalí","El Bosque","Estación Central","Huechuraba","Independencia","La Cisterna","La Florida","La Granja","La Pintana","La Reina","Las Condes","Lo Barnechea","Lo Espejo","Lo Prado","Macul","Maipú","Ñuñoa","Pedro Aguirre Cerda","Peñalolén","Providencia","Pudahuel","Quilicura","Quinta Normal","Recoleta","Renca","San Joaquín","San Miguel","San Ramón","Vitacura"]},
+    {provincia:"Cordillera", comunas:["Puente Alto","Pirque","San José de Maipo"]},
+    {provincia:"Chacabuco", comunas:["Colina","Lampa","Tiltil"]},
+    {provincia:"Maipo", comunas:["San Bernardo","Buin","Calera de Tango","Paine"]},
+    {provincia:"Melipilla", comunas:["Melipilla","Alhué","Curacaví","María Pinto","San Pedro"]},
+    {provincia:"Talagante", comunas:["Talagante","El Monte","Isla de Maipo","Padre Hurtado","Peñaflor"]}
+  ]},
+  {region:"Libertador General Bernardo O'Higgins", provincias:[
+    {provincia:"Cachapoal", comunas:["Rancagua","Codegua","Coinco","Coltauco","Doñihue","Graneros","Las Cabras","Machalí","Malloa","Mostazal","Olivar","Peumo","Pichidegua","Quinta de Tilcoco","Rengo","Requínoa","San Vicente de Tagua Tagua"]},
+    {provincia:"Cardenal Caro", comunas:["Pichilemu","La Estrella","Litueche","Marchihue","Navidad","Paredones"]},
+    {provincia:"Colchagua", comunas:["San Fernando","Chépica","Chimbarongo","Lolol","Nancagua","Palmilla","Peralillo","Placilla","Pumanque","Santa Cruz"]}
+  ]},
+  {region:"Maule", provincias:[
+    {provincia:"Curicó", comunas:["Curicó","Hualañé","Licantén","Molina","Rauco","Romeral","Sagrada Familia","Teno","Vichuquén"]},
+    {provincia:"Talca", comunas:["Talca","Constitución","Curepto","Empedrado","Maule","Pelarco","Pencahue","Río Claro","San Clemente","San Rafael"]},
+    {provincia:"Linares", comunas:["Linares","Colbún","Longaví","Parral","Retiro","San Javier","Villa Alegre","Yerbas Buenas"]},
+    {provincia:"Cauquenes", comunas:["Cauquenes","Chanco","Pelluhue"]}
+  ]},
+  {region:"Ñuble", provincias:[
+    {provincia:"Diguillín", comunas:["Chillán","Chillán Viejo","El Carmen","Pemuco","Pinto","Quillón","San Ignacio","Yungay"]},
+    {provincia:"Itata", comunas:["Bulnes","Cobquecura","Coelemu","Ninhue","Portezuelo","Quirihue","Ránquil","Trehuaco"]},
+    {provincia:"Punilla", comunas:["San Carlos","Coihueco","Ñiquén","San Fabián","San Nicolás"]}
+  ]},
+  {region:"Biobío", provincias:[
+    {provincia:"Concepción", comunas:["Concepción","Coronel","Chiguayante","Florida","Hualqui","Lota","Penco","San Pedro de la Paz","Santa Juana","Talcahuano","Tomé","Hualpén"]},
+    {provincia:"Arauco", comunas:["Lebu","Arauco","Cañete","Contulmo","Curanilahue","Los Álamos","Tirúa"]},
+    {provincia:"Biobío", comunas:["Los Ángeles","Antuco","Cabrero","Laja","Mulchén","Nacimiento","Negrete","Quilaco","Quilleco","San Rosendo","Santa Bárbara","Tucapel","Yumbel","Alto Biobío"]}
+  ]},
+  {region:"La Araucanía", provincias:[
+    {provincia:"Cautín", comunas:["Temuco","Carahue","Cholchol","Cunco","Curarrehue","Freire","Galvarino","Gorbea","Lautaro","Loncoche","Melipeuco","Nueva Imperial","Padre las Casas","Perquenco","Pitrufquén","Pucón","Saavedra","Teodoro Schmidt","Toltén","Vilcún","Villarrica"]},
+    {provincia:"Malleco", comunas:["Angol","Collipulli","Curacautín","Ercilla","Lonquimay","Los Sauces","Lumaco","Purén","Renaico","Traiguén","Victoria"]}
+  ]},
+  {region:"Los Ríos", provincias:[
+    {provincia:"Valdivia", comunas:["Valdivia","Corral","Lanco","Los Lagos","Máfil","Mariquina","Paillaco","Panguipulli"]},
+    {provincia:"Ranco", comunas:["La Unión","Futrono","Lago Ranco","Río Bueno"]}
+  ]},
+  {region:"Los Lagos", provincias:[
+    {provincia:"Llanquihue", comunas:["Puerto Montt","Calbuco","Cochamó","Fresia","Frutillar","Llanquihue","Los Muermos","Maullín","Puerto Varas"]},
+    {provincia:"Chiloé", comunas:["Castro","Ancud","Chonchi","Curaco de Vélez","Dalcahue","Puqueldón","Queilén","Quellón","Quemchi","Quinchao"]},
+    {provincia:"Osorno", comunas:["Osorno","Puerto Octay","Purranque","Puyehue","Río Negro","San Juan de la Costa","San Pablo"]},
+    {provincia:"Palena", comunas:["Chaitén","Futaleufú","Hualaihué","Palena"]}
+  ]},
+  {region:"Aysén del General Carlos Ibáñez del Campo", provincias:[
+    {provincia:"Coyhaique", comunas:["Coyhaique","Lago Verde"]},
+    {provincia:"Aysén", comunas:["Aysén","Cisnes","Guaitecas"]},
+    {provincia:"General Carrera", comunas:["Chile Chico","Río Ibáñez"]},
+    {provincia:"Capitán Prat", comunas:["Cochrane","O'Higgins","Tortel"]}
+  ]},
+  {region:"Magallanes y de la Antártica Chilena", provincias:[
+    {provincia:"Magallanes", comunas:["Punta Arenas","Laguna Blanca","Río Verde","San Gregorio"]},
+    {provincia:"Última Esperanza", comunas:["Natales","Torres del Paine"]},
+    {provincia:"Tierra del Fuego", comunas:["Porvenir","Primavera","Timaukel"]},
+    {provincia:"Antártica Chilena", comunas:["Cabo de Hornos","Antártica"]}
+  ]}
+];
+var selRegionCl = document.getElementById("sel-region-cl");
+var selProvinciaCl = document.getElementById("sel-provincia-cl");
+var selComunaCl = document.getElementById("sel-comuna-cl");
+var inputRegionCl = document.getElementById("input-region-cl");
+var inputProvinciaCl = document.getElementById("input-provincia-cl");
+var inputComunaCl = document.getElementById("input-comuna-cl");
+var btnRegionLista = document.getElementById("btn-region-lista");
+var btnProvinciaLista = document.getElementById("btn-provincia-lista");
+var btnComunaLista = document.getElementById("btn-comuna-lista");
+
+function poblarSelectCl(sel, opciones, placeholder){
+  sel.innerHTML = '<option value="">'+placeholder+'</option>'
+    + opciones.map(function(o){ return '<option value="'+String(o).replace(/"/g,"&quot;")+'">'+escapeHtml(o)+'</option>'; }).join("")
+    + (opciones.length ? '<option value="__otro">Otro (escribir manualmente)</option>' : "");
+}
+function activarModoTextoCl(sel, input, btn){ sel.classList.add("oculto"); input.classList.remove("oculto"); btn.classList.remove("oculto"); }
+function activarModoSelectCl(sel, input, btn){ input.classList.add("oculto"); btn.classList.add("oculto"); sel.classList.remove("oculto"); }
+
+// Puebla un nivel, decide si mostrar select o texto libre según el valor guardado, y devuelve
+// el nombre coincidente (o null si es texto libre / está vacío).
+function sincronizarNivelCl(sel, input, btn, opciones, placeholderVacio, habilitar){
+  poblarSelectCl(sel, opciones, placeholderVacio);
+  sel.disabled = !habilitar;
+  if(!opciones.length){
+    if(input.value) activarModoTextoCl(sel, input, btn); else activarModoSelectCl(sel, input, btn);
+    return null;
+  }
+  if(opciones.indexOf(input.value) > -1){
+    sel.value = input.value;
+    activarModoSelectCl(sel, input, btn);
+    return input.value;
+  }
+  if(input.value){
+    activarModoTextoCl(sel, input, btn);
+    return null;
+  }
+  sel.value = "";
+  activarModoSelectCl(sel, input, btn);
+  return null;
+}
+function sincronizarCascadaChile(){
+  var nombreRegion = sincronizarNivelCl(selRegionCl, inputRegionCl, btnRegionLista, DATOS_CHILE.map(function(r){ return r.region; }), "—", editando);
+  var region = DATOS_CHILE.find(function(r){ return r.region===nombreRegion; });
+  var opcionesProvincia = region ? region.provincias.map(function(p){ return p.provincia; }) : [];
+  var nombreProvincia = sincronizarNivelCl(selProvinciaCl, inputProvinciaCl, btnProvinciaLista, opcionesProvincia, region ? "Elegir provincia…" : "Elegir región primero…", editando && !!region);
+  var provincia = region && region.provincias.find(function(p){ return p.provincia===nombreProvincia; });
+  var opcionesComuna = provincia ? provincia.comunas : [];
+  sincronizarNivelCl(selComunaCl, inputComunaCl, btnComunaLista, opcionesComuna, provincia ? "Elegir comuna…" : "Elegir provincia primero…", editando && !!provincia);
+  if(!editando){
+    [btnRegionLista, btnProvinciaLista, btnComunaLista].forEach(function(b){ b.classList.add("oculto"); });
+  }
+}
+
+function reiniciarNivelVacioCl(sel, input, btn, placeholderVacio){
+  poblarSelectCl(sel, [], placeholderVacio);
+  sel.disabled = true;
+  if(input.value) activarModoTextoCl(sel, input, btn); else activarModoSelectCl(sel, input, btn);
+}
+selRegionCl.addEventListener("change", function(){
+  if(selRegionCl.value === "__otro"){
+    inputRegionCl.value = "";
+    inputRegionCl.dispatchEvent(new Event("input", {bubbles:true}));
+    activarModoTextoCl(selRegionCl, inputRegionCl, btnRegionLista);
+    inputRegionCl.focus();
+    reiniciarNivelVacioCl(selProvinciaCl, inputProvinciaCl, btnProvinciaLista, "Elegir región primero…");
+    reiniciarNivelVacioCl(selComunaCl, inputComunaCl, btnComunaLista, "Elegir provincia primero…");
+    return;
+  }
+  inputRegionCl.value = selRegionCl.value;
+  inputRegionCl.dispatchEvent(new Event("input", {bubbles:true}));
+  inputProvinciaCl.value = ""; inputProvinciaCl.dispatchEvent(new Event("input", {bubbles:true}));
+  inputComunaCl.value = ""; inputComunaCl.dispatchEvent(new Event("input", {bubbles:true}));
+  sincronizarCascadaChile();
+});
+selProvinciaCl.addEventListener("change", function(){
+  if(selProvinciaCl.value === "__otro"){
+    inputProvinciaCl.value = "";
+    inputProvinciaCl.dispatchEvent(new Event("input", {bubbles:true}));
+    activarModoTextoCl(selProvinciaCl, inputProvinciaCl, btnProvinciaLista);
+    inputProvinciaCl.focus();
+    reiniciarNivelVacioCl(selComunaCl, inputComunaCl, btnComunaLista, "Elegir provincia primero…");
+    return;
+  }
+  inputProvinciaCl.value = selProvinciaCl.value;
+  inputProvinciaCl.dispatchEvent(new Event("input", {bubbles:true}));
+  inputComunaCl.value = ""; inputComunaCl.dispatchEvent(new Event("input", {bubbles:true}));
+  sincronizarCascadaChile();
+});
+selComunaCl.addEventListener("change", function(){
+  if(selComunaCl.value === "__otro"){
+    inputComunaCl.value = "";
+    inputComunaCl.dispatchEvent(new Event("input", {bubbles:true}));
+    activarModoTextoCl(selComunaCl, inputComunaCl, btnComunaLista);
+    inputComunaCl.focus();
+    return;
+  }
+  inputComunaCl.value = selComunaCl.value;
+  inputComunaCl.dispatchEvent(new Event("input", {bubbles:true}));
+});
+btnRegionLista.addEventListener("click", function(){ selRegionCl.value=""; activarModoSelectCl(selRegionCl, inputRegionCl, btnRegionLista); });
+btnProvinciaLista.addEventListener("click", function(){ selProvinciaCl.value=""; activarModoSelectCl(selProvinciaCl, inputProvinciaCl, btnProvinciaLista); });
+btnComunaLista.addEventListener("click", function(){ selComunaCl.value=""; activarModoSelectCl(selComunaCl, inputComunaCl, btnComunaLista); });
+
+// ---------- campos simples: delegación ----------
+document.addEventListener("input", function(e){
+  var t=e.target;
+  if(!t.matches("[data-f]")) return;
+  if(t.closest(".fila-repetible")) return;
+  if(!borrador){ borrador = registroVacioBase(); activoId=null; }
+  borrador[t.getAttribute("data-f")]=t.value;
+  refrescarPanelesRegistros();
+  actualizarAvisoConteo();
+});
+
+// ---------- listas repetibles ----------
+var listasCfg = {
+  determinaciones: {contenedorId:"lista-determinaciones", destacarUltimo:true, campos:[
+    {key:"nombreCientifico",label:"Nombre científico",req:true},
+    {key:"determinador",label:"Determinador",req:true},
+    {key:"fechaDeterminacion",label:"Fecha",type:"date",req:true},
+    {key:"calificador",label:"Calificador",type:"select",options:["cf.","aff.","?","sp.","sp. nov."]}
+  ]},
+  submuestras: {contenedorId:"lista-submuestras", campos:[
+    {key:"tipoSubmuestra",label:"Tipo de submuestra"},
+    {key:"fechaExtraccion",label:"Fecha de extracción",type:"date"},
+    {key:"metodoConservacion",label:"Método de conservación"},
+    {key:"ubicacionAlmacenamiento",label:"Ubicación de almacenamiento"},
+    {key:"numeroVial",label:"Número de vial"},
+    {key:"destinoUso",label:"Destino de uso"}
+  ]},
+  fotos: {contenedorId:"lista-fotos", campos:[
+    {key:"fechaFoto",label:"Fecha",type:"date"},
+    {key:"tipoFoto",label:"Tipo de foto"},
+    {key:"archivo",label:"Archivo"},
+    {key:"fotografo",label:"Fotógrafo"},
+    {key:"notaCalidad",label:"Nota de calidad"}
+  ]},
+  prestamos: {contenedorId:"lista-prestamos", campos:[
+    {key:"numeroPrestamo",label:"Número de préstamo"},
+    {key:"fechaPrestamo",label:"Fecha de préstamo",type:"date"},
+    {key:"solicitante",label:"Solicitante"},
+    {key:"periodo",label:"Período",type:"select",options:["30 días","90 días","6 meses","1 año","Indefinido"]},
+    {key:"fechaDevolucionEsperada",label:"Devolución esperada",type:"date"},
+    {key:"fechaDevolucionReal",label:"Devolución real",type:"date"},
+    {key:"observaciones",label:"Observaciones"}
+  ]},
+  usos: {contenedorId:"lista-usos", campos:[
+    {key:"evento",label:"Evento",full:true},
+    {key:"responsable",label:"Responsable"},
+    {key:"fecha",label:"Fecha",type:"date"}
+  ]}
+};
+
+// ---------- ficha de consulta ----------
+function formatearFechaHora(iso){
+  try{
+    var d = new Date(iso);
+    if(isNaN(d.getTime())) return iso;
+    return d.toLocaleString("es-CL", {year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+  }catch(e){ return iso; }
+}
+function fichaCampo(label, valor){
+  if(valor===undefined || valor===null || valor==="") return "";
+  return '<div class="ficha-campo"><span class="ficha-label">'+escapeHtml(label)+'</span><span class="ficha-valor">'+escapeHtml(valor)+'</span></div>';
+}
+function fichaCampos(pares, r){
+  var html="";
+  pares.forEach(function(p){ html += fichaCampo(p[0], r[p[1]]); });
+  return html;
+}
+function fichaTablaLista(tipo, datos){
+  if(!datos || !datos.length) return "";
+  var cfg = listasCfg[tipo];
+  var ths = cfg.campos.map(function(c){ return '<th>'+escapeHtml(c.label)+'</th>'; }).join("");
+  if(cfg.destacarUltimo) ths += '<th></th>';
+  var filas = datos.map(function(d,i){
+    var esUltimo = cfg.destacarUltimo && i===datos.length-1;
+    var tds = cfg.campos.map(function(c){ return '<td>'+escapeHtml(d[c.key]||"")+'</td>'; }).join("");
+    if(cfg.destacarUltimo) tds += '<td>'+(esUltimo?"Vigente":"")+'</td>';
+    return '<tr'+(esUltimo?' class="fila-vigente"':'')+'>'+tds+'</tr>';
+  }).join("");
+  return '<table class="ficha-tabla"><thead><tr>'+ths+'</tr></thead><tbody>'+filas+'</tbody></table>';
+}
+function fichaSeccion(titulo, innerHtml, abierta){
+  if(!innerHtml) return "";
+  return '<details'+(abierta?' open':'')+'><summary>'+escapeHtml(titulo)+'</summary><div class="ficha-seccion-body">'+innerHtml+'</div></details>';
+}
+function nombreColeccionCompleto(r){
+  if(!r.coleccionAcronimo) return "";
+  var opt = document.querySelector('#sel-coleccion option[value="'+r.coleccionAcronimo+'"]');
+  if(opt) return opt.textContent;
+  return [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
+}
+function construirCatalogoCompleto(r){
+  if(!r.catalogo) return "";
+  var prefijo = [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
+  return prefijo ? (prefijo+"-"+r.catalogo) : r.catalogo;
+}
+function construirClasificacionTexto(r){
+  var niveles = [["Phylum","phylum"],["Clase","clase"],["Orden","orden"],["Familia","familia"],["Género","genero"]];
+  return niveles.filter(function(n){ return r[n[1]]; }).map(function(n){ return n[0]+" "+r[n[1]]; }).join(": ");
+}
+function construirFicha(r){
+  var et = etiquetaRegistro(r);
+
+  var vigente = (r.determinaciones && r.determinaciones.length) ? r.determinaciones[r.determinaciones.length-1] : null;
+  var nombreVigente = vigente ? [vigente.calificador, vigente.nombreCientifico].filter(Boolean).join(" ") : (r.taxon || "");
+
+  var coleccionCompleta = nombreColeccionCompleto(r);
+  var institucionTexto = r.institucionNombreCompleto || (r.institucionAcronimo==="MNHNCL" ? NOMBRE_MNHNCL : r.institucionAcronimo) || "";
+  var clasificacionTexto = construirClasificacionTexto(r);
+
+  var general = "";
+  if(institucionTexto) general += '<div class="ficha-linea-institucion">'+escapeHtml(institucionTexto)+'</div>';
+  if(coleccionCompleta) general += '<div class="ficha-linea-institucion">'+escapeHtml(coleccionCompleta)+'</div>';
+  if(clasificacionTexto) general += '<div class="ficha-linea-clasificacion">'+escapeHtml(clasificacionTexto)+'</div>';
+  if(nombreVigente) general += '<div class="ficha-subtitulo">'+escapeHtml(nombreVigente)+'</div>';
+  general += fichaCampo("Número de Catálogo", construirCatalogoCompleto(r));
+  general += fichaCampos([["Número de campo","numeroCampo"], ["Número de entrada","numeroAccesion"]], r);
+  general += fichaCampo("Localidad (verbatim)", r.localidadVerbatim);
+  general += fichaCampos([["Fecha de colecta","fechaColecta"], ["Colector","colector"], ["Tipo de colección","tipoColeccion"]], r);
+  general += fichaCampo("Tipo nomenclatural", r.tipoNomenclatural);
+  general += fichaCampo("Estado", r.estadoUbicacion);
+  if(r.creadoEn) general += fichaCampo("Ingresado al sistema", formatearFechaHora(r.creadoEn));
+
+  var terreno = fichaCampos([
+    ["Número de campo","numeroCampo"], ["Taxón (referencia)","taxon"],
+    ["Localidad (verbatim)","localidadVerbatim"], ["Localidad","localidad"],
+    ["Región","region"], ["Provincia","provincia"], ["Comuna","comuna"],
+    ["Fecha de colecta","fechaColecta"], ["Colector","colector"],
+    ["Coordenadas originales","coordenadasOriginales"], ["Latitud","lat"], ["Longitud","lng"], ["Altitud (m)","altitud_m"]
+  ], r);
+
+  var recepcion = fichaCampos([
+    ["Número de entrada","numeroAccesion"], ["Fecha de recepción","fechaRecepcion"],
+    ["Procedencia","procedencia"], ["Destino","destino"], ["Condición de la accesión","condicionAccesion"],
+    ["Legatario","legatario"], ["Proyecto / iniciativa de origen","proyectoOrigen"], ["Tipo de accesión","tipoAccesion"]
+  ], r);
+
+  var preparacionCampos = fichaCampos([
+    ["Tipo de colección","tipoColeccion"], ["Medio de fijado","medioFijado"], ["Conservación","conservacion"],
+    ["Preparación","preparacion"], ["Condición del ejemplar","condicionEjemplar"], ["Conteo de individuos","individuos"]
+  ], r);
+  var tablaSubmuestras = fichaTablaLista("submuestras", r.submuestras);
+  var tablaFotos = fichaTablaLista("fotos", r.fotos);
+  var preparacionHtml = preparacionCampos
+    + (tablaSubmuestras ? '<p class="subtitulo-mini">Submuestras</p>'+tablaSubmuestras : "")
+    + (tablaFotos ? '<p class="subtitulo-mini">Fotos</p>'+tablaFotos : "");
+
+  var tablaDeterminaciones = fichaTablaLista("determinaciones", r.determinaciones);
+  var clasificacion = fichaCampos([
+    ["Phylum","phylum"], ["Clase","clase"], ["Orden","orden"], ["Familia","familia"], ["Género","genero"]
+  ], r);
+  var determinacionHtml = tablaDeterminaciones + clasificacion;
+
+  var coleccionTexto = [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
+  var catalogado = fichaCampos([["Catálogo","catalogo"], ["Fecha de catalogación","fechaCatalogacion"], ["Catalogador","catalogador"], ["Tipo nomenclatural","tipoNomenclatural"], ["Publicación original","publicacionOriginal"]], r);
+  if(coleccionTexto) catalogado = fichaCampo("Colección", coleccionTexto) + catalogado;
+
+  var biologicos = fichaCampos([
+    ["N.º de machos","cantidadMachos"], ["N.º de hembras","cantidadHembras"], ["N.º de juveniles","cantidadJuveniles"], ["N.º no sexados","cantidadNoSexados"],
+    ["Asociaciones biológicas","asociacionesBiologicas"], ["Observaciones biológicas","observacionesBiologicas"]
+  ], r);
+
+  var manejoCampos = fichaCampos([["Estado","estadoUbicacion"], ["Ubicación en colección","ubicacionColeccion"]], r);
+  if(r.estadoUbicacion==="Baja"){
+    manejoCampos += fichaCampos([
+      ["Número de baja","numeroBaja"], ["Fecha de baja","fechaBaja"], ["Tipo de baja","tipoBaja"],
+      ["Destinatario","destinatario"], ["Responsable de la baja","responsableBaja"], ["Observaciones de baja","observacionesBaja"]
+    ], r);
+  }
+  var tablaPrestamos = fichaTablaLista("prestamos", r.prestamos);
+  var tablaUsos = fichaTablaLista("usos", r.usos);
+  var notas = fichaCampo("Observaciones", r.observaciones);
+  var manejoHtml = manejoCampos
+    + (tablaPrestamos ? '<p class="subtitulo-mini">Préstamos</p>'+tablaPrestamos : "")
+    + (tablaUsos ? '<p class="subtitulo-mini">Historial de usos</p>'+tablaUsos : "")
+    + notas;
+
+  var body = ""
+    + fichaSeccion("Información general", general, true)
+    + fichaSeccion("Datos de terreno", terreno, false)
+    + fichaSeccion("Recepción e ingreso", recepcion, false)
+    + fichaSeccion("Preparación y conservación", preparacionHtml, false)
+    + fichaSeccion("Determinación y clasificación", determinacionHtml, false)
+    + fichaSeccion("Catalogado", catalogado, false)
+    + fichaSeccion("Datos biológicos", biologicos, false)
+    + fichaSeccion("Manejo", manejoHtml, false);
+
+  if(!body) body = '<p class="ficha-vacio">Este registro todavía no tiene datos cargados.</p>';
+
+  return ''
+    + '<div class="ficha-caja">'
+    + '<div class="ficha-header"><div><div class="ficha-header-titulo">'+escapeHtml(construirCatalogoCompleto(r) || resumenLinea1(et))+'</div><div class="ficha-header-sub">'+escapeHtml(resumenLinea2(et))+'</div></div>'
+    + '<button class="btn tenue small btn-cerrar-ficha" title="Cerrar">Cerrar ✕</button></div>'
+    + '<div class="ficha-body">'+body+'</div>'
+    + '<div class="ficha-footer"><button class="btn small btn-editar-desde-ficha">Editar este registro</button></div>'
+    + '</div>';
+}
+function mostrarFichaConsulta(id){
+  var r = registroPorId(id);
+  if(!r) return;
+  var dialogEl = document.getElementById("dialog-ficha");
+  dialogEl.innerHTML = construirFicha(r);
+  dialogEl.querySelector(".btn-cerrar-ficha").onclick = function(){ dialogEl.close(); };
+  dialogEl.querySelector(".btn-editar-desde-ficha").onclick = function(){ dialogEl.close(); editarRegistro(id); };
+  dialogEl.onclick = function(e){ if(e.target===dialogEl) dialogEl.close(); };
+  dialogEl.showModal();
+}
+function abrirConsultaConFicha(id){
+  consultarRegistro(id);
+  mostrarFichaConsulta(id);
+}
+
+function datosLista(tipo){ var r=registroActivo(); return r ? r[tipo] : []; }
+
+function pintarLista(tipo){
+  var cfg=listasCfg[tipo];
+  var cont=document.getElementById(cfg.contenedorId);
+  var datos=datosLista(tipo);
+  cont.innerHTML="";
+  datos.forEach(function(entrada,i){
+    var esUltimo = cfg.destacarUltimo && i===datos.length-1;
+    var fila=document.createElement("div");
+    fila.className="fila-repetible"+(esUltimo?" vigente":"");
+    if(esUltimo){ var tag=document.createElement("span"); tag.className="tag-vigente"; tag.textContent="vigente"; fila.appendChild(tag); }
+    var quitar=document.createElement("button"); quitar.className="quitar"; quitar.title="Quitar"; quitar.textContent="×";
+    quitar.onclick=function(){ datosLista(tipo).splice(i,1); pintarLista(tipo); refrescarPanelesRegistros(); };
+    quitar.disabled = !editando;
+    quitar.classList.toggle("oculto", !editando);
+    fila.appendChild(quitar);
+    var grid=document.createElement("div"); grid.className="grid";
+    cfg.campos.forEach(function(c){
+      var campoDiv=document.createElement("div"); campoDiv.className="campo "+(c.req?"req":"opc")+(c.full?" full":"");
+      var lbl=document.createElement("div"); lbl.className="lbl";
+      lbl.innerHTML='<span class="name">'+escapeHtml(c.label)+'</span><span class="key">'+escapeHtml(c.key)+'</span>';
+      lbl.querySelector(".key").title=c.key;
+      campoDiv.appendChild(lbl);
+      var input;
+      if(c.type==="select"){
+        input=document.createElement("select");
+        var op0=document.createElement("option"); op0.value=""; op0.textContent="—"; input.appendChild(op0);
+        (c.options||[]).forEach(function(o){ var op=document.createElement("option"); op.value=o; op.textContent=o; input.appendChild(op); });
+        input.disabled = !editando;
+      } else { input=document.createElement("input"); input.type=c.type||"text"; input.readOnly = !editando; }
+      input.className="nav"; input.value=entrada[c.key]||"";
+      input.addEventListener("input", function(){ entrada[c.key]=input.value; refrescarPanelesRegistros(); });
+      campoDiv.appendChild(input);
+      grid.appendChild(campoDiv);
+    });
+    fila.appendChild(grid);
+    cont.appendChild(fila);
+  });
+}
+function agregarEntrada(tipo){
+  if(!borrador){ borrador=registroVacioBase(); activoId=null; }
+  var nueva={}; listasCfg[tipo].campos.forEach(function(c){ nueva[c.key]=""; });
+  borrador[tipo].push(nueva);
+  pintarLista(tipo);
+  refrescarPanelesRegistros();
+}
+document.getElementById("btn-add-determinacion").addEventListener("click", function(){ agregarEntrada("determinaciones"); });
+document.getElementById("btn-add-submuestra").addEventListener("click", function(){ agregarEntrada("submuestras"); });
+document.getElementById("btn-add-foto").addEventListener("click", function(){ agregarEntrada("fotos"); });
+document.getElementById("btn-add-prestamo").addEventListener("click", function(){ agregarEntrada("prestamos"); });
+document.getElementById("btn-add-uso").addEventListener("click", function(){ agregarEntrada("usos"); });
+
+// ---------- cargar registro activo en el formulario ----------
+function cargarRegistroEnFormulario(){
+  var r=registroActivo();
+  document.querySelectorAll("[data-f]").forEach(function(el){
+    if(el.closest(".fila-repetible")) return;
+    el.value = r ? (r[el.getAttribute("data-f")]||"") : "";
+  });
+  Object.keys(listasCfg).forEach(pintarLista);
+  actualizarVisibilidadEstado();
+  actualizarAvisoConteo();
+  aplicarModoFormulario();
+}
+
+function actualizarAvisoConteo(){
+  var aviso=document.getElementById("aviso-conteo");
+  var totalEl=document.getElementById("total-desglose");
+  if(!aviso) return;
+  var r=registroActivo();
+  var total=r?r.individuos:"", m=r?r.cantidadMachos:"", h=r?r.cantidadHembras:"", j=r?r.cantidadJuveniles:"", ns=r?r.cantidadNoSexados:"";
+  var suma=(parseInt(m,10)||0)+(parseInt(h,10)||0)+(parseInt(j,10)||0)+(parseInt(ns,10)||0);
+  if(totalEl) totalEl.textContent=suma;
+  var hayDesglose = (m!==undefined&&m!=="") || (h!==undefined&&h!=="") || (j!==undefined&&j!=="") || (ns!==undefined&&ns!=="");
+  if(!r || total===undefined || total==="" || !hayDesglose){ aviso.style.display="none"; return; }
+  var totalNum=parseInt(total,10)||0;
+  if(suma!==totalNum){
+    aviso.textContent="El total de individuos ("+totalNum+") no coincide con la suma del desglose ("+suma+").";
+    aviso.style.display="block";
+  } else {
+    aviso.style.display="none";
+  }
+}
+
+// ---------- modo consulta / edición ----------
+var FOOTERS_CFG = [
+  {tab:"entrada"}, {tab:"preparacion"}, {tab:"deposito"}, {tab:"manejo", ultimo:true}
+];
+function actualizarFooterAcciones(){
+  var modo = activoId===null ? "nuevo" : (editando ? "edicion" : "consulta");
+  FOOTERS_CFG.forEach(function(cfg){
+    var guardarBtn=document.getElementById("btn-guardar-"+cfg.tab);
+    var actualizarBtn=document.getElementById("btn-actualizar-"+cfg.tab);
+    var nota=document.getElementById("nota-consulta-"+cfg.tab);
+    if(!guardarBtn||!actualizarBtn) return;
+    if(modo==="nuevo"){
+      guardarBtn.classList.remove("oculto"); actualizarBtn.classList.add("oculto");
+      if(nota) nota.classList.add("oculto");
+      guardarBtn.textContent = cfg.ultimo ? "Finalizar guardado" : "Guardar →";
+    } else if(modo==="edicion"){
+      actualizarBtn.classList.remove("oculto"); guardarBtn.classList.add("oculto");
+      if(nota) nota.classList.add("oculto");
+      actualizarBtn.textContent = cfg.ultimo ? "Finalizar actualización" : "Actualizar →";
+    } else {
+      guardarBtn.classList.add("oculto"); actualizarBtn.classList.add("oculto");
+      if(nota) nota.classList.remove("oculto");
+    }
+  });
+}
+function aplicarModoFormulario(){
+  document.querySelectorAll("[data-f]").forEach(function(el){
+    if(el.closest(".fila-repetible")) return;
+    if(el.tagName==="SELECT"){ el.disabled = !editando; }
+    else { el.readOnly = !editando; }
+  });
+  ["btn-add-determinacion","btn-add-submuestra","btn-add-foto","btn-add-prestamo","btn-add-uso"].forEach(function(id){
+    var b=document.getElementById(id);
+    if(b){ b.disabled = !editando; b.classList.toggle("oculto", !editando); }
+  });
+  var btnZip=document.querySelector(".btn-importar-zip");
+  if(btnZip) btnZip.disabled = !editando;
+  var campoCatalogador=document.getElementById("campo-catalogador");
+  if(campoCatalogador) campoCatalogador.readOnly = true; // se completa solo, nunca a mano
+  sincronizarColeccionCatalogado();
+  actualizarColeccionUI();
+  sincronizarCascadaChile();
+  actualizarFooterAcciones();
+}
+
+function crearDuplicadoDesde(origen){
+  activoId = null;               // se comporta como un registro nuevo: no existe en la lista hasta presionar Guardar
+  origenDuplicadoId = origen.id || null;
+  borrador = clonar(origen);
+  delete borrador.creadoEn;      // el duplicado es un ingreso nuevo: se le asignará su propia fecha/hora al guardar
+  delete borrador.catalogador;   // el catalogador se reasigna al guardar el duplicado con su propio N.º de catálogo
+  editando = true;
+  origenDuplicado = true;
+  cargarRegistroEnFormulario();
+  refrescarPanelesRegistros();
+}
+function accionDuplicarComoNuevo(){
+  if(!borrador || activoId===null) return;
+  var ok = confirm("Se creará un nuevo registro con los mismos datos que tienes ahora en el formulario. El registro original no se modifica. No olvides cambiar el número de catálogo (u otro dato que deba diferenciarlo). ¿Continuar?");
+  if(!ok) return;
+  crearDuplicadoDesde(borrador);
+}
+function duplicarDesdeLista(id){
+  var r = registroPorId(id);
+  if(!r) return;
+  var ok = confirm("Se creará un nuevo registro con los mismos datos que este. El original no se modifica. No olvides cambiar el número de catálogo (u otro dato que deba diferenciarlo). ¿Continuar?");
+  if(!ok) return;
+  crearDuplicadoDesde(r);
+}
+
+// ---------- registros: alta / selección / borrado / guardado explícito ----------
+function iniciarNuevoBorrador(){
+  activoId=null;
+  borrador=registroVacioBase();
+  editando=true;
+  origenDuplicado=false;
+  origenDuplicadoId=null;
+  cargarRegistroEnFormulario();
+  refrescarPanelesRegistros();
+}
+function cargarRegistroEnBorrador(id, modoEdicion){
+  var r=registroPorId(id);
+  if(!r) return;
+  activoId=id;
+  borrador=clonar(r);
+  editando=!!modoEdicion;
+  origenDuplicado=false;
+  origenDuplicadoId=null;
+  cargarRegistroEnFormulario();
+  refrescarPanelesRegistros();
+}
+function nuevoRegistro(){ iniciarNuevoBorrador(); }
+function consultarRegistro(id){ cargarRegistroEnBorrador(id, false); }
+function editarRegistro(id){ cargarRegistroEnBorrador(id, true); }
+function eliminarRegistro(id){
+  if(!confirm("¿Eliminar este registro? No se puede deshacer.")) return;
+  var idx=indicePorId(id);
+  if(idx>-1) registros.splice(idx,1);
+  if(activoId===id){
+    if(registros.length) consultarRegistro(registros[0].id);
+    else iniciarNuevoBorrador();
+  }
+  persistir();
+  refrescarPanelesRegistros();
+}
+
+function aplicarCatalogadorSiCorresponde(obj){
+  if(!obj.catalogador && obj.catalogo){ obj.catalogador = operadorActual(); }
+}
+function accionGuardarNuevo(siguienteTab){
+  if(!borrador) borrador=registroVacioBase();
+  if(origenDuplicadoId){
+    var base = registroPorId(origenDuplicadoId);
+    if(base && sonIguales(base, borrador)){
+      var seguir = confirm("Los datos son exactamente iguales a los del registro del que partiste ("+resumenLinea1(etiquetaRegistro(base))+"). Normalmente querrás cambiar al menos el número de catálogo antes de guardar un duplicado. ¿Guardar de todas formas?");
+      if(!seguir) return;
+    }
+  }
+  var nuevo=clonar(borrador);
+  nuevo.id=nuevoId();
+  nuevo.creadoEn = nuevo.creadoEn || new Date().toISOString();
+  aplicarCatalogadorSiCorresponde(nuevo);
+  registros.push(nuevo);
+  activoId=nuevo.id;
+  borrador=clonar(nuevo);
+  origenDuplicado=false;
+  origenDuplicadoId=null;
+  if(siguienteTab===null) editando=false; // "Finalizar guardado": el registro recién creado pasa a modo consulta
+  persistir();
+  cargarRegistroEnFormulario();
+  refrescarPanelesRegistros();
+  if(siguienteTab) activarTab(siguienteTab);
+}
+function accionActualizar(siguienteTab){
+  if(!borrador) borrador=registroVacioBase();
+  var actualizado=clonar(borrador);
+  aplicarCatalogadorSiCorresponde(actualizado);
+  if(activoId){
+    actualizado.id=activoId;
+    var idx=indicePorId(activoId);
+    if(idx>-1) registros[idx]=actualizado; else registros.push(actualizado);
+  } else {
+    actualizado.id=nuevoId();
+    registros.push(actualizado);
+    activoId=actualizado.id;
+  }
+  borrador=clonar(actualizado);
+  if(siguienteTab===null) editando=false; // "Finalizar actualización": vuelve a modo consulta
+  persistir();
+  cargarRegistroEnFormulario();
+  refrescarPanelesRegistros();
+  if(siguienteTab) activarTab(siguienteTab);
+}
+
+// ---------- panel de registros (transversal) ----------
+function etiquetaRegistro(r){
+  var det = r.determinaciones && r.determinaciones.length ? r.determinaciones[r.determinaciones.length-1].nombreCientifico : "";
+  return {
+    numeroCampo: r.numeroCampo || "",
+    numeroAccesion: r.numeroAccesion || "",
+    catalogo: r.catalogo || "",
+    nombreCientifico: det || r.taxon || "sin determinar",
+    localidad: r.localidad || "",
+    fecha: r.fechaRecepcion || r.fechaColecta || "",
+    colector: r.colector || ""
+  };
+}
+function conPrefijo(prefijo, valor){
+  var v = String(valor==null?"":valor).trim();
+  if(!v) return "";
+  // si el valor ya empieza con la misma palabra (con o sin "N°"/"n°"/"#"), no la repite
+  var patron = new RegExp("^"+prefijo+"\\b", "i");
+  return patron.test(v) ? v : (prefijo+" "+v);
+}
+function resumenLinea1(et){
+  var partes=[];
+  if(et.numeroCampo) partes.push(conPrefijo("Campo", et.numeroCampo));
+  if(et.numeroAccesion) partes.push(conPrefijo("Entrada", et.numeroAccesion));
+  if(et.catalogo) partes.push(conPrefijo("Catálogo", et.catalogo));
+  return partes.length ? partes.join(" · ") : "(sin números asignados)";
+}
+function resumenLinea2(et){
+  var partes=[et.nombreCientifico];
+  if(et.localidad) partes.push(et.localidad);
+  if(et.fecha) partes.push(et.fecha);
+  if(et.colector) partes.push(et.colector);
+  return partes.join(" · ");
+}
+var filtroRegistros = "";
+function registroCoincideFiltro(reg, filtro){
+  if(!filtro) return true;
+  var et = etiquetaRegistro(reg);
+  var texto = [
+    et.numeroCampo, et.numeroAccesion, et.catalogo, et.nombreCientifico, et.localidad, et.colector, et.fecha,
+    reg.taxon, reg.legatario, reg.procedencia, reg.destino, reg.region, reg.provincia, reg.comuna
+  ].join(" ").toLowerCase();
+  return texto.indexOf(filtro.toLowerCase()) > -1;
+}
+function montarPanelRegistros(cont){
+  var abierto = cont.getAttribute("data-abierto")==="1";
+  var etAct = borrador ? etiquetaRegistro(borrador) : null;
+  var modoTexto = activoId===null ? (origenDuplicado ? "Duplicando" : "Nuevo") : (editando ? "Editando" : "Consulta");
+  var btnTabActivo = document.querySelector("#tabs button.active");
+  var esTabEntrada = !!btnTabActivo && btnTabActivo.getAttribute("data-tab")==="entrada";
+  var html = '<div class="barra-nuevo">';
+  html += '<button class="btn secundario small btn-nuevo-registro">+ Nuevo registro</button>';
+  if(esTabEntrada){
+    html += '<button class="btn secundario small btn-importar-zip">Importar zip de Libreta de Campo…</button>';
+    html += '<input type="file" id="input-zip" accept=".zip" class="oculto">';
+  }
+  html += '<button class="btn small btn-toggle-lista">'+(abierto?'Ocultar registros ▲':'Ver registros ('+registros.length+') ▾')+'</button>';
+  html += '</div>';
+  html += '<div class="barra-activo">';
+  html += '<span class="badge-modo badge-modo-'+modoTexto.toLowerCase()+'">'+modoTexto+'</span>';
+  html += '<span class="chip-activo"><span class="chip-titulo">Registro Actual</span>'+(etAct ? ('<strong>'+escapeHtml(resumenLinea1(etAct))+'</strong><br>'+escapeHtml(resumenLinea2(etAct))) : 'Sin registro activo')+'</span>';
+  if(activoId!==null){
+    html += '<button class="btn small btn-icono btn-icono-ver btn-consultar-activo" title="Consultar">👁️</button>';
+    html += '<button class="btn small btn-icono btn-icono-editar btn-editar-activo" title="Editar">✏️</button>';
+    html += '<button class="btn small btn-icono btn-icono-duplicar btn-duplicar-activo" title="Duplicar">🗐</button>';
+    html += '<button class="btn small btn-icono btn-icono-eliminar btn-eliminar-activo" title="Eliminar">🗑️</button>';
+  }
+  html += '</div>';
+  if(abierto){
+    var filtrados = registros.filter(function(r){ return registroCoincideFiltro(r, filtroRegistros); });
+    html += '<div class="desplegable-registros">';
+    html += '<input type="search" class="nav input-filtro-registros" placeholder="Buscar por campo, entrada, catálogo, taxón, localidad, colector…" value="'+escapeHtml(filtroRegistros)+'">';
+    html += '<div class="lista-scroll">';
+    if(!registros.length) html += '<p class="nota" style="padding:8px;">Todavía no hay registros cargados.</p>';
+    else if(!filtrados.length) html += '<p class="nota" style="padding:8px;">Ningún registro coincide con la búsqueda.</p>';
+    filtrados.forEach(function(reg){
+      var esActivo = reg.id===activoId;
+      var et = esActivo && borrador ? etiquetaRegistro(borrador) : etiquetaRegistro(reg);
+      html += '<div class="fila-registro'+(esActivo?' activa':'')+'" data-id="'+reg.id+'">';
+      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong><br><span class="ts2">'+escapeHtml(resumenLinea2(et))+'</span></div>';
+      html += '<div class="acciones-fila">';
+      if(esActivo) html += '<span class="tag-activo-mini">'+(editando?'editando':'consultando')+'</span>';
+      html += '<button class="btn tenue small btn-consultar-registro">Consultar</button>';
+      html += '<button class="btn tenue small btn-editar-registro">Editar</button>';
+      html += '<button class="btn tenue small btn-duplicar-fila">Duplicar</button>';
+      html += '<button class="btn tenue small btn-eliminar-registro">Eliminar</button>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+  cont.innerHTML = html;
+  var toggleBtn = cont.querySelector(".btn-toggle-lista");
+  if(toggleBtn) toggleBtn.onclick = function(){
+    var nuevoAbierto = abierto ? "0" : "1";
+    if(nuevoAbierto==="0") filtroRegistros="";
+    cont.setAttribute("data-abierto", nuevoAbierto);
+    montarPanelRegistros(cont);
+  };
+  var nuevoBtn = cont.querySelector(".btn-nuevo-registro");
+  if(nuevoBtn) nuevoBtn.onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; nuevoRegistro(); };
+  if(esTabEntrada){
+    var importarBtn = cont.querySelector(".btn-importar-zip");
+    var inputZip = cont.querySelector("#input-zip");
+    if(importarBtn && inputZip){
+      importarBtn.onclick = function(){ inputZip.click(); };
+      inputZip.onchange = function(){ alert("Import de zip de Libreta de Campo: pendiente de implementar."); };
+    }
+  }
+  var idActivo = activoId;
+  var consultarActivoBtn = cont.querySelector(".btn-consultar-activo");
+  if(consultarActivoBtn) consultarActivoBtn.onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; abrirConsultaConFicha(idActivo); };
+  var editarActivoBtn = cont.querySelector(".btn-editar-activo");
+  if(editarActivoBtn) editarActivoBtn.onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; editarRegistro(idActivo); };
+  var duplicarActivoBtn = cont.querySelector(".btn-duplicar-activo");
+  if(duplicarActivoBtn) duplicarActivoBtn.onclick = accionDuplicarComoNuevo;
+  var eliminarActivoBtn = cont.querySelector(".btn-eliminar-activo");
+  if(eliminarActivoBtn) eliminarActivoBtn.onclick = function(){ eliminarRegistro(idActivo); };
+  var filtroInput = cont.querySelector(".input-filtro-registros");
+  if(filtroInput){
+    filtroInput.addEventListener("input", function(){
+      filtroRegistros = filtroInput.value;
+      montarPanelRegistros(cont);
+      var ref = cont.querySelector(".input-filtro-registros");
+      if(ref){ ref.focus(); var L=ref.value.length; ref.setSelectionRange(L,L); }
+    });
+  }
+  cont.querySelectorAll(".fila-registro").forEach(function(fila){
+    var id = fila.getAttribute("data-id");
+    fila.querySelector(".btn-consultar-registro").onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; abrirConsultaConFicha(id); };
+    fila.querySelector(".btn-editar-registro").onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; editarRegistro(id); };
+    fila.querySelector(".btn-duplicar-fila").onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; duplicarDesdeLista(id); };
+    fila.querySelector(".btn-eliminar-registro").onclick = function(){ eliminarRegistro(id); };
+  });
+}
+document.addEventListener("click", function(e){
+  var path = e.composedPath ? e.composedPath() : [e.target];
+  document.querySelectorAll(".slot-panel-registros").forEach(function(cont){
+    if(cont.getAttribute("data-abierto")==="1" && path.indexOf(cont)===-1){
+      cont.setAttribute("data-abierto","0");
+      filtroRegistros="";
+      montarPanelRegistros(cont);
+    }
+  });
+});
+function coleccionDeRegistro(r){
+  return r.coleccionAcronimo ? [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ") : "Sin colección asignada";
+}
+function sesionDeRegistro(r){
+  return r.creadoEn ? r.creadoEn.slice(0,10) : "Sin sesión registrada";
+}
+function formatearNombreSesion(clave){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(clave)) return clave;
+  var d = new Date(clave+"T00:00:00");
+  if(isNaN(d.getTime())) return clave;
+  var texto = d.toLocaleDateString("es-CL", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
+  return "Sesión del " + texto;
+}
+var CLAVES_VACIAS = ["Sin colección asignada","Sin sesión registrada"];
+function valoresUnicos(fn){
+  var set = new Set(registros.map(fn));
+  return Array.from(set).sort(function(a,b){
+    if(CLAVES_VACIAS.indexOf(a)>-1) return 1;
+    if(CLAVES_VACIAS.indexOf(b)>-1) return -1;
+    return a.localeCompare(b);
+  });
+}
+function agruparRegistros(lista, fn){
+  var grupos = {};
+  lista.forEach(function(r){
+    var clave = fn(r);
+    if(!grupos[clave]) grupos[clave] = [];
+    grupos[clave].push(r);
+  });
+  return grupos;
+}
+var seleccionDescarga = new Set();
+var agruparDatosPor = "coleccion";
+var filtroColeccionDatos = "";
+var filtroSesionDatos = "";
+function renderResumenDatos(){
+  var cont = document.getElementById("resumen-datos");
+  if(!cont) return;
+  // depurar selección: quitar ids de registros que ya no existen
+  var idsVigentes = new Set(registros.map(function(r){ return r.id; }));
+  seleccionDescarga.forEach(function(id){ if(!idsVigentes.has(id)) seleccionDescarga.delete(id); });
+
+  var selAgrupar = document.getElementById("sel-agrupar-datos");
+  var selFiltroColeccion = document.getElementById("sel-filtro-coleccion");
+  var selFiltroSesion = document.getElementById("sel-filtro-sesion");
+  if(selAgrupar) selAgrupar.value = agruparDatosPor;
+  if(selFiltroColeccion){
+    var opcionesColeccion = valoresUnicos(coleccionDeRegistro);
+    selFiltroColeccion.innerHTML = '<option value="">Todas</option>' + opcionesColeccion.map(function(o){ return '<option value="'+escapeHtml(o)+'"'+(o===filtroColeccionDatos?' selected':'')+'>'+escapeHtml(o)+'</option>'; }).join("");
+  }
+  if(selFiltroSesion){
+    var opcionesSesion = valoresUnicos(sesionDeRegistro);
+    selFiltroSesion.innerHTML = '<option value="">Todas</option>' + opcionesSesion.map(function(o){ return '<option value="'+escapeHtml(o)+'"'+(o===filtroSesionDatos?' selected':'')+'>'+escapeHtml(o)+'</option>'; }).join("");
+  }
+
+  var filtrados = registros.filter(function(r){
+    return (!filtroColeccionDatos || coleccionDeRegistro(r)===filtroColeccionDatos)
+        && (!filtroSesionDatos || sesionDeRegistro(r)===filtroSesionDatos);
+  });
+  var fnClave = agruparDatosPor==="sesion" ? sesionDeRegistro : coleccionDeRegistro;
+  var grupos = agruparRegistros(filtrados, fnClave);
+  var claves = Object.keys(grupos).sort(function(a,b){
+    if(CLAVES_VACIAS.indexOf(a)>-1) return 1;
+    if(CLAVES_VACIAS.indexOf(b)>-1) return -1;
+    return a.localeCompare(b);
+  });
+
+  var html = '<p class="nota" style="margin:0 0 10px;">Registros mostrados: <strong>'+filtrados.length+'</strong> de '+registros.length+' · Seleccionados para descarga: <strong>'+seleccionDescarga.size+'</strong></p>';
+  if(!registros.length){
+    html += '<p class="nota">Todavía no hay registros cargados.</p>';
+  } else if(!filtrados.length){
+    html += '<p class="nota">Ningún registro coincide con los filtros elegidos.</p>';
+  } else {
+    claves.forEach(function(clave, idxGrupo){
+      var lista = grupos[clave];
+      var todosSeleccionados = lista.every(function(r){ return seleccionDescarga.has(r.id); });
+      var etiquetaGrupo = (agruparDatosPor==="sesion" && CLAVES_VACIAS.indexOf(clave)===-1) ? formatearNombreSesion(clave) : clave;
+      html += '<details><summary>'
+        + '<span class="resumen-grupo-titulo">'+escapeHtml(etiquetaGrupo)+'</span>'
+        + ' <span class="resumen-conteo">('+lista.length+')</span>'
+        + '<input type="checkbox" class="chk-grupo" data-grupo="'+idxGrupo+'"'+(todosSeleccionados?' checked':'')+' title="Seleccionar todo el grupo" onclick="event.stopPropagation()">'
+        + '</summary><div class="ficha-seccion-body">';
+      html += '<div class="lista-scroll" style="max-height:220px;">';
+      lista.forEach(function(reg){
+        var et = etiquetaRegistro(reg);
+        var marcado = seleccionDescarga.has(reg.id);
+        var partesExtra = [];
+        if(agruparDatosPor!=="coleccion") partesExtra.push(coleccionDeRegistro(reg));
+        if(agruparDatosPor!=="sesion") partesExtra.push("Sesión "+sesionDeRegistro(reg));
+        var textoCompleto = [resumenLinea1(et), resumenLinea2(et)].concat(partesExtra).join(" · ");
+        html += '<div class="fila-compacta" data-id="'+reg.id+'">';
+        html += '<span class="fila-compacta-texto">'+escapeHtml(textoCompleto)+'</span>';
+        html += '<button class="btn-ver-compacto btn-ver-resumen" title="Ver ficha">👁️</button>';
+        html += '<input type="checkbox" class="chk-registro" data-id="'+reg.id+'"'+(marcado?' checked':'')+' title="Seleccionar para descarga">';
+        html += '</div>';
+      });
+      html += '</div></div></details>';
+    });
+  }
+  cont.innerHTML = html;
+  cont.querySelectorAll(".btn-ver-resumen").forEach(function(btn){
+    btn.onclick = function(){ mostrarFichaConsulta(btn.closest(".fila-compacta").getAttribute("data-id")); };
+  });
+  cont.querySelectorAll(".fila-compacta-texto").forEach(function(span){
+    span.onclick = function(){
+      var chk = span.closest(".fila-compacta").querySelector(".chk-registro");
+      chk.checked = !chk.checked;
+      chk.dispatchEvent(new Event("change", {bubbles:true}));
+    };
+  });
+  cont.querySelectorAll(".chk-registro").forEach(function(chk){
+    chk.onchange = function(){
+      if(chk.checked) seleccionDescarga.add(chk.getAttribute("data-id"));
+      else seleccionDescarga.delete(chk.getAttribute("data-id"));
+      renderResumenDatos();
+    };
+  });
+  cont.querySelectorAll(".chk-grupo").forEach(function(chk, i){
+    chk.onchange = function(){
+      var clave = claves[i];
+      grupos[clave].forEach(function(r){
+        if(chk.checked) seleccionDescarga.add(r.id); else seleccionDescarga.delete(r.id);
+      });
+      renderResumenDatos();
+    };
+  });
+}
+function refrescarPanelesRegistros(){
+  document.querySelectorAll(".slot-panel-registros").forEach(montarPanelRegistros);
+  renderResumenDatos();
+}
+
+// ---------- Sistema ----------
+document.getElementById("ver-chip").textContent = APP_VERSION + " · borrador";
+document.getElementById("ver-texto").textContent = APP_VERSION;
+// ---------- actualización, instalación y almacenamiento protegido ----------
+function mensajeActualizacion(t){ var el=document.getElementById("estado-actualizacion"); if(el) el.textContent=t; }
+document.getElementById("btn-actualizar").addEventListener("click", function(){
+  if(!("serviceWorker" in navigator)){ mensajeActualizacion("Este navegador no admite actualización automática."); return; }
+  mensajeActualizacion("Buscando actualización...");
+  navigator.serviceWorker.getRegistration().then(function(reg){
+    if(!reg){ mensajeActualizacion("No se pudo comprobar. Abre la app desde su enlace instalado (https)."); return; }
+    var detectoNueva = false;
+    reg.addEventListener("updatefound", function(){
+      detectoNueva = true;
+      var nuevo = reg.installing;
+      mensajeActualizacion("Descargando actualización...");
+      if(nuevo) nuevo.addEventListener("statechange", function(){
+        if(nuevo.state === "installed") mensajeActualizacion("Actualización lista. La app se recargará sola.");
+      });
+    });
+    return reg.update().then(function(){
+      setTimeout(function(){ if(!detectoNueva) mensajeActualizacion("Ya tienes la última versión (" + APP_VERSION + ")."); }, 2500);
+    });
+  }).catch(function(){ mensajeActualizacion("No se pudo comprobar actualizaciones ahora."); });
+});
+var eventoInstalar = null;
+window.addEventListener("beforeinstallprompt", function(e){
+  e.preventDefault(); eventoInstalar = e;
+  document.getElementById("btn-instalar").classList.remove("oculto");
+});
+document.getElementById("btn-instalar").addEventListener("click", function(){
+  if(!eventoInstalar) return;
+  eventoInstalar.prompt();
+  eventoInstalar.userChoice.then(function(){ eventoInstalar = null; document.getElementById("btn-instalar").classList.add("oculto"); });
+});
+window.addEventListener("appinstalled", function(){ document.getElementById("btn-instalar").classList.add("oculto"); });
+(function(){
+  var el = document.getElementById("estado-almacenamiento");
+  if(!el || !navigator.storage || !navigator.storage.persist) return;
+  navigator.storage.persisted().then(function(ya){ return ya ? true : navigator.storage.persist(); }).then(function(ok){
+    el.textContent = "Almacenamiento protegido: " + (ok ? "sí" : "no (el navegador podría borrar los datos si falta espacio; usa respaldos).");
+  }).catch(function(){});
+})();
+document.getElementById("btn-exportar-zip").addEventListener("click", function(){ alert("Exportación a zip / Darwin Core: pendiente."); });
+document.getElementById("sel-agrupar-datos").addEventListener("change", function(){
+  agruparDatosPor = this.value;
+  renderResumenDatos();
+});
+document.getElementById("sel-filtro-coleccion").addEventListener("change", function(){
+  filtroColeccionDatos = this.value;
+  renderResumenDatos();
+});
+document.getElementById("sel-filtro-sesion").addEventListener("change", function(){
+  filtroSesionDatos = this.value;
+  renderResumenDatos();
+});
+document.getElementById("btn-guardar-entrada").addEventListener("click", function(){ accionGuardarNuevo("preparacion"); });
+document.getElementById("btn-actualizar-entrada").addEventListener("click", function(){ accionActualizar("preparacion"); });
+document.getElementById("btn-guardar-preparacion").addEventListener("click", function(){ accionGuardarNuevo("deposito"); });
+document.getElementById("btn-actualizar-preparacion").addEventListener("click", function(){ accionActualizar("deposito"); });
+document.getElementById("btn-guardar-deposito").addEventListener("click", function(){ accionGuardarNuevo("manejo"); });
+document.getElementById("btn-actualizar-deposito").addEventListener("click", function(){ accionActualizar("manejo"); });
+document.getElementById("btn-guardar-manejo").addEventListener("click", function(){ accionGuardarNuevo(null); });
+document.getElementById("btn-actualizar-manejo").addEventListener("click", function(){ accionActualizar(null); });
+
+// ---------- arranque ----------
+document.querySelectorAll(".lbl .key").forEach(function(el){ el.title=el.textContent.trim(); });
+
+cargarDesdeIndexedDB(function(lista){
+  registros = lista || [];
+  registros.forEach(function(r){ ["determinaciones","submuestras","fotos","prestamos","usos"].forEach(function(k){ if(!r[k]) r[k]=[]; }); });
+  if(registros.length) consultarRegistro(registros[0].id); else iniciarNuevoBorrador();
+  refrescarPanelesRegistros();
+});
+
+})();
+</script>
+<script>
+// Service worker: permite instalar la app y usarla sin conexión. Solo funciona en https o localhost.
+if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("sw.js").then(function(reg){
+      reg.update();
+      var recargando = false;
+      navigator.serviceWorker.addEventListener("controllerchange", function(){
+        if(recargando) return;
+        recargando = true;
+        window.location.reload();
+      });
+    }).catch(function(){});
+  });
+}
+</script>
+</body>
+</html>

@@ -39,10 +39,11 @@
   .operador-actual-wrap input:focus{outline:2px solid var(--accent-2);outline-offset:1px;}
   nav#tabs{background:var(--paper-2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;box-shadow:0 2px 6px rgba(38,51,43,.05);}
   #tabs-inner{display:flex;overflow-x:auto;max-width:var(--ancho-max);margin:0 auto;padding:8px var(--gutter) 0;gap:6px;}
-  nav#tabs button{font-family:var(--sans);font-size:15px;padding:11px 20px;background:none;border:none;border-bottom:2px solid transparent;border-radius:8px 8px 0 0;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
-  nav#tabs button:hover{background:rgba(61,90,69,.14);color:var(--ink);}
-  nav#tabs button.active{color:#fff;background:var(--accent);border-bottom-color:var(--accent);font-weight:700;box-shadow:0 2px 6px rgba(38,51,43,.25);}
-  nav#tabs button.active:hover{background:var(--accent);}
+  nav#tabs{background:#d9d2b6;border-bottom:3px solid var(--accent);}
+  nav#tabs button{font-family:var(--sans);font-size:15.5px;font-weight:700;padding:11px 22px;background:#fffdf8;border:1.5px solid var(--line-fuerte);border-bottom:none;border-radius:9px 9px 0 0;color:var(--ink);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
+  nav#tabs button:hover{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-2);}
+  nav#tabs button.active{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:800;box-shadow:0 -3px 8px rgba(38,51,43,.3);padding-top:13px;margin-bottom:-3px;}
+  nav#tabs button.active:hover{background:var(--accent);color:#fff;}
   main{max-width:var(--ancho-max);margin:0 auto;padding:24px var(--gutter) 60px;touch-action:pan-y;}
   #panel-registros-wrap{max-width:var(--ancho-max);margin:0 auto;padding:14px var(--gutter) 0;}
   .tabpanel{display:none;} .tabpanel.active{display:block;animation:aparecer .15s ease-out;}
@@ -69,11 +70,19 @@
   input[readonly],textarea[readonly]{background:var(--paper-2);color:var(--ink);}
   select:disabled{background:var(--paper-2);color:var(--ink);opacity:1;}
   button.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none;}
-  .badge-modo{font-size:11px;font-family:var(--mono);border-radius:999px;padding:3px 11px;letter-spacing:.3px;white-space:nowrap;font-weight:700;}
-  .badge-modo-nuevo{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);}
-  .badge-modo-consulta{background:rgba(242,239,228,.15);color:var(--paper);border:1px solid rgba(242,239,228,.4);}
-  .badge-modo-editando{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);}
-  .badge-modo-duplicando{background:#f4e9d8;color:#8a5a2b;border:1px dashed var(--warn);}
+  .badge-modo{font-size:13px;font-family:var(--sans);border-radius:8px;padding:6px 15px;letter-spacing:.3px;white-space:nowrap;font-weight:800;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .badge-modo-nuevo{background:var(--accent);border:1px solid var(--accent);}
+  .badge-modo-consulta{background:#3b6f8f;border:1px solid #3b6f8f;}
+  .badge-modo-editando{background:var(--warn);border:1px solid var(--warn);}
+  .badge-modo-duplicando{background:#5c4d8a;border:1px solid #5c4d8a;}
+  .ficha-galeria{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0 4px;}
+  .ficha-foto{margin:0;width:200px;border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden;box-shadow:var(--sombra);}
+  .ficha-foto img{display:block;width:100%;height:150px;object-fit:cover;cursor:zoom-in;background:var(--paper-2);}
+  .ficha-foto figcaption{font-size:12px;color:var(--ink-soft);padding:6px 8px;word-break:break-all;}
+  .ficha-foto.grande{width:100%;}
+  .ficha-foto.grande img{height:auto;max-height:70vh;object-fit:contain;cursor:zoom-out;}
+  .ficha-foto .msg-foto{padding:14px 10px;font-size:12.5px;color:var(--ink-soft);text-align:center;}
+  .miniatura-foto{display:block;max-width:140px;max-height:100px;margin-top:8px;border:1px solid var(--line);border-radius:6px;object-fit:cover;}
   .full{grid-column:1/-1;}
   .leyenda-campos{font-size:13px;color:var(--ink-soft);margin:-4px 0 14px;}
   button.btn{font-family:var(--sans);font-size:14.5px;padding:9px 18px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 1px 2px rgba(38,51,43,.15);transition:transform .08s, box-shadow .08s;}
@@ -179,7 +188,7 @@
     <label for="input-operador-actual">Operador actual</label>
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off">
   </div>
-  <span class="ver" id="ver-chip">v0.9.9 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.10 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -492,6 +501,7 @@
     <div class="bloque">
       <h2>Carpeta local</h2>
       <p class="sub">Carpeta de este equipo donde la app guarda una copia de cada registro y ordena los archivos de trabajo. Los datos siguen guardándose también en el navegador. Funciona en Chrome y Edge.</p>
+      <p class="nota"><strong>Ubicación recomendada:</strong> crea la carpeta directamente dentro de la unidad C: (por ejemplo C:\Libro_de_Catalogo) y no dentro de Documentos, Escritorio ni OneDrive. Así todos los equipos usan la misma ruta corta y se evitan bloqueos del navegador sobre carpetas del sistema o sincronizadas.</p>
       <p class="estado-carpeta" id="carpeta-estado"></p>
       <footer class="acciones">
         <button class="btn" id="btn-carpeta-elegir">Elegir carpeta local</button>
@@ -541,7 +551,7 @@
 
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.9</strong> (borrador de trabajo)</p>
+      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.10</strong> (borrador de trabajo)</p>
       <footer class="acciones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -564,7 +574,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.9";
+var APP_VERSION = "v0.9.10";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1127,7 +1137,7 @@ function construirFicha(r){
   var tablaFotos = fichaTablaLista("fotos", r.fotos);
   var preparacionHtml = preparacionCampos
     + (tablaSubmuestras ? '<p class="subtitulo-mini">Submuestras</p>'+tablaSubmuestras : "")
-    + (tablaFotos ? '<p class="subtitulo-mini">Fotos</p>'+tablaFotos : "");
+    + (tablaFotos ? '<p class="subtitulo-mini">Fotos</p>'+tablaFotos+galeriaFichaHtml(r.fotos) : "");
 
   var tablaDeterminaciones = fichaTablaLista("determinaciones", r.determinaciones);
   var clasificacion = fichaCampos([
@@ -1180,6 +1190,38 @@ function construirFicha(r){
     + '<div class="ficha-footer"><button class="btn small btn-editar-desde-ficha">Editar este registro</button></div>'
     + '</div>';
 }
+function galeriaFichaHtml(fotos){
+  var items=(fotos||[]).filter(function(f){ return /^Fotos\//.test(f.archivo||""); });
+  if(!items.length) return "";
+  return '<div class="ficha-galeria">'+items.map(function(f){
+    var nombre=f.archivo.split("/").pop();
+    return '<figure class="ficha-foto" data-ruta="'+escapeHtml(f.archivo)+'"><div class="msg-foto">Cargando…</div><figcaption>'+escapeHtml((f.tipoFoto?f.tipoFoto+": ":"")+nombre)+'</figcaption></figure>';
+  }).join("")+'</div>';
+}
+var urlsFicha=[];
+function liberarUrlsFicha(){ urlsFicha.forEach(function(u){ URL.revokeObjectURL(u); }); urlsFicha=[]; }
+// Muestra las imágenes de la Carpeta local dentro de la ficha. Si el navegador pide permiso, se ofrece un botón.
+async function cargarFotosFicha(dialogEl){
+  var figs=dialogEl.querySelectorAll(".ficha-foto");
+  if(!figs.length) return;
+  var ok=await permisoCarpeta(true);
+  figs.forEach(function(fig){
+    var cuerpo=fig.querySelector(".msg-foto");
+    if(!ok){
+      cuerpo.innerHTML='Para ver las fotos, <button type="button" class="btn small">dar acceso a la Carpeta local</button>';
+      cuerpo.querySelector("button").onclick=function(){ cargarFotosFicha(dialogEl); };
+      return;
+    }
+    archivoDeRuta(fig.getAttribute("data-ruta")).then(function(file){
+      var url=URL.createObjectURL(file); urlsFicha.push(url);
+      var img=document.createElement("img"); img.alt=fig.getAttribute("data-ruta"); img.title="Clic para ampliar o reducir";
+      img.onload=function(){ if(cuerpo.parentNode) fig.replaceChild(img, cuerpo); };
+      img.onerror=function(){ cuerpo.textContent="Este navegador no puede mostrar este formato. Usa «Abrir foto» en la pestaña Preparación."; };
+      img.onclick=function(){ fig.classList.toggle("grande"); };
+      img.src=url;
+    }).catch(function(){ cuerpo.textContent="No se encontró el archivo en la Carpeta local."; });
+  });
+}
 function fichaPdfs(r){
   var lista = r.publicacionesPdf || [];
   if(!lista.length) return "";
@@ -1195,7 +1237,10 @@ function mostrarFichaConsulta(id){
   dialogEl.querySelector(".btn-cerrar-ficha").onclick = function(){ dialogEl.close(); };
   dialogEl.querySelector(".btn-editar-desde-ficha").onclick = function(){ dialogEl.close(); editarRegistro(id); };
   dialogEl.onclick = function(e){ if(e.target===dialogEl) dialogEl.close(); };
+  dialogEl.onclose = liberarUrlsFicha;
+  liberarUrlsFicha();
   dialogEl.showModal();
+  cargarFotosFicha(dialogEl);
 }
 function abrirConsultaConFicha(id){
   consultarRegistro(id);
@@ -1239,10 +1284,29 @@ function pintarLista(tipo){
       grid.appendChild(campoDiv);
     });
     fila.appendChild(grid);
-    if(tipo==="fotos" && /^Fotos\//.test(entrada.archivo||"")){
-      var ab=document.createElement("button"); ab.type="button"; ab.className="btn tenue small"; ab.textContent="Abrir foto";
-      ab.onclick=function(){ abrirRuta(entrada.archivo); };
-      fila.appendChild(ab);
+    if(tipo==="fotos"){
+      var barra=document.createElement("div"); barra.style.cssText="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;";
+      var el=document.createElement("button"); el.type="button"; el.className="btn secundario small"; el.textContent="Elegir archivo de la Carpeta local…";
+      el.classList.toggle("oculto", !editando);
+      el.onclick=function(){ elegirArchivoFoto(entrada); };
+      barra.appendChild(el);
+      if(/^Fotos\//.test(entrada.archivo||"")){
+        var ab=document.createElement("button"); ab.type="button"; ab.className="btn tenue small"; ab.textContent="Abrir foto";
+        ab.onclick=function(){ abrirRuta(entrada.archivo); };
+        barra.appendChild(ab);
+        fila.appendChild(barra);
+        var mini=document.createElement("img"); mini.className="miniatura-foto"; mini.alt=""; mini.style.display="none";
+        fila.appendChild(mini);
+        (async function(){
+          try{
+            if(!(await permisoCarpeta(false))) return;
+            var url=URL.createObjectURL(await archivoDeRuta(entrada.archivo));
+            mini.onload=function(){ mini.style.display="block"; };
+            mini.onerror=function(){ URL.revokeObjectURL(url); };
+            mini.src=url;
+          }catch(e){}
+        })();
+      } else fila.appendChild(barra);
     }
     cont.appendChild(fila);
   });
@@ -2177,12 +2241,46 @@ document.getElementById("btn-add-pdf").addEventListener("click", asociarPdf);
 
 // ---------- Fotos (ordenadas por Orden/Familia dentro de Fotos/) ----------
 function carpetaTaxon(v){ return sanitizarNombre(v)||"Sin_clasificar"; }
+async function archivoDeRuta(ruta){
+  var partes=ruta.split("/"), d=carpetaHandle;
+  for(var i=0;i<partes.length-1;i++) d=await d.getDirectoryHandle(partes[i]);
+  return await (await d.getFileHandle(partes[partes.length-1])).getFile();
+}
+// Copia (si hace falta) una foto elegida a Fotos/Orden/Familia/ y devuelve su ruta relativa y fecha.
+async function fotoEnCarpeta(fh){
+  var rutaTax="Fotos/"+carpetaTaxon(borrador.orden)+"/"+carpetaTaxon(borrador.familia);
+  var cat=sanitizarNombre(construirCatalogoCompleto(borrador)) || "sin-catalogo";
+  var ruta=null, rel=null;
+  try{ ruta=await carpetaHandle.resolve(fh); }catch(e){}
+  var file=await fh.getFile();
+  if(ruta && ruta.length>1 && ruta[0]==="Fotos"){ rel=ruta.join("/"); }
+  else {
+    var dir=await dirAnidado(rutaTax);
+    var base=limpiarNombre(file.name);
+    var nombre=(base.indexOf(cat+"_")===0 ? base : cat+"_"+base);
+    var disp=await nombreDisponible(dir, nombre, file.size);
+    if(!disp.existe) await escribirArchivo(rutaTax, disp.nombre, file);
+    rel=rutaTax+"/"+disp.nombre;
+  }
+  var f=new Date(file.lastModified);
+  return {rel:rel, fecha:f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate()), rutaTax:rutaTax};
+}
+async function elegirArchivoFoto(entrada){
+  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar archivos. Usa Chrome o Edge."); return; }
+  if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
+  if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
+  var fotosDir=await dirAnidado("Fotos"), fh;
+  try{ fh=await window.showOpenFilePicker({multiple:false, id:"libro-foto", startIn:fotosDir, types:[{description:"Imágenes", accept:{"image/*":[".jpg",".jpeg",".png",".tif",".tiff",".webp"]}}]}); }
+  catch(e){ return; }
+  var r=await fotoEnCarpeta(fh[0]);
+  entrada.archivo=r.rel;
+  if(!entrada.fechaFoto) entrada.fechaFoto=r.fecha;
+  pintarLista("fotos"); refrescarPanelesRegistros();
+}
 async function abrirRuta(ruta){
   if(!carpetaHandle || !(await permisoCarpeta(true))){ alert("Conecta la Carpeta local en la pestaña Sistema para abrir archivos."); return; }
   try{
-    var partes=ruta.split("/"), d=carpetaHandle;
-    for(var i=0;i<partes.length-1;i++) d=await d.getDirectoryHandle(partes[i]);
-    var file=await (await d.getFileHandle(partes[partes.length-1])).getFile();
+    var file=await archivoDeRuta(ruta);
     var url=URL.createObjectURL(file);
     window.open(url,"_blank");
     setTimeout(function(){ URL.revokeObjectURL(url); }, 120000);
@@ -2199,24 +2297,11 @@ async function asociarFotos(){
   try{ fhs=await window.showOpenFilePicker({multiple:true, id:"libro-foto", startIn:fotosDir, types:[{description:"Imágenes", accept:{"image/*":[".jpg",".jpeg",".png",".tif",".tiff",".webp"]}}]}); }
   catch(e){ return; }
   var rutaTax="Fotos/"+carpetaTaxon(borrador.orden)+"/"+carpetaTaxon(borrador.familia);
-  var cat=sanitizarNombre(construirCatalogoCompleto(borrador)) || "sin-catalogo";
   var agregadas=0;
   for(var i=0;i<fhs.length;i++){
-    var fh=fhs[i], rel=null, ruta=null;
-    try{ ruta=await carpetaHandle.resolve(fh); }catch(e){}
-    var file=await fh.getFile();
-    if(ruta && ruta.length>1 && ruta[0]==="Fotos"){ rel=ruta.join("/"); }
-    else {
-      var dir=await dirAnidado(rutaTax);
-      var base=limpiarNombre(file.name);
-      var nombre=(base.indexOf(cat+"_")===0 ? base : cat+"_"+base);
-      var disp=await nombreDisponible(dir, nombre, file.size);
-      if(!disp.existe) await escribirArchivo(rutaTax, disp.nombre, file);
-      rel=rutaTax+"/"+disp.nombre;
-    }
+    var r=await fotoEnCarpeta(fhs[i]), rel=r.rel;
     if(borrador.fotos.some(function(f){ return f.archivo===rel; })) continue;
-    var f=new Date(file.lastModified);
-    borrador.fotos.push({fechaFoto:f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate()), tipoFoto:"", archivo:rel, fotografo:"", notaCalidad:""});
+    borrador.fotos.push({fechaFoto:r.fecha, tipoFoto:"", archivo:rel, fotografo:"", notaCalidad:""});
     agregadas++;
   }
   pintarLista("fotos"); refrescarPanelesRegistros();

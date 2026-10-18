@@ -179,7 +179,7 @@
     <label for="input-operador-actual">Operador actual</label>
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off">
   </div>
-  <span class="ver" id="ver-chip">v0.9.8 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.9 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -237,6 +237,11 @@
         <div class="campo opc"><div class="lbl"><span class="name">Latitud</span><span class="key">lat</span></div><input class="nav" data-f="lat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Longitud</span><span class="key">lng</span></div><input class="nav" data-f="lng"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Altitud (m)</span><span class="key">altitud_m</span></div><input class="nav" data-f="altitud_m"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Hora de colecta</span><span class="key">horaColecta → dwc:eventTime</span></div><input type="time" class="nav" data-f="horaColecta"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Hábitat</span><span class="key">habitat → dwc:habitat</span></div><input class="nav sugerido" data-f="habitat"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Microhábitat</span><span class="key">microhabitat</span></div><input class="nav sugerido" data-f="microhabitat"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Método de recolección</span><span class="key">metodoColecta → dwc:samplingProtocol</span></div><input class="nav sugerido" data-f="metodoColecta"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Estación</span><span class="key">estacion</span></div><input class="nav" data-f="estacion"></div>
       </div>
       <p class="nota">Sugerencia automática de región/provincia/comuna desde coordenadas: pendiente de implementar.</p>
     </div>
@@ -501,7 +506,7 @@
       <h2 style="margin-top:14px;font-size:16px;">Qué guarda cada subcarpeta</h2>
       <ul class="lista-carpetas">
         <li><strong>Registros/</strong> Un archivo .json por ejemplar, que se actualiza solo cada vez que guardas. Los registros eliminados se mueven a <strong>_eliminados/</strong> en vez de borrarse.</li>
-        <li><strong>Entradas/</strong> Aquí se dejan los .zip de Libreta de Campo para importarlos (la importación aún no está implementada).</li>
+        <li><strong>Entradas/</strong> Aquí se guardan los .zip de Libreta de Campo que se importan. El botón "Importar zip de Libreta de Campo…" de la pestaña Entrada abre esta carpeta.</li>
         <li><strong>Exportaciones/</strong> Aquí irán los .zip para el Generador de Proyectos y el CSV para GBIF (la exportación aún no está implementada).</li>
         <li><strong>Respaldos/</strong> Respaldos completos con fecha, que se generan con el botón "Respaldo completo".</li>
         <li><strong>Publicaciones/</strong> Los PDF de las publicaciones asociadas a los ejemplares, con el nombre Autor_etal_AÑO_Palabras_clave.pdf. Se asocian desde la pestaña Catalogado.</li>
@@ -536,7 +541,7 @@
 
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.8</strong> (borrador de trabajo)</p>
+      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.9</strong> (borrador de trabajo)</p>
       <footer class="acciones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -559,7 +564,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.8";
+var APP_VERSION = "v0.9.9";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -589,7 +594,7 @@ function registroActivo(){ return borrador; }
 function registroPorId(id){ return registros.find(function(r){ return r.id===id; }); }
 function indicePorId(id){ return registros.findIndex(function(r){ return r.id===id; }); }
 function sonIguales(a,b){
-  function limpio(o){ var c=clonar(o); delete c.id; delete c.creadoEn; delete c.catalogador; delete c.modificadoEn; delete c.modificadoPor; return c; }
+  function limpio(o){ var c=clonar(o); delete c.id; delete c.creadoEn; delete c.catalogador; delete c.modificadoEn; delete c.modificadoPor; delete c.origenLibreta; return c; }
   return JSON.stringify(limpio(a)) === JSON.stringify(limpio(b));
 }
 
@@ -1099,8 +1104,14 @@ function construirFicha(r){
     ["Localidad (verbatim)","localidadVerbatim"], ["Localidad","localidad"],
     ["Región","region"], ["Provincia","provincia"], ["Comuna","comuna"],
     ["Fecha de colecta","fechaColecta"], ["Colector","colector"],
-    ["Coordenadas originales","coordenadasOriginales"], ["Latitud","lat"], ["Longitud","lng"], ["Altitud (m)","altitud_m"]
+    ["Coordenadas originales","coordenadasOriginales"], ["Latitud","lat"], ["Longitud","lng"], ["Altitud (m)","altitud_m"],
+    ["Hora de colecta","horaColecta"], ["Hábitat","habitat"], ["Microhábitat","microhabitat"],
+    ["Método de recolección","metodoColecta"], ["Estación","estacion"]
   ], r);
+  if(r.origenLibreta){
+    var o=r.origenLibreta;
+    terreno += fichaCampo("Origen", "Libreta de Campo, sesión «"+(o.sesion||"sin nombre")+"», importado el "+formatearFechaHora(o.importadoEn)+(o.importadoPor?" por "+o.importadoPor:""));
+  }
 
   var recepcion = fichaCampos([
     ["Número de entrada","numeroAccesion"], ["Fecha de recepción","fechaRecepcion"],
@@ -1316,8 +1327,6 @@ function aplicarModoFormulario(){
     var b=document.getElementById(id);
     if(b){ b.disabled = !editando; b.classList.toggle("oculto", !editando); }
   });
-  var btnZip=document.querySelector(".btn-importar-zip");
-  if(btnZip) btnZip.disabled = !editando;
   var campoCatalogador=document.getElementById("campo-catalogador");
   if(campoCatalogador) campoCatalogador.readOnly = true; // se completa solo, nunca a mano
   sincronizarColeccionCatalogado();
@@ -1549,8 +1558,12 @@ function montarPanelRegistros(cont){
     var importarBtn = cont.querySelector(".btn-importar-zip");
     var inputZip = cont.querySelector("#input-zip");
     if(importarBtn && inputZip){
-      importarBtn.onclick = function(){ inputZip.click(); };
-      inputZip.onchange = function(){ alert("Import de zip de Libreta de Campo: pendiente de implementar."); };
+      importarBtn.onclick = function(){ iniciarImportacionZip(inputZip); };
+      inputZip.onchange = function(){
+        var f = inputZip.files && inputZip.files[0];
+        inputZip.value = "";
+        if(f) importarZipLibreta(f, null);
+      };
     }
   }
   var idActivo = activoId;
@@ -1851,7 +1864,7 @@ function sanitizarNombre(s){
   return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^A-Za-z0-9._-]+/g,"_").replace(/^_+|_+$/g,"").slice(0,60);
 }
 function nombreArchivoRegistro(r){
-  var base = sanitizarNombre(construirCatalogoCompleto(r)) || "sin-catalogo";
+  var base = sanitizarNombre(construirCatalogoCompleto(r)) || (r.numeroCampo ? "campo_"+sanitizarNombre(r.numeroCampo) : "") || "sin-catalogo";
   return base+"__"+r.id+".json";
 }
 
@@ -2210,6 +2223,168 @@ async function asociarFotos(){
   if(agregadas) mensajeCarpeta(agregadas+" foto(s) agregadas en "+rutaTax+"/. Recuerda guardar el registro.");
 }
 document.getElementById("btn-add-foto-archivo").addEventListener("click", asociarFotos);
+
+// ---------- Importar zip de Libreta de Campo ----------
+// Lee el .zip sin librerías: directorio central + descompresión nativa (DecompressionStream, Chrome y Edge).
+async function leerZip(buf){
+  var dv=new DataView(buf), u8=new Uint8Array(buf);
+  var i=buf.byteLength-22, min=Math.max(0,buf.byteLength-65557);
+  while(i>=min && dv.getUint32(i,true)!==0x06054b50) i--;
+  if(i<min) throw new Error("El archivo no es un .zip válido.");
+  var n=dv.getUint16(i+10,true), p=dv.getUint32(i+16,true);
+  if(p===0xFFFFFFFF || n===0xFFFF) throw new Error("El .zip es demasiado grande (formato zip64).");
+  var dec=new TextDecoder("utf-8"), ents={};
+  for(var k=0;k<n;k++){
+    if(dv.getUint32(p,true)!==0x02014b50) throw new Error("El .zip está dañado.");
+    var met=dv.getUint16(p+10,true), csz=dv.getUint32(p+20,true), nl=dv.getUint16(p+28,true),
+        el=dv.getUint16(p+30,true), cl=dv.getUint16(p+32,true), lo=dv.getUint32(p+42,true);
+    var nombre=dec.decode(u8.subarray(p+46,p+46+nl));
+    if(nombre.slice(-1)!=="/") ents[nombre]={met:met, csz:csz, lo:lo};
+    p+=46+nl+el+cl;
+  }
+  return {dv:dv, u8:u8, ents:ents};
+}
+async function datosZip(z, nombre){
+  var e=z.ents[nombre];
+  if(!e) return null;
+  if(z.dv.getUint32(e.lo,true)!==0x04034b50) throw new Error("El .zip está dañado.");
+  var nl=z.dv.getUint16(e.lo+26,true), el=z.dv.getUint16(e.lo+28,true), ini=e.lo+30+nl+el;
+  var comp=z.u8.subarray(ini,ini+e.csz);
+  if(e.met===0) return comp;
+  if(e.met!==8) throw new Error("El .zip usa una compresión no soportada.");
+  var flujo=new Blob([comp]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return new Uint8Array(await new Response(flujo).arrayBuffer());
+}
+
+var CONSERVACION_LIBRETA = {
+  "seco":"Seco", "etanol70":"Etanol 70 %", "etanol96":"Etanol 96 %", "etanol absoluto":"Etanol 100 % / absoluto",
+  "congelado":"Congelado", "glicerina":"Glicerina"
+};
+function limpiarFilaLibreta(f){
+  var o={}; Object.keys(f).forEach(function(k){ if(f[k]!=="" && f[k]!==null && f[k]!==undefined) o[k]=f[k]; });
+  return o;
+}
+function unicos(a){ return a.filter(function(v,i){ return v && a.indexOf(v)===i; }); }
+
+// Convierte las filas "colectado" de planilla_estandar.json en registros de Libro de Catálogo.
+// Las filas con el mismo número de campo (muestra mixta) se unen en un solo registro.
+function planillaARegistros(filas, meta){
+  var grupos=[], porClave={}, otros={};
+  filas.forEach(function(f){
+    if(f.tipoRegistro!=="colectado"){ var t=f.tipoRegistro||"sin tipo"; otros[t]=(otros[t]||0)+1; return; }
+    var num=String(f.numeroCampo||"").trim();
+    if(num && porClave[num.toLowerCase()]) porClave[num.toLowerCase()].push(f);
+    else { var g=[f]; grupos.push(g); if(num) porClave[num.toLowerCase()]=g; }
+  });
+  var ahora=new Date().toISOString();
+  var registrosNuevos=grupos.map(function(g){
+    var f=g[0], r=registroVacioBase();
+    r.id=nuevoId();
+    ["numeroCampo","localidadVerbatim","localidad","region","provincia","comuna","fechaColecta","colector","lat","lng","altitud_m",
+     "phylum","clase","orden","familia","genero","procedencia","destino","preparacion"].forEach(function(k){ if(f[k]) r[k]=f[k]; });
+    r.taxon=unicos(g.map(function(x){ return x.taxon; })).join("; ");
+    r.horaColecta=f.hora||""; r.habitat=f.habitat_recoleccion||""; r.microhabitat=f.microhabitat_recoleccion||"";
+    r.metodoColecta=f.metodo_captura||""; r.estacion=f.estacion||"";
+    var total=0, hayNum=false;
+    g.forEach(function(x){ var n=parseInt(x.individuos,10); if(!isNaN(n)){ total+=n; hayNum=true; } });
+    if(hayNum) r.individuos=String(total);
+    var cons=String(f.conservacion||"").trim().toLowerCase();
+    if(CONSERVACION_LIBRETA[cons]) r.conservacion=CONSERVACION_LIBRETA[cons];
+    var consSinMapa = (cons && !CONSERVACION_LIBRETA[cons]) ? "Conservación en terreno: "+f.conservacion : "";
+    if(/^etanol|^formald|^glicerina/.test(cons)) r.tipoColeccion="Húmeda";
+    else if(cons==="seco") r.tipoColeccion="Seca";
+    r.observaciones=unicos(g.map(function(x){ return x.observaciones; }).concat([consSinMapa])).join("\n");
+    if(/^(s[ií]|true|1)$/i.test(String(f.tejido_conservado||"").trim()))
+      r.submuestras.push({tipoSubmuestra:"Tejido", fechaExtraccion:"", metodoConservacion:"", ubicacionAlmacenamiento:"", numeroVial:"", destinoUso:""});
+    g.forEach(function(x){
+      if(x.determinador && x.taxon) r.determinaciones.push({nombreCientifico:x.taxon, determinador:x.determinador, fechaDeterminacion:x.determinadorFecha||"", calificador:""});
+    });
+    var vistas={};
+    g.forEach(function(x){
+      var nombres=String(x.imagenes||"").split("|"), coment=String(x.fotoEstado||"").split("|");
+      nombres.forEach(function(n,i){
+        n=n.trim(); if(!n || vistas[n]) return; vistas[n]=1;
+        r.fotos.push({fechaFoto:x.fechaColecta||"", tipoFoto:"Terreno", archivo:n, fotografo:"", notaCalidad:(coment[i]||"").trim()});
+      });
+    });
+    r.creadoEn=ahora; r.modificadoEn=ahora; r.modificadoPor=meta.operador||"";
+    r.origenLibreta={zip:meta.zip, importadoEn:ahora, importadoPor:meta.operador||"", sesion:f.sesion_nombre||"",
+      objetivo:f.sesion_objetivo||"", participantes:f.sesion_participantes||"", zona:f.sesion_zona||"", clima:f.sesion_clima||"",
+      codigoMuestreo:f.codigoMuestreo||"", filas:g.map(limpiarFilaLibreta)};
+    return r;
+  });
+  return {registros:registrosNuevos, otros:otros};
+}
+
+async function iniciarImportacionZip(inputZip){
+  if(carpetaHandle){ try{ await permisoCarpeta(true); }catch(e){} }
+  if(carpetaHandle && typeof window.showOpenFilePicker==="function"){
+    try{
+      var entradas=await dirAnidado("Entradas");
+      var fhs=await window.showOpenFilePicker({id:"libro-zip", startIn:entradas, types:[{description:"Zip de Libreta de Campo", accept:{"application/zip":[".zip"]}}]});
+      var ruta=null; try{ ruta=await entradas.resolve(fhs[0]); }catch(e){}
+      importarZipLibreta(await fhs[0].getFile(), !!(ruta && ruta.length===1));
+    }catch(e){ if(!(e && e.name==="AbortError")) alert("No se pudo abrir el archivo: "+((e&&e.message)||e)); }
+  } else inputZip.click();
+}
+
+async function importarZipLibreta(file, yaEnEntradas){
+  try{
+    var z=await leerZip(await file.arrayBuffer());
+    var bp=await datosZip(z,"planilla_estandar.json");
+    if(!bp){ alert("Este .zip no contiene planilla_estandar.json. Elige un respaldo descargado desde Libreta de Campo."); return; }
+    var filas=JSON.parse(new TextDecoder("utf-8").decode(bp));
+    if(!Array.isArray(filas)) throw new Error("planilla_estandar.json no tiene el formato esperado.");
+    var res=planillaARegistros(filas, {zip:file.name, operador:operadorActual()});
+    var nuevos=[], repetidos=[];
+    res.registros.forEach(function(r){
+      var num=String(r.numeroCampo||"").trim().toLowerCase();
+      var existe=num && registros.some(function(x){ return String(x.numeroCampo||"").trim().toLowerCase()===num; });
+      (existe ? repetidos : nuevos).push(r);
+    });
+    var nFotos=nuevos.reduce(function(a,r){ return a+r.fotos.length; },0);
+    var sesiones=unicos(nuevos.map(function(r){ return r.origenLibreta.sesion; }));
+    var conCarpeta=!!(carpetaHandle && await permisoCarpeta(false));
+    var otros=Object.keys(res.otros).map(function(k){ return res.otros[k]+" "+k+(res.otros[k]>1?"s":""); });
+    var msg="Libreta de Campo"+(sesiones.length?": sesión «"+sesiones.join("», «")+"»":"")+"\n\n"+
+      "Ejemplares a importar: "+nuevos.length+"\n"+
+      (repetidos.length ? "Omitidos por tener ya un registro con el mismo número de campo: "+repetidos.length+"\n" : "")+
+      (otros.length ? "No se importan (Libro de Catálogo registra ejemplares): "+otros.join(", ")+"\n" : "")+
+      "Fotos: "+nFotos+(nFotos ? (conCarpeta ? " (se copiarán a Fotos/ de la Carpeta local)" : " (la Carpeta local no está conectada: solo se registrarán los nombres)") : "")+"\n\n¿Importar?";
+    if(!nuevos.length){ alert(msg.replace("\n\n¿Importar?","\n\nNo hay nada nuevo que importar.")); return; }
+    if(!confirm(msg)) return;
+
+    var copiadas=0, faltan=0;
+    if(conCarpeta){
+      for(var i=0;i<nuevos.length;i++){
+        var r=nuevos[i], base="Fotos/"+carpetaTaxon(r.orden)+"/"+carpetaTaxon(r.familia);
+        for(var j=0;j<r.fotos.length;j++){
+          var ft=r.fotos[j], datos=await datosZip(z,"fotos/"+ft.archivo);
+          if(!datos){ faltan++; continue; }
+          var dir=await dirAnidado(base);
+          var disp=await nombreDisponible(dir, ft.archivo, datos.length);
+          if(!disp.existe) await escribirArchivo(base, disp.nombre, new Blob([datos]));
+          ft.archivo=base+"/"+disp.nombre; copiadas++;
+        }
+      }
+      if(!yaEnEntradas){
+        try{
+          var ent=await dirAnidado("Entradas"), dz=await nombreDisponible(ent, file.name, file.size);
+          if(!dz.existe) await escribirArchivo("Entradas", dz.nombre, file);
+        }catch(e){}
+      }
+    }
+    nuevos.forEach(function(r){ registros.push(r); });
+    persistir();
+    nuevos.forEach(function(r){ espejarRegistro(r); });
+    refrescarPanelesRegistros();
+    alert("Importación lista: "+nuevos.length+" ejemplar(es) agregados"+(copiadas?", "+copiadas+" foto(s) copiadas a Fotos/":"")+
+      (faltan?". No se encontraron "+faltan+" foto(s) dentro del zip":"")+
+      ".\n\nCompleta ahora los datos de ingreso, preparación y catalogado de cada registro.");
+  }catch(e){
+    alert("No se pudo importar el zip: "+((e&&e.message)||e));
+  }
+}
 
 // ---------- arranque ----------
 document.querySelectorAll(".lbl .key").forEach(function(el){ el.title=el.textContent.trim(); });

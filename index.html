@@ -143,7 +143,13 @@
   .gal-principal img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;}
   .gal-principal .msg-foto{color:#e8e3d0;font-size:13.5px;text-align:center;padding:14px;}
   .gal-principal .msg-foto .btn{margin-top:8px;}
-  .gal-pie{font-size:12.5px;color:var(--ink-soft);word-break:break-all;min-height:18px;}
+  .gal-fig{margin:0;}
+  .gal-fig .gal-principal{border-radius:8px 8px 0 0;}
+  .gal-cont{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;pointer-events:none;}
+  .gal-pie{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:7px 10px;font-size:12.5px;color:var(--ink);background:#fffdf8;border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px;margin-bottom:8px;}
+  .gal-pie .gal-tipo{background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:11.5px;padding:1px 9px;border-radius:999px;}
+  .gal-pie .gal-dato{color:var(--ink-soft);}
+  .gal-pie .gal-nota{flex-basis:100%;color:var(--ink-soft);font-style:italic;}
   .gal-minis{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
   .gal-mini{flex:0 0 auto;width:84px;height:64px;padding:0;border:2px solid transparent;border-radius:6px;overflow:hidden;background:#fff;cursor:pointer;opacity:.75;}
   .gal-mini img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -228,7 +234,7 @@
     <label for="input-operador-actual">Operador actual</label>
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off">
   </div>
-  <span class="ver" id="ver-chip">v0.9.15 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.16 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -554,7 +560,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.15</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.16</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -653,7 +659,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.15";
+var APP_VERSION = "v0.9.16";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1297,8 +1303,8 @@ function bloqueMediaHtml(r, general, terreno){
   var fotos=(r.fotos||[]).filter(function(f){ return /^Fotos\//.test(f.archivo||""); });
   var gal;
   if(fotos.length){
-    var datos=fotos.map(function(f){ return {ruta:f.archivo, tipo:f.tipoFoto||""}; });
-    gal='<div class="ficha-galeria" data-fotos="'+escapeHtml(JSON.stringify(datos))+'"><div class="gal-principal"><div class="msg-foto">Cargando fotos…</div></div><div class="gal-pie"></div><div class="gal-minis"></div></div>';
+    var datos=fotos.map(function(f){ return {ruta:f.archivo, tipo:f.tipoFoto||"", fecha:f.fechaFoto||"", autor:f.fotografo||"", nota:f.notaCalidad||""}; });
+    gal='<div class="ficha-galeria" data-fotos="'+escapeHtml(JSON.stringify(datos))+'"><figure class="gal-fig"><div class="gal-principal"><div class="msg-foto">Cargando fotos…</div></div><figcaption class="gal-pie"></figcaption></figure><div class="gal-minis"></div></div>';
   } else gal='<div class="media-vacio">Este ejemplar no tiene fotos asociadas desde la Carpeta local. Se agregan en Preparación, bloque Fotos.</div>';
   var vacio='<p class="ficha-vacio">Sin datos cargados.</p>';
   return '<div class="ficha-media">'
@@ -1329,7 +1335,7 @@ async function cargarFotosFicha(dialogEl){
   await Promise.all(lista.map(async function(it,i){
     try{
       var file=await archivoDeRuta(it.ruta), url=URL.createObjectURL(file); urlsFicha.push(url);
-      if(await probarImagen(url)) items[i]={url:url, ruta:it.ruta, tipo:it.tipo}; else noMostrables++;
+      if(await probarImagen(url)) items[i]={url:url, ruta:it.ruta, tipo:it.tipo, fecha:it.fecha, autor:it.autor, nota:it.nota}; else noMostrables++;
     }catch(e){ faltan++; }
   }));
   items=items.filter(Boolean);
@@ -1344,7 +1350,15 @@ async function cargarFotosFicha(dialogEl){
     var img=document.createElement("img"); img.src=it.url; img.alt=it.ruta; img.title="Clic para abrir en una pestaña nueva";
     img.onclick=function(){ window.open(it.url,"_blank"); };
     princ.appendChild(img);
-    pie.textContent=(it.tipo?it.tipo+": ":"")+it.ruta.split("/").pop()+"  ("+(k+1)+" de "+items.length+")"+(faltan||noMostrables?"  · hay "+(faltan+noMostrables)+" foto(s) que no se pueden mostrar":"");
+    if(items.length>1){ var cont=document.createElement("span"); cont.className="gal-cont"; cont.textContent=(k+1)+" / "+items.length; princ.appendChild(cont); }
+    img.title="Clic para abrir en una pestaña nueva · "+it.ruta.split("/").pop();
+    pie.innerHTML="";
+    function dato(clase, txt){ if(!txt) return; var e=document.createElement("span"); e.className=clase; e.textContent=txt; pie.appendChild(e); }
+    dato("gal-tipo", it.tipo || "Foto");
+    dato("gal-dato", it.fecha ? "📅 "+it.fecha : "");
+    dato("gal-dato", it.autor ? "📷 "+it.autor : "");
+    dato("gal-nota", it.nota);
+    if(faltan||noMostrables) dato("gal-dato", "Hay "+(faltan+noMostrables)+" foto(s) que no se pueden mostrar");
     Array.prototype.forEach.call(minis.children,function(b,j){ b.classList.toggle("sel", j===k); });
   }
   items.forEach(function(it,k){

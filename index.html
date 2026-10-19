@@ -62,6 +62,16 @@
   .inicio-admin .btn:hover:not(:disabled){background:rgba(255,255,255,.14);}
   .inicio-admin .btn:disabled{opacity:.4;cursor:not-allowed;}
   .inicio-admin-txt{font-size:13px;color:#cfd8c8;}
+  .inicio-clave{width:100%;margin-top:clamp(8px,2vh,14px);text-align:left;}
+  .inicio-clave label{font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#cfd8c8;}
+  .inicio-clave input{width:100%;margin-top:4px;padding:8px 12px;font-size:16px;border-radius:9px;border:2px solid #9aa89c;background:#fffdf8;color:#26332b;}
+  .inicio-clave .inicio-aviso{color:#f0d9a8;}
+  .sub-admin{margin:18px 0 6px;font-size:15px;color:var(--accent);}
+  .lista-admins{list-style:none;margin:8px 0 0;padding:0;}
+  .lista-admins li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;margin-bottom:5px;}
+  .lista-admins li.vacio{display:block;color:#6b6b6b;font-size:13px;background:transparent;border-style:dashed;}
+  .fila-admin{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+  .fila-admin .campo{flex:1 1 260px;margin:0;}
   .inicio-pie{width:100%;display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center;justify-content:center;padding:clamp(8px,2vh,18px) 16px clamp(10px,2.4vh,22px);}
   .inicio-logo-claro{background:#fff;border-radius:9px;padding:6px 12px;}
   .inicio-logo-claro img{display:block;height:clamp(34px,7.5vh,60px);width:auto;max-width:100%;}
@@ -295,7 +305,7 @@
   <div class="inicio-caja">
     <img class="inicio-icono" src="data:image/png;base64,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" alt="" width="104" height="104">
     <h1 id="inicio-titulo">Libro de Catálogo</h1>
-    <p class="inicio-sub">Manejo de colecciones<br>Área Zoología de Invertebrados<br>Museo Nacional de Historia Natural de Chile</p>
+    <p class="inicio-sub">Aplicación para manejo de colecciones</p>
     <div class="inicio-nombre">
       <label for="inicio-nombre">Tu nombre y apellido</label>
       <input type="text" id="inicio-nombre" list="inicio-sugerencias" placeholder="Nombre y apellido" autocomplete="off">
@@ -306,6 +316,11 @@
     <div class="inicio-admin">
       <button type="button" id="btn-modo-admin" class="btn small" disabled>Administrador</button>
       <span class="inicio-admin-txt">Para consultas, ingresos y manejo de datos</span>
+    </div>
+    <div class="inicio-clave oculto" id="inicio-clave-wrap">
+      <label for="inicio-clave">Clave de seguridad</label>
+      <input type="password" id="inicio-clave" autocomplete="off" spellcheck="false" placeholder="Clave de seguridad">
+      <p class="inicio-aviso" id="inicio-clave-aviso"></p>
     </div>
   </div>
   <div class="inicio-pie">
@@ -324,7 +339,7 @@
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off" readonly>
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
-  <span class="ver" id="ver-chip">v0.9.19 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.20 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -679,7 +694,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.19</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.20</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -708,6 +723,16 @@
         <button class="btn secundario" id="btn-exportar-zip">Descargar zip (pendiente)</button>
       </div>
       <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
+
+      <h3 class="sub-admin">Administradores autorizados <button type="button" class="ayuda-btn" data-ayuda="ayuda-admins" aria-label="Ayuda" title="Ayuda">?</button></h3>
+      <div class="ayuda-panel oculto" id="ayuda-admins">Solo los nombres registrados aquí pueden ingresar como Administrador, y deben escribirse exactamente igual (mayúsculas, tildes y guiones). Estos nombres no se ofrecen como sugerencias en la pantalla de inicio. La lista se guarda en este navegador y en Registros/_administradores.json de la Carpeta local, de modo que otro equipo con la misma carpeta la recupera. Si el nombre no figura, o la lista está vacía, se puede ingresar con la clave de seguridad (primer ingreso o pérdida de acceso); en el primer ingreso el nombre queda registrado.</div>
+      <div class="fila-admin">
+        <div class="campo opc"><div class="lbl"><span class="name">Nombre y apellido</span></div>
+          <input type="text" id="admin-nuevo" autocomplete="off" spellcheck="false" placeholder="Tal como deberá escribirse al ingresar"></div>
+        <button type="button" class="btn small" id="btn-admin-agregar">Agregar</button>
+      </div>
+      <p class="nota" id="admin-mensaje"></p>
+      <ul class="lista-admins" id="admin-lista"></ul>
     </div>
 
     <div class="bloque">
@@ -787,7 +812,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.19";
+var APP_VERSION = "v0.9.20";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -3409,7 +3434,8 @@ function sugerenciasOperador(){
   var v={};
   leerJson(CLAVE_OPERADORES).forEach(function(n){ if(n) v[n]=1; });
   registros.forEach(function(r){ [r.modificadoPor,r.catalogador].forEach(function(n){ n=nombreLimpio(n); if(n) v[n]=1; }); });
-  return Object.keys(v).sort(function(a,b){ return a.localeCompare(b,"es"); });
+  var ocultos={}; listaAdmins().forEach(function(a){ ocultos[claveNombre(a)]=1; });
+  return Object.keys(v).filter(function(n){ return !ocultos[claveNombre(n)]; }).sort(function(a,b){ return a.localeCompare(b,"es"); });
 }
 function pintarSugerenciasOperador(){
   document.getElementById("inicio-sugerencias").innerHTML=sugerenciasOperador().map(function(n){ return '<option value="'+escapeHtml(n)+'">'; }).join("");
@@ -3437,21 +3463,132 @@ function entrarConsulta(){
   registrarActividad("ingreso","v"+APP_VERSION.replace(/^v/,""));
   activarTab("consultas");
 }
-function entrarAdmin(){
+// ---- Administradores autorizados y clave de seguridad
+var CLAVE_ADMINS="libroCatalogo_admins", ARCHIVO_ADMINS="_administradores.json";
+var HASH_CLAVE_MAESTRA="b481a8dc12f8a431f9011ae40e49fd60adf30d43fff31a1dc5eb216031faa192";
+var intentosClave=0, bloqueoClaveHasta=0;
+function sha256(str){
+  var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2], h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var m=unescape(encodeURIComponent(str)), l=m.length, w=[], i, j;
+  for(i=0;i<l;i++) w[i>>2]|=m.charCodeAt(i)<<(24-(i%4)*8);
+  w[l>>2]|=0x80<<(24-(l%4)*8);
+  var n=(((l+8)>>6)+1)*16; for(i=0;i<n;i++) if(w[i]===undefined) w[i]=0;
+  w[n-1]=l*8; w[n-2]=Math.floor(l*8/4294967296);
+  function rr(x,c){ return (x>>>c)|(x<<(32-c)); }
+  for(var o=0;o<n;o+=16){
+    var a=h.slice(), x=[];
+    for(j=0;j<64;j++){
+      if(j<16) x[j]=w[o+j]|0;
+      else { var s0=rr(x[j-15],7)^rr(x[j-15],18)^(x[j-15]>>>3), s1=rr(x[j-2],17)^rr(x[j-2],19)^(x[j-2]>>>10); x[j]=(x[j-16]+s0+x[j-7]+s1)|0; }
+      var S1=rr(a[4],6)^rr(a[4],11)^rr(a[4],25), ch=(a[4]&a[5])^(~a[4]&a[6]), t1=(a[7]+S1+ch+K[j]+x[j])|0;
+      var S0=rr(a[0],2)^rr(a[0],13)^rr(a[0],22), mj=(a[0]&a[1])^(a[0]&a[2])^(a[1]&a[2]), t2=(S0+mj)|0;
+      a=[(t1+t2)|0,a[0],a[1],a[2],(a[3]+t1)|0,a[4],a[5],a[6]];
+    }
+    for(j=0;j<8;j++) h[j]=(h[j]+a[j])|0;
+  }
+  return h.map(function(v){ return ("00000000"+(v>>>0).toString(16)).slice(-8); }).join("");
+}
+function hashClave(k){ return sha256("LibroCatalogo|"+String(k||"").toUpperCase().replace(/[^A-Z0-9]/g,"")); }
+function claveNombre(n){ return nombreLimpio(n).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(); }
+function listaAdmins(){ return leerJson(CLAVE_ADMINS).map(nombreLimpio).filter(Boolean); }
+function guardarListaAdmins(l){
+  var u=[]; l.forEach(function(n){ n=nombreLimpio(n); if(n && u.indexOf(n)<0) u.push(n); });
+  u.sort(function(a,b){ return a.localeCompare(b,"es"); });
+  try{ localStorage.setItem(CLAVE_ADMINS, JSON.stringify(u)); }catch(e){}
+}
+async function leerAdminsCarpeta(){
+  if(!carpetaHandle || !(await permisoCarpeta(false))) return null;
+  try{
+    var d=await dirAnidado("Registros"), t=await (await (await d.getFileHandle(ARCHIVO_ADMINS)).getFile()).text(), o=JSON.parse(t);
+    return (o.administradores||[]).map(nombreLimpio).filter(Boolean);
+  }catch(e){ return null; }
+}
+async function guardarAdminsCarpeta(){
+  if(modoAcceso!=="admin" || !carpetaHandle || !(await permisoCarpeta(false))) return false;
+  try{
+    await escribirArchivo("Registros", ARCHIVO_ADMINS, JSON.stringify({administradores:listaAdmins(), actualizado:new Date().toISOString(), por:nombreSesion},null,2));
+    return true;
+  }catch(e){ return false; }
+}
+function mostrarClaveInicio(texto){
+  document.getElementById("inicio-clave-wrap").classList.remove("oculto");
+  document.getElementById("inicio-clave-aviso").textContent=texto||"";
+}
+function ocultarClaveInicio(){
+  document.getElementById("inicio-clave-wrap").classList.add("oculto");
+  document.getElementById("inicio-clave").value="";
+  document.getElementById("inicio-clave-aviso").textContent="";
+}
+async function entrarAdmin(){
   var n=nombreLimpio(document.getElementById("inicio-nombre").value);
   if(!nombreOperadorValido(n)) return;
-  guardarNombreOperador(n); nombreSesion=n;
+  // la lista de la Carpeta local, si se puede leer, manda sobre la del navegador
+  var delArchivo=await leerAdminsCarpeta();
+  if(!delArchivo && listaAdmins().indexOf(n)<0 && carpetaHandle && await permisoCarpeta(true)) delArchivo=await leerAdminsCarpeta();
+  if(delArchivo) guardarListaAdmins(delArchivo);
+  var admins=listaAdmins();
+  if(admins.indexOf(n)>=0){ iniciarAdmin(n, "nombre autorizado"); return; }
+  var wrap=document.getElementById("inicio-clave-wrap"), inp=document.getElementById("inicio-clave");
+  if(wrap.classList.contains("oculto")){
+    mostrarClaveInicio(admins.length ? "Ese nombre no figura entre los administradores autorizados. Si es tu primer ingreso o perdiste el acceso, escribe la clave de seguridad y pulsa Administrador otra vez." : "Aún no hay administradores registrados en este equipo. Escribe la clave de seguridad y pulsa Administrador otra vez.");
+    inp.focus(); return;
+  }
+  if(Date.now()<bloqueoClaveHasta){ mostrarClaveInicio("Demasiados intentos. Espera unos segundos e inténtalo de nuevo."); return; }
+  if(!inp.value.trim()){ mostrarClaveInicio("Escribe la clave de seguridad."); inp.focus(); return; }
+  if(hashClave(inp.value)!==HASH_CLAVE_MAESTRA){
+    intentosClave++;
+    if(intentosClave>=5){ bloqueoClaveHasta=Date.now()+30000; intentosClave=0; }
+    registrarActividad("clave_incorrecta","intento de ingreso como Administrador", n);
+    inp.value=""; mostrarClaveInicio("Clave incorrecta."); inp.focus(); return;
+  }
+  intentosClave=0;
+  var primera=!admins.length;
+  if(primera) guardarListaAdmins([n]);
+  iniciarAdmin(n, primera ? "ingreso con clave de seguridad (primer administrador registrado)" : "ingreso con clave de seguridad");
+}
+function iniciarAdmin(n, detalle){
+  nombreSesion=n;                       // los administradores no se guardan como sugerencias
   modoAcceso="admin";
   document.body.classList.add("modo-admin");
   inputOperador.value=n;
+  ocultarClaveInicio();
   cerrarInicio();
-  registrarActividad("ingreso","v"+APP_VERSION.replace(/^v/,""));
+  registrarActividad("ingreso", detalle+" · v"+APP_VERSION.replace(/^v/,""));
+  pintarAdmins();
+  guardarAdminsCarpeta();
   activarTab("entrada");
 }
+function pintarAdmins(){
+  var ul=document.getElementById("admin-lista"); if(!ul) return;
+  var l=listaAdmins();
+  ul.innerHTML = l.length ? l.map(function(n,i){
+    return '<li><span>'+escapeHtml(n)+(n===nombreSesion?' <em>(sesión actual)</em>':'')+'</span><button type="button" class="btn small secundario" data-quitar-admin="'+i+'">Quitar</button></li>';
+  }).join("") : '<li class="vacio">Todavía no hay administradores registrados.</li>';
+}
+async function agregarAdmin(){
+  if(modoAcceso!=="admin") return;
+  var inp=document.getElementById("admin-nuevo"), msg=document.getElementById("admin-mensaje"), n=nombreLimpio(inp.value), l=listaAdmins();
+  if(!nombreOperadorValido(n)){ msg.textContent="Escribe nombre y apellido."; return; }
+  if(l.indexOf(n)>=0){ msg.textContent="Ese nombre ya está registrado."; return; }
+  l.push(n); guardarListaAdmins(l); inp.value=""; pintarAdmins();
+  registrarActividad("admin_agregado", n);
+  var ok=await guardarAdminsCarpeta();
+  msg.textContent="Registrado: «"+n+"». Para ingresar deberá escribirse exactamente así."+(ok?"":" Se guardó en este navegador; no se pudo copiar a la Carpeta local.");
+}
+async function quitarAdmin(i){
+  if(modoAcceso!=="admin") return;
+  var l=listaAdmins(), n=l[i], msg=document.getElementById("admin-mensaje"); if(n===undefined) return;
+  var extra = n===nombreSesion ? "\n\nEs el nombre con el que estás ingresando ahora; la próxima vez necesitarás la clave de seguridad." : "";
+  if(!confirm("¿Quitar a «"+n+"» de los administradores autorizados?"+extra)) return;
+  l.splice(i,1); guardarListaAdmins(l); pintarAdmins();
+  registrarActividad("admin_quitado", n);
+  var ok=await guardarAdminsCarpeta();
+  msg.textContent="Quitado: «"+n+"»."+(ok?"":" Se guardó en este navegador; no se pudo copiar a la Carpeta local.");
+}
 // ---- registro de actividad: quién, cuándo y qué (se guarda en Registros/_actividad.log; mientras no haya Carpeta local queda pendiente en el navegador)
-function registrarActividad(evento, detalle){
-  if(!modoAcceso) return;
-  var linea=[new Date().toISOString(), modoAcceso==="admin"?"administrador":"consulta", nombreSesion, evento, String(detalle==null?"":detalle).replace(/[\t\r\n]+/g," ").slice(0,400)].join("\t");
+function registrarActividad(evento, detalle, nombreSinSesion){
+  if(!modoAcceso && !nombreSinSesion) return;
+  var linea=[new Date().toISOString(), modoAcceso ? (modoAcceso==="admin"?"administrador":"consulta") : "sin sesión", modoAcceso ? nombreSesion : nombreSinSesion, evento, String(detalle==null?"":detalle).replace(/[\t\r\n]+/g," ").slice(0,400)].join("\t");
   var l=leerJson(CLAVE_ACTIVIDAD); l.push(linea);
   try{ localStorage.setItem(CLAVE_ACTIVIDAD, JSON.stringify(l.slice(-2000))); }catch(e){}
   volcarActividad();
@@ -3500,7 +3637,11 @@ document.getElementById("btn-actividad-ver").addEventListener("click", pintarAct
 document.getElementById("btn-actividad-csv").addEventListener("click", descargarActividad);
 (function(){
   var inp=document.getElementById("inicio-nombre");
-  inp.addEventListener("input", revisarNombreInicio);
+  inp.addEventListener("input", function(){ ocultarClaveInicio(); revisarNombreInicio(); });
+  document.getElementById("inicio-clave").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); entrarAdmin(); } });
+  document.getElementById("btn-admin-agregar").addEventListener("click", agregarAdmin);
+  document.getElementById("admin-nuevo").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); agregarAdmin(); } });
+  document.getElementById("admin-lista").addEventListener("click", function(e){ var b=e.target.closest("[data-quitar-admin]"); if(b) quitarAdmin(parseInt(b.getAttribute("data-quitar-admin"),10)); });
   inp.addEventListener("focus", pintarSugerenciasOperador);
   inp.addEventListener("keydown", function(e){ if(e.key==="Enter" && nombreOperadorValido(inp.value)){ e.preventDefault(); entrarConsulta(); } });
   document.getElementById("btn-cerrar-sesion").addEventListener("click", function(){

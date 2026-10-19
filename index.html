@@ -115,7 +115,7 @@
   .cons-fila{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:9px;background:#fffdf8;padding:8px 12px;margin:6px 0;}
   .cons-fila:hover{border-color:var(--accent-2);background:#fff;}
   .cons-fila .info{min-width:0;}
-  .cons-fila .cons-nom{font-style:italic;font-weight:700;color:var(--accent);}
+  .cons-fila .cons-nom{font-weight:700;color:var(--accent);}
   .cons-fila .acciones-fila{display:flex;gap:6px;flex-shrink:0;}
   nav#tabs button:hover{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-2);}
   nav#tabs button.active{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:800;box-shadow:0 -3px 8px rgba(38,51,43,.3);padding-top:13px;margin-bottom:-3px;}
@@ -182,6 +182,10 @@
   .chip-activo{font-size:14.5px;flex:1;min-width:160px;color:var(--paper);}
   .chip-titulo{display:block;font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;color:rgba(242,239,228,.85);margin-bottom:2px;}
   .chip-activo strong{font-family:var(--mono);color:#fff;}
+  .nombre-destacado{display:block;font-family:var(--serif);font-size:21px;font-weight:700;line-height:1.2;color:#fff;margin:1px 0 4px;}
+  .nombre-destacado.sin{font-size:15px;font-weight:400;font-style:italic;color:rgba(242,239,228,.7);}
+  .nc-prev{margin-top:8px;font-size:13.5px;color:var(--ink-soft);}
+  .nc-prev .nc-prev-n{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);}
   .desplegable-registros{position:absolute;top:100%;left:0;right:0;z-index:30;margin-top:4px;background:#fffdf8;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 14px 34px rgba(38,51,43,.22), var(--sombra);padding:9px;}
   .input-filtro-registros{margin-bottom:8px;}
   .lista-scroll{max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;background:#fffdf8;}
@@ -260,7 +264,7 @@
   .ficha-campo{align-items:baseline;}
   .ficha-linea-institucion{text-align:center;font-family:var(--serif);font-size:15.5px;font-weight:700;letter-spacing:.3px;color:var(--ink);margin:2px 0;}
   .ficha-linea-clasificacion{text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.2px;color:var(--ink-soft);margin:6px 0 2px;}
-  .ficha-subtitulo{font-family:var(--serif);font-weight:700;font-style:italic;font-size:16px;color:var(--accent);text-align:center;margin:10px 0 12px;padding-top:10px;border-top:1px solid var(--line);}
+  .ficha-subtitulo{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--accent);text-align:center;margin:10px 0 12px;padding-top:10px;border-top:1px solid var(--line);}
   .ficha-tabla{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0;}
   .ficha-tabla th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--ink);border-bottom:2px solid var(--line);padding:5px 8px;}
   .ficha-tabla td{padding:5px 8px;border-bottom:1px solid var(--line);}
@@ -354,7 +358,7 @@
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off" readonly>
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
-  <span class="ver" id="ver-chip">v0.9.21 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.22 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -709,7 +713,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.21</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.22</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -722,24 +726,37 @@
       <h2>Gestión de Datos</h2>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
-          <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option></select>
+          <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option><option value="sesionEdicion">Sesión de edición</option></select>
         </div>
         <div class="campo opc"><div class="lbl"><span class="name">Filtrar por colección</span></div>
           <select class="nav" id="sel-filtro-coleccion"><option value="">Todas</option></select>
         </div>
-        <div class="campo opc"><div class="lbl"><span class="name">Filtrar por sesión</span></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Filtrar por sesión de ingreso</span></div>
           <select class="nav" id="sel-filtro-sesion"><option value="">Todas</option></select>
+        </div>
+        <div class="campo opc"><div class="lbl"><span class="name">Filtrar por sesión de edición</span></div>
+          <select class="nav" id="sel-filtro-sesion-edicion"><option value="">Todas</option></select>
         </div>
       </div>
 
       <div id="resumen-datos"></div>
 
       <div class="barra-botones">
-        <button class="btn secundario" id="btn-exportar-zip">Descargar zip (pendiente)</button>
+        <button class="btn tenue small" id="btn-marcar-datos">Marcar los mostrados</button>
+        <button class="btn tenue small" id="btn-desmarcar-datos">Quitar marcas</button>
       </div>
+      <div class="barra-botones">
+        <button class="btn secundario" id="btn-exportar-zip" title="Respaldo y traspaso rápido: un archivo por registro, que esta misma app puede volver a importar">Descargar zip (respaldo)</button>
+        <button class="btn secundario" id="btn-exportar-xlsx" title="Planilla de Excel para consulta y uso rápido">Descargar Excel</button>
+        <button class="btn secundario" id="btn-exportar-csv" title="Archivo de texto separado por comas, para grandes cantidades de registros">Descargar CSV</button>
+        <button class="btn tenue" id="btn-importar-zip-datos" title="Trae los registros de un zip de respaldo hecho con esta app">Importar zip de respaldo…</button>
+      </div>
+      <p class="nota" id="datos-msg">Se descargan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados.</p>
       <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
+    </div>
 
-      <h3 class="sub-admin">Administradores autorizados <button type="button" class="ayuda-btn" data-ayuda="ayuda-admins" aria-label="Ayuda" title="Ayuda">?</button></h3>
+    <div class="bloque">
+      <h2>Administradores autorizados <button type="button" class="ayuda-btn" data-ayuda="ayuda-admins" aria-label="Ayuda" title="Ayuda">?</button></h2>
       <div class="ayuda-panel oculto" id="ayuda-admins">Solo los nombres registrados aquí pueden ingresar como Administrador, y deben escribirse exactamente igual (mayúsculas, tildes y guiones). Estos nombres no se ofrecen como sugerencias en la pantalla de inicio. La lista se guarda en este navegador y en Registros/_administradores.json de la Carpeta local, de modo que otro equipo con la misma carpeta la recupera. Si el nombre no figura, o la lista está vacía, se puede ingresar con la clave de seguridad (primer ingreso o pérdida de acceso); en el primer ingreso el nombre queda registrado.</div>
       <div class="fila-admin">
         <div class="campo opc"><div class="lbl"><span class="name">Nombre y apellido</span></div>
@@ -784,11 +801,11 @@
         </div>
         <div class="accion-card" id="ac-importar">
           <span class="rot">Traer registros</span>
-          <button class="btn secundario small" id="btn-carpeta-importar-json">Importar archivo .json…</button>
+          <button class="btn secundario small" id="btn-carpeta-importar-json">Importar archivo .json o .zip…</button>
           <span class="cap">Carga registros desde un respaldo o un archivo de otro equipo.</span>
         </div>
       </div>
-      <input type="file" id="input-importar-json" accept=".json,application/json" class="oculto">
+      <input type="file" id="input-importar-json" accept=".json,.zip,application/json,application/zip" class="oculto">
       <p class="nota" id="carpeta-mensaje"></p>
 
       <details class="det-carpetas">
@@ -828,7 +845,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.21";
+var APP_VERSION = "v0.9.22";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -847,6 +864,40 @@ var origenDuplicado = false;   // true = el borrador actual (activoId null) part
 var origenDuplicadoId = null;  // id del registro del que se duplicó, para comparar y advertir si se guarda sin cambios
 
 function nuevoId(){ return "r" + Date.now() + Math.random().toString(36).slice(2,8); }
+// ---------- nombres científicos con formato del Código de nomenclatura ----------
+// Género, subgénero y epíteto específico (e infraespecífico) en cursiva; paréntesis, autores, años, «sp.», «cf.» y rangos (subsp., var.) en texto normal.
+var NC_CALIFICADOR=/^(cf|aff|sp|spp|nov|ined|indet)\.?$|^\?$/i;
+var NC_RANGO=/^(subsp|ssp|var|subvar|f|forma|morph|nothosubsp)\.?$/i;
+var NC_GENERO=/^[A-ZÀ-Þ][a-zà-ÿ'’\-]+$/;
+var NC_EPITETO=/^[a-zà-ÿ][a-zà-ÿ\-]*$/;
+var NC_PARTICULA={de:1,del:1,la:1,van:1,von:1,der:1,den:1,di:1,da:1,dos:1,du:1,le:1,et:1,"in":1,ex:1,y:1,e:1};
+var NC_SUPERIOR=/(idae|inae|ini|ales|aceae|phyta|mycota)$/i;
+var NC_SUPERIORES_CONOCIDOS=/^(Animalia|Arthropoda|Arachnida|Opiliones|Laniatores|Eupnoi|Dyspnoi|Cyphophthalmi|Crustacea|Malacostraca|Amphipoda|Isopoda|Decapoda|Cumacea|Stomatopoda|Copepoda|Cirripedia|Thecostraca|Hexanauplia|Ostracoda|Insecta|Pycnogonida|Mollusca|Gastropoda|Bivalvia|Cephalopoda|Polyplacophora|Annelida|Polychaeta|Clitellata|Echinodermata|Asteroidea|Ophiuroidea|Echinoidea|Holothuroidea|Crinoidea|Cnidaria|Anthozoa|Hydrozoa|Scyphozoa|Porifera|Bryozoa|Nematoda|Nemertea|Platyhelminthes|Acanthocephala|Chordata|Ascidiacea|Brachiopoda|Chaetognatha|Ctenophora|Sipuncula|Tardigrada|Rotifera|Protozoa|Chromista)$/;
+function nombreCientificoHtml(txt){
+  txt=String(txt==null?"":txt).trim();
+  if(!txt) return "";
+  var toks=txt.split(/\s+/), fase="pre", out=[];
+  function it(t){ return "<i>"+escapeHtml(t)+"</i>"; }
+  for(var i=0;i<toks.length;i++){
+    var t=toks[i], h;
+    if(fase==="aut"){ out.push(escapeHtml(t)); continue; }
+    if(fase==="pre"){
+      if(NC_CALIFICADOR.test(t)) h=escapeHtml(t);
+      else if(NC_GENERO.test(t) && !NC_SUPERIOR.test(t) && !NC_SUPERIORES_CONOCIDOS.test(t)){ h=it(t); fase="gen"; }
+      else { h=escapeHtml(t); fase="aut"; }
+      out.push(h); continue;
+    }
+    var m=/^\(([A-ZÀ-Þ][a-zà-ÿ'’\-]+)\)$/.exec(t);
+    if(fase==="gen" && m && i+1<toks.length && NC_EPITETO.test(toks[i+1]) && !NC_PARTICULA[toks[i+1]]){ out.push("(<i>"+escapeHtml(m[1])+"</i>)"); fase="epi"; continue; }
+    if(NC_CALIFICADOR.test(t) || (fase==="epi" && NC_RANGO.test(t))){ out.push(escapeHtml(t)); if(fase==="gen" && /^(sp|spp)\.?$/i.test(t)) fase="epi"; continue; }
+    if(NC_EPITETO.test(t) && !NC_PARTICULA[t]){ out.push(it(t)); fase="epi"; continue; }
+    out.push(escapeHtml(t)); fase="aut";
+  }
+  return out.join(" ").replace(/<\/i> <i>/g," ");
+}
+function htmlATexto(h){
+  return String(h==null?"":h).replace(/<[^>]+>/g,"").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,"&");
+}
 function escapeHtml(s){
   return String(s==null?"":s).replace(/[&<>"']/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
@@ -1325,12 +1376,13 @@ function fichaTablaLista(tipo, datos){
   if(!datos || !datos.length) return "";
   var cfg = listasCfg[tipo];
   var ths = cfg.campos.map(function(c){ return '<th>'+escapeHtml(c.label)+'</th>'; }).join("");
-  if(tipo==="determinaciones") ths += '<th>GBIF</th>';
+  var hayWorms = tipo==="determinaciones" && datos.some(function(d){ return d.worms; });
+  if(tipo==="determinaciones") ths += '<th>GBIF</th>'+(hayWorms?'<th>WoRMS</th>':'');
   if(cfg.destacarUltimo) ths += '<th></th>';
   var filas = datos.map(function(d,i){
     var esUltimo = cfg.destacarUltimo && i===datos.length-1;
-    var tds = cfg.campos.map(function(c){ return '<td>'+escapeHtml(d[c.key]||"")+'</td>'; }).join("");
-    if(tipo==="determinaciones") tds += '<td>'+gbifCeldaHtml(d.gbif)+'</td>';
+    var tds = cfg.campos.map(function(c){ return '<td>'+(tipo==="determinaciones" && c.key==="nombreCientifico" ? nombreCientificoHtml(d[c.key]||"") : escapeHtml(d[c.key]||""))+'</td>'; }).join("");
+    if(tipo==="determinaciones"){ tds += '<td>'+gbifCeldaHtml(d.gbif)+'</td>'; if(hayWorms) tds += '<td>'+wormsCeldaHtml(d.worms)+'</td>'; }
     if(cfg.destacarUltimo) tds += '<td>'+(esUltimo?"Vigente":"")+'</td>';
     return '<tr'+(esUltimo?' class="fila-vigente"':'')+'>'+tds+'</tr>';
   }).join("");
@@ -1345,6 +1397,15 @@ function nombreColeccionCompleto(r){
   var opt = document.querySelector('#sel-coleccion option[value="'+r.coleccionAcronimo+'"]');
   if(opt) return opt.textContent;
   return [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
+}
+function lineaColeccionFicha(r){
+  var acr=[r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" "), nombre="";
+  if(r.coleccionAcronimo){
+    var opt=document.querySelector('#sel-coleccion option[value="'+r.coleccionAcronimo+'"]');
+    if(opt) nombre=opt.textContent.replace(/\s*\([^)]*\)\s*$/,"").trim();
+  }
+  if(!nombre && r.coleccionNombre && r.coleccionNombre!==r.coleccionAcronimo) nombre=r.coleccionNombre;
+  return nombre && acr ? nombre+" ("+acr+")" : (nombre||acr);
 }
 function construirCatalogoCompleto(r){
   if(!r.catalogo) return "";
@@ -1367,9 +1428,10 @@ function construirFicha(r){
 
   var general = "";
   if(institucionTexto) general += '<div class="ficha-linea-institucion">'+escapeHtml(institucionTexto)+'</div>';
-  if(coleccionCompleta) general += '<div class="ficha-linea-institucion">'+escapeHtml(coleccionCompleta)+'</div>';
+  var lineaCol=lineaColeccionFicha(r);
+  if(lineaCol) general += '<div class="ficha-linea-institucion">'+escapeHtml(lineaCol)+'</div>';
   if(clasificacionTexto) general += '<div class="ficha-linea-clasificacion">'+escapeHtml(clasificacionTexto)+'</div>';
-  if(nombreVigente) general += '<div class="ficha-subtitulo">'+escapeHtml(nombreVigente)+'</div>';
+  if(nombreVigente) general += '<div class="ficha-subtitulo">'+nombreCientificoHtml(nombreVigente)+'</div>';
   general += fichaCampo("Número de Catálogo", construirCatalogoCompleto(r));
   general += fichaCampos([["Número de campo","numeroCampo"], ["Número de entrada","numeroAccesion"]], r);
   general += fichaCampo("Localidad (verbatim)", r.localidadVerbatim);
@@ -1453,7 +1515,7 @@ function construirFicha(r){
 
   return ''
     + '<div class="ficha-caja">'
-    + '<div class="ficha-header"><div><div class="ficha-header-titulo">'+escapeHtml(construirCatalogoCompleto(r) || resumenLinea1(et))+'</div><div class="ficha-header-sub">'+escapeHtml(resumenLinea2(et))+'</div></div>'
+    + '<div class="ficha-header"><div><div class="ficha-header-titulo">'+escapeHtml(construirCatalogoCompleto(r) || resumenLinea1(et))+'</div><div class="ficha-header-sub">'+resumenLinea2Html(et)+'</div></div>'
     + '<button type="button" class="btn-cerrar-ficha" title="Cerrar" aria-label="Cerrar">✕</button></div>'
     + '<div class="ficha-body">'+body+'</div>'
     + '<div class="ficha-footer"><button class="btn small btn-editar-desde-ficha">Editar este registro</button></div>'
@@ -1666,14 +1728,19 @@ function enlaceGbif(clave){ return clave ? "https://www.gbif.org/species/"+encod
 function gbifResumen(g){
   if(!g) return null;
   var est=GBIF_ESTADOS[g.estado]||(g.estado||"").toLowerCase(), rg=GBIF_RANGOS[g.rango]||(g.rango||"").toLowerCase();
-  var det=[rg,est].filter(Boolean).join(", ");
-  if(g.coincidencia==="NONE") return {clase:"gbif-mal", texto:"Sin coincidencia en GBIF: revisa la ortografía del nombre."};
-  if(g.coincidencia==="HIGHERRANK") return {clase:"gbif-aviso", texto:"GBIF solo reconoce el nivel superior «"+g.nombre+"» ("+det+"). El nombre completo no está en GBIF."};
-  var base=(g.coincidencia==="FUZZY" ? "Coincidencia aproximada con «" : "Coincidencia exacta con «")+g.nombre+"»"+(det?" ("+det+")":"");
-  if(g.sinonimo) return {clase:"gbif-aviso", texto:base+". Es sinónimo"+(g.aceptado?" de «"+g.aceptado+"»":"")+"."};
-  if(g.coincidencia==="FUZZY") return {clase:"gbif-aviso", texto:base+": revisa la ortografía."};
-  if(g.estado && g.estado!=="ACCEPTED") return {clase:"gbif-aviso", texto:base+"."};
-  return {clase:"gbif-ok", texto:base+"."};
+  var det=escapeHtml([rg,est].filter(Boolean).join(", "));
+  function nm(x){ return "«"+nombreCientificoHtml(x)+"»"; }
+  var h, clase;
+  if(g.coincidencia==="NONE"){ clase="gbif-mal"; h="Sin coincidencia en GBIF: revisa la ortografía del nombre."; }
+  else if(g.coincidencia==="HIGHERRANK"){ clase="gbif-aviso"; h="GBIF solo reconoce el nivel superior "+nm(g.nombre)+" ("+det+"). El nombre completo no está en GBIF."; }
+  else {
+    var base=(g.coincidencia==="FUZZY" ? "Coincidencia aproximada con " : "Coincidencia exacta con ")+nm(g.nombre)+(det?" ("+det+")":"");
+    if(g.sinonimo){ clase="gbif-aviso"; h=base+". Es sinónimo"+(g.aceptado?" de "+nm(g.aceptado):"")+"."; }
+    else if(g.coincidencia==="FUZZY"){ clase="gbif-aviso"; h=base+": revisa la ortografía."; }
+    else if(g.estado && g.estado!=="ACCEPTED"){ clase="gbif-aviso"; h=base+"."; }
+    else { clase="gbif-ok"; h=base+"."; }
+  }
+  return {clase:clase, html:h, texto:htmlATexto(h)};
 }
 function gbifCeldaHtml(g){
   var r=gbifResumen(g);
@@ -1682,26 +1749,27 @@ function gbifCeldaHtml(g){
   var url=enlaceGbif(g.sinonimo && g.aceptadoClave ? g.aceptadoClave : g.clave);
   return '<span class="gbif-txt '+r.clase+'" title="'+escapeHtml(r.texto)+'" style="padding:2px 8px;border-radius:5px;font-weight:600;white-space:nowrap">'+escapeHtml(corto)+'</span>'+(url?' <a href="'+escapeHtml(url)+'" target="_blank" rel="noopener">ver ↗</a>':'');
 }
-function usarClasificacionGbif(entrada){
-  var g=entrada.gbif; if(!g || !editando || !borrador) return;
+function usarClasificacionExterna(clasif, fuente){
+  if(!clasif || !editando || !borrador) return;
   var etiquetas={phylum:"Phylum",clase:"Clase",orden:"Orden",familia:"Familia",genero:"Género"};
   var cambios=[], difieren=[];
   Object.keys(etiquetas).forEach(function(k){
-    var v=g.clasif && g.clasif[k]; if(!v) return;
+    var v=clasif[k]; if(!v) return;
     cambios.push(k);
     if(borrador[k] && borrador[k]!==v) difieren.push(etiquetas[k]+": «"+borrador[k]+"» → «"+v+"»");
   });
-  if(!cambios.length){ alert("GBIF no entrega clasificación para este nombre."); return; }
+  if(!cambios.length){ alert(fuente+" no entrega clasificación para este nombre."); return; }
   if(difieren.length && !confirm("Se reemplazarán estos valores de la Clasificación:\n\n"+difieren.join("\n")+"\n\n¿Continuar?")) return;
   cambios.forEach(function(k){
-    borrador[k]=g.clasif[k];
-    var el=document.querySelector('[data-f="'+k+'"]'); if(el) el.value=g.clasif[k];
+    borrador[k]=clasif[k];
+    var el=document.querySelector('[data-f="'+k+'"]'); if(el) el.value=clasif[k];
   });
   pintarAvisoClasif(); refrescarPanelesRegistros();
 }
+function usarClasificacionGbif(entrada){ if(entrada.gbif) usarClasificacionExterna(entrada.gbif.clasif, "GBIF"); }
 // Fila de GBIF dentro de cada determinación del bloque Depósito.
 function crearLineaGbif(entrada, esUltimo){
-  var caja=document.createElement("div"); caja.className="gbif-linea";
+  var caja=document.createElement("div"); caja.className="gbif-linea linea-gbif";
   function pintar(){
     caja.innerHTML="";
     var g=entrada.gbif;
@@ -1728,11 +1796,11 @@ function crearLineaGbif(entrada, esUltimo){
     var vigenteNombre=nombreLimpio(entrada.nombreCientifico);
     var r=gbifResumen(g), t=document.createElement("span");
     if(g.consultado!==vigenteNombre){
-      t.className="gbif-txt gbif-info"; t.textContent="El nombre cambió desde la última comprobación (se consultó «"+g.consultado+"»). Vuelve a comprobarlo.";
+      t.className="gbif-txt gbif-info"; t.innerHTML="El nombre cambió desde la última comprobación (se consultó «"+nombreCientificoHtml(g.consultado)+"»). Vuelve a comprobarlo.";
       caja.appendChild(t);
       return;
     }
-    t.className="gbif-txt "+r.clase; t.textContent=r.texto; caja.appendChild(t);
+    t.className="gbif-txt "+r.clase; t.innerHTML=r.html; caja.appendChild(t);
     var url=enlaceGbif(g.clave);
     if(url){ var a=document.createElement("a"); a.href=url; a.target="_blank"; a.rel="noopener"; a.textContent="Ver en GBIF ↗"; caja.appendChild(a); }
     if(g.sinonimo && g.aceptadoClave){ var a2=document.createElement("a"); a2.href=enlaceGbif(g.aceptadoClave); a2.target="_blank"; a2.rel="noopener"; a2.textContent="Ver nombre aceptado ↗"; caja.appendChild(a2); }
@@ -1758,6 +1826,120 @@ function crearLineaGbif(entrada, esUltimo){
   pintar();
   return caja;
 }
+
+// ---------- comprobación de nombres en WoRMS (World Register of Marine Species, para especies marinas) ----------
+var WORMS_API="https://www.marinespecies.org/rest";
+async function wormsJson(url){
+  var ctl=(typeof AbortController!=="undefined") ? new AbortController() : null, t=null;
+  if(ctl) t=setTimeout(function(){ ctl.abort(); }, 20000);
+  try{
+    var resp=await fetch(url, ctl ? {signal:ctl.signal} : undefined);
+    if(resp.status===204) return null; // WoRMS responde 204 cuando no hay coincidencias
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
+    return await resp.json();
+  } finally { if(t) clearTimeout(t); }
+}
+function clasifWorms(o){ return {phylum:o.phylum||"", clase:o["class"]||"", orden:o.order||"", familia:o.family||"", genero:o.genus||""}; }
+async function comprobarNombreWorms(nombre){
+  var buscado=nombre.replace(/\s+(sp|spp|sp\. nov|cf|aff)\.?\s*$/i,"").trim()||nombre;
+  var j=await wormsJson(WORMS_API+"/AphiaRecordsByMatchNames?marine_only=false&scientificnames%5B%5D="+encodeURIComponent(buscado));
+  var lista=Array.isArray(j) ? (Array.isArray(j[0]) ? j[0] : j) : [];
+  var rec=lista.filter(function(x){ return x && x.AphiaID; })[0];
+  var res={consultado:nombre, fecha:new Date().toISOString(), coincidencia:"NONE", id:"", nombre:"", autoridad:"", rango:"", estado:"", validoId:"", valido:"", validoAutoridad:"", habitat:"", clasif:clasifWorms({})};
+  if(!rec) return res;
+  var hab=[]; if(rec.isMarine==1) hab.push("marino"); if(rec.isBrackish==1) hab.push("salobre"); if(rec.isFreshwater==1) hab.push("agua dulce"); if(rec.isTerrestrial==1) hab.push("terrestre");
+  res.coincidencia=rec.match_type||"exact"; res.id=rec.AphiaID; res.nombre=rec.scientificname||""; res.autoridad=rec.authority||"";
+  res.rango=rec.rank||""; res.estado=rec.status||""; res.habitat=hab.join(", "); res.clasif=clasifWorms(rec);
+  if(rec.status && rec.status!=="accepted" && rec.valid_AphiaID && rec.valid_AphiaID!==rec.AphiaID){
+    res.validoId=rec.valid_AphiaID; res.valido=rec.valid_name||""; res.validoAutoridad=rec.valid_authority||"";
+    try{ var v=await wormsJson(WORMS_API+"/AphiaRecordByAphiaID/"+rec.valid_AphiaID); if(v) res.clasif=clasifWorms(v); }catch(e){}
+  }
+  return res;
+}
+function enlaceWorms(id){ return id ? "https://www.marinespecies.org/aphia.php?p=taxdetails&id="+encodeURIComponent(id) : ""; }
+var WORMS_ESTADOS={accepted:"aceptado",unaccepted:"no aceptado","alternate representation":"representación alternativa",uncertain:"incierto",temporary:"temporal"};
+function wormsResumen(g){
+  if(!g) return null;
+  function nm(x,a){ return "«"+nombreCientificoHtml([x,a].filter(Boolean).join(" "))+"»"; }
+  var est=WORMS_ESTADOS[g.estado]||g.estado||"", rg=(g.rango||"").toLowerCase();
+  var det=escapeHtml([rg,est].filter(Boolean).join(", "));
+  var h, clase;
+  if(g.coincidencia==="NONE"){ clase="gbif-mal"; h="Sin coincidencia en WoRMS: revisa la ortografía o puede que no sea una especie marina."; }
+  else {
+    var aprox=!/^exact/.test(g.coincidencia);
+    var base=(aprox?"Coincidencia aproximada con ":"Coincidencia exacta con ")+nm(g.nombre,g.autoridad)+(det?" ("+det+")":"");
+    if(g.valido){ clase="gbif-aviso"; h=base+". Nombre válido: "+nm(g.valido,g.validoAutoridad)+"."; }
+    else if(aprox){ clase="gbif-aviso"; h=base+": revisa la ortografía."; }
+    else if(g.estado && g.estado!=="accepted"){ clase="gbif-aviso"; h=base+"."; }
+    else { clase="gbif-ok"; h=base+"."; }
+    if(g.habitat) h+=" Ambiente en WoRMS: "+escapeHtml(g.habitat)+".";
+  }
+  return {clase:clase, html:h, texto:htmlATexto(h)};
+}
+function wormsCeldaHtml(g){
+  var r=wormsResumen(g);
+  if(!r) return '<span class="ficha-vacio">Sin comprobar</span>';
+  var corto=g.coincidencia==="NONE" ? "Sin coincidencia" : (g.valido ? "No aceptado" : (!/^exact/.test(g.coincidencia) ? "Aproximada" : "Coincide"));
+  var url=enlaceWorms(g.validoId||g.id);
+  return '<span class="gbif-txt '+r.clase+'" title="'+escapeHtml(r.texto)+'" style="padding:2px 8px;border-radius:5px;font-weight:600;white-space:nowrap">'+escapeHtml(corto)+'</span>'+(url?' <a href="'+escapeHtml(url)+'" target="_blank" rel="noopener">ver ↗</a>':'');
+}
+function crearLineaWorms(entrada, esUltimo){
+  var caja=document.createElement("div"); caja.className="gbif-linea linea-worms";
+  function pintar(){
+    caja.innerHTML="";
+    var g=entrada.worms;
+    if(editando){
+      var b=document.createElement("button"); b.type="button"; b.className="btn secundario small"; b.textContent=g?"Volver a comprobar en WoRMS":"Comprobar en WoRMS";
+      b.title="Para especies marinas (World Register of Marine Species)";
+      b.onclick=async function(){
+        var nombre=nombreLimpio(entrada.nombreCientifico);
+        if(!nombre){ alert("Escribe primero el nombre científico."); return; }
+        b.disabled=true; b.textContent="Consultando WoRMS…";
+        try{
+          entrada.worms=await comprobarNombreWorms(nombre);
+          registrarActividad("worms", nombre+" · "+entrada.worms.coincidencia);
+          refrescarPanelesRegistros();
+        }catch(e){
+          pintar();
+          var er=document.createElement("span"); er.className="gbif-txt gbif-mal"; er.textContent="No se pudo consultar WoRMS (sin conexión, servicio no disponible o bloqueo del navegador). Intenta de nuevo más tarde.";
+          caja.appendChild(er); return;
+        }
+        pintar();
+      };
+      caja.appendChild(b);
+    }
+    if(!g) return;
+    var r=wormsResumen(g), t=document.createElement("span");
+    if(g.consultado!==nombreLimpio(entrada.nombreCientifico)){
+      t.className="gbif-txt gbif-info"; t.innerHTML="El nombre cambió desde la última comprobación (se consultó «"+nombreCientificoHtml(g.consultado)+"»). Vuelve a comprobarlo.";
+      caja.appendChild(t); return;
+    }
+    t.className="gbif-txt "+r.clase; t.innerHTML=r.html; caja.appendChild(t);
+    var url=enlaceWorms(g.id);
+    if(url){ var a=document.createElement("a"); a.href=url; a.target="_blank"; a.rel="noopener"; a.textContent="Ver en WoRMS ↗"; caja.appendChild(a); }
+    if(g.valido && g.validoId){ var a2=document.createElement("a"); a2.href=enlaceWorms(g.validoId); a2.target="_blank"; a2.rel="noopener"; a2.textContent="Ver nombre válido ↗"; caja.appendChild(a2); }
+    if(editando){
+      if(g.valido){
+        var ba=document.createElement("button"); ba.type="button"; ba.className="btn tenue small"; ba.textContent="Usar nombre válido";
+        ba.onclick=async function(){
+          var nuevo=[g.valido,g.validoAutoridad].filter(Boolean).join(" ");
+          if(!confirm("Se reemplazará «"+entrada.nombreCientifico+"» por el nombre válido «"+nuevo+"». ¿Continuar?")) return;
+          entrada.nombreCientifico=nuevo;
+          try{ entrada.worms=await comprobarNombreWorms(nuevo); }catch(e){ delete entrada.worms; }
+          pintarLista("determinaciones"); refrescarPanelesRegistros();
+        };
+        caja.appendChild(ba);
+      }
+      if(esUltimo && g.clasif && Object.keys(g.clasif).some(function(k){ return g.clasif[k]; })){
+        var bc=document.createElement("button"); bc.type="button"; bc.className="btn tenue small"; bc.textContent="Usar clasificación de WoRMS";
+        bc.onclick=function(){ usarClasificacionExterna(g.clasif, "WoRMS"); };
+        caja.appendChild(bc);
+      }
+    }
+  }
+  pintar();
+  return caja;
+}
 function datosLista(tipo){ var r=registroActivo(); if(!r) return []; if(!r[tipo]) r[tipo]=[]; return r[tipo]; }
 
 function pintarLista(tipo){
@@ -1776,6 +1958,16 @@ function pintarLista(tipo){
     quitar.disabled = !editando;
     quitar.classList.toggle("oculto", !editando);
     fila.appendChild(quitar);
+    var prevNc=null, actualizarPrev=function(){};
+    if(tipo==="determinaciones"){
+      prevNc=document.createElement("div"); prevNc.className="nc-prev";
+      actualizarPrev=function(){
+        var n=[entrada.calificador,entrada.nombreCientifico].filter(Boolean).join(" ");
+        prevNc.style.display=n?"":"none";
+        prevNc.innerHTML=n?('Con formato de nomenclatura: <span class="nc-prev-n">'+nombreCientificoHtml(n)+'</span>'):"";
+      };
+      actualizarPrev();
+    }
     var grid=document.createElement("div"); grid.className="grid";
     cfg.campos.forEach(function(c){
       var campoDiv=document.createElement("div"); campoDiv.className="campo "+(c.req?"req":"opc")+(c.full?" full":"");
@@ -1792,17 +1984,20 @@ function pintarLista(tipo){
       } else { input=document.createElement("input"); input.type=c.type||"text"; input.readOnly = !editando; }
       input.className="nav"; input.value=entrada[c.key]||"";
       input.addEventListener("input", function(){
-        entrada[c.key]=input.value; refrescarPanelesRegistros();
-        if(tipo==="determinaciones" && c.key==="nombreCientifico" && entrada.gbif){
-          var linea=fila.querySelector(".gbif-linea .gbif-txt"), hay=nombreLimpio(input.value)!==entrada.gbif.consultado;
-          if(linea){ if(hay){ linea.className="gbif-txt gbif-info"; linea.textContent="El nombre cambió desde la última comprobación (se consultó «"+entrada.gbif.consultado+"»). Vuelve a comprobarlo."; } }
+        entrada[c.key]=input.value; refrescarPanelesRegistros(); actualizarPrev();
+        if(tipo==="determinaciones" && c.key==="nombreCientifico"){
+          [["gbif",".linea-gbif"],["worms",".linea-worms"]].forEach(function(par){
+            var r0=entrada[par[0]]; if(!r0) return;
+            var t=fila.querySelector(par[1]+" .gbif-txt");
+            if(t && nombreLimpio(input.value)!==r0.consultado){ t.className="gbif-txt gbif-info"; t.innerHTML="El nombre cambió desde la última comprobación (se consultó «"+nombreCientificoHtml(r0.consultado)+"»). Vuelve a comprobarlo."; }
+          });
         }
       });
       campoDiv.appendChild(input);
       grid.appendChild(campoDiv);
     });
     fila.appendChild(grid);
-    if(tipo==="determinaciones") fila.appendChild(crearLineaGbif(entrada, esUltimo));
+    if(tipo==="determinaciones"){ fila.appendChild(prevNc); fila.appendChild(crearLineaGbif(entrada, esUltimo)); fila.appendChild(crearLineaWorms(entrada, esUltimo)); }
     if(tipo==="fotos" || tipo==="adjuntos"){
       var esFoto=(tipo==="fotos"), prefijo=esFoto ? /^Fotos\// : /^Adjuntos\//;
       var barra=document.createElement("div"); barra.style.cssText="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;";
@@ -2073,8 +2268,11 @@ function guardarActualizacion(siguienteTab){
 
 // ---------- panel de registros (transversal) ----------
 function etiquetaRegistro(r){
-  var det = r.determinaciones && r.determinaciones.length ? r.determinaciones[r.determinaciones.length-1].nombreCientifico : "";
+  var detO = r.determinaciones && r.determinaciones.length ? r.determinaciones[r.determinaciones.length-1] : null;
+  var det = detO ? detO.nombreCientifico : "";
   return {
+    tieneNombre: !!(det || r.taxon),
+    nombreVigente: det ? [detO.calificador, det].filter(Boolean).join(" ") : (r.taxon || ""),
     numeroCampo: r.numeroCampo || "",
     numeroAccesion: r.numeroAccesion || "",
     catalogo: r.catalogo || "",
@@ -2097,6 +2295,16 @@ function resumenLinea1(et){
   if(et.numeroAccesion) partes.push(conPrefijo("Entrada", et.numeroAccesion));
   if(et.catalogo) partes.push(conPrefijo("Catálogo", et.catalogo));
   return partes.length ? partes.join(" · ") : "(sin números asignados)";
+}
+function resumenDatosSinNombre(et){
+  return [et.localidad, et.fecha, et.colector].filter(Boolean).join(" · ");
+}
+function resumenLinea2Html(et){
+  var resto=[et.localidad, et.fecha, et.colector].filter(Boolean).map(escapeHtml);
+  return [nombreCientificoHtml(et.tieneNombre ? et.nombreVigente : et.nombreCientifico)].concat(resto).join(" · ");
+}
+function nombreDestacadoHtml(et){
+  return '<span class="nombre-destacado'+(et.tieneNombre?'':' sin')+'">'+(et.tieneNombre ? nombreCientificoHtml(et.nombreVigente) : 'sin determinar')+'</span>';
 }
 function resumenLinea2(et){
   var partes=[et.nombreCientifico];
@@ -2131,7 +2339,7 @@ function montarPanelRegistros(cont){
       if(!listaC.length) hc+='<p class="nota" style="padding:8px;">Ningún registro coincide con los filtros actuales.</p>';
       listaC.slice(0,150).forEach(function(reg){
         var etc=etiquetaRegistro(reg);
-        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong><br><span class="ts2">'+escapeHtml(resumenLinea2(etc))+'</span></div><div class="acciones-fila"><button class="btn tenue small btn-consultar-registro">Consultar</button></div></div>';
+        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong><br><span class="ts2">'+resumenLinea2Html(etc)+'</span></div><div class="acciones-fila"><button class="btn tenue small btn-consultar-registro">Consultar</button></div></div>';
       });
       if(listaC.length>150) hc+='<p class="nota" style="padding:8px;">Se muestran 150 de '+listaC.length+'. Afina los filtros o usa la lista completa de abajo.</p>';
       hc+='</div></div>';
@@ -2154,7 +2362,7 @@ function montarPanelRegistros(cont){
   html += '</div>';
   html += '<div class="barra-activo">';
   html += '<span class="badge-modo badge-modo-'+modoTexto.toLowerCase()+'">'+modoTexto+'</span>';
-  html += '<span class="chip-activo"><span class="chip-titulo">Registro Actual</span>'+(etAct ? ('<strong>'+escapeHtml(resumenLinea1(etAct))+'</strong><br>'+escapeHtml(resumenLinea2(etAct))) : 'Sin registro activo')+'</span>';
+  html += '<span class="chip-activo"><span class="chip-titulo">Registro Actual</span>'+(etAct ? (nombreDestacadoHtml(etAct)+'<strong>'+escapeHtml(resumenLinea1(etAct))+'</strong>'+(resumenDatosSinNombre(etAct)?'<br>'+escapeHtml(resumenDatosSinNombre(etAct)):'')) : 'Sin registro activo')+'</span>';
   if(activoId!==null){
     html += '<button class="btn small btn-icono btn-icono-ver btn-consultar-activo" title="Consultar">👁️</button>';
     html += '<button class="btn small btn-icono btn-icono-editar btn-editar-activo" title="Editar">✏️</button>';
@@ -2173,7 +2381,7 @@ function montarPanelRegistros(cont){
       var esActivo = reg.id===activoId;
       var et = esActivo && borrador ? etiquetaRegistro(borrador) : etiquetaRegistro(reg);
       html += '<div class="fila-registro'+(esActivo?' activa':'')+'" data-id="'+reg.id+'">';
-      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong><br><span class="ts2">'+escapeHtml(resumenLinea2(et))+'</span></div>';
+      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong><br><span class="ts2">'+resumenLinea2Html(et)+'</span></div>';
       html += '<div class="acciones-fila">';
       if(esActivo) html += '<span class="tag-activo-mini">'+(editando?'editando':'consultando')+'</span>';
       html += '<button class="btn tenue small btn-consultar-registro">Consultar</button>';
@@ -2250,14 +2458,17 @@ function coleccionDeRegistro(r){
 function sesionDeRegistro(r){
   return r.creadoEn ? r.creadoEn.slice(0,10) : "Sin sesión registrada";
 }
-function formatearNombreSesion(clave){
+function sesionEdicionDeRegistro(r){
+  return r.modificadoEn ? r.modificadoEn.slice(0,10) : "Sin edición registrada";
+}
+function formatearNombreSesion(clave, tipo){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(clave)) return clave;
   var d = new Date(clave+"T00:00:00");
   if(isNaN(d.getTime())) return clave;
   var texto = d.toLocaleDateString("es-CL", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
-  return "Sesión del " + texto;
+  return "Sesión de "+(tipo||"ingreso")+" del " + texto;
 }
-var CLAVES_VACIAS = ["Sin colección asignada","Sin sesión registrada"];
+var CLAVES_VACIAS = ["Sin colección asignada","Sin sesión registrada","Sin edición registrada"];
 function valoresUnicos(fn){
   var set = new Set(registros.map(fn));
   return Array.from(set).sort(function(a,b){
@@ -2279,6 +2490,14 @@ var seleccionDescarga = new Set();
 var agruparDatosPor = "coleccion";
 var filtroColeccionDatos = "";
 var filtroSesionDatos = "";
+var filtroEdicionDatos = "";
+function registrosMostradosDatos(){
+  return registros.filter(function(r){
+    return (!filtroColeccionDatos || coleccionDeRegistro(r)===filtroColeccionDatos)
+        && (!filtroSesionDatos || sesionDeRegistro(r)===filtroSesionDatos)
+        && (!filtroEdicionDatos || sesionEdicionDeRegistro(r)===filtroEdicionDatos);
+  });
+}
 function renderResumenDatos(){
   var cont = document.getElementById("resumen-datos");
   if(!cont) return;
@@ -2289,6 +2508,7 @@ function renderResumenDatos(){
   var selAgrupar = document.getElementById("sel-agrupar-datos");
   var selFiltroColeccion = document.getElementById("sel-filtro-coleccion");
   var selFiltroSesion = document.getElementById("sel-filtro-sesion");
+  var selFiltroEdicion = document.getElementById("sel-filtro-sesion-edicion");
   if(selAgrupar) selAgrupar.value = agruparDatosPor;
   if(selFiltroColeccion){
     var opcionesColeccion = valoresUnicos(coleccionDeRegistro);
@@ -2299,11 +2519,12 @@ function renderResumenDatos(){
     selFiltroSesion.innerHTML = '<option value="">Todas</option>' + opcionesSesion.map(function(o){ return '<option value="'+escapeHtml(o)+'"'+(o===filtroSesionDatos?' selected':'')+'>'+escapeHtml(o)+'</option>'; }).join("");
   }
 
-  var filtrados = registros.filter(function(r){
-    return (!filtroColeccionDatos || coleccionDeRegistro(r)===filtroColeccionDatos)
-        && (!filtroSesionDatos || sesionDeRegistro(r)===filtroSesionDatos);
-  });
-  var fnClave = agruparDatosPor==="sesion" ? sesionDeRegistro : coleccionDeRegistro;
+  if(selFiltroEdicion){
+    var opcionesEdicion = valoresUnicos(sesionEdicionDeRegistro);
+    selFiltroEdicion.innerHTML = '<option value="">Todas</option>' + opcionesEdicion.map(function(o){ return '<option value="'+escapeHtml(o)+'"'+(o===filtroEdicionDatos?' selected':'')+'>'+escapeHtml(o)+'</option>'; }).join("");
+  }
+  var filtrados = registrosMostradosDatos();
+  var fnClave = agruparDatosPor==="sesion" ? sesionDeRegistro : (agruparDatosPor==="sesionEdicion" ? sesionEdicionDeRegistro : coleccionDeRegistro);
   var grupos = agruparRegistros(filtrados, fnClave);
   var claves = Object.keys(grupos).sort(function(a,b){
     if(CLAVES_VACIAS.indexOf(a)>-1) return 1;
@@ -2320,7 +2541,7 @@ function renderResumenDatos(){
     claves.forEach(function(clave, idxGrupo){
       var lista = grupos[clave];
       var todosSeleccionados = lista.every(function(r){ return seleccionDescarga.has(r.id); });
-      var etiquetaGrupo = (agruparDatosPor==="sesion" && CLAVES_VACIAS.indexOf(clave)===-1) ? formatearNombreSesion(clave) : clave;
+      var etiquetaGrupo = (agruparDatosPor!=="coleccion" && CLAVES_VACIAS.indexOf(clave)===-1) ? formatearNombreSesion(clave, agruparDatosPor==="sesionEdicion" ? "edición" : "ingreso") : clave;
       html += '<details><summary>'
         + '<span class="resumen-grupo-titulo">'+escapeHtml(etiquetaGrupo)+'</span>'
         + ' <span class="resumen-conteo">('+lista.length+')</span>'
@@ -2332,10 +2553,11 @@ function renderResumenDatos(){
         var marcado = seleccionDescarga.has(reg.id);
         var partesExtra = [];
         if(agruparDatosPor!=="coleccion") partesExtra.push(coleccionDeRegistro(reg));
-        if(agruparDatosPor!=="sesion") partesExtra.push("Sesión "+sesionDeRegistro(reg));
-        var textoCompleto = [resumenLinea1(et), resumenLinea2(et)].concat(partesExtra).join(" · ");
+        if(agruparDatosPor!=="sesion") partesExtra.push("Ingreso "+sesionDeRegistro(reg));
+        if(agruparDatosPor!=="sesionEdicion" && reg.modificadoEn) partesExtra.push("Edición "+sesionEdicionDeRegistro(reg));
+        var textoCompleto = [escapeHtml(resumenLinea1(et)), resumenLinea2Html(et)].concat(partesExtra.map(escapeHtml)).join(" · ");
         html += '<div class="fila-compacta" data-id="'+reg.id+'">';
-        html += '<span class="fila-compacta-texto">'+escapeHtml(textoCompleto)+'</span>';
+        html += '<span class="fila-compacta-texto">'+textoCompleto+'</span>';
         html += '<button class="btn-ver-compacto btn-ver-resumen" title="Ver ficha">👁️</button>';
         html += '<input type="checkbox" class="chk-registro" data-id="'+reg.id+'"'+(marcado?' checked':'')+' title="Seleccionar para descarga">';
         html += '</div>';
@@ -2420,7 +2642,16 @@ window.addEventListener("appinstalled", function(){ document.getElementById("btn
     el.textContent = "Almacenamiento protegido: " + (ok ? "sí" : "no (el navegador podría borrar los datos si falta espacio; usa respaldos).");
   }).catch(function(){});
 })();
-document.getElementById("btn-exportar-zip").addEventListener("click", function(){ alert("Exportación a zip / Darwin Core: pendiente."); });
+document.getElementById("btn-exportar-zip").addEventListener("click", function(){ descargarDatos("zip"); });
+document.getElementById("btn-exportar-xlsx").addEventListener("click", function(){ descargarDatos("xlsx"); });
+document.getElementById("btn-exportar-csv").addEventListener("click", function(){ descargarDatos("csv"); });
+document.getElementById("btn-importar-zip-datos").addEventListener("click", function(){ document.getElementById("input-importar-json").click(); });
+document.getElementById("btn-marcar-datos").addEventListener("click", function(){ registrosMostradosDatos().forEach(function(r){ seleccionDescarga.add(r.id); }); renderResumenDatos(); });
+document.getElementById("btn-desmarcar-datos").addEventListener("click", function(){ seleccionDescarga.clear(); renderResumenDatos(); });
+document.getElementById("sel-filtro-sesion-edicion").addEventListener("change", function(){
+  filtroEdicionDatos = this.value;
+  renderResumenDatos();
+});
 document.getElementById("sel-agrupar-datos").addEventListener("change", function(){
   agruparDatosPor = this.value;
   renderResumenDatos();
@@ -2685,6 +2916,7 @@ async function respaldoCompleto(){ if(modoAcceso!=="admin") return;
   actualizarUICarpeta();
 }
 function importarArchivoJson(file){ if(modoAcceso!=="admin") return;
+  if(/\.zip$/i.test(file.name||"")){ importarZipRespaldo(file); return; }
   var lector=new FileReader();
   lector.onload=function(){
     try{
@@ -3404,7 +3636,7 @@ function pintarConsultas(){
   lista.slice(0,e.mostrar).forEach(function(r){
     var et=etiquetaRegistro(r);
     var extra=[r.phylum,r.clase,r.orden,r.familia,r.genero].filter(Boolean).join(" › ");
-    h+='<div class="cons-fila" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong><br><span class="cons-nom">'+escapeHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small cons-btn-ver">Consultar</button><button class="btn tenue small cons-btn-cargar" title="Dejar este registro como Registro actual">Cargar</button></div></div>';
+    h+='<div class="cons-fila" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong><br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small cons-btn-ver">Consultar</button><button class="btn tenue small cons-btn-cargar" title="Dejar este registro como Registro actual">Cargar</button></div></div>';
   });
   cont.innerHTML=h;
   document.getElementById("cons-mas-btn").classList.toggle("oculto", lista.length<=e.mostrar);
@@ -3437,10 +3669,10 @@ var CONS_COLUMNAS = [
   ["N.º de fotos",function(r){ return (r.fotos||[]).filter(function(f){ return f.archivo; }).length; },"n"],
   ["PDF de publicaciones",function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }).join("; "); }]
 ];
-function filasConsulta(){
-  var lista=resultadosConsulta();
+function filasDeLista(lista){
   return [CONS_COLUMNAS.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return CONS_COLUMNAS.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
 }
+function filasConsulta(){ return filasDeLista(resultadosConsulta()); }
 function csvDeFilas(filas){
   return "﻿"+filas.map(function(f){ return f.map(function(v){ v=String(v); return /[",\r\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(","); }).join("\r\n")+"\r\n";
 }
@@ -3451,7 +3683,7 @@ function crc32(u8){
   return (c2^0xFFFFFFFF)>>>0;
 }
 // Zip sin compresión (suficiente para un .xlsx pequeño): cabeceras locales + directorio central.
-function zipSinCompresion(archivos){
+function zipSinCompresion(archivos, tipo){
   var enc=new TextEncoder(), trozos=[], central=[], off=0;
   archivos.forEach(function(a){
     var nom=enc.encode(a.nombre), dat=a.datos, crc=crc32(dat);
@@ -3470,7 +3702,7 @@ function zipSinCompresion(archivos){
   var tamC=central.reduce(function(s,t){ return s+t.length; },0);
   var fin=new DataView(new ArrayBuffer(22));
   fin.setUint32(0,0x06054b50,true); fin.setUint16(8,archivos.length,true); fin.setUint16(10,archivos.length,true); fin.setUint32(12,tamC,true); fin.setUint32(16,off,true);
-  return new Blob(trozos.concat(central,[new Uint8Array(fin.buffer)]),{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+  return new Blob(trozos.concat(central,[new Uint8Array(fin.buffer)]),{type:tipo||"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
 }
 function xmlEsc(s){ return String(s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function letraColumna(i){ var s=""; i++; while(i>0){ var m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26); } return s; }
@@ -3497,6 +3729,67 @@ function xlsxDeFilas(filas){
     {nombre:"xl/worksheets/sheet1.xml", t:cab+'<worksheet '+ns+'><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'+cols+'<sheetData>'+filasXml+'</sheetData></worksheet>'}
   ].map(function(a){ return {nombre:a.nombre, datos:enc.encode(a.t)}; });
   return zipSinCompresion(arch);
+}
+
+// ---- descargas desde Gestión de Datos: zip de respaldo, Excel y CSV de los registros marcados ----
+function listaParaDescarga(){
+  var sel=registros.filter(function(r){ return seleccionDescarga.has(r.id); });
+  if(sel.length) return sel;
+  var mostrados=registrosMostradosDatos();
+  if(!mostrados.length){ alert("No hay registros para descargar."); return null; }
+  if(!confirm("No hay registros marcados. ¿Descargar los "+mostrados.length+" registro(s) mostrados?")) return null;
+  return mostrados;
+}
+function zipDeRespaldo(lista){
+  var enc=new TextEncoder(), usados={};
+  var manifiesto={app:"Libro de Catálogo", formato:"libro-catalogo-zip", version:APP_VERSION, generado:new Date().toISOString(), generadoPor:operadorActual(), total:lista.length};
+  var arch=[{nombre:"manifest.json", datos:enc.encode(JSON.stringify(manifiesto,null,2))}];
+  lista.forEach(function(r){
+    var nom=nombreArchivoRegistro(r); if(usados[nom]) nom=r.id+".json"; usados[nom]=1;
+    arch.push({nombre:"registros/"+nom, datos:enc.encode(JSON.stringify(r,null,2))});
+  });
+  return zipSinCompresion(arch,"application/zip");
+}
+async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
+  var lista=listaParaDescarga(); if(!lista) return;
+  var f=new Date(), sello=f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes());
+  var nombre=(formato==="zip"?"Respaldo_":"Registros_")+"Libro_de_Catalogo_"+sello+"."+formato, blob;
+  if(formato==="zip") blob=zipDeRespaldo(lista);
+  else { var filas=filasDeLista(lista); blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas); }
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+  var extra="";
+  if(carpetaHandle && await permisoCarpeta(false)){
+    try{ await escribirArchivo(formato==="zip"?"Respaldos":"Exportaciones", nombre, blob); extra=" Copia guardada en "+(formato==="zip"?"Respaldos/":"Exportaciones/")+" de la Carpeta local."; }catch(e){}
+  }
+  var msg=lista.length+" registro(s) descargados en "+nombre+"."+extra;
+  var m=document.getElementById("datos-msg"); if(m) m.textContent=msg;
+  mensajeCarpeta(msg);
+  registrarActividad("descarga", formato.toUpperCase()+" (Gestión de Datos) · "+lista.length+" registro(s)");
+}
+async function importarZipRespaldo(file){ if(modoAcceso!=="admin") return;
+  var m=document.getElementById("datos-msg");
+  try{
+    var z=await leerZip(await file.arrayBuffer());
+    var man=null; var dm=await datosZip(z,"manifest.json");
+    if(dm){ try{ man=JSON.parse(new TextDecoder("utf-8").decode(dm)); }catch(e){} }
+    if(!man || man.formato!=="libro-catalogo-zip"){
+      var msgx=z.ents["planilla_estandar.json"] ? "Ese zip es de Libreta de Campo: impórtalo desde la pestaña Entrada." : "Ese zip no es un respaldo de Libro de Catálogo.";
+      if(m) m.textContent=msgx; mensajeCarpeta(msgx); return;
+    }
+    var lista=[], nombres=Object.keys(z.ents).filter(function(n){ return /^registros\/.+\.json$/i.test(n); });
+    for(var i=0;i<nombres.length;i++){
+      try{ var o=JSON.parse(new TextDecoder("utf-8").decode(await datosZip(z,nombres[i]))); if(o && o.id) lista.push(o); }catch(e){}
+    }
+    if(!lista.length){ if(m) m.textContent="El zip no contiene registros."; return; }
+    if(!confirm("El zip contiene "+lista.length+" registro(s). Se agregarán los nuevos y se actualizarán los que sean más recientes que los de este navegador. ¿Continuar?")) return;
+    var r=fusionarRegistros(lista);
+    var txt="Importados desde el zip: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados.";
+    if(m) m.textContent=txt; mensajeCarpeta(txt);
+    registrarActividad("importacion","zip de respaldo · "+lista.length+" registro(s)");
+    if(carpetaHandle) sincronizarCarpeta(false);
+  }catch(e){ var t="No se pudo leer el zip: "+((e&&e.message)||e); if(m) m.textContent=t; mensajeCarpeta(t); }
 }
 async function descargarConsulta(formato){
   var filas=filasConsulta();

@@ -133,6 +133,8 @@
   .ficha-media{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}
   @media (max-width:820px){ .ficha-media{grid-template-columns:1fr;} }
   .media-panel{border:1px solid var(--line);border-radius:10px;background:#fffdf8;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .media-cuerpo{overflow-y:auto;max-height:clamp(300px,52vh,560px);padding-right:4px;}
+  .media-cuerpo .ficha-campo{grid-template-columns:minmax(120px,190px) 1fr;}
   .media-titulo{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--accent);}
   .ficha-mapa{width:100%;height:clamp(300px,52vh,560px);border:1px solid var(--line);border-radius:8px;background:var(--paper-2);}
   .media-pie{font-size:12.5px;color:var(--ink-soft);display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;}
@@ -206,7 +208,7 @@
     <label for="input-operador-actual">Operador actual</label>
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off">
   </div>
-  <span class="ver" id="ver-chip">v0.9.11 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.12 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -569,7 +571,7 @@
 
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.11</strong> (borrador de trabajo)</p>
+      <p>Libro de Catálogo — <strong id="ver-texto">v0.9.12</strong> (borrador de trabajo)</p>
       <footer class="acciones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -592,7 +594,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.11";
+var APP_VERSION = "v0.9.12";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1188,9 +1190,7 @@ function construirFicha(r){
     + (tablaUsos ? '<p class="subtitulo-mini">Historial de usos</p>'+tablaUsos : "")
     + notas;
 
-  var body = bloqueMediaHtml(r)
-    + fichaSeccion("Información general", general, true)
-    + fichaSeccion("Datos de terreno", terreno, false)
+  var body = bloqueMediaHtml(r, general, terreno)
     + fichaSeccion("Recepción e ingreso", recepcion, false)
     + fichaSeccion("Preparación y conservación", preparacionHtml, false)
     + fichaSeccion("Determinación y clasificación", determinacionHtml, false)
@@ -1213,7 +1213,7 @@ function coordenadasRegistro(r){
   if(isNaN(lat)||isNaN(lng)||Math.abs(lat)>90||Math.abs(lng)>180) return null;
   return {lat:lat,lng:lng};
 }
-function bloqueMediaHtml(r){
+function bloqueMediaHtml(r, general, terreno){
   var c=coordenadasRegistro(r), mapa;
   if(c){
     var d=0.02, bbox=[c.lng-d,c.lat-d,c.lng+d,c.lat+d].map(function(n){ return n.toFixed(5); }).join("%2C");
@@ -1228,8 +1228,13 @@ function bloqueMediaHtml(r){
     var datos=fotos.map(function(f){ return {ruta:f.archivo, tipo:f.tipoFoto||""}; });
     gal='<div class="ficha-galeria" data-fotos="'+escapeHtml(JSON.stringify(datos))+'"><div class="gal-principal"><div class="msg-foto">Cargando fotos…</div></div><div class="gal-pie"></div><div class="gal-minis"></div></div>';
   } else gal='<div class="media-vacio">Este ejemplar no tiene fotos asociadas desde la Carpeta local. Se agregan en Preparación, bloque Fotos.</div>';
-  return '<div class="ficha-media"><div class="media-panel"><div class="media-titulo">Origen del ejemplar</div>'+mapa+'</div>'
-    +'<div class="media-panel"><div class="media-titulo">Fotografías'+(fotos.length?' ('+fotos.length+')':'')+'</div>'+gal+'</div></div>';
+  var vacio='<p class="ficha-vacio">Sin datos cargados.</p>';
+  return '<div class="ficha-media">'
+    +'<div class="media-panel"><div class="media-titulo">Información general</div><div class="media-cuerpo">'+(general||vacio)+'</div></div>'
+    +'<div class="media-panel"><div class="media-titulo">Fotografías'+(fotos.length?' ('+fotos.length+')':'')+'</div>'+gal+'</div>'
+    +'<div class="media-panel"><div class="media-titulo">Datos de terreno</div><div class="media-cuerpo">'+(terreno||vacio)+'</div></div>'
+    +'<div class="media-panel"><div class="media-titulo">Ubicación geográfica</div>'+mapa+'</div>'
+    +'</div>';
 }
 var urlsFicha=[];
 function liberarUrlsFicha(){ urlsFicha.forEach(function(u){ URL.revokeObjectURL(u); }); urlsFicha=[]; }

@@ -42,28 +42,30 @@
   nav#tabs{background:#d9d2b6;border-bottom:3px solid var(--accent);}
   nav#tabs button{font-family:var(--sans);font-size:15.5px;font-weight:700;padding:11px 22px;background:#fffdf8;border:1.5px solid var(--line-fuerte);border-bottom:none;border-radius:9px 9px 0 0;color:var(--ink);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
   body.sin-sesion{overflow:hidden;}
-  #pantalla-inicio{position:fixed;inset:0;z-index:9999;background:#26332b;color:#f1eddc;overflow:auto;display:flex;flex-direction:column;align-items:center;}
+  #pantalla-inicio{position:fixed;inset:0;z-index:9999;background:#26332b;color:#f1eddc;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:space-between;}
   body:not(.sin-sesion) #pantalla-inicio{display:none;}
-  .inicio-caja{width:min(560px,100%);padding:32px 20px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;margin:auto 0;}
-  .inicio-icono{border-radius:22px;box-shadow:0 6px 22px rgba(0,0,0,.35);}
-  #pantalla-inicio h1{font-family:var(--serif);font-size:34px;margin:16px 0 6px;color:#fff;}
-  .inicio-sub{margin:0 0 26px;font-size:14.5px;color:#cfd8c8;line-height:1.5;}
-  .inicio-btn-grande{width:100%;border:0;border-radius:16px;background:#f1eddc;color:#26332b;font-family:var(--serif);font-size:27px;font-weight:800;padding:24px 20px 20px;cursor:pointer;box-shadow:0 8px 26px rgba(0,0,0,.35);transition:transform .12s,background .12s;}
-  .inicio-btn-grande:hover{background:#fff;transform:translateY(-2px);}
-  .inicio-btn-grande:focus-visible,.inicio-admin input:focus-visible{outline:3px solid #9ec5a5;outline-offset:2px;}
-  .inicio-btn-grande small{display:block;margin-top:6px;font-family:var(--sans);font-size:14px;font-weight:500;color:#4d5a50;}
-  .inicio-admin{width:100%;margin-top:30px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:12px;text-align:left;background:rgba(255,255,255,.05);}
-  .inicio-admin-tit{font-weight:800;font-size:14px;letter-spacing:.6px;text-transform:uppercase;color:#cfd8c8;}
-  .inicio-admin-txt{margin:6px 0 10px;font-size:13.5px;color:#cfd8c8;line-height:1.45;}
-  .inicio-admin-fila{display:flex;gap:8px;flex-wrap:wrap;}
-  .inicio-admin-fila input{flex:1 1 200px;min-width:0;padding:8px 10px;font-size:15px;border-radius:8px;border:1px solid #9aa89c;background:#fffdf8;color:#26332b;}
-  .inicio-admin-fila .btn{background:#547a5c;color:#fff;border:0;}
-  .inicio-admin-fila .btn:disabled{opacity:.45;cursor:not-allowed;}
-  .inicio-aviso{margin:8px 0 0;font-size:12.5px;color:#b9c6b9;min-height:16px;}
-  .inicio-pie{width:100%;display:flex;flex-wrap:wrap;gap:18px 34px;align-items:center;justify-content:center;padding:16px 20px 22px;margin-top:14px;}
-  .inicio-logo-claro{background:#fff;border-radius:10px;padding:8px 14px;}
-  .inicio-logo-claro img{display:block;height:64px;width:auto;max-width:100%;}
-  .inicio-logo-wk{height:58px;width:auto;max-width:100%;}
+  .inicio-caja{width:min(520px,100%);padding:clamp(10px,3vh,30px) 20px 0;display:flex;flex-direction:column;align-items:center;text-align:center;margin:auto 0;}
+  .inicio-icono{width:clamp(56px,11vh,96px);height:clamp(56px,11vh,96px);border-radius:20px;box-shadow:0 6px 22px rgba(0,0,0,.35);}
+  #pantalla-inicio h1{font-family:var(--serif);font-size:clamp(24px,4.6vh,34px);margin:clamp(6px,1.6vh,14px) 0 4px;color:#fff;}
+  .inicio-sub{margin:0 0 clamp(10px,2.4vh,22px);font-size:clamp(12.5px,1.9vh,14.5px);color:#cfd8c8;line-height:1.45;}
+  .inicio-nombre{width:100%;text-align:left;margin-bottom:clamp(8px,2vh,16px);}
+  .inicio-nombre label{font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#cfd8c8;}
+  .inicio-nombre input{width:100%;margin-top:4px;padding:9px 12px;font-size:16px;border-radius:9px;border:2px solid #9aa89c;background:#fffdf8;color:#26332b;}
+  .inicio-aviso{margin:5px 0 0;font-size:12.5px;color:#b9c6b9;min-height:16px;}
+  .inicio-btn-grande{width:100%;border:0;border-radius:16px;background:#f1eddc;color:#26332b;font-family:var(--serif);font-size:clamp(21px,3.6vh,27px);font-weight:800;padding:clamp(12px,2.6vh,22px) 20px clamp(10px,2.2vh,18px);cursor:pointer;box-shadow:0 8px 26px rgba(0,0,0,.35);transition:transform .12s,background .12s;}
+  .inicio-btn-grande:hover:not(:disabled){background:#fff;transform:translateY(-2px);}
+  .inicio-btn-grande:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
+  .inicio-btn-grande:focus-visible,.inicio-nombre input:focus-visible{outline:3px solid #9ec5a5;outline-offset:2px;}
+  .inicio-btn-grande small{display:block;margin-top:4px;font-family:var(--sans);font-size:clamp(12.5px,1.9vh,14px);font-weight:500;color:#4d5a50;}
+  .inicio-admin{width:100%;margin-top:clamp(12px,3vh,24px);display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}
+  .inicio-admin .btn{background:transparent;color:#f1eddc;border:1px solid rgba(241,237,220,.6);font-weight:700;}
+  .inicio-admin .btn:hover:not(:disabled){background:rgba(255,255,255,.14);}
+  .inicio-admin .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .inicio-admin-txt{font-size:13px;color:#cfd8c8;}
+  .inicio-pie{width:100%;display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center;justify-content:center;padding:clamp(8px,2vh,18px) 16px clamp(10px,2.4vh,22px);}
+  .inicio-logo-claro{background:#fff;border-radius:9px;padding:6px 12px;}
+  .inicio-logo-claro img{display:block;height:clamp(34px,7.5vh,60px);width:auto;max-width:100%;}
+  .inicio-logo-wk{height:clamp(32px,7vh,54px);width:auto;max-width:100%;}
   body.modo-consulta #tabs button:not([data-tab="consultas"]){display:none;}
   body.modo-consulta .tabpanel:not(#tab-consultas){display:none !important;}
   body.modo-consulta #aviso-carpeta,body.modo-consulta .cons-btn-cargar{display:none !important;}
@@ -72,6 +74,19 @@
   .operador-actual-wrap #btn-cerrar-sesion:hover{background:rgba(255,255,255,.14);}
   nav#tabs button[data-tab="consultas"]{background:#e9f0f2;border-color:#8fa5ad;margin-right:22px;}
   nav#tabs button[data-tab="sistema"]{background:#ece6d3;border-color:#a99f80;margin-left:22px;}
+  .tabla-scroll{overflow-x:auto;margin-top:8px;}
+  .tabla-act{border-collapse:collapse;font-size:12.5px;width:100%;}
+  .tabla-act th,.tabla-act td{border:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top;}
+  .tabla-act th{background:var(--paper-2);}
+  .cons-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:10px 0;}
+  .cons-col{border:1px solid var(--line);border-radius:10px;padding:8px 12px 12px;background:#fffdf8;}
+  .cons-col h3{margin:2px 0 8px;font-family:var(--serif);font-size:16px;color:var(--accent);border-bottom:2px solid var(--accent-soft);padding-bottom:4px;}
+  .cons-col .campo.opc{margin:0 0 6px;padding:0;border-left:0;}
+  .cons-col .campo .lbl,.cons-grid .campo .lbl{margin-bottom:2px;min-height:0;}
+  .cons-col .campo input{padding:6px 9px;}
+  .cons-col .campo input{width:100%;}
+  @media (max-width:860px){.cons-cols{grid-template-columns:1fr;}}
+  .barra-activo .btn-toggle-lista{margin-left:auto;align-self:center;flex-shrink:0;}
   .cons-buscador{display:flex;gap:8px;align-items:center;margin:6px 0;}
   .cons-in-general{flex:1;font-size:16px;padding:10px 12px;border:2px solid var(--accent-2);border-radius:9px;}
   .cons-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;}
@@ -79,6 +94,7 @@
   .cons-chip button{border:0;background:transparent;color:var(--accent);cursor:pointer;font-weight:800;padding:0 6px;}
   .cons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:8px 0;}
   .cons-grid .campo input{width:100%;}
+  .cons-grid .campo.opc,.cons-rango.opc{border-left:0;padding-left:0;}
   .cons-rango-in{display:flex;align-items:center;gap:6px;}
   .cons-rango-in input{flex:1;min-width:0;}
   .cons-grupo{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:#fffdf8;}
@@ -279,17 +295,17 @@
   <div class="inicio-caja">
     <img class="inicio-icono" src="data:image/png;base64,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" alt="" width="104" height="104">
     <h1 id="inicio-titulo">Libro de Catálogo</h1>
-    <p class="inicio-sub">Manejo de colecciones · Área Zoología de Invertebrados<br>Museo Nacional de Historia Natural de Chile</p>
-    <button type="button" id="btn-modo-consulta" class="inicio-btn-grande">Consultar la colección<small>Buscar y revisar los ejemplares. No se puede modificar nada.</small></button>
+    <p class="inicio-sub">Manejo de colecciones<br>Área Zoología de Invertebrados<br>Museo Nacional de Historia Natural de Chile</p>
+    <div class="inicio-nombre">
+      <label for="inicio-nombre">Tu nombre y apellido</label>
+      <input type="text" id="inicio-nombre" list="inicio-sugerencias" placeholder="Nombre y apellido" autocomplete="off">
+      <datalist id="inicio-sugerencias"></datalist>
+      <p class="inicio-aviso" id="inicio-aviso">Escribe tu nombre y apellido para ingresar.</p>
+    </div>
+    <button type="button" id="btn-modo-consulta" class="inicio-btn-grande" disabled>Consultar la colección<small>Buscar y revisar los ejemplares</small></button>
     <div class="inicio-admin">
-      <div class="inicio-admin-tit">Administrador</div>
-      <p class="inicio-admin-txt">Para quienes trabajan habitualmente en la colección: permite consultar, ingresar y modificar datos. Cada cambio queda firmado con tu nombre.</p>
-      <div class="inicio-admin-fila">
-        <input type="text" id="inicio-nombre" list="inicio-sugerencias" placeholder="Nombre y apellido" autocomplete="off" aria-label="Nombre del operador">
-        <datalist id="inicio-sugerencias"></datalist>
-        <button type="button" id="btn-modo-admin" class="btn small" disabled>Ingresar</button>
-      </div>
-      <p class="inicio-aviso" id="inicio-aviso">Escribe tu nombre y apellido para ingresar como administrador.</p>
+      <button type="button" id="btn-modo-admin" class="btn small" disabled>Administrador</button>
+      <span class="inicio-admin-txt">Para consultas, ingresos y manejo de datos</span>
     </div>
   </div>
   <div class="inicio-pie">
@@ -308,7 +324,7 @@
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off" readonly>
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
-  <span class="ver" id="ver-chip">v0.9.18 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.19 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -342,7 +358,7 @@
         <button type="button" class="btn small tenue oculto" id="cons-limpiar">Limpiar filtros</button>
       </div>
       <div class="cons-chips" id="cons-chips"></div>
-      <div class="cons-grid" id="cons-principales"></div>
+      <div class="cons-cols" id="cons-principales"></div>
       <details class="det-carpetas cons-mas"><summary>Más filtros</summary><div id="cons-secundarios"></div></details>
     </div>
     <div class="bloque">
@@ -663,7 +679,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.18</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.19</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -748,6 +764,15 @@
       </details>
     </div>
 
+      <div class="bloque">
+      <h2>Registro de actividad <button type="button" class="ayuda-btn" data-ayuda="ayuda-actividad" aria-label="Ayuda" title="Ayuda">?</button></h2>
+      <div class="ayuda-panel oculto" id="ayuda-actividad">Cada ingreso, búsqueda, consulta de ficha y descarga queda anotado con fecha, modo, persona y detalle en Registros/_actividad.log de la Carpeta local (también para quienes entran con «Consultar la colección»). Si la Carpeta local no está disponible, los eventos esperan en el navegador hasta que lo esté.</div>
+      <div class="barra-botones">
+        <button class="btn small secundario" id="btn-actividad-ver">Ver últimos eventos</button>
+        <button class="btn small secundario" id="btn-actividad-csv">Descargar todo (CSV)</button>
+      </div>
+      <div id="actividad-lista"></div>
+    </div>
   </section>
 
 </main>
@@ -762,7 +787,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.18";
+var APP_VERSION = "v0.9.19";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1489,6 +1514,7 @@ function fichaPdfs(r){
 function mostrarFichaConsulta(id){
   var r = registroPorId(id);
   if(!r) return;
+  registrarActividad("ficha", [construirCatalogoCompleto(r)||r.catalogo||("campo "+(r.numeroCampo||"s/n")), nombreVigenteReg(r)].filter(Boolean).join(" · "));
   var dialogEl = document.getElementById("dialog-ficha");
   dialogEl.innerHTML = construirFicha(r);
   dialogEl.querySelectorAll(".btn-abrir-adjunto").forEach(function(b){ b.onclick = function(){ abrirRuta(b.getAttribute("data-ruta")); }; });
@@ -1840,7 +1866,26 @@ function montarPanelRegistros(cont){
   var btnTabActivo = document.querySelector("#tabs button.active");
   var esTabEntrada = !!btnTabActivo && btnTabActivo.getAttribute("data-tab")==="entrada";
   if(btnTabActivo && btnTabActivo.getAttribute("data-tab")==="consultas"){
-    cont.innerHTML='<div class="barra-activo"><span class="badge-modo badge-modo-consulta">Consulta</span><span class="chip-activo"><span class="chip-titulo">Consulta actual</span>'+resumenConsultaHtml()+'</span></div>';
+    var abiertoC = cont.getAttribute("data-abierto")==="1";
+    var listaC = resultadosConsulta();
+    var hc='<div class="barra-activo"><span class="badge-modo badge-modo-consulta">Consulta</span><span class="chip-activo"><span class="chip-titulo">Consulta actual</span>'+resumenConsultaHtml(listaC)+'</span>';
+    hc+='<button class="btn small btn-toggle-lista">'+(abiertoC?'Ocultar resultados ▲':'Ver resultados ('+listaC.length+') ▾')+'</button></div>';
+    if(abiertoC){
+      hc+='<div class="desplegable-registros"><div class="lista-scroll">';
+      if(!listaC.length) hc+='<p class="nota" style="padding:8px;">Ningún registro coincide con los filtros actuales.</p>';
+      listaC.slice(0,150).forEach(function(reg){
+        var etc=etiquetaRegistro(reg);
+        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong><br><span class="ts2">'+escapeHtml(resumenLinea2(etc))+'</span></div><div class="acciones-fila"><button class="btn tenue small btn-consultar-registro">Consultar</button></div></div>';
+      });
+      if(listaC.length>150) hc+='<p class="nota" style="padding:8px;">Se muestran 150 de '+listaC.length+'. Afina los filtros o usa la lista completa de abajo.</p>';
+      hc+='</div></div>';
+    }
+    cont.innerHTML=hc;
+    var tg=cont.querySelector(".btn-toggle-lista");
+    if(tg) tg.onclick=function(){ cont.setAttribute("data-abierto", abiertoC?"0":"1"); montarPanelRegistros(cont); };
+    cont.querySelectorAll(".fila-registro").forEach(function(fila){
+      fila.querySelector(".btn-consultar-registro").onclick=function(){ mostrarFichaConsulta(fila.getAttribute("data-id")); };
+    });
     return;
   }
   var html = '<div class="barra-nuevo">';
@@ -1935,7 +1980,8 @@ function montarPanelRegistros(cont){
 document.addEventListener("click", function(e){
   var path = e.composedPath ? e.composedPath() : [e.target];
   document.querySelectorAll(".slot-panel-registros").forEach(function(cont){
-    if(cont.getAttribute("data-abierto")==="1" && path.indexOf(cont)===-1){
+    var dlg=document.getElementById("dialog-ficha");
+    if(cont.getAttribute("data-abierto")==="1" && path.indexOf(cont)===-1 && !(dlg && path.indexOf(dlg)>-1)){
       cont.setAttribute("data-abierto","0");
       filtroRegistros="";
       montarPanelRegistros(cont);
@@ -2194,8 +2240,8 @@ async function dirAnidado(ruta){
   for(var i=0;i<partes.length;i++){ d=await d.getDirectoryHandle(partes[i],{create:true}); }
   return d;
 }
-async function escribirArchivo(ruta, nombre, contenido){
-  if(modoAcceso!=="admin") throw new Error("En modo de solo consulta no se puede escribir en la Carpeta local.");
+async function escribirArchivo(ruta, nombre, contenido, esBitacora){
+  if(modoAcceso!=="admin" && !(esBitacora && modoAcceso==="consulta")) throw new Error("En modo de solo consulta no se puede escribir en la Carpeta local.");
   var d=await dirAnidado(ruta);
   var fh=await d.getFileHandle(nombre,{create:true});
   var w=await fh.createWritable();
@@ -2827,7 +2873,7 @@ var CONS_CAMPOS = [
   CF("coleccion","Colección","Colección",true,function(r){ return [nombreColeccionCompleto(r), r.coleccionAcronimo].filter(Boolean); }),
   campoSimple("estadoUbicacion","Estado","Manejo",true),
   // secundarios, agrupados por la pestaña de origen
-  campoSimple("provincia","Provincia","Terreno"), campoSimple("comuna","Comuna","Terreno"),
+  campoSimple("provincia","Provincia","Lugar",true), campoSimple("comuna","Comuna","Lugar",true),
   campoSimple("habitat","Hábitat","Terreno"), campoSimple("microhabitat","Microhábitat","Terreno"),
   campoSimple("metodoColecta","Método de recolección","Terreno"), campoSimple("estacion","Estación","Terreno"),
   campoSimple("altitud_m","Altitud (m)","Terreno"), campoSimple("coordenadasOriginales","Coordenadas originales","Terreno"),
@@ -2931,8 +2977,9 @@ function hayFiltrosConsulta(){
   var e=consEstado;
   return !!(e.texto.trim() || Object.keys(e.f).some(function(k){ return e.f[k]; }) || Object.keys(e.r).some(function(k){ return e.r[k] && (e.r[k].d||e.r[k].h); }) || e.tiene.coord || e.tiene.fotos || e.tiene.pdf);
 }
-function resumenConsultaHtml(){
-  var lista=registros.filter(function(r){ return cumpleConsulta(r); }), s=resumenConsulta(lista);
+function resumenConsultaHtml(lista){
+  lista=lista||registros.filter(function(r){ return cumpleConsulta(r); });
+  var s=resumenConsulta(lista);
   var filtrado=hayFiltrosConsulta();
   var h='<strong>'+s.n+(filtrado?' de '+s.total:'')+' registro(s)'+(filtrado?' coinciden':' en la colección (sin filtros)')+'</strong>';
   if(s.n){
@@ -2969,8 +3016,18 @@ function construirConsultas(){
     d.innerHTML='<div class="lbl"><span class="name">'+escapeHtml(g.l)+'</span></div><div class="cons-rango-in"><input type="date" class="cons-fecha" data-r="'+g.k+'" data-lado="d" title="Desde"><span>a</span><input type="date" class="cons-fecha" data-r="'+g.k+'" data-lado="h" title="Hasta"></div>';
     return d;
   }
-  CONS_CAMPOS.filter(function(c){ return c.p; }).forEach(function(c){ pr.appendChild(campoUI(c)); });
-  CONS_RANGOS.filter(function(g){ return g.p; }).forEach(function(g){ pr.appendChild(rangoUI(g)); });
+  var COLUMNAS=[
+    ["Taxonomía",["nombre","phylum","clase","orden","familia","genero"],[]],
+    ["Ubicación geográfica",["localidad","region","provincia","comuna"],[]],
+    ["Colección",["coleccion","catalogo","numeroCampo","estadoUbicacion","colector"],["colecta"]]
+  ];
+  COLUMNAS.forEach(function(col){
+    var div=document.createElement("div"); div.className="cons-col";
+    div.innerHTML='<h3>'+escapeHtml(col[0])+'</h3>';
+    col[1].forEach(function(k){ div.appendChild(campoUI(CONS_CAMPOS.filter(function(c){ return c.k===k; })[0])); });
+    col[2].forEach(function(k){ div.appendChild(rangoUI(CONS_RANGOS.filter(function(g){ return g.k===k; })[0])); });
+    pr.appendChild(div);
+  });
   CONS_GRUPOS.forEach(function(gr){
     var det=document.createElement("details"); det.className="cons-grupo";
     var grid=document.createElement("div"); grid.className="cons-grid";
@@ -2991,7 +3048,7 @@ function construirConsultas(){
       var k=t.getAttribute("data-r"); consEstado.r[k]=consEstado.r[k]||{d:"",h:""}; consEstado.r[k][t.getAttribute("data-lado")]=t.value;
     } else if(t.getAttribute("data-t")){ consEstado.tiene[t.getAttribute("data-t")]=t.checked; }
     else return;
-    consEstado.mostrar=100; pintarConsultas(t);
+    consEstado.mostrar=100; pintarConsultas(t); programarRegistroBusqueda();
   });
   document.getElementById("cons-orden").addEventListener("change", function(){ consEstado.orden=this.value; pintarConsultas(); });
   document.getElementById("cons-limpiar").addEventListener("click", limpiarConsulta);
@@ -3020,6 +3077,23 @@ function sincronizarCamposConsulta(){
   tab.querySelectorAll(".cons-in").forEach(function(i){ i.value=consEstado.f[i.getAttribute("data-k")]||""; });
   tab.querySelectorAll(".cons-fecha").forEach(function(i){ var g=consEstado.r[i.getAttribute("data-r")]; i.value=(g&&g[i.getAttribute("data-lado")])||""; });
   tab.querySelectorAll("[data-t]").forEach(function(i){ i.checked=!!consEstado.tiene[i.getAttribute("data-t")]; });
+}
+var consTimer=null, consUltimaBusqueda="";
+function descripcionFiltros(){
+  var e=consEstado, d=[];
+  if(e.texto.trim()) d.push("texto: "+e.texto.trim());
+  CONS_CAMPOS.forEach(function(c){ if((e.f[c.k]||"").trim()) d.push(c.l+": "+e.f[c.k].trim()); });
+  CONS_RANGOS.forEach(function(g){ var r=e.r[g.k]; if(r&&(r.d||r.h)) d.push(g.l+": "+(r.d||"…")+" a "+(r.h||"…")); });
+  [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"]].forEach(function(t){ if(e.tiene[t[0]]) d.push("solo "+t[1]); });
+  return d.join(" | ");
+}
+function programarRegistroBusqueda(){
+  clearTimeout(consTimer);
+  consTimer=setTimeout(function(){
+    var d=descripcionFiltros(); if(!d || d===consUltimaBusqueda) return;
+    consUltimaBusqueda=d;
+    registrarActividad("busqueda", d+" → "+registros.filter(function(r){ return cumpleConsulta(r); }).length+" resultado(s)");
+  }, 2500);
 }
 function limpiarConsulta(){
   consEstado.texto=""; consEstado.f={}; consEstado.r={}; consEstado.tiene={coord:false,fotos:false,pdf:false}; consEstado.mostrar=100;
@@ -3155,6 +3229,7 @@ async function descargarConsulta(formato){
     try{ await escribirArchivo("Exportaciones", nombre, blob); extra=" Copia guardada en Exportaciones/ de la Carpeta local."; }catch(e){}
   }
   mensajeCarpeta((filas.length-1)+" registro(s) descargados en "+nombre+"."+extra);
+  registrarActividad("descarga", formato.toUpperCase()+" · "+(filas.length-1)+" registro(s)"+(descripcionFiltros()?" · filtros: "+descripcionFiltros():" · sin filtros"));
   var m=document.getElementById("cons-msg"); if(m) m.textContent=(filas.length-1)+" registro(s) descargados como "+nombre+"."+extra;
 }
 
@@ -3324,7 +3399,9 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
 document.querySelectorAll(".lbl .key").forEach(function(el){ el.title=el.textContent.trim(); });
 
 // ---------- Pantalla de inicio y modos de acceso ----------
-var CLAVE_OPERADORES="libroCatalogo_operadores", CLAVE_SESIONES="libroCatalogo_sesiones_pend";
+var CLAVE_OPERADORES="libroCatalogo_operadores", CLAVE_ACTIVIDAD="libroCatalogo_actividad_pend";
+var ARCHIVO_ACTIVIDAD="_actividad.log";
+var nombreSesion="";
 function nombreLimpio(n){ return String(n||"").replace(/\s+/g," ").trim(); }
 function nombreOperadorValido(n){ return nombreLimpio(n).split(" ").filter(function(x){ return x.length>1; }).length>=2; }
 function leerJson(clave){ try{ return JSON.parse(localStorage.getItem(clave)||"[]")||[]; }catch(e){ return []; } }
@@ -3340,56 +3417,97 @@ function pintarSugerenciasOperador(){
 function revisarNombreInicio(){
   var n=document.getElementById("inicio-nombre").value, ok=nombreOperadorValido(n);
   document.getElementById("btn-modo-admin").disabled=!ok;
-  document.getElementById("inicio-aviso").textContent = ok ? "Ingresarás como «"+nombreLimpio(n)+"»." : (nombreLimpio(n) ? "Falta el apellido: escribe nombre y apellido." : "Escribe tu nombre y apellido para ingresar como administrador.");
+  document.getElementById("btn-modo-consulta").disabled=!ok;
+  document.getElementById("inicio-aviso").textContent = ok ? "Ingresarás como «"+nombreLimpio(n)+"»." : (nombreLimpio(n) ? "Falta el apellido: escribe nombre y apellido." : "Escribe tu nombre y apellido para ingresar.");
 }
-function cerrarInicio(){ document.body.classList.remove("sin-sesion"); window.scrollTo(0,0); }
+function cerrarInicio(){ document.body.classList.remove("sin-sesion"); try{ window.scrollTo(0,0); }catch(e){} }
+function guardarNombreOperador(n){
+  var lista=leerJson(CLAVE_OPERADORES).filter(function(x){ return x!==n; }); lista.unshift(n);
+  try{ localStorage.setItem(CLAVE_OPERADORES, JSON.stringify(lista.slice(0,40))); }catch(e){}
+}
 function entrarConsulta(){
+  var n=nombreLimpio(document.getElementById("inicio-nombre").value);
+  if(!nombreOperadorValido(n)) return;
+  guardarNombreOperador(n); nombreSesion=n;
   modoAcceso="consulta";
   document.body.classList.add("modo-consulta");
-  inputOperador.value="Solo consulta";
+  document.querySelector(".operador-actual-wrap label").textContent="Consultando como";
+  inputOperador.value=n;
   cerrarInicio();
+  registrarActividad("ingreso","v"+APP_VERSION.replace(/^v/,""));
   activarTab("consultas");
 }
 function entrarAdmin(){
   var n=nombreLimpio(document.getElementById("inicio-nombre").value);
   if(!nombreOperadorValido(n)) return;
-  var lista=leerJson(CLAVE_OPERADORES).filter(function(x){ return x!==n; }); lista.unshift(n);
-  try{ localStorage.setItem(CLAVE_OPERADORES, JSON.stringify(lista.slice(0,30))); }catch(e){}
+  guardarNombreOperador(n); nombreSesion=n;
   modoAcceso="admin";
   document.body.classList.add("modo-admin");
   inputOperador.value=n;
   cerrarInicio();
-  registrarSesion(n);
+  registrarActividad("ingreso","v"+APP_VERSION.replace(/^v/,""));
   activarTab("entrada");
 }
-function registrarSesion(n){
-  var l=leerJson(CLAVE_SESIONES);
-  l.push(new Date().toISOString()+"\t"+n+"\t"+APP_VERSION);
-  try{ localStorage.setItem(CLAVE_SESIONES, JSON.stringify(l)); }catch(e){}
-  volcarSesiones();
+// ---- registro de actividad: quién, cuándo y qué (se guarda en Registros/_actividad.log; mientras no haya Carpeta local queda pendiente en el navegador)
+function registrarActividad(evento, detalle){
+  if(!modoAcceso) return;
+  var linea=[new Date().toISOString(), modoAcceso==="admin"?"administrador":"consulta", nombreSesion, evento, String(detalle==null?"":detalle).replace(/[\t\r\n]+/g," ").slice(0,400)].join("\t");
+  var l=leerJson(CLAVE_ACTIVIDAD); l.push(linea);
+  try{ localStorage.setItem(CLAVE_ACTIVIDAD, JSON.stringify(l.slice(-2000))); }catch(e){}
+  volcarActividad();
 }
-// Agrega a Registros/_sesiones.log los ingresos pendientes (queda en el navegador hasta que la Carpeta local esté disponible).
-async function volcarSesiones(){
-  if(modoAcceso!=="admin" || !carpetaHandle) return;
-  var l=leerJson(CLAVE_SESIONES); if(!l.length) return;
-  if(!(await permisoCarpeta(false))) return;
-  try{
+var colaActividad=Promise.resolve();
+function volcarActividad(){
+  colaActividad=colaActividad.then(async function(){
+    if(!modoAcceso || !carpetaHandle) return;
+    var l=leerJson(CLAVE_ACTIVIDAD); if(!l.length) return;
+    if(!(await permisoCarpeta(false))) return;
     var d=await dirAnidado("Registros"), previo="";
-    try{ previo=await (await (await d.getFileHandle("_sesiones.log")).getFile()).text(); }catch(e){}
-    await escribirArchivo("Registros","_sesiones.log", previo+l.join("\n")+"\n");
-    localStorage.removeItem(CLAVE_SESIONES);
-  }catch(e){}
+    try{ previo=await (await (await d.getFileHandle(ARCHIVO_ACTIVIDAD)).getFile()).text(); }catch(e){}
+    await escribirArchivo("Registros", ARCHIVO_ACTIVIDAD, previo+l.join("\n")+"\n", true);
+    var resto=leerJson(CLAVE_ACTIVIDAD).slice(l.length);
+    try{ if(resto.length) localStorage.setItem(CLAVE_ACTIVIDAD, JSON.stringify(resto)); else localStorage.removeItem(CLAVE_ACTIVIDAD); }catch(e){}
+  }).catch(function(){});
+  return colaActividad;
+}
+async function leerActividad(){
+  var txt="";
+  if(carpetaHandle && await permisoCarpeta(false)){
+    try{ var d=await dirAnidado("Registros"); txt=await (await (await d.getFileHandle(ARCHIVO_ACTIVIDAD)).getFile()).text(); }catch(e){}
+  }
+  var lineas=txt.split("\n").filter(Boolean).concat(leerJson(CLAVE_ACTIVIDAD));
+  return lineas.map(function(l){ var c=l.split("\t"); return {fecha:c[0]||"", modo:c[1]||"", nombre:c[2]||"", evento:c[3]||"", detalle:c[4]||""}; });
+}
+async function pintarActividad(){
+  var cont=document.getElementById("actividad-lista"), lista=await leerActividad();
+  if(!lista.length){ cont.innerHTML='<p class="nota">Todavía no hay actividad registrada.</p>'; return; }
+  var ult=lista.slice(-60).reverse();
+  cont.innerHTML='<div class="tabla-scroll"><table class="tabla-act"><thead><tr><th>Fecha y hora</th><th>Modo</th><th>Persona</th><th>Evento</th><th>Detalle</th></tr></thead><tbody>'+ult.map(function(a){
+    return '<tr><td>'+escapeHtml(formatearFechaHora(a.fecha))+'</td><td>'+escapeHtml(a.modo)+'</td><td>'+escapeHtml(a.nombre)+'</td><td>'+escapeHtml(a.evento)+'</td><td>'+escapeHtml(a.detalle)+'</td></tr>';
+  }).join("")+'</tbody></table></div><p class="nota">Se muestran los últimos '+ult.length+' de '+lista.length+' eventos.</p>';
+}
+async function descargarActividad(){
+  var lista=await leerActividad();
+  if(!lista.length){ alert("Todavía no hay actividad registrada."); return; }
+  var filas=[["Fecha y hora (UTC)","Modo","Persona","Evento","Detalle"]].concat(lista.map(function(a){ return [a.fecha,a.modo,a.nombre,a.evento,a.detalle]; }));
+  var blob=new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}), url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download="Actividad_Libro_de_Catalogo_"+new Date().toISOString().slice(0,10)+".csv"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); },30000);
 }
 document.getElementById("btn-modo-consulta").addEventListener("click", entrarConsulta);
 document.getElementById("btn-modo-admin").addEventListener("click", entrarAdmin);
+document.getElementById("btn-actividad-ver").addEventListener("click", pintarActividad);
+document.getElementById("btn-actividad-csv").addEventListener("click", descargarActividad);
 (function(){
   var inp=document.getElementById("inicio-nombre");
   inp.addEventListener("input", revisarNombreInicio);
   inp.addEventListener("focus", pintarSugerenciasOperador);
-  inp.addEventListener("keydown", function(e){ if(e.key==="Enter" && nombreOperadorValido(inp.value)){ e.preventDefault(); entrarAdmin(); } });
+  inp.addEventListener("keydown", function(e){ if(e.key==="Enter" && nombreOperadorValido(inp.value)){ e.preventDefault(); entrarConsulta(); } });
   document.getElementById("btn-cerrar-sesion").addEventListener("click", function(){
     if(modoAcceso==="admin" && !confirm("Se cerrará la sesión y volverá la pantalla de inicio. Lo que no hayas guardado se perderá. ¿Continuar?")) return;
-    location.reload();
+    registrarActividad("salida","");
+    volcarActividad().then(function(){ location.reload(); });
+    setTimeout(function(){ location.reload(); }, 1500);
   });
 })();
 

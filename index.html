@@ -433,7 +433,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.27</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.28</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -795,7 +795,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.27</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.28</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -939,7 +939,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.27";
+var APP_VERSION = "v0.9.28";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -982,12 +982,30 @@ function nombreCientificoHtml(txt){
       out.push(h); continue;
     }
     var m=/^\(([A-ZÀ-Þ][a-zà-ÿ'’\-]+)\)$/.exec(t);
-    if(fase==="gen" && m && i+1<toks.length && NC_EPITETO.test(toks[i+1]) && !NC_PARTICULA[toks[i+1]]){ out.push("(<i>"+escapeHtml(m[1])+"</i>)"); fase="epi"; continue; }
+    var sig=i+1; while(sig<toks.length && /^(cf|aff)\.?$/i.test(toks[sig])) sig++;
+    if(fase==="gen" && m && sig<toks.length && NC_EPITETO.test(toks[sig]) && !NC_PARTICULA[toks[sig]]){ out.push("(<i>"+escapeHtml(m[1])+"</i>)"); fase="epi"; continue; }
     if(NC_CALIFICADOR.test(t) || (fase==="epi" && NC_RANGO.test(t))){ out.push(escapeHtml(t)); if(fase==="gen" && /^(sp|spp)\.?$/i.test(t)) fase="epi"; continue; }
     if(NC_EPITETO.test(t) && !NC_PARTICULA[t]){ out.push(it(t)); fase="epi"; continue; }
     out.push(escapeHtml(t)); fase="aut";
   }
   return out.join(" ").replace(/<\/i> <i>/g," ");
+}
+// Posición del calificador: «cf.» y «aff.» entre el género y el epíteto (si solo hay género, antes del género);
+// «sp.» tras el género (ocupa el lugar del epíteto); «?» y «sp. nov.» al final del nombre (antes del autor no se separa: el nombre se escribe sin autor al determinar a nivel de género).
+function unirCalificador(cal, nombre){
+  cal=String(cal==null?"":cal).trim(); nombre=String(nombre==null?"":nombre).trim();
+  if(!cal) return nombre; if(!nombre) return cal;
+  if((" "+nombre.toLowerCase()+" ").indexOf(" "+cal.toLowerCase()+" ")>-1) return nombre;
+  if(cal==="?" || /^sp\.?\s*nov\.?$/i.test(cal)) return nombre+" "+cal;
+  var toks=nombre.split(/\s+/), i=(toks[1] && /^\(.*\)$/.test(toks[1])) ? 2 : 1;
+  var tieneEpiteto=!!(toks[i] && NC_EPITETO.test(toks[i]) && !NC_PARTICULA[toks[i]] && !NC_CALIFICADOR.test(toks[i]));
+  if(/^sp\.?$/i.test(cal)){
+    if(tieneEpiteto) return nombre+" "+cal;
+    toks.splice(i,0,cal); return toks.join(" ");
+  }
+  if(/^(cf|aff)\.?$/i.test(cal) && !tieneEpiteto){ toks.splice(0,0,cal); return toks.join(" "); }
+  toks.splice(i,0,cal);
+  return toks.join(" ");
 }
 function htmlATexto(h){
   return String(h==null?"":h).replace(/<[^>]+>/g,"").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,"&");
@@ -1514,7 +1532,7 @@ function construirFicha(r){
   var et = etiquetaRegistro(r);
 
   var vigente = (r.determinaciones && r.determinaciones.length) ? r.determinaciones[r.determinaciones.length-1] : null;
-  var nombreVigente = vigente ? [vigente.calificador, vigente.nombreCientifico].filter(Boolean).join(" ") : (r.taxon || "");
+  var nombreVigente = vigente ? unirCalificador(vigente.calificador, vigente.nombreCientifico) : (r.taxon || "");
 
   var coleccionCompleta = nombreColeccionCompleto(r);
   var institucionTexto = r.institucionNombreCompleto || (r.institucionAcronimo==="MNHNCL" ? NOMBRE_MNHNCL : r.institucionAcronimo) || "";
@@ -2122,7 +2140,7 @@ function pintarLista(tipo){
     if(tipo==="determinaciones"){
       prevNc=document.createElement("div"); prevNc.className="nc-prev";
       actualizarPrev=function(){
-        var n=[entrada.calificador,entrada.nombreCientifico].filter(Boolean).join(" ");
+        var n=unirCalificador(entrada.calificador, entrada.nombreCientifico);
         prevNc.style.display=n?"":"none";
         prevNc.innerHTML=n?('Con formato de nomenclatura: <span class="nc-prev-n">'+nombreCientificoHtml(n)+'</span>'):"";
       };
@@ -2470,7 +2488,7 @@ function etiquetaRegistro(r){
   var det = detO ? detO.nombreCientifico : "";
   return {
     tieneNombre: !!(det || r.taxon),
-    nombreVigente: det ? [detO.calificador, det].filter(Boolean).join(" ") : (r.taxon || ""),
+    nombreVigente: det ? unirCalificador(detO.calificador, det) : (r.taxon || ""),
     numeroCampo: r.numeroCampo || "",
     numeroAccesion: r.numeroAccesion || "",
     catalogo: r.catalogo || "",
@@ -3567,14 +3585,14 @@ document.getElementById("btn-carpeta-reordenar").addEventListener("click", reord
 function normTxt(s){ return String(s==null?"":s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim(); }
 function nombreVigenteReg(r){
   var d=(r.determinaciones&&r.determinaciones.length)?r.determinaciones[r.determinaciones.length-1]:null;
-  return d ? [d.calificador,d.nombreCientifico].filter(Boolean).join(" ") : (r.taxon||"");
+  return d ? unirCalificador(d.calificador, d.nombreCientifico) : (r.taxon||"");
 }
 function listaVals(r, lista, clave){ return (r[lista]||[]).map(function(x){ return x[clave]; }).filter(Boolean); }
 function CF(k,l,g,p,v){ return {k:k,l:l,g:g,p:p,v:v}; }
 function campoSimple(k,l,g,p){ return CF(k,l,g,p,function(r){ return r[k]!=null && r[k]!=="" ? [String(r[k])] : []; }); }
 var CONS_CAMPOS = [
   CF("nombre","Nombre científico","Taxonomía",true,function(r){
-    var v=(r.determinaciones||[]).map(function(d){ return [d.calificador,d.nombreCientifico].filter(Boolean).join(" "); }).filter(Boolean);
+    var v=(r.determinaciones||[]).map(function(d){ return unirCalificador(d.calificador, d.nombreCientifico); }).filter(Boolean);
     if(r.taxon) v.push(r.taxon);
     return v;
   }),

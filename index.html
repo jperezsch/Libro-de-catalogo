@@ -230,12 +230,12 @@
 
   .panel-registros{margin-bottom:16px;position:relative;}
   .barra-nuevo{display:flex;justify-content:flex-end;margin-bottom:8px;}
-  .barra-activo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(135deg,var(--ink),#31402f);border:1px solid var(--ink);border-radius:var(--radius);padding:10px 14px;box-shadow:var(--sombra);}
-  .chip-activo{font-size:14.5px;flex:1;min-width:160px;color:var(--paper);}
-  .chip-titulo{display:block;font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;color:rgba(242,239,228,.85);margin-bottom:2px;}
-  .chip-activo strong{font-family:var(--mono);color:#fff;}
-  .nombre-destacado{display:block;font-family:var(--serif);font-size:21px;font-weight:700;line-height:1.2;color:#fff;margin:1px 0 4px;}
-  .nombre-destacado.sin{font-size:15px;font-weight:400;font-style:italic;color:rgba(242,239,228,.7);}
+  .barra-activo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff6d6;border:1px solid #c9b45e;border-left:8px solid var(--accent);border-radius:var(--radius);padding:10px 14px;box-shadow:0 2px 8px rgba(38,51,43,.14);}
+  .chip-activo{font-size:14.5px;flex:1;min-width:160px;color:var(--ink);}
+  .chip-titulo{display:block;font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;color:var(--accent);font-weight:700;margin-bottom:2px;}
+  .chip-activo strong{font-family:var(--mono);color:var(--ink);}
+  .nombre-destacado{display:block;font-family:var(--serif);font-size:21px;font-weight:700;line-height:1.2;color:var(--ink);margin:1px 0 4px;}
+  .nombre-destacado.sin{font-size:15px;font-weight:400;font-style:italic;color:var(--ink-soft);}
   .nc-prev{margin-top:8px;font-size:13.5px;color:var(--ink-soft);}
   .nc-prev .nc-prev-n{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);}
   .desplegable-registros{position:absolute;top:100%;left:0;right:0;z-index:30;margin-top:4px;background:#fffdf8;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 14px 34px rgba(38,51,43,.22), var(--sombra);padding:9px;}
@@ -439,7 +439,7 @@
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off" readonly>
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
-  <span class="ver" id="ver-chip">v0.9.26 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.27</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -795,7 +795,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.26</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.27</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -939,7 +939,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.26";
+var APP_VERSION = "v0.9.27";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2652,7 +2652,7 @@ document.addEventListener("click", function(e){
   });
 });
 function coleccionDeRegistro(r){
-  return r.coleccionAcronimo ? [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ") : "Sin colección asignada";
+  return r.coleccionAcronimo ? lineaColeccionFicha(r) : "Sin colección asignada";
 }
 function sesionDeRegistro(r){
   return r.creadoEn ? r.creadoEn.slice(0,10) : "Sin sesión registrada";
@@ -2800,7 +2800,7 @@ function refrescarPanelesRegistros(){
 }
 
 // ---------- Sistema ----------
-document.getElementById("ver-chip").textContent = APP_VERSION + " · borrador";
+document.getElementById("ver-chip").textContent = APP_VERSION;
 document.getElementById("ver-texto").textContent = APP_VERSION;
 // ---------- actualización, instalación y almacenamiento protegido ----------
 function mensajeActualizacion(t){ var el=document.getElementById("estado-actualizacion"); if(el) el.textContent=t; }
@@ -4509,6 +4509,16 @@ function impOpcionesObjetivos(sel){
 }
 function impPintar(){
   var cont=impElem("imp-cont"); if(!cont) return;
+  var pos={y:window.pageYOffset||0, izq:0, der:0}, ei=impElem("imp-izq"), ed=impElem("imp-der");
+  if(ei) pos.izq=ei.scrollTop; if(ed) pos.der=ed.scrollTop;
+  var foco=document.activeElement, focoVal=foco&&foco.getAttribute?(foco.getAttribute("data-val")||foco.getAttribute("data-valtxt")):null, focoI=foco&&foco.getAttribute?foco.getAttribute("data-i"):null;
+  impPintarInterno(cont);
+  ei=impElem("imp-izq"); ed=impElem("imp-der");
+  if(ei) ei.scrollTop=pos.izq; if(ed) ed.scrollTop=pos.der;
+  window.scrollTo(0,pos.y);
+  if(focoVal!==null&&focoVal!==undefined){ var nf=Array.prototype.filter.call(cont.querySelectorAll("[data-val],[data-valtxt]"),function(x){ return (x.getAttribute("data-val")||x.getAttribute("data-valtxt"))===focoVal && x.getAttribute("data-i")===focoI; })[0]; if(nf&&nf.focus){ try{ nf.focus({preventScroll:true}); }catch(e){} } }
+}
+function impPintarInterno(cont){
   if(!imp){ cont.innerHTML=""; return; }
   var h="";
   h+='<div class="imp-paso"><div class="imp-fila-opc">';

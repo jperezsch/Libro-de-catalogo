@@ -31,6 +31,7 @@
   .btn-icono-eliminar{background:var(--danger);}
   .btn-icono:hover{filter:brightness(1.12);transform:translateY(-1px);}
   header h1{font-family:var(--serif);font-size:24px;margin:0;color:var(--paper);letter-spacing:.3px;}
+  .header-sub-fila{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   header .ver{font-family:var(--mono);font-size:12.5px;color:var(--paper);opacity:.75;border:1px solid rgba(242,239,228,.35);border-radius:999px;padding:2px 9px;}
   .operador-actual-wrap{display:flex;flex-direction:column;gap:2px;margin-left:auto;}
   .operador-actual-wrap label{font-family:var(--sans);font-size:11.5px;color:var(--paper);opacity:.9;letter-spacing:.4px;text-transform:uppercase;}
@@ -230,7 +231,7 @@
 
   .panel-registros{margin-bottom:16px;position:relative;}
   .barra-nuevo{display:flex;justify-content:flex-end;margin-bottom:8px;}
-  .barra-activo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff6d6;border:1px solid #c9b45e;border-left:8px solid var(--accent);border-radius:var(--radius);padding:10px 14px;box-shadow:0 2px 8px rgba(38,51,43,.14);}
+  .barra-activo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#ddd6bb;border:1px solid var(--line-fuerte);border-left:8px solid var(--accent);border-radius:var(--radius);padding:10px 14px;box-shadow:0 2px 8px rgba(38,51,43,.14);}
   .chip-activo{font-size:14.5px;flex:1;min-width:160px;color:var(--ink);}
   .chip-titulo{display:block;font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;color:var(--accent);font-weight:700;margin-bottom:2px;}
   .chip-activo strong{font-family:var(--mono);color:var(--ink);}
@@ -432,14 +433,13 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <span class="header-subtitulo">Proyecto WikiTaxa</span>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.27</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off" readonly>
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
-  <span class="ver" id="ver-chip">v0.9.27</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">

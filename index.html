@@ -41,6 +41,27 @@
   #tabs-inner{display:flex;overflow-x:auto;max-width:var(--ancho-max);margin:0 auto;padding:8px var(--gutter) 0;gap:6px;}
   nav#tabs{background:#d9d2b6;border-bottom:3px solid var(--accent);}
   nav#tabs button{font-family:var(--sans);font-size:15.5px;font-weight:700;padding:11px 22px;background:#fffdf8;border:1.5px solid var(--line-fuerte);border-bottom:none;border-radius:9px 9px 0 0;color:var(--ink);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
+  nav#tabs button[data-tab="consultas"]{background:#e9f0f2;border-color:#8fa5ad;margin-right:22px;}
+  nav#tabs button[data-tab="sistema"]{background:#ece6d3;border-color:#a99f80;margin-left:22px;}
+  .cons-buscador{display:flex;gap:8px;align-items:center;margin:6px 0;}
+  .cons-in-general{flex:1;font-size:16px;padding:10px 12px;border:2px solid var(--accent-2);border-radius:9px;}
+  .cons-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;}
+  .cons-chip{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-2);border-radius:999px;padding:2px 4px 2px 10px;font-size:12.5px;font-weight:700;}
+  .cons-chip button{border:0;background:transparent;color:var(--accent);cursor:pointer;font-weight:800;padding:0 6px;}
+  .cons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:8px 0;}
+  .cons-grid .campo input{width:100%;}
+  .cons-rango-in{display:flex;align-items:center;gap:6px;}
+  .cons-rango-in input{flex:1;min-width:0;}
+  .cons-grupo{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:#fffdf8;}
+  .cons-grupo summary{cursor:pointer;font-weight:800;color:var(--accent);}
+  .cons-tiene{margin:10px 0;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:14px;}
+  .cons-cab{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;}
+  .cons-acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;}
+  .cons-fila{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:9px;background:#fffdf8;padding:8px 12px;margin:6px 0;}
+  .cons-fila:hover{border-color:var(--accent-2);background:#fff;}
+  .cons-fila .info{min-width:0;}
+  .cons-fila .cons-nom{font-style:italic;font-weight:700;color:var(--accent);}
+  .cons-fila .acciones-fila{display:flex;gap:6px;flex-shrink:0;}
   nav#tabs button:hover{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-2);}
   nav#tabs button.active{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:800;box-shadow:0 -3px 8px rgba(38,51,43,.3);padding-top:13px;margin-bottom:-3px;}
   nav#tabs button.active:hover{background:var(--accent);color:#fff;}
@@ -234,7 +255,7 @@
     <label for="input-operador-actual">Operador actual</label>
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off">
   </div>
-  <span class="ver" id="ver-chip">v0.9.16 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.17 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -248,6 +269,7 @@
 </div>
 
 <nav id="tabs"><div id="tabs-inner">
+  <button data-tab="consultas">Consultas</button>
   <button data-tab="entrada" class="active">Entrada</button>
   <button data-tab="preparacion">Preparación</button>
   <button data-tab="deposito">Depósito</button>
@@ -256,6 +278,34 @@
 </div></nav>
 
 <main>
+
+  <!-- CONSULTAS -->
+  <section class="tabpanel" id="tab-consultas">
+    <div class="bloque">
+      <h2>Buscar en la colección <button type="button" class="ayuda-btn" data-ayuda="ayuda-consultas" aria-label="Ayuda" title="Ayuda">?</button></h2>
+      <div class="ayuda-panel oculto" id="ayuda-consultas">Cada palabra del buscador general y cada filtro estrechan el resultado anterior: primero uno, sobre eso el siguiente, hasta llegar al registro buscado. Las sugerencias de cada campo muestran solo lo que existe entre los registros que quedan. No distingue mayúsculas ni tildes. Las etiquetas bajo el buscador muestran los filtros activos y se quitan con la ✕.</div>
+      <div class="cons-buscador">
+        <input type="search" id="cons-texto" class="cons-in-general" placeholder="Buscar en todos los campos: nombre, localidad, colector, número, observaciones…" autocomplete="off">
+        <button type="button" class="btn small tenue oculto" id="cons-limpiar">Limpiar filtros</button>
+      </div>
+      <div class="cons-chips" id="cons-chips"></div>
+      <div class="cons-grid" id="cons-principales"></div>
+      <details class="det-carpetas cons-mas"><summary>Más filtros</summary><div id="cons-secundarios"></div></details>
+    </div>
+    <div class="bloque">
+      <div class="cons-cab">
+        <h2 id="cons-titulo">Resultados</h2>
+        <div class="cons-acciones">
+          <label>Ordenar por <select id="cons-orden"><option value="catalogo">N.º de catálogo</option><option value="campo">N.º de campo</option><option value="nombre">Nombre científico</option><option value="localidad">Localidad</option><option value="fecha">Fecha de colecta</option></select></label>
+          <button type="button" class="btn small secundario" id="cons-csv" title="Archivo de texto separado por comas, abre en Excel y sirve para GBIF">Descargar CSV</button>
+          <button type="button" class="btn small secundario" id="cons-xlsx" title="Planilla de Excel">Descargar Excel</button>
+        </div>
+      </div>
+      <p class="nota" id="cons-msg"></p>
+      <div id="cons-lista"></div>
+      <button type="button" class="btn small secundario oculto" id="cons-mas-btn">Mostrar más resultados</button>
+    </div>
+  </section>
 
   <!-- ENTRADA -->
   <section class="tabpanel active" id="tab-entrada">
@@ -560,7 +610,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.16</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.17</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -659,7 +709,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.16";
+var APP_VERSION = "v0.9.17";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -745,13 +795,14 @@ function activarTab(nombre){
   var contReg = document.querySelector(".slot-panel-registros");
   if(contReg) montarPanelRegistros(contReg);
   if(typeof pintarAvisoClasif==="function" && borrador) pintarAvisoClasif();
+  if(nombre==="consultas") pintarConsultas();
 }
 tabButtons.forEach(function(btn){ btn.addEventListener("click", function(){ activarTab(btn.getAttribute("data-tab")); }); });
 
 // deslizamiento lateral (touch)
 (function(){
   var startX=0,startY=0,tracking=false;
-  var orden=["entrada","preparacion","deposito","manejo","sistema"];
+  var orden=["consultas","entrada","preparacion","deposito","manejo","sistema"];
   var mainEl=document.querySelector("main");
   mainEl.addEventListener("touchstart",function(e){
     if(e.touches.length!==1) return;
@@ -1733,6 +1784,10 @@ function montarPanelRegistros(cont){
   var modoTexto = activoId===null ? (origenDuplicado ? "Duplicando" : "Nuevo") : (editando ? "Editando" : "Consulta");
   var btnTabActivo = document.querySelector("#tabs button.active");
   var esTabEntrada = !!btnTabActivo && btnTabActivo.getAttribute("data-tab")==="entrada";
+  if(btnTabActivo && btnTabActivo.getAttribute("data-tab")==="consultas"){
+    cont.innerHTML='<div class="barra-activo"><span class="badge-modo badge-modo-consulta">Consulta</span><span class="chip-activo"><span class="chip-titulo">Consulta actual</span>'+resumenConsultaHtml()+'</span></div>';
+    return;
+  }
   var html = '<div class="barra-nuevo">';
   html += '<button class="btn secundario small btn-nuevo-registro">+ Nuevo registro</button>';
   if(esTabEntrada){
@@ -1960,6 +2015,8 @@ function renderResumenDatos(){
   });
 }
 function refrescarPanelesRegistros(){
+  var bAct=document.querySelector("#tabs button.active");
+  if(bAct && bAct.getAttribute("data-tab")==="consultas" && consConstruida){ pintarConsultas(); return; }
   document.querySelectorAll(".slot-panel-registros").forEach(montarPanelRegistros);
   renderResumenDatos();
 }
@@ -2687,6 +2744,362 @@ async function reordenarTodos(){
 }
 document.getElementById("btn-reordenar-registro").addEventListener("click", function(){ reordenarEjemplarActual(null); });
 document.getElementById("btn-carpeta-reordenar").addEventListener("click", reordenarTodos);
+
+// ---------- Consultas: buscador general y filtros aditivos ----------
+function normTxt(s){ return String(s==null?"":s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim(); }
+function nombreVigenteReg(r){
+  var d=(r.determinaciones&&r.determinaciones.length)?r.determinaciones[r.determinaciones.length-1]:null;
+  return d ? [d.calificador,d.nombreCientifico].filter(Boolean).join(" ") : (r.taxon||"");
+}
+function listaVals(r, lista, clave){ return (r[lista]||[]).map(function(x){ return x[clave]; }).filter(Boolean); }
+function CF(k,l,g,p,v){ return {k:k,l:l,g:g,p:p,v:v}; }
+function campoSimple(k,l,g,p){ return CF(k,l,g,p,function(r){ return r[k]!=null && r[k]!=="" ? [String(r[k])] : []; }); }
+var CONS_CAMPOS = [
+  CF("nombre","Nombre científico","Taxonomía",true,function(r){
+    var v=(r.determinaciones||[]).map(function(d){ return [d.calificador,d.nombreCientifico].filter(Boolean).join(" "); }).filter(Boolean);
+    if(r.taxon) v.push(r.taxon);
+    return v;
+  }),
+  campoSimple("phylum","Phylum","Taxonomía",true), campoSimple("clase","Clase","Taxonomía",true), campoSimple("orden","Orden","Taxonomía",true),
+  campoSimple("familia","Familia","Taxonomía",true), campoSimple("genero","Género","Taxonomía",true),
+  CF("localidad","Localidad","Lugar",true,function(r){ return [r.localidad,r.localidadVerbatim].filter(Boolean); }),
+  campoSimple("region","Región","Lugar",true),
+  campoSimple("colector","Colector","Personas",true),
+  CF("catalogo","N.º de catálogo","Números",true,function(r){ var c=construirCatalogoCompleto(r); return [c,r.catalogo].filter(Boolean); }),
+  campoSimple("numeroCampo","N.º de campo","Números",true),
+  CF("coleccion","Colección","Colección",true,function(r){ return [nombreColeccionCompleto(r), r.coleccionAcronimo].filter(Boolean); }),
+  campoSimple("estadoUbicacion","Estado","Manejo",true),
+  // secundarios, agrupados por la pestaña de origen
+  campoSimple("provincia","Provincia","Terreno"), campoSimple("comuna","Comuna","Terreno"),
+  campoSimple("habitat","Hábitat","Terreno"), campoSimple("microhabitat","Microhábitat","Terreno"),
+  campoSimple("metodoColecta","Método de recolección","Terreno"), campoSimple("estacion","Estación","Terreno"),
+  campoSimple("altitud_m","Altitud (m)","Terreno"), campoSimple("coordenadasOriginales","Coordenadas originales","Terreno"),
+  campoSimple("numeroAccesion","N.º de entrada","Entrada"), campoSimple("procedencia","Procedencia","Entrada"),
+  campoSimple("destino","Destino","Entrada"), campoSimple("condicionAccesion","Condición de la accesión","Entrada"),
+  campoSimple("legatario","Legatario","Entrada"), campoSimple("proyectoOrigen","Proyecto de origen","Entrada"),
+  campoSimple("tipoAccesion","Tipo de accesión","Entrada"),
+  campoSimple("tipoColeccion","Tipo de colección","Preparación"), campoSimple("medioFijado","Medio de fijado","Preparación"),
+  campoSimple("conservacion","Conservación","Preparación"), campoSimple("preparacion","Preparación","Preparación"),
+  campoSimple("condicionEjemplar","Condición del ejemplar","Preparación"),
+  CF("tipoSubmuestra","Tipo de submuestra","Preparación",false,function(r){ return listaVals(r,"submuestras","tipoSubmuestra"); }),
+  CF("numeroVial","N.º de vial","Preparación",false,function(r){ return listaVals(r,"submuestras","numeroVial"); }),
+  CF("fotografo","Fotógrafo","Preparación",false,function(r){ return listaVals(r,"fotos","fotografo"); }),
+  CF("tipoFoto","Tipo de foto","Preparación",false,function(r){ return listaVals(r,"fotos","tipoFoto"); }),
+  CF("determinador","Determinador","Depósito",false,function(r){ return listaVals(r,"determinaciones","determinador"); }),
+  campoSimple("catalogador","Catalogador","Depósito"), campoSimple("tipoNomenclatural","Tipo nomenclatural","Depósito"),
+  campoSimple("publicacionOriginal","Publicación original","Depósito"),
+  CF("pdf","PDF de publicaciones (nombre)","Depósito",false,function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }); }),
+  campoSimple("asociacionesBiologicas","Asociaciones biológicas","Depósito"), campoSimple("observacionesBiologicas","Observaciones biológicas","Depósito"),
+  campoSimple("ubicacionColeccion","Ubicación en colección","Manejo"), campoSimple("tipoBaja","Tipo de baja","Manejo"),
+  campoSimple("destinatario","Destinatario de la baja","Manejo"), campoSimple("numeroBaja","N.º de baja","Manejo"),
+  CF("solicitante","Solicitante de préstamo","Manejo",false,function(r){ return listaVals(r,"prestamos","solicitante"); }),
+  CF("evento","Evento de uso","Manejo",false,function(r){ return listaVals(r,"usos","evento"); }),
+  CF("responsableUso","Responsable de uso","Manejo",false,function(r){ return listaVals(r,"usos","responsable"); })
+];
+var CONS_RANGOS = [
+  {k:"colecta", l:"Fecha de colecta", p:true, v:function(r){ return r.fechaColecta||""; }},
+  {k:"recepcion", l:"Fecha de recepción", p:false, v:function(r){ return r.fechaRecepcion||""; }},
+  {k:"catalogacion", l:"Fecha de catalogación", p:false, v:function(r){ return r.fechaCatalogacion||""; }}
+];
+var CONS_GRUPOS = ["Terreno","Entrada","Preparación","Depósito","Manejo"];
+var consEstado = {texto:"", f:{}, r:{}, tiene:{coord:false, fotos:false, pdf:false}, orden:"catalogo", mostrar:100};
+var consIndice = {};
+function indiceTexto(r){
+  var c=consIndice[r.id];
+  if(c && c.m===r.modificadoEn) return c.t;
+  var partes=[];
+  (function rec(o,prof){
+    if(o==null || prof>4) return;
+    if(typeof o==="object"){ Object.keys(o).forEach(function(k){ if(k==="id"||k==="archivo") return; rec(o[k],prof+1); }); }
+    else partes.push(o);
+  })(r,0);
+  var t=normTxt(partes.join(" | ")); consIndice[r.id]={m:r.modificadoEn,t:t}; return t;
+}
+function fechaEnRango(f,d,h){
+  if(!d && !h) return true;
+  f=String(f||"").trim(); if(!f) return false;
+  var m=f.match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/); if(!m) return false;
+  var lo=m[1]+"-"+(m[2]||"01")+"-"+(m[3]||"01"), hi=m[1]+"-"+(m[2]||"12")+"-"+(m[3]||"31");
+  return (!d || hi>=d) && (!h || lo<=h);
+}
+function cumpleConsulta(r, omitir){
+  var e=consEstado, i;
+  if(e.texto){
+    var txt=indiceTexto(r), toks=normTxt(e.texto).split(/\s+/);
+    for(i=0;i<toks.length;i++) if(toks[i] && txt.indexOf(toks[i])<0) return false;
+  }
+  for(i=0;i<CONS_CAMPOS.length;i++){
+    var c=CONS_CAMPOS[i], q=normTxt(e.f[c.k]);
+    if(!q || c.k===omitir) continue;
+    if(!c.v(r).some(function(v){ return normTxt(v).indexOf(q)>-1; })) return false;
+  }
+  for(i=0;i<CONS_RANGOS.length;i++){
+    var g=CONS_RANGOS[i], rg=e.r[g.k];
+    if(rg && (rg.d||rg.h) && !fechaEnRango(g.v(r), rg.d, rg.h)) return false;
+  }
+  if(e.tiene.coord && !coordenadasRegistro(r)) return false;
+  if(e.tiene.fotos && !(r.fotos||[]).some(function(f){ return f.archivo; })) return false;
+  if(e.tiene.pdf && !((r.publicacionesPdf||[]).length)) return false;
+  return true;
+}
+function resultadosConsulta(){
+  var lista=registros.filter(function(r){ return cumpleConsulta(r); });
+  var o=consEstado.orden;
+  function clave(r){
+    if(o==="nombre") return normTxt(nombreVigenteReg(r));
+    if(o==="fecha") return r.fechaColecta||"";
+    if(o==="localidad") return normTxt(r.localidad||r.localidadVerbatim);
+    if(o==="campo") return normTxt(r.numeroCampo);
+    return normTxt(construirCatalogoCompleto(r)||r.catalogo||"~"+(r.numeroCampo||""));
+  }
+  var cmp = o==="campo"||o==="catalogo" ? function(a,b){ return clave(a).localeCompare(clave(b),"es",{numeric:true}); } : function(a,b){ return clave(a)<clave(b)?-1:clave(a)>clave(b)?1:0; };
+  return lista.sort(cmp);
+}
+function resumenConsulta(lista){
+  var res={n:lista.length, total:registros.length, coord:0, fotos:0, taxones:{}, familias:{}, locs:{}, colectores:{}, fmin:"", fmax:""};
+  lista.forEach(function(r){
+    if(coordenadasRegistro(r)) res.coord++;
+    if((r.fotos||[]).some(function(f){ return f.archivo; })) res.fotos++;
+    var nv=nombreVigenteReg(r); if(nv) res.taxones[nv]=1;
+    if(r.familia) res.familias[r.familia]=(res.familias[r.familia]||0)+1;
+    var l=r.localidad||r.localidadVerbatim; if(l) res.locs[l]=1;
+    if(r.colector) res.colectores[r.colector]=(res.colectores[r.colector]||0)+1;
+    var f=String(r.fechaColecta||"").slice(0,10);
+    if(f){ if(!res.fmin||f<res.fmin) res.fmin=f; if(!res.fmax||f>res.fmax) res.fmax=f; }
+  });
+  return res;
+}
+function topN(obj,n){ return Object.keys(obj).sort(function(a,b){ return obj[b]-obj[a] || a.localeCompare(b); }).slice(0,n).map(function(k){ return k+" ("+obj[k]+")"; }); }
+function hayFiltrosConsulta(){
+  var e=consEstado;
+  return !!(e.texto.trim() || Object.keys(e.f).some(function(k){ return e.f[k]; }) || Object.keys(e.r).some(function(k){ return e.r[k] && (e.r[k].d||e.r[k].h); }) || e.tiene.coord || e.tiene.fotos || e.tiene.pdf);
+}
+function resumenConsultaHtml(){
+  var lista=registros.filter(function(r){ return cumpleConsulta(r); }), s=resumenConsulta(lista);
+  var filtrado=hayFiltrosConsulta();
+  var h='<strong>'+s.n+(filtrado?' de '+s.total:'')+' registro(s)'+(filtrado?' coinciden':' en la colección (sin filtros)')+'</strong>';
+  if(s.n){
+    var p=[];
+    p.push(Object.keys(s.taxones).length+' taxón(es)');
+    p.push(Object.keys(s.locs).length+' localidad(es)');
+    p.push(s.coord+' con coordenadas');
+    p.push(s.fotos+' con fotos');
+    if(s.fmin) p.push('colecta '+(s.fmin===s.fmax?s.fmin:s.fmin+' a '+s.fmax));
+    h+='<br>'+escapeHtml(p.join(' · '));
+    var fam=topN(s.familias,3), col=topN(s.colectores,3);
+    if(fam.length) h+='<br>Familias: '+escapeHtml(fam.join(', '));
+    if(col.length) h+='<br>Colectores: '+escapeHtml(col.join(', '));
+  }
+  return h;
+}
+// ---- interfaz ----
+var consConstruida=false;
+function opcionesCampo(c){
+  var vistos={}, out=[];
+  registros.forEach(function(r){ if(cumpleConsulta(r,c.k)) c.v(r).forEach(function(v){ v=String(v).trim(); if(v && !vistos[v]){ vistos[v]=1; out.push(v); } }); });
+  return out.sort(function(a,b){ return a.localeCompare(b,"es"); }).slice(0,400);
+}
+function construirConsultas(){
+  if(consConstruida) return; consConstruida=true;
+  var pr=document.getElementById("cons-principales"), sec=document.getElementById("cons-secundarios");
+  function campoUI(c){
+    var d=document.createElement("div"); d.className="campo opc";
+    d.innerHTML='<div class="lbl"><span class="name">'+escapeHtml(c.l)+'</span></div><input type="text" class="cons-in" data-k="'+c.k+'" list="dl-'+c.k+'" autocomplete="off"><datalist id="dl-'+c.k+'"></datalist>';
+    return d;
+  }
+  function rangoUI(g){
+    var d=document.createElement("div"); d.className="campo opc cons-rango";
+    d.innerHTML='<div class="lbl"><span class="name">'+escapeHtml(g.l)+'</span></div><div class="cons-rango-in"><input type="date" class="cons-fecha" data-r="'+g.k+'" data-lado="d" title="Desde"><span>a</span><input type="date" class="cons-fecha" data-r="'+g.k+'" data-lado="h" title="Hasta"></div>';
+    return d;
+  }
+  CONS_CAMPOS.filter(function(c){ return c.p; }).forEach(function(c){ pr.appendChild(campoUI(c)); });
+  CONS_RANGOS.filter(function(g){ return g.p; }).forEach(function(g){ pr.appendChild(rangoUI(g)); });
+  CONS_GRUPOS.forEach(function(gr){
+    var det=document.createElement("details"); det.className="cons-grupo";
+    var grid=document.createElement("div"); grid.className="cons-grid";
+    det.innerHTML='<summary>'+escapeHtml(gr)+'</summary>'; det.appendChild(grid);
+    CONS_CAMPOS.filter(function(c){ return !c.p && c.g===gr; }).forEach(function(c){ grid.appendChild(campoUI(c)); });
+    CONS_RANGOS.filter(function(g){ return !g.p && ((gr==="Entrada"&&g.k==="recepcion")||(gr==="Depósito"&&g.k==="catalogacion")); }).forEach(function(g){ grid.appendChild(rangoUI(g)); });
+    sec.appendChild(det);
+  });
+  var tiene=document.createElement("div"); tiene.className="cons-tiene";
+  tiene.innerHTML='<span class="name">Solo registros con:</span> <label><input type="checkbox" data-t="coord"> coordenadas</label> <label><input type="checkbox" data-t="fotos"> fotos</label> <label><input type="checkbox" data-t="pdf"> PDF de publicaciones</label>';
+  sec.appendChild(tiene);
+  var tab=document.getElementById("tab-consultas");
+  tab.addEventListener("input", function(e){
+    var t=e.target;
+    if(t.id==="cons-texto"){ consEstado.texto=t.value; }
+    else if(t.classList.contains("cons-in")){ consEstado.f[t.getAttribute("data-k")]=t.value; }
+    else if(t.classList.contains("cons-fecha")){
+      var k=t.getAttribute("data-r"); consEstado.r[k]=consEstado.r[k]||{d:"",h:""}; consEstado.r[k][t.getAttribute("data-lado")]=t.value;
+    } else if(t.getAttribute("data-t")){ consEstado.tiene[t.getAttribute("data-t")]=t.checked; }
+    else return;
+    consEstado.mostrar=100; pintarConsultas(t);
+  });
+  document.getElementById("cons-orden").addEventListener("change", function(){ consEstado.orden=this.value; pintarConsultas(); });
+  document.getElementById("cons-limpiar").addEventListener("click", limpiarConsulta);
+  document.getElementById("cons-mas-btn").addEventListener("click", function(){ consEstado.mostrar+=100; pintarConsultas(); });
+  document.getElementById("cons-csv").addEventListener("click", function(){ descargarConsulta("csv"); });
+  document.getElementById("cons-xlsx").addEventListener("click", function(){ descargarConsulta("xlsx"); });
+  document.getElementById("cons-chips").addEventListener("click", function(e){
+    var b=e.target.closest("button[data-quitar]"); if(!b) return;
+    var q=b.getAttribute("data-quitar");
+    if(q==="texto") consEstado.texto="";
+    else if(q.indexOf("f:")===0) consEstado.f[q.slice(2)]="";
+    else if(q.indexOf("r:")===0) consEstado.r[q.slice(2)]={d:"",h:""};
+    else if(q.indexOf("t:")===0) consEstado.tiene[q.slice(2)]=false;
+    sincronizarCamposConsulta(); pintarConsultas();
+  });
+  document.getElementById("cons-lista").addEventListener("click", function(e){
+    var fila=e.target.closest(".cons-fila"); if(!fila) return;
+    var id=fila.getAttribute("data-id");
+    if(e.target.closest(".cons-btn-cargar")){ consultarRegistro(id); refrescarPanelesRegistros(); return; }
+    mostrarFichaConsulta(id);
+  });
+}
+function sincronizarCamposConsulta(){
+  var tab=document.getElementById("tab-consultas");
+  document.getElementById("cons-texto").value=consEstado.texto;
+  tab.querySelectorAll(".cons-in").forEach(function(i){ i.value=consEstado.f[i.getAttribute("data-k")]||""; });
+  tab.querySelectorAll(".cons-fecha").forEach(function(i){ var g=consEstado.r[i.getAttribute("data-r")]; i.value=(g&&g[i.getAttribute("data-lado")])||""; });
+  tab.querySelectorAll("[data-t]").forEach(function(i){ i.checked=!!consEstado.tiene[i.getAttribute("data-t")]; });
+}
+function limpiarConsulta(){
+  consEstado.texto=""; consEstado.f={}; consEstado.r={}; consEstado.tiene={coord:false,fotos:false,pdf:false}; consEstado.mostrar=100;
+  sincronizarCamposConsulta(); pintarConsultas();
+}
+function pintarConsultas(){
+  var tabAct=document.querySelector("#tabs button.active");
+  construirConsultas();
+  var e=consEstado, chips=[];
+  if(e.texto.trim()) chips.push(["texto","Texto: "+e.texto.trim()]);
+  CONS_CAMPOS.forEach(function(c){ if((e.f[c.k]||"").trim()) chips.push(["f:"+c.k, c.l+": "+e.f[c.k].trim()]); });
+  CONS_RANGOS.forEach(function(g){ var r=e.r[g.k]; if(r&&(r.d||r.h)) chips.push(["r:"+g.k, g.l+": "+(r.d||"…")+" a "+(r.h||"…")]); });
+  [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"]].forEach(function(t){ if(e.tiene[t[0]]) chips.push(["t:"+t[0],"Solo "+t[1]]); });
+  document.getElementById("cons-chips").innerHTML=chips.map(function(c){ return '<span class="cons-chip">'+escapeHtml(c[1])+' <button type="button" data-quitar="'+escapeHtml(c[0])+'" title="Quitar este filtro">✕</button></span>'; }).join("");
+  document.getElementById("cons-limpiar").classList.toggle("oculto", !chips.length);
+  // sugerencias: sólo lo que existe entre los registros que quedan con los demás filtros
+  CONS_CAMPOS.forEach(function(c){
+    var dl=document.getElementById("dl-"+c.k); if(!dl) return;
+    dl.innerHTML=opcionesCampo(c).map(function(v){ return '<option value="'+escapeHtml(v)+'">'; }).join("");
+  });
+  var lista=resultadosConsulta();
+  document.getElementById("cons-titulo").textContent="Resultados ("+lista.length+(lista.length!==registros.length?" de "+registros.length:"")+")";
+  var cont=document.getElementById("cons-lista"), h="";
+  if(!registros.length) h='<p class="nota">Todavía no hay registros cargados.</p>';
+  else if(!lista.length) h='<p class="nota">Ningún registro coincide con los filtros actuales. Quita alguno con la ✕ de las etiquetas.</p>';
+  lista.slice(0,e.mostrar).forEach(function(r){
+    var et=etiquetaRegistro(r);
+    var extra=[r.phylum,r.clase,r.orden,r.familia,r.genero].filter(Boolean).join(" › ");
+    h+='<div class="cons-fila" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong><br><span class="cons-nom">'+escapeHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small cons-btn-ver">Consultar</button><button class="btn tenue small cons-btn-cargar" title="Dejar este registro como Registro actual">Cargar</button></div></div>';
+  });
+  cont.innerHTML=h;
+  document.getElementById("cons-mas-btn").classList.toggle("oculto", lista.length<=e.mostrar);
+  document.getElementById("cons-csv").disabled=document.getElementById("cons-xlsx").disabled=!lista.length;
+  document.querySelectorAll(".slot-panel-registros").forEach(montarPanelRegistros);
+}
+function refrescarConsultasSiVisible(){
+  var b=document.querySelector("#tabs button.active");
+  if(b && b.getAttribute("data-tab")==="consultas") pintarConsultas();
+}
+// ---- descarga de resultados ----
+var CONS_COLUMNAS = [
+  ["N.º de catálogo",function(r){ return construirCatalogoCompleto(r)||r.catalogo||""; }],
+  ["N.º de campo",function(r){ return r.numeroCampo; }], ["N.º de entrada",function(r){ return r.numeroAccesion; }],
+  ["Nombre científico (vigente)",nombreVigenteReg],
+  ["Phylum",function(r){ return r.phylum; }], ["Clase",function(r){ return r.clase; }], ["Orden",function(r){ return r.orden; }],
+  ["Familia",function(r){ return r.familia; }], ["Género",function(r){ return r.genero; }],
+  ["Localidad",function(r){ return r.localidad; }], ["Localidad (verbatim)",function(r){ return r.localidadVerbatim; }],
+  ["Región",function(r){ return r.region; }], ["Provincia",function(r){ return r.provincia; }], ["Comuna",function(r){ return r.comuna; }],
+  ["Latitud",function(r){ var c=coordenadasRegistro(r); return c?c.lat:""; },"n"], ["Longitud",function(r){ var c=coordenadasRegistro(r); return c?c.lng:""; },"n"],
+  ["Altitud (m)",function(r){ return r.altitud_m; },"n"],
+  ["Fecha de colecta",function(r){ return r.fechaColecta; }], ["Colector",function(r){ return r.colector; }],
+  ["Hábitat",function(r){ return r.habitat; }], ["Método de recolección",function(r){ return r.metodoColecta; }],
+  ["Institución",function(r){ return r.institucionAcronimo; }], ["Colección",function(r){ return r.coleccionAcronimo; }],
+  ["Tipo de colección",function(r){ return r.tipoColeccion; }], ["Conservación",function(r){ return r.conservacion; }],
+  ["Estado",function(r){ return r.estadoUbicacion; }], ["Ubicación en colección",function(r){ return r.ubicacionColeccion; }],
+  ["Tipo nomenclatural",function(r){ return r.tipoNomenclatural; }],
+  ["Determinador",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].determinador:""; }],
+  ["Fecha de determinación",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].fechaDeterminacion:""; }],
+  ["N.º de fotos",function(r){ return (r.fotos||[]).filter(function(f){ return f.archivo; }).length; },"n"],
+  ["PDF de publicaciones",function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }).join("; "); }]
+];
+function filasConsulta(){
+  var lista=resultadosConsulta();
+  return [CONS_COLUMNAS.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return CONS_COLUMNAS.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
+}
+function csvDeFilas(filas){
+  return "﻿"+filas.map(function(f){ return f.map(function(v){ v=String(v); return /[",\r\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(","); }).join("\r\n")+"\r\n";
+}
+var crcTabla=null;
+function crc32(u8){
+  if(!crcTabla){ crcTabla=[]; for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); crcTabla[n]=c>>>0; } }
+  var c2=0xFFFFFFFF; for(var i=0;i<u8.length;i++) c2=crcTabla[(c2^u8[i])&255]^(c2>>>8);
+  return (c2^0xFFFFFFFF)>>>0;
+}
+// Zip sin compresión (suficiente para un .xlsx pequeño): cabeceras locales + directorio central.
+function zipSinCompresion(archivos){
+  var enc=new TextEncoder(), trozos=[], central=[], off=0;
+  archivos.forEach(function(a){
+    var nom=enc.encode(a.nombre), dat=a.datos, crc=crc32(dat);
+    var lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,0,true);
+    lh.setUint16(10,0,true); lh.setUint16(12,33,true); lh.setUint32(14,crc,true); lh.setUint32(18,dat.length,true); lh.setUint32(22,dat.length,true);
+    lh.setUint16(26,nom.length,true); lh.setUint16(28,0,true);
+    trozos.push(new Uint8Array(lh.buffer), nom, dat);
+    var ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true);
+    ch.setUint16(12,0,true); ch.setUint16(14,33,true); ch.setUint32(16,crc,true); ch.setUint32(20,dat.length,true); ch.setUint32(24,dat.length,true);
+    ch.setUint16(28,nom.length,true); ch.setUint32(42,off,true);
+    central.push(new Uint8Array(ch.buffer), nom);
+    off+=30+nom.length+dat.length;
+  });
+  var tamC=central.reduce(function(s,t){ return s+t.length; },0);
+  var fin=new DataView(new ArrayBuffer(22));
+  fin.setUint32(0,0x06054b50,true); fin.setUint16(8,archivos.length,true); fin.setUint16(10,archivos.length,true); fin.setUint32(12,tamC,true); fin.setUint32(16,off,true);
+  return new Blob(trozos.concat(central,[new Uint8Array(fin.buffer)]),{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+}
+function xmlEsc(s){ return String(s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function letraColumna(i){ var s=""; i++; while(i>0){ var m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26); } return s; }
+function xlsxDeFilas(filas){
+  var enc=new TextEncoder(), cab='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+  var tipos=CONS_COLUMNAS.map(function(c){ return c[2]||""; });
+  var filasXml=filas.map(function(f,ri){
+    return '<row r="'+(ri+1)+'">'+f.map(function(v,ci){
+      var ref=letraColumna(ci)+(ri+1);
+      if(v===""||v==null) return "";
+      if(ri>0 && tipos[ci]==="n" && isFinite(Number(v))) return '<c r="'+ref+'"><v>'+Number(v)+'</v></c>';
+      return '<c r="'+ref+'" t="inlineStr"'+(ri===0?' s="1"':'')+'><is><t xml:space="preserve">'+xmlEsc(v)+'</t></is></c>';
+    }).join("")+'</row>';
+  }).join("");
+  var cols='<cols>'+filas[0].map(function(t,i){ return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+Math.min(40,Math.max(11,String(t).length+4))+'" customWidth="1"/>'; }).join("")+'</cols>';
+  var ns='xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+  var rel='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  var arch=[
+    {nombre:"[Content_Types].xml", t:cab+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'},
+    {nombre:"_rels/.rels", t:cab+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+rel+'/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+    {nombre:"xl/workbook.xml", t:cab+'<workbook '+ns+' xmlns:r="'+rel+'"><sheets><sheet name="Registros" sheetId="1" r:id="rId1"/></sheets></workbook>'},
+    {nombre:"xl/_rels/workbook.xml.rels", t:cab+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+rel+'/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="'+rel+'/styles" Target="styles.xml"/></Relationships>'},
+    {nombre:"xl/styles.xml", t:cab+'<styleSheet '+ns+'><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'},
+    {nombre:"xl/worksheets/sheet1.xml", t:cab+'<worksheet '+ns+'><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'+cols+'<sheetData>'+filasXml+'</sheetData></worksheet>'}
+  ].map(function(a){ return {nombre:a.nombre, datos:enc.encode(a.t)}; });
+  return zipSinCompresion(arch);
+}
+async function descargarConsulta(formato){
+  var filas=filasConsulta();
+  if(filas.length<2){ alert("No hay resultados para descargar."); return; }
+  var f=new Date(), nombre="Consulta_Libro_de_Catalogo_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+"."+formato;
+  var blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas);
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+  var extra="";
+  if(carpetaHandle && await permisoCarpeta(false)){
+    try{ await escribirArchivo("Exportaciones", nombre, blob); extra=" Copia guardada en Exportaciones/ de la Carpeta local."; }catch(e){}
+  }
+  mensajeCarpeta((filas.length-1)+" registro(s) descargados en "+nombre+"."+extra);
+  var m=document.getElementById("cons-msg"); if(m) m.textContent=(filas.length-1)+" registro(s) descargados como "+nombre+"."+extra;
+}
 
 // ---------- Importar zip de Libreta de Campo ----------
 // Lee el .zip sin librerías: directorio central + descompresión nativa (DecompressionStream, Chrome y Edge).

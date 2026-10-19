@@ -213,6 +213,16 @@
   .media-cuerpo .ficha-campo{grid-template-columns:minmax(120px,190px) 1fr;}
   .media-titulo{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--accent);}
   .ficha-mapa{width:100%;height:clamp(300px,52vh,560px);border:1px solid var(--line);border-radius:8px;background:var(--paper-2);}
+  .mapa-sat{position:relative;overflow:hidden;background:#1d2420;touch-action:none;cursor:grab;user-select:none;}
+  .mapa-sat.arrastrando{cursor:grabbing;}
+  .mapa-lienzo{position:absolute;inset:0;}
+  .mapa-lienzo img{position:absolute;width:256px;height:256px;max-width:none;display:block;-webkit-user-drag:none;}
+  .mapa-pin{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:3px solid #fff;background:#e0342b;box-shadow:0 0 0 2px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.5);pointer-events:none;}
+  .mapa-ctl{position:absolute;top:8px;right:8px;display:flex;flex-direction:column;gap:4px;}
+  .mapa-ctl button{width:34px;height:34px;border:none;border-radius:6px;background:#fff;color:#26332b;font-size:20px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4);}
+  .mapa-ctl button:hover{background:#e3f0e6;}
+  .mapa-attr{position:absolute;left:0;bottom:0;background:rgba(255,255,255,.78);color:#222;font-size:10.5px;padding:1px 6px;border-radius:0 6px 0 0;pointer-events:none;}
+  .mapa-msg{position:absolute;left:10px;right:50px;top:10px;background:rgba(255,246,222,.95);color:#6b4b00;font-size:12.5px;padding:6px 10px;border-radius:6px;}
   .media-pie{font-size:12.5px;color:var(--ink-soft);display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;}
   .media-vacio{display:flex;align-items:center;justify-content:center;text-align:center;min-height:200px;height:clamp(300px,52vh,560px);color:var(--ink-soft);font-size:14px;background:var(--paper-2);border:1px dashed var(--line-fuerte);border-radius:8px;padding:14px;}
   .gal-principal{position:relative;height:clamp(300px,46vh,500px);background:#1d2420;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
@@ -241,8 +251,13 @@
   .ficha-seccion-body .subtitulo-mini{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 6px;}
   .ficha-campo{display:grid;grid-template-columns:minmax(160px,230px) 1fr;gap:6px 14px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14.5px;}
   .ficha-campo:last-child{border-bottom:none;}
-  .ficha-label{color:var(--accent);font-weight:600;}
-  .ficha-valor{color:var(--ink);white-space:pre-wrap;}
+  .ficha-label{align-self:start;justify-self:start;background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;line-height:1.3;padding:3px 9px;border-radius:5px;}
+  .gbif-linea{margin-top:10px;font-size:13.5px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;}
+  .gbif-linea .gbif-txt{padding:3px 10px;border-radius:6px;font-weight:600;}
+  .gbif-ok{background:#e1f1e4;color:#1d5a2c;} .gbif-aviso{background:#fbf0d2;color:#6b4b00;} .gbif-mal{background:#f9dcd8;color:#8a1d12;} .gbif-info{background:#e8eef2;color:#2c4452;}
+  .gbif-linea a{font-size:12.5px;}
+  .ficha-valor{color:#14201a;font-weight:500;font-size:15.5px;white-space:pre-wrap;}
+  .ficha-campo{align-items:baseline;}
   .ficha-linea-institucion{text-align:center;font-family:var(--serif);font-size:15.5px;font-weight:700;letter-spacing:.3px;color:var(--ink);margin:2px 0;}
   .ficha-linea-clasificacion{text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.2px;color:var(--ink-soft);margin:6px 0 2px;}
   .ficha-subtitulo{font-family:var(--serif);font-weight:700;font-style:italic;font-size:16px;color:var(--accent);text-align:center;margin:10px 0 12px;padding-top:10px;border-top:1px solid var(--line);}
@@ -308,9 +323,9 @@
     <p class="inicio-sub">Aplicación para manejo de colecciones</p>
     <div class="inicio-nombre">
       <label for="inicio-nombre">Tu nombre y apellido</label>
-      <input type="text" id="inicio-nombre" list="inicio-sugerencias" placeholder="Nombre y apellido" autocomplete="off">
+      <input type="text" id="inicio-nombre" list="inicio-sugerencias" autocomplete="off">
       <datalist id="inicio-sugerencias"></datalist>
-      <p class="inicio-aviso" id="inicio-aviso">Escribe tu nombre y apellido para ingresar.</p>
+      <p class="inicio-aviso" id="inicio-aviso"></p>
     </div>
     <button type="button" id="btn-modo-consulta" class="inicio-btn-grande" disabled>Consultar la colección<small>Buscar y revisar los ejemplares</small></button>
     <div class="inicio-admin">
@@ -339,7 +354,7 @@
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off" readonly>
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
-  <span class="ver" id="ver-chip">v0.9.20 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.21 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -593,7 +608,7 @@
 
       <div class="subbloque">
         <h2>Clasificación</h2>
-        <p class="sub">Alimentada por la determinación vigente. Validación contra GBIF: pendiente de implementar.</p>
+        <p class="sub">Alimentada por la determinación vigente. Cada determinación se puede comprobar contra GBIF con el botón «Comprobar en GBIF».</p>
         <div class="grid">
           <div class="campo opc"><div class="lbl"><span class="name">Phylum</span><span class="key">phylum</span></div><input class="nav" data-f="phylum"></div>
           <div class="campo opc"><div class="lbl"><span class="name">Clase</span><span class="key">clase</span></div><input class="nav" data-f="clase"></div>
@@ -694,7 +709,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.20</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.21</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -753,7 +768,8 @@
         <div class="accion-card oculto" id="ac-sincronizar">
           <span class="rot">Carpeta ⇄ navegador</span>
           <button class="btn secundario small" id="btn-carpeta-sincronizar">Sincronizar ahora</button>
-          <span class="cap">Guarda en la carpeta lo que falta y avisa si ella tiene registros más nuevos.</span>
+          <button class="btn secundario small" id="btn-carpeta-actualizar">Actualizar desde la carpeta</button>
+          <span class="cap">Guarda en la carpeta lo que falta y avisa si ella tiene registros más nuevos. «Actualizar desde la carpeta» trae los cambios de otros equipos sin recargar (también se revisa sola al volver a esta ventana).</span>
         </div>
         <div class="accion-card oculto" id="ac-respaldo">
           <span class="rot">Copia de seguridad</span>
@@ -791,7 +807,7 @@
 
       <div class="bloque">
       <h2>Registro de actividad <button type="button" class="ayuda-btn" data-ayuda="ayuda-actividad" aria-label="Ayuda" title="Ayuda">?</button></h2>
-      <div class="ayuda-panel oculto" id="ayuda-actividad">Cada ingreso, búsqueda, consulta de ficha y descarga queda anotado con fecha, modo, persona y detalle en Registros/_actividad.log de la Carpeta local (también para quienes entran con «Consultar la colección»). Si la Carpeta local no está disponible, los eventos esperan en el navegador hasta que lo esté.</div>
+      <div class="ayuda-panel oculto" id="ayuda-actividad">Cada ingreso, búsqueda, consulta de ficha y descarga queda anotado con fecha, modo, persona y detalle en la carpeta Registros/_actividad de la Carpeta local (un archivo por equipo y día, para que varios equipos puedan escribir a la vez sin pisarse) (también para quienes entran con «Consultar la colección»). Si la Carpeta local no está disponible, los eventos esperan en el navegador hasta que lo esté.</div>
       <div class="barra-botones">
         <button class="btn small secundario" id="btn-actividad-ver">Ver últimos eventos</button>
         <button class="btn small secundario" id="btn-actividad-csv">Descargar todo (CSV)</button>
@@ -812,7 +828,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.20";
+var APP_VERSION = "v0.9.21";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1309,10 +1325,12 @@ function fichaTablaLista(tipo, datos){
   if(!datos || !datos.length) return "";
   var cfg = listasCfg[tipo];
   var ths = cfg.campos.map(function(c){ return '<th>'+escapeHtml(c.label)+'</th>'; }).join("");
+  if(tipo==="determinaciones") ths += '<th>GBIF</th>';
   if(cfg.destacarUltimo) ths += '<th></th>';
   var filas = datos.map(function(d,i){
     var esUltimo = cfg.destacarUltimo && i===datos.length-1;
     var tds = cfg.campos.map(function(c){ return '<td>'+escapeHtml(d[c.key]||"")+'</td>'; }).join("");
+    if(tipo==="determinaciones") tds += '<td>'+gbifCeldaHtml(d.gbif)+'</td>';
     if(cfg.destacarUltimo) tds += '<td>'+(esUltimo?"Vigente":"")+'</td>';
     return '<tr'+(esUltimo?' class="fila-vigente"':'')+'>'+tds+'</tr>';
   }).join("");
@@ -1449,11 +1467,9 @@ function coordenadasRegistro(r){
 function bloqueMediaHtml(r, general, terreno){
   var c=coordenadasRegistro(r), mapa;
   if(c){
-    var d=0.02, bbox=[c.lng-d,c.lat-d,c.lng+d,c.lat+d].map(function(n){ return n.toFixed(5); }).join("%2C");
-    var src="https://www.openstreetmap.org/export/embed.html?bbox="+bbox+"&layer=mapnik&marker="+c.lat.toFixed(5)+"%2C"+c.lng.toFixed(5);
-    var grande="https://www.openstreetmap.org/?mlat="+c.lat.toFixed(5)+"&mlon="+c.lng.toFixed(5)+"#map=14/"+c.lat.toFixed(5)+"/"+c.lng.toFixed(5);
-    mapa='<iframe class="ficha-mapa" loading="lazy" referrerpolicy="no-referrer" title="Mapa del origen del ejemplar" src="'+src+'"></iframe>'
-      +'<div class="media-pie"><span>Lat '+c.lat.toFixed(5)+', Lng '+c.lng.toFixed(5)+'</span><a href="'+grande+'" target="_blank" rel="noopener">Abrir mapa grande ↗</a></div>';
+    var grande="https://www.google.com/maps/@"+c.lat.toFixed(6)+","+c.lng.toFixed(6)+",17z/data=!3m1!1e3";
+    mapa='<div class="ficha-mapa mapa-sat" data-lat="'+c.lat+'" data-lng="'+c.lng+'" role="img" aria-label="Mapa satelital del origen del ejemplar"><div class="mapa-lienzo"></div><div class="mapa-pin" title="Origen del ejemplar"></div><div class="mapa-ctl"><button type="button" data-z="1" title="Acercar" aria-label="Acercar">+</button><button type="button" data-z="-1" title="Alejar" aria-label="Alejar">−</button></div><div class="mapa-msg oculto">Sin conexión: no se pudo cargar el mapa satelital.</div><div class="mapa-attr">Imágenes © Esri, Maxar, Earthstar Geographics</div></div>'
+      +'<div class="media-pie"><span>Lat '+c.lat.toFixed(5)+', Lng '+c.lng.toFixed(5)+'</span><a href="'+grande+'" target="_blank" rel="noopener">Abrir en Google Maps (satélite) ↗</a></div>';
   } else mapa='<div class="media-vacio">Este ejemplar no tiene coordenadas (latitud y longitud) en Datos de terreno, por eso no se puede mostrar el mapa.</div>';
   var fotos=(r.fotos||[]).filter(function(f){ return /^Fotos\//.test(f.archivo||""); });
   var gal;
@@ -1552,12 +1568,196 @@ function mostrarFichaConsulta(id){
   liberarUrlsFicha();
   dialogEl.showModal();
   cargarFotosFicha(dialogEl);
+  iniciarMapaSatelital(dialogEl);
+}
+
+// ---------- mapa satelital de la ficha (teselas Esri World Imagery, proyección Web Mercator) ----------
+var ESRI_TESELA="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+function mercatorPx(lat,lng,z){
+  var n=256*Math.pow(2,z), s=Math.sin(Math.max(-85.0511,Math.min(85.0511,lat))*Math.PI/180);
+  return {x:(lng+180)/360*n, y:(0.5-Math.log((1+s)/(1-s))/(4*Math.PI))*n};
+}
+function iniciarMapaSatelital(dialogEl){
+  var cont=dialogEl.querySelector(".mapa-sat");
+  if(!cont) return;
+  var lat=parseFloat(cont.getAttribute("data-lat")), lng=parseFloat(cont.getAttribute("data-lng"));
+  var lienzo=cont.querySelector(".mapa-lienzo"), pin=cont.querySelector(".mapa-pin"), msg=cont.querySelector(".mapa-msg");
+  var z=15, ZMIN=3, ZMAX=18, centro=mercatorPx(lat,lng,z), teselas={}, fallos=0, cargadas=0;
+  function dibujar(){
+    var w=cont.clientWidth||300, h=cont.clientHeight||300, n=Math.pow(2,z);
+    var x0=centro.x-w/2, y0=centro.y-h/2;
+    var tx0=Math.floor(x0/256), tx1=Math.floor((x0+w)/256), ty0=Math.max(0,Math.floor(y0/256)), ty1=Math.min(n-1,Math.floor((y0+h)/256));
+    var vivas={};
+    for(var ty=ty0;ty<=ty1;ty++) for(var tx=tx0;tx<=tx1;tx++){
+      var tw=((tx%n)+n)%n, k=z+"/"+tw+"/"+ty+"@"+tx;
+      vivas[k]=1;
+      var im=teselas[k];
+      if(!im){
+        im=document.createElement("img"); im.alt=""; im.draggable=false; im.decoding="async";
+        im.onload=function(){ cargadas++; msg.classList.add("oculto"); };
+        im.onerror=function(){ fallos++; if(!cargadas && fallos>=2) msg.classList.remove("oculto"); };
+        im.src=ESRI_TESELA.replace("{z}",z).replace("{y}",ty).replace("{x}",tw);
+        lienzo.appendChild(im); teselas[k]=im;
+      }
+      im.style.left=Math.round(tx*256-x0)+"px"; im.style.top=Math.round(ty*256-y0)+"px";
+    }
+    Object.keys(teselas).forEach(function(k){ if(!vivas[k]){ teselas[k].remove(); delete teselas[k]; } });
+    var p=mercatorPx(lat,lng,z);
+    pin.style.left=Math.round(p.x-x0)+"px"; pin.style.top=Math.round(p.y-y0)+"px";
+  }
+  function zoom(d){
+    var nz=Math.max(ZMIN,Math.min(ZMAX,z+d)); if(nz===z) return;
+    var f=Math.pow(2,nz-z); centro={x:centro.x*f,y:centro.y*f}; z=nz;
+    Object.keys(teselas).forEach(function(k){ teselas[k].remove(); delete teselas[k]; });
+    dibujar();
+  }
+  cont.querySelectorAll(".mapa-ctl button").forEach(function(b){
+    b.addEventListener("pointerdown", function(e){ e.stopPropagation(); });
+    b.addEventListener("click", function(){ zoom(parseInt(b.getAttribute("data-z"),10)); });
+  });
+  var arr=null;
+  cont.addEventListener("pointerdown", function(e){ arr={x:e.clientX,y:e.clientY,cx:centro.x,cy:centro.y}; cont.classList.add("arrastrando"); try{ cont.setPointerCapture(e.pointerId); }catch(er){} });
+  cont.addEventListener("pointermove", function(e){ if(!arr) return; centro={x:arr.cx-(e.clientX-arr.x), y:arr.cy-(e.clientY-arr.y)}; dibujar(); });
+  function soltar(){ arr=null; cont.classList.remove("arrastrando"); }
+  cont.addEventListener("pointerup", soltar); cont.addEventListener("pointercancel", soltar);
+  cont.addEventListener("wheel", function(e){ e.preventDefault(); zoom(e.deltaY<0?1:-1); }, {passive:false});
+  dibujar();
+  requestAnimationFrame(dibujar);
 }
 function abrirConsultaConFicha(id){
   consultarRegistro(id);
   mostrarFichaConsulta(id);
 }
 
+
+// ---------- comprobación de nombres en GBIF (API pública de coincidencia de especies) ----------
+var GBIF_API="https://api.gbif.org/v1/species";
+var GBIF_ESTADOS={ACCEPTED:"aceptado",SYNONYM:"sinónimo",DOUBTFUL:"dudoso",HETEROTYPIC_SYNONYM:"sinónimo heterotípico",HOMOTYPIC_SYNONYM:"sinónimo homotípico",PROPARTE_SYNONYM:"sinónimo parcial",MISAPPLIED:"mal aplicado"};
+var GBIF_RANGOS={KINGDOM:"reino",PHYLUM:"phylum",CLASS:"clase",ORDER:"orden",FAMILY:"familia",GENUS:"género",SPECIES:"especie",SUBSPECIES:"subespecie",VARIETY:"variedad",FORM:"forma",SUBGENUS:"subgénero",SUPERFAMILY:"superfamilia",SUBFAMILY:"subfamilia",TRIBE:"tribu",SUBORDER:"suborden",INFRAORDER:"infraorden"};
+async function gbifJson(url){
+  var ctl=(typeof AbortController!=="undefined") ? new AbortController() : null, t=null;
+  if(ctl) t=setTimeout(function(){ ctl.abort(); }, 15000);
+  try{
+    var resp=await fetch(url, ctl ? {signal:ctl.signal} : undefined);
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
+    return await resp.json();
+  } finally { if(t) clearTimeout(t); }
+}
+function clasifGbif(o){
+  return {phylum:o.phylum||"", clase:o["class"]||"", orden:o.order||"", familia:o.family||"", genero:o.genus||""};
+}
+// Devuelve el resultado normalizado que se guarda en la determinación (entrada.gbif).
+async function comprobarNombreGbif(nombre){
+  var buscado=nombre.replace(/\s+(sp|spp|sp\. nov|cf|aff)\.?\s*$/i,"").trim()||nombre; // «sp.» y similares no forman parte del nombre en GBIF
+  var q=GBIF_API+"/match?kingdom=Animalia&name="+encodeURIComponent(buscado);
+  var m=await gbifJson(q);
+  var res={consultado:nombre, fecha:new Date().toISOString(), coincidencia:m.matchType||"NONE", clave:m.usageKey||"", nombre:m.scientificName||"", rango:m.rank||"", estado:m.status||"", sinonimo:!!m.synonym, aceptadoClave:"", aceptado:"", clasif:clasifGbif(m)};
+  if(res.coincidencia==="NONE" || !res.clave){ res.coincidencia="NONE"; res.clasif=clasifGbif({}); return res; }
+  if(m.synonym && m.acceptedUsageKey){
+    res.aceptadoClave=m.acceptedUsageKey;
+    try{
+      var a=await gbifJson(GBIF_API+"/"+m.acceptedUsageKey);
+      res.aceptado=a.scientificName||a.canonicalName||""; res.clasif=clasifGbif(a);
+    }catch(e){ res.aceptado=""; }
+  }
+  return res;
+}
+function enlaceGbif(clave){ return clave ? "https://www.gbif.org/species/"+encodeURIComponent(clave) : ""; }
+function gbifResumen(g){
+  if(!g) return null;
+  var est=GBIF_ESTADOS[g.estado]||(g.estado||"").toLowerCase(), rg=GBIF_RANGOS[g.rango]||(g.rango||"").toLowerCase();
+  var det=[rg,est].filter(Boolean).join(", ");
+  if(g.coincidencia==="NONE") return {clase:"gbif-mal", texto:"Sin coincidencia en GBIF: revisa la ortografía del nombre."};
+  if(g.coincidencia==="HIGHERRANK") return {clase:"gbif-aviso", texto:"GBIF solo reconoce el nivel superior «"+g.nombre+"» ("+det+"). El nombre completo no está en GBIF."};
+  var base=(g.coincidencia==="FUZZY" ? "Coincidencia aproximada con «" : "Coincidencia exacta con «")+g.nombre+"»"+(det?" ("+det+")":"");
+  if(g.sinonimo) return {clase:"gbif-aviso", texto:base+". Es sinónimo"+(g.aceptado?" de «"+g.aceptado+"»":"")+"."};
+  if(g.coincidencia==="FUZZY") return {clase:"gbif-aviso", texto:base+": revisa la ortografía."};
+  if(g.estado && g.estado!=="ACCEPTED") return {clase:"gbif-aviso", texto:base+"."};
+  return {clase:"gbif-ok", texto:base+"."};
+}
+function gbifCeldaHtml(g){
+  var r=gbifResumen(g);
+  if(!r) return '<span class="ficha-vacio">Sin comprobar</span>';
+  var corto=g.coincidencia==="NONE" ? "Sin coincidencia" : g.coincidencia==="HIGHERRANK" ? "Solo nivel superior" : g.coincidencia==="FUZZY" ? "Aproximada" : (g.sinonimo ? "Sinónimo" : "Coincide");
+  var url=enlaceGbif(g.sinonimo && g.aceptadoClave ? g.aceptadoClave : g.clave);
+  return '<span class="gbif-txt '+r.clase+'" title="'+escapeHtml(r.texto)+'" style="padding:2px 8px;border-radius:5px;font-weight:600;white-space:nowrap">'+escapeHtml(corto)+'</span>'+(url?' <a href="'+escapeHtml(url)+'" target="_blank" rel="noopener">ver ↗</a>':'');
+}
+function usarClasificacionGbif(entrada){
+  var g=entrada.gbif; if(!g || !editando || !borrador) return;
+  var etiquetas={phylum:"Phylum",clase:"Clase",orden:"Orden",familia:"Familia",genero:"Género"};
+  var cambios=[], difieren=[];
+  Object.keys(etiquetas).forEach(function(k){
+    var v=g.clasif && g.clasif[k]; if(!v) return;
+    cambios.push(k);
+    if(borrador[k] && borrador[k]!==v) difieren.push(etiquetas[k]+": «"+borrador[k]+"» → «"+v+"»");
+  });
+  if(!cambios.length){ alert("GBIF no entrega clasificación para este nombre."); return; }
+  if(difieren.length && !confirm("Se reemplazarán estos valores de la Clasificación:\n\n"+difieren.join("\n")+"\n\n¿Continuar?")) return;
+  cambios.forEach(function(k){
+    borrador[k]=g.clasif[k];
+    var el=document.querySelector('[data-f="'+k+'"]'); if(el) el.value=g.clasif[k];
+  });
+  pintarAvisoClasif(); refrescarPanelesRegistros();
+}
+// Fila de GBIF dentro de cada determinación del bloque Depósito.
+function crearLineaGbif(entrada, esUltimo){
+  var caja=document.createElement("div"); caja.className="gbif-linea";
+  function pintar(){
+    caja.innerHTML="";
+    var g=entrada.gbif;
+    if(editando){
+      var b=document.createElement("button"); b.type="button"; b.className="btn secundario small"; b.textContent=g?"Volver a comprobar en GBIF":"Comprobar en GBIF";
+      b.onclick=async function(){
+        var nombre=nombreLimpio(entrada.nombreCientifico);
+        if(!nombre){ alert("Escribe primero el nombre científico."); return; }
+        b.disabled=true; b.textContent="Consultando GBIF…";
+        try{
+          entrada.gbif=await comprobarNombreGbif(nombre);
+          registrarActividad("gbif", nombre+" · "+entrada.gbif.coincidencia);
+          refrescarPanelesRegistros();
+        }catch(e){
+          pintar();
+          var er=document.createElement("span"); er.className="gbif-txt gbif-mal"; er.textContent="No se pudo consultar GBIF (sin conexión o servicio no disponible). Intenta de nuevo más tarde.";
+          caja.appendChild(er); return;
+        }
+        pintar();
+      };
+      caja.appendChild(b);
+    }
+    if(!g) return;
+    var vigenteNombre=nombreLimpio(entrada.nombreCientifico);
+    var r=gbifResumen(g), t=document.createElement("span");
+    if(g.consultado!==vigenteNombre){
+      t.className="gbif-txt gbif-info"; t.textContent="El nombre cambió desde la última comprobación (se consultó «"+g.consultado+"»). Vuelve a comprobarlo.";
+      caja.appendChild(t);
+      return;
+    }
+    t.className="gbif-txt "+r.clase; t.textContent=r.texto; caja.appendChild(t);
+    var url=enlaceGbif(g.clave);
+    if(url){ var a=document.createElement("a"); a.href=url; a.target="_blank"; a.rel="noopener"; a.textContent="Ver en GBIF ↗"; caja.appendChild(a); }
+    if(g.sinonimo && g.aceptadoClave){ var a2=document.createElement("a"); a2.href=enlaceGbif(g.aceptadoClave); a2.target="_blank"; a2.rel="noopener"; a2.textContent="Ver nombre aceptado ↗"; caja.appendChild(a2); }
+    if(editando){
+      if(g.sinonimo && g.aceptado){
+        var ba=document.createElement("button"); ba.type="button"; ba.className="btn tenue small"; ba.textContent="Usar nombre aceptado";
+        ba.onclick=async function(){
+          if(!confirm("Se reemplazará «"+entrada.nombreCientifico+"» por el nombre aceptado «"+g.aceptado+"». ¿Continuar?")) return;
+          entrada.nombreCientifico=g.aceptado;
+          try{ entrada.gbif=await comprobarNombreGbif(g.aceptado); }catch(e){ delete entrada.gbif; }
+          pintarLista("determinaciones"); refrescarPanelesRegistros();
+        };
+        caja.appendChild(ba);
+      }
+      if(esUltimo && g.clasif && Object.keys(g.clasif).some(function(k){ return g.clasif[k]; })){
+        var bc=document.createElement("button"); bc.type="button"; bc.className="btn tenue small"; bc.textContent="Usar clasificación de GBIF";
+        bc.title="Copia Phylum, Clase, Orden, Familia y Género de GBIF a la Clasificación del registro";
+        bc.onclick=function(){ usarClasificacionGbif(entrada); };
+        caja.appendChild(bc);
+      }
+    }
+  }
+  pintar();
+  return caja;
+}
 function datosLista(tipo){ var r=registroActivo(); if(!r) return []; if(!r[tipo]) r[tipo]=[]; return r[tipo]; }
 
 function pintarLista(tipo){
@@ -1591,11 +1791,18 @@ function pintarLista(tipo){
         input.disabled = !editando;
       } else { input=document.createElement("input"); input.type=c.type||"text"; input.readOnly = !editando; }
       input.className="nav"; input.value=entrada[c.key]||"";
-      input.addEventListener("input", function(){ entrada[c.key]=input.value; refrescarPanelesRegistros(); });
+      input.addEventListener("input", function(){
+        entrada[c.key]=input.value; refrescarPanelesRegistros();
+        if(tipo==="determinaciones" && c.key==="nombreCientifico" && entrada.gbif){
+          var linea=fila.querySelector(".gbif-linea .gbif-txt"), hay=nombreLimpio(input.value)!==entrada.gbif.consultado;
+          if(linea){ if(hay){ linea.className="gbif-txt gbif-info"; linea.textContent="El nombre cambió desde la última comprobación (se consultó «"+entrada.gbif.consultado+"»). Vuelve a comprobarlo."; } }
+        }
+      });
       campoDiv.appendChild(input);
       grid.appendChild(campoDiv);
     });
     fila.appendChild(grid);
+    if(tipo==="determinaciones") fila.appendChild(crearLineaGbif(entrada, esUltimo));
     if(tipo==="fotos" || tipo==="adjuntos"){
       var esFoto=(tipo==="fotos"), prefijo=esFoto ? /^Fotos\// : /^Adjuntos\//;
       var barra=document.createElement("div"); barra.style.cssText="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;";
@@ -1816,7 +2023,31 @@ function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   refrescarPanelesRegistros();
   if(siguienteTab) activarTab(siguienteTab);
 }
-function accionActualizar(siguienteTab){ if(modoAcceso!=="admin") return;
+// Si otro equipo guardó este mismo registro en la Carpeta local después de que lo abriste, pide confirmación antes de pisarlo.
+async function confirmarSinConflicto(){
+  if(!carpetaHandle || !activoId) return true;
+  try{
+    if(!(await permisoCarpeta(false))) return true;
+    // el archivo puede haber cambiado de nombre si otro equipo editó el catálogo o el número de campo: se busca por el id
+    var d=await dirAnidado("Registros"), sufijo="__"+activoId+".json", nombre="";
+    for await (var h of d.values()){ if(h.kind==="file" && h.name.slice(-sufijo.length)===sufijo){ nombre=h.name; break; } }
+    if(!nombre) return true;
+    var obj=JSON.parse(await (await (await d.getFileHandle(nombre)).getFile()).text());
+    var local=registroPorId(activoId), mia=(local&&local.modificadoEn)||"";
+    if(obj && obj.id===activoId && (obj.modificadoEn||"")>mia){
+      var cuando=formatearFechaHora(obj.modificadoEn);
+      var ok=confirm("Otro equipo guardó este registro en la Carpeta local ("+cuando+(obj.modificadoPor?", por "+obj.modificadoPor:"")+") después de que lo abriste.\n\nSi continúas, se reemplazarán sus cambios con los tuyos.\n\n¿Guardar de todos modos?");
+      if(!ok){ try{ await revisarCarpeta(); }catch(e){} actualizarUICarpeta(); mensajeCarpeta("No se guardó. Usa «Importar» (o «Actualizar desde la carpeta») para traer la versión más nueva."); }
+      return ok;
+    }
+  }catch(e){}
+  return true;
+}
+async function accionActualizar(siguienteTab){ if(modoAcceso!=="admin") return;
+  if(!(await confirmarSinConflicto())) return;
+  guardarActualizacion(siguienteTab);
+}
+function guardarActualizacion(siguienteTab){
   if(!borrador) borrador=registroVacioBase();
   var actualizado=clonar(borrador);
   actualizado.modificadoEn = new Date().toISOString();
@@ -2357,6 +2588,27 @@ function fusionarRegistros(lista){
   refrescarPanelesRegistros();
   return {nuevos:nuevos, actualizados:actualizados};
 }
+async function actualizarDesdeCarpeta(interactivo){
+  if(modoAcceso!=="admin" || !carpetaHandle) return;
+  if(!(await permisoCarpeta(!!interactivo))){ if(interactivo){ carpetaEstado="permiso"; actualizarUICarpeta(); } return; }
+  try{
+    var n=await revisarCarpeta();
+    if(!n){ if(interactivo) mensajeCarpeta("La app ya está al día con la Carpeta local."); actualizarUICarpeta(); return; }
+    if(interactivo){
+      var r=fusionarRegistros(pendientesCarpeta); pendientesCarpeta=[];
+      mensajeCarpeta("Actualizado desde la Carpeta local: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados."+(editando?" El registro que estás editando conserva tus cambios hasta que guardes.":""));
+    }
+  }catch(e){ if(interactivo) mensajeCarpeta("No se pudo leer la Carpeta local: "+((e&&e.message)||e)); }
+  actualizarUICarpeta();
+}
+var ultimaRevisionFoco=0;
+function revisarAlVolver(){
+  if(modoAcceso!=="admin" || !carpetaHandle || carpetaEstado!=="ok" || document.hidden) return;
+  var t=Date.now(); if(t-ultimaRevisionFoco<20000) return; ultimaRevisionFoco=t;
+  actualizarDesdeCarpeta(false);
+}
+window.addEventListener("focus", revisarAlVolver);
+document.addEventListener("visibilitychange", revisarAlVolver);
 async function importarPendientes(){ if(modoAcceso!=="admin") return;
   var r=fusionarRegistros(pendientesCarpeta);
   pendientesCarpeta=[];
@@ -2389,6 +2641,10 @@ async function elegirCarpeta(){ if(modoAcceso!=="admin") return;
   var h;
   try{ h=await window.showDirectoryPicker({mode:"readwrite", id:"libro-catalogo"}); }
   catch(e){ return; }
+  if(carpetaHandle && registros.length){
+    var misma=false; try{ misma=await carpetaHandle.isSameEntry(h); }catch(e){}
+    if(!misma && !confirm("Esta app tiene "+registros.length+" registro(s) en el navegador y ya está conectada a «"+carpetaHandle.name+"».\n\nAl cambiar a «"+h.name+"», los registros del navegador se copiarán a esa carpeta (los que falten o sean más nuevos) y se traerán los de ella. Ambos conjuntos quedarán mezclados.\n\n¿Continuar?")) return;
+  }
   try{
     carpetaHandle=h; indiceArchivos=null; modArchivo={};
     await cfgGuardar("carpetaLocal", h);
@@ -2445,7 +2701,7 @@ function importarArchivoJson(file){ if(modoAcceso!=="admin") return;
 }
 
 function actualizarUICarpeta(){
-  if(modoAcceso==="admin") volcarSesiones();
+  if(modoAcceso==="admin") volcarActividad();
   var est=document.getElementById("carpeta-estado");
   if(!est) return;
   var nombre=carpetaHandle ? carpetaHandle.name : "";
@@ -2491,6 +2747,7 @@ async function iniciarCarpeta(){
 document.getElementById("btn-carpeta-elegir").addEventListener("click", elegirCarpeta);
 document.getElementById("btn-carpeta-reconectar").addEventListener("click", reconectarCarpeta);
 document.getElementById("btn-carpeta-sincronizar").addEventListener("click", function(){ sincronizarCarpeta(true); });
+document.getElementById("btn-carpeta-actualizar").addEventListener("click", function(){ actualizarDesdeCarpeta(true); });
 document.getElementById("btn-carpeta-respaldo").addEventListener("click", respaldoCompleto);
 document.getElementById("btn-carpeta-desconectar").addEventListener("click", desconectarCarpeta);
 document.getElementById("btn-carpeta-importar-json").addEventListener("click", function(){ document.getElementById("input-importar-json").click(); });
@@ -3425,7 +3682,15 @@ document.querySelectorAll(".lbl .key").forEach(function(el){ el.title=el.textCon
 
 // ---------- Pantalla de inicio y modos de acceso ----------
 var CLAVE_OPERADORES="libroCatalogo_operadores", CLAVE_ACTIVIDAD="libroCatalogo_actividad_pend";
-var ARCHIVO_ACTIVIDAD="_actividad.log";
+var ARCHIVO_ACTIVIDAD="_actividad.log", DIR_ACTIVIDAD="Registros/_actividad", CLAVE_EQUIPO="libroCatalogo_equipo";
+function idEquipo(){
+  var v=""; try{ v=localStorage.getItem(CLAVE_EQUIPO)||""; }catch(e){}
+  if(!/^eq-[a-z0-9]{6}$/.test(v)){
+    v="eq-"+Math.random().toString(36).slice(2,8).padEnd(6,"0");
+    try{ localStorage.setItem(CLAVE_EQUIPO, v); }catch(e){}
+  }
+  return v;
+}
 var nombreSesion="";
 function nombreLimpio(n){ return String(n||"").replace(/\s+/g," ").trim(); }
 function nombreOperadorValido(n){ return nombreLimpio(n).split(" ").filter(function(x){ return x.length>1; }).length>=2; }
@@ -3444,7 +3709,7 @@ function revisarNombreInicio(){
   var n=document.getElementById("inicio-nombre").value, ok=nombreOperadorValido(n);
   document.getElementById("btn-modo-admin").disabled=!ok;
   document.getElementById("btn-modo-consulta").disabled=!ok;
-  document.getElementById("inicio-aviso").textContent = ok ? "Ingresarás como «"+nombreLimpio(n)+"»." : (nombreLimpio(n) ? "Falta el apellido: escribe nombre y apellido." : "Escribe tu nombre y apellido para ingresar.");
+  document.getElementById("inicio-aviso").textContent = ok ? "Ingresarás como «"+nombreLimpio(n)+"»." : (nombreLimpio(n) ? "Falta el apellido: escribe nombre y apellido." : "");
 }
 function cerrarInicio(){ document.body.classList.remove("sin-sesion"); try{ window.scrollTo(0,0); }catch(e){} }
 function guardarNombreOperador(n){
@@ -3599,34 +3864,53 @@ function volcarActividad(){
     if(!modoAcceso || !carpetaHandle) return;
     var l=leerJson(CLAVE_ACTIVIDAD); if(!l.length) return;
     if(!(await permisoCarpeta(false))) return;
-    var d=await dirAnidado("Registros"), previo="";
-    try{ previo=await (await (await d.getFileHandle(ARCHIVO_ACTIVIDAD)).getFile()).text(); }catch(e){}
-    await escribirArchivo("Registros", ARCHIVO_ACTIVIDAD, previo+l.join("\n")+"\n", true);
+    // un archivo por equipo y día: así dos equipos nunca escriben el mismo archivo
+    var porDia={}; l.forEach(function(x){ var dia=/^\d{4}-\d{2}-\d{2}/.test(x) ? x.slice(0,10) : new Date().toISOString().slice(0,10); (porDia[dia]=porDia[dia]||[]).push(x); });
+    var d=await dirAnidado(DIR_ACTIVIDAD), eq=idEquipo();
+    var dias=Object.keys(porDia);
+    for(var i=0;i<dias.length;i++){
+      var nombre=dias[i]+"_"+eq+".log", previo="";
+      try{ previo=await (await (await d.getFileHandle(nombre)).getFile()).text(); }catch(e){}
+      await escribirArchivo(DIR_ACTIVIDAD, nombre, previo+porDia[dias[i]].join("\n")+"\n", true);
+    }
     var resto=leerJson(CLAVE_ACTIVIDAD).slice(l.length);
     try{ if(resto.length) localStorage.setItem(CLAVE_ACTIVIDAD, JSON.stringify(resto)); else localStorage.removeItem(CLAVE_ACTIVIDAD); }catch(e){}
   }).catch(function(){});
   return colaActividad;
 }
+function lineasActividad(txt, equipo){
+  return txt.split("\n").filter(Boolean).map(function(l){ var c=l.split("\t"); return {fecha:c[0]||"", modo:c[1]||"", nombre:c[2]||"", evento:c[3]||"", detalle:c[4]||"", equipo:equipo}; });
+}
 async function leerActividad(){
-  var txt="";
+  var lista=[];
   if(carpetaHandle && await permisoCarpeta(false)){
-    try{ var d=await dirAnidado("Registros"); txt=await (await (await d.getFileHandle(ARCHIVO_ACTIVIDAD)).getFile()).text(); }catch(e){}
+    try{ var d=await dirAnidado("Registros"); lista=lista.concat(lineasActividad(await (await (await d.getFileHandle(ARCHIVO_ACTIVIDAD)).getFile()).text(), "—")); }catch(e){}
+    try{
+      var da=await dirAnidado(DIR_ACTIVIDAD);
+      for await (var h of da.values()){
+        if(h.kind!=="file" || !/\.log$/i.test(h.name)) continue;
+        var m=h.name.match(/^\d{4}-\d{2}-\d{2}_(.+)\.log$/i);
+        try{ lista=lista.concat(lineasActividad(await (await h.getFile()).text(), m?m[1]:"—")); }catch(e){}
+      }
+    }catch(e){}
   }
-  var lineas=txt.split("\n").filter(Boolean).concat(leerJson(CLAVE_ACTIVIDAD));
-  return lineas.map(function(l){ var c=l.split("\t"); return {fecha:c[0]||"", modo:c[1]||"", nombre:c[2]||"", evento:c[3]||"", detalle:c[4]||""}; });
+  var eq=idEquipo();
+  lista=lista.concat(lineasActividad(leerJson(CLAVE_ACTIVIDAD).join("\n"), eq));
+  lista.sort(function(a,b){ return a.fecha<b.fecha ? -1 : a.fecha>b.fecha ? 1 : 0; });
+  return lista;
 }
 async function pintarActividad(){
   var cont=document.getElementById("actividad-lista"), lista=await leerActividad();
   if(!lista.length){ cont.innerHTML='<p class="nota">Todavía no hay actividad registrada.</p>'; return; }
   var ult=lista.slice(-60).reverse();
-  cont.innerHTML='<div class="tabla-scroll"><table class="tabla-act"><thead><tr><th>Fecha y hora</th><th>Modo</th><th>Persona</th><th>Evento</th><th>Detalle</th></tr></thead><tbody>'+ult.map(function(a){
-    return '<tr><td>'+escapeHtml(formatearFechaHora(a.fecha))+'</td><td>'+escapeHtml(a.modo)+'</td><td>'+escapeHtml(a.nombre)+'</td><td>'+escapeHtml(a.evento)+'</td><td>'+escapeHtml(a.detalle)+'</td></tr>';
+  cont.innerHTML='<div class="tabla-scroll"><table class="tabla-act"><thead><tr><th>Fecha y hora</th><th>Equipo</th><th>Modo</th><th>Persona</th><th>Evento</th><th>Detalle</th></tr></thead><tbody>'+ult.map(function(a){
+    return '<tr><td>'+escapeHtml(formatearFechaHora(a.fecha))+'</td><td>'+escapeHtml(a.equipo)+'</td><td>'+escapeHtml(a.modo)+'</td><td>'+escapeHtml(a.nombre)+'</td><td>'+escapeHtml(a.evento)+'</td><td>'+escapeHtml(a.detalle)+'</td></tr>';
   }).join("")+'</tbody></table></div><p class="nota">Se muestran los últimos '+ult.length+' de '+lista.length+' eventos.</p>';
 }
 async function descargarActividad(){
   var lista=await leerActividad();
   if(!lista.length){ alert("Todavía no hay actividad registrada."); return; }
-  var filas=[["Fecha y hora (UTC)","Modo","Persona","Evento","Detalle"]].concat(lista.map(function(a){ return [a.fecha,a.modo,a.nombre,a.evento,a.detalle]; }));
+  var filas=[["Fecha y hora (UTC)","Equipo","Modo","Persona","Evento","Detalle"]].concat(lista.map(function(a){ return [a.fecha,a.equipo,a.modo,a.nombre,a.evento,a.detalle]; }));
   var blob=new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}), url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download="Actividad_Libro_de_Catalogo_"+new Date().toISOString().slice(0,10)+".csv"; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(function(){ URL.revokeObjectURL(url); },30000);
@@ -3643,7 +3927,7 @@ document.getElementById("btn-actividad-csv").addEventListener("click", descargar
   document.getElementById("admin-nuevo").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); agregarAdmin(); } });
   document.getElementById("admin-lista").addEventListener("click", function(e){ var b=e.target.closest("[data-quitar-admin]"); if(b) quitarAdmin(parseInt(b.getAttribute("data-quitar-admin"),10)); });
   inp.addEventListener("focus", pintarSugerenciasOperador);
-  inp.addEventListener("keydown", function(e){ if(e.key==="Enter" && nombreOperadorValido(inp.value)){ e.preventDefault(); entrarConsulta(); } });
+  inp.addEventListener("keydown", function(e){ if(e.key==="Enter") e.preventDefault(); }); // Enter no ingresa: hay que pulsar el botón elegido
   document.getElementById("btn-cerrar-sesion").addEventListener("click", function(){
     if(modoAcceso==="admin" && !confirm("Se cerrará la sesión y volverá la pantalla de inicio. Lo que no hayas guardado se perderá. ¿Continuar?")) return;
     registrarActividad("salida","");

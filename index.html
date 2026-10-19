@@ -210,10 +210,19 @@
   .ficha-header-sub{font-size:12.5px;color:var(--paper);opacity:.85;margin-top:2px;}
   .ficha-header .btn-cerrar-ficha{flex-shrink:0;width:40px;height:40px;padding:0;border-radius:50%;border:2px solid #fff;background:#fff;color:var(--danger);font-size:22px;font-weight:900;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.4);}
   .ficha-header .btn-cerrar-ficha:hover{background:var(--danger);color:#fff;}
-  .ficha-media{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}
+  .ficha-media{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;--alto-media:clamp(340px,60vh,620px);}
+  .media-completo{grid-column:1 / -1;min-width:0;}
+  .media-completo details{border:1px solid var(--line);border-radius:10px;background:#fffdf8;overflow:hidden;}
+  .panel-fotos{height:var(--alto-media);}
+  .fotos-sup{flex:8 1 0;min-height:0;display:flex;flex-direction:column;gap:6px;}
+  .fotos-sup .ficha-galeria,.fotos-sup .media-vacio{flex:1 1 auto;min-height:0;}
+  .fotos-inf{flex:2 1 0;min-height:0;display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--line);padding-top:6px;}
+  .fotos-inf .media-titulo{font-size:13.5px;}
+  .otros-lista{display:flex;flex-wrap:wrap;gap:6px;overflow-y:auto;align-content:flex-start;}
+  .otros-vacio{font-size:12.5px;color:var(--ink-soft);font-style:italic;}
   @media (max-width:820px){ .ficha-media{grid-template-columns:1fr;} }
   .media-panel{border:1px solid var(--line);border-radius:10px;background:#fffdf8;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-width:0;}
-  .media-cuerpo{overflow-y:auto;max-height:clamp(300px,52vh,560px);padding-right:4px;}
+  .media-cuerpo{overflow-y:auto;max-height:var(--alto-media);padding-right:4px;}
   .media-cuerpo .ficha-campo{grid-template-columns:minmax(120px,190px) 1fr;}
   .media-titulo{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--accent);}
   .ficha-mapa{width:100%;height:clamp(300px,52vh,560px);border:1px solid var(--line);border-radius:8px;background:var(--paper-2);}
@@ -229,19 +238,21 @@
   .mapa-msg{position:absolute;left:10px;right:50px;top:10px;background:rgba(255,246,222,.95);color:#6b4b00;font-size:12.5px;padding:6px 10px;border-radius:6px;}
   .media-pie{font-size:12.5px;color:var(--ink-soft);display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;}
   .media-vacio{display:flex;align-items:center;justify-content:center;text-align:center;min-height:200px;height:clamp(300px,52vh,560px);color:var(--ink-soft);font-size:14px;background:var(--paper-2);border:1px dashed var(--line-fuerte);border-radius:8px;padding:14px;}
-  .gal-principal{position:relative;height:clamp(300px,46vh,500px);background:#1d2420;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .ficha-galeria{display:flex;flex-direction:column;flex-wrap:nowrap;gap:6px;margin:0;}
+  .ficha-galeria .gal-fig{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;}
+  .gal-principal{position:relative;flex:1 1 auto;min-height:120px;background:#1d2420;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .gal-principal img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;}
   .gal-principal .msg-foto{color:#e8e3d0;font-size:13.5px;text-align:center;padding:14px;}
   .gal-principal .msg-foto .btn{margin-top:8px;}
   .gal-fig{margin:0;}
   .gal-fig .gal-principal{border-radius:8px 8px 0 0;}
   .gal-cont{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;pointer-events:none;}
-  .gal-pie{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:7px 10px;font-size:12.5px;color:var(--ink);background:#fffdf8;border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px;margin-bottom:8px;}
-  .gal-pie .gal-tipo{background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:11.5px;padding:1px 9px;border-radius:999px;}
+  .gal-pie{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;padding:3px 8px;font-size:11px;line-height:1.25;color:var(--ink);background:#fffdf8;border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px;margin-bottom:4px;}
+  .gal-pie .gal-tipo{background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:10px;padding:0 7px;border-radius:999px;}
   .gal-pie .gal-dato{color:var(--ink-soft);}
   .gal-pie .gal-nota{flex-basis:100%;color:var(--ink-soft);font-style:italic;}
   .gal-minis{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
-  .gal-mini{flex:0 0 auto;width:84px;height:64px;padding:0;border:2px solid transparent;border-radius:6px;overflow:hidden;background:#fff;cursor:pointer;opacity:.75;}
+  .gal-mini{flex:0 0 auto;width:64px;height:46px;padding:0;border:2px solid transparent;border-radius:6px;overflow:hidden;background:#fff;cursor:pointer;opacity:.75;}
   .gal-mini img{width:100%;height:100%;object-fit:cover;display:block;}
   .gal-mini.sel{border-color:var(--accent);opacity:1;box-shadow:0 0 0 2px var(--accent-soft);}
   .gal-mini:hover{opacity:1;}
@@ -358,7 +369,7 @@
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off" readonly>
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
-  <span class="ver" id="ver-chip">v0.9.22 · borrador</span>
+  <span class="ver" id="ver-chip">v0.9.24 · borrador</span>
 </header>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
@@ -497,7 +508,7 @@
           <select class="nav" data-f="medioFijado"><option value="">—</option><option>Seco — sin fijación</option><option>Etanol 70 %</option><option>Etanol 75 %</option><option>Etanol 95 %</option><option>Etanol 96 %</option><option>Isopropanol 45–50 %</option><option>Isopropanol 70 %</option><option>Formolina 5 %</option><option>Formolina 10 %</option><option>Formolina tamponada 10 %</option><option>Formaldehído 4 %</option><option>Formaldehído 5 %</option><option>Formaldehído 10 %</option><option>Formol neutro/tamponado — concentración desconocida</option><option>Bouin</option><option>Otro</option><option>Desconocido</option></select>
         </div>
         <div class="campo opc"><div class="lbl"><span class="name">Conservación</span><span class="key">conservacion → dwc:preparations</span></div>
-          <select class="nav" data-f="conservacion"><option value="">—</option><option>Seco</option><option>Etanol 50 %</option><option>Etanol 60 %</option><option>Etanol 70 %</option><option>Etanol 75 %</option><option>Etanol 80 %</option><option>Etanol 90 %</option><option>Etanol 95 %</option><option>Etanol 96 %</option><option>Etanol 100 % / absoluto</option><option>Isopropanol 50 %</option><option>Isopropanol 70 %</option><option>Formolina 5 %</option><option>Formolina 10 %</option><option>Formolina tamponada 10 %</option><option>Formaldehído 4 %</option><option>Formaldehído 5 %</option><option>Formaldehído 10 %</option><option>Glicerina</option><option>Glicerina–etanol</option><option>Otro líquido conservante</option><option>Liofilizado</option><option>Congelado</option><option>Montado en seco</option><option>Preparación microscópica</option><option>Preparación histológica</option><option>Preparación osteológica</option><option>Preparación taxidérmica</option><option>Incluido en resina</option><option>Desconocido</option></select>
+          <select class="nav" data-f="conservacion"><option value="">—</option><option>Seco</option><option>Etanol 50 %</option><option>Etanol 60 %</option><option>Etanol 70 %</option><option>Etanol 75 %</option><option>Etanol 80 %</option><option>Etanol 90 %</option><option>Etanol 95 %</option><option>Etanol 96 %</option><option>Etanol 100 % / absoluto</option><option>Isopropanol 50 %</option><option>Isopropanol 70 %</option><option>Formolina 5 %</option><option>Formolina 10 %</option><option>Formolina tamponada 10 %</option><option>Formaldehído 4 %</option><option>Formaldehído 5 %</option><option>Formaldehído 10 %</option><option>Glicerina</option><option>Glicerina–etanol</option><option>Propilenglicol</option><option>Otro líquido conservante</option><option>Liofilizado</option><option>Congelado</option><option>Montado en seco</option><option>Montaje entomológico (pinchado)</option><option>Montaje entomológico (pegado en tarjeta)</option><option>Montaje entomológico (doble montaje)</option><option>Seco en sobre de papel (triangulado)</option><option>Preparación microscópica</option><option>Preparación microscópica permanente</option><option>Preparación microscópica semipermanente</option><option>Preparación para microscopía electrónica (SEM)</option><option>Preparación histológica</option><option>Preparación osteológica</option><option>Preparación taxidérmica</option><option>Incluido en resina</option><option>Desconocido</option></select>
         </div>
         <div class="campo opc"><div class="lbl"><span class="name">Preparación</span><span class="key">preparacion</span></div><input class="nav sugerido" data-f="preparacion"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Condición del ejemplar</span><span class="key">condicionEjemplar</span></div>
@@ -713,7 +724,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.22</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.24</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -749,6 +760,7 @@
         <button class="btn secundario" id="btn-exportar-zip" title="Respaldo y traspaso rápido: un archivo por registro, que esta misma app puede volver a importar">Descargar zip (respaldo)</button>
         <button class="btn secundario" id="btn-exportar-xlsx" title="Planilla de Excel para consulta y uso rápido">Descargar Excel</button>
         <button class="btn secundario" id="btn-exportar-csv" title="Archivo de texto separado por comas, para grandes cantidades de registros">Descargar CSV</button>
+        <button class="btn secundario" id="btn-exportar-dwc" title="CSV con los nombres de columna de Darwin Core, listo para mapear en el IPT de GBIF">Descargar CSV Darwin Core</button>
         <button class="btn tenue" id="btn-importar-zip-datos" title="Trae los registros de un zip de respaldo hecho con esta app">Importar zip de respaldo…</button>
       </div>
       <p class="nota" id="datos-msg">Se descargan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados.</p>
@@ -845,7 +857,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.22";
+var APP_VERSION = "v0.9.24";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1470,7 +1482,7 @@ function construirFicha(r){
   var preparacionHtml = preparacionCampos
     + (tablaSubmuestras ? '<p class="subtitulo-mini">Submuestras</p>'+tablaSubmuestras : "")
     + (tablaFotos ? '<p class="subtitulo-mini">Fotos</p>'+tablaFotos : "")
-    + (tablaAdj ? '<p class="subtitulo-mini">Otros archivos</p>'+tablaAdj+botonesAdjuntos(r) : "");
+    + (tablaAdj ? '<p class="subtitulo-mini">Otros archivos</p>'+tablaAdj : "");
 
   var tablaDeterminaciones = fichaTablaLista("determinaciones", r.determinaciones);
   var clasificacion = fichaCampos([
@@ -1479,9 +1491,8 @@ function construirFicha(r){
   var determinacionHtml = tablaDeterminaciones + clasificacion;
 
   var coleccionTexto = [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
-  var catalogado = fichaCampos([["Catálogo","catalogo"], ["Fecha de catalogación","fechaCatalogacion"], ["Catalogador","catalogador"], ["Tipo nomenclatural","tipoNomenclatural"], ["Publicación original","publicacionOriginal"]], r);
+  var catalogado = fichaCampo("Catálogo", construirCatalogoCompleto(r)) + fichaCampos([["Fecha de catalogación","fechaCatalogacion"], ["Catalogador","catalogador"], ["Tipo nomenclatural","tipoNomenclatural"], ["Publicación original","publicacionOriginal"]], r);
   if(coleccionTexto) catalogado = fichaCampo("Colección", coleccionTexto) + catalogado;
-  catalogado += fichaPdfs(r);
 
   var biologicos = fichaCampos([
     ["N.º de machos","cantidadMachos"], ["N.º de hembras","cantidadHembras"], ["N.º de juveniles","cantidadJuveniles"], ["N.º no sexados","cantidadNoSexados"],
@@ -1503,10 +1514,9 @@ function construirFicha(r){
     + (tablaUsos ? '<p class="subtitulo-mini">Historial de usos</p>'+tablaUsos : "")
     + notas;
 
-  var body = bloqueMediaHtml(r, general, terreno)
+  var body = bloqueMediaHtml(r, general, terreno, fichaSeccion("Determinación y clasificación", determinacionHtml, false))
     + fichaSeccion("Recepción e ingreso", recepcion, false)
     + fichaSeccion("Preparación y conservación", preparacionHtml, false)
-    + fichaSeccion("Determinación y clasificación", determinacionHtml, false)
     + fichaSeccion("Catalogado", catalogado, false)
     + fichaSeccion("Datos biológicos", biologicos, false)
     + fichaSeccion("Manejo", manejoHtml, false);
@@ -1526,7 +1536,7 @@ function coordenadasRegistro(r){
   if(isNaN(lat)||isNaN(lng)||Math.abs(lat)>90||Math.abs(lng)>180) return null;
   return {lat:lat,lng:lng};
 }
-function bloqueMediaHtml(r, general, terreno){
+function bloqueMediaHtml(r, general, terreno, determinacion){
   var c=coordenadasRegistro(r), mapa;
   if(c){
     var grande="https://www.google.com/maps/@"+c.lat.toFixed(6)+","+c.lng.toFixed(6)+",17z/data=!3m1!1e3";
@@ -1540,9 +1550,12 @@ function bloqueMediaHtml(r, general, terreno){
     gal='<div class="ficha-galeria" data-fotos="'+escapeHtml(JSON.stringify(datos))+'"><figure class="gal-fig"><div class="gal-principal"><div class="msg-foto">Cargando fotos…</div></div><figcaption class="gal-pie"></figcaption></figure><div class="gal-minis"></div></div>';
   } else gal='<div class="media-vacio">Este ejemplar no tiene fotos asociadas desde la Carpeta local. Se agregan en Preparación, bloque Fotos.</div>';
   var vacio='<p class="ficha-vacio">Sin datos cargados.</p>';
+  var otros=archivosAsociadosHtml(r);
   return '<div class="ficha-media">'
     +'<div class="media-panel"><div class="media-titulo">Información general</div><div class="media-cuerpo">'+(general||vacio)+'</div></div>'
-    +'<div class="media-panel"><div class="media-titulo">Fotografías'+(fotos.length?' ('+fotos.length+')':'')+'</div>'+gal+'</div>'
+    +'<div class="media-panel panel-fotos"><div class="fotos-sup"><div class="media-titulo">Fotografías'+(fotos.length?' ('+fotos.length+')':'')+'</div>'+gal+'</div>'
+    +'<div class="fotos-inf"><div class="media-titulo">Otros archivos asociados'+(otros.n?' ('+otros.n+')':'')+'</div><div class="otros-lista">'+(otros.html||'<span class="otros-vacio">Sin PDF ni otros archivos asociados.</span>')+'</div></div></div>'
+    +(determinacion ? '<div class="media-completo">'+determinacion+'</div>' : '')
     +'<div class="media-panel"><div class="media-titulo">Datos de terreno</div><div class="media-cuerpo">'+(terreno||vacio)+'</div></div>'
     +'<div class="media-panel"><div class="media-titulo">Ubicación geográfica</div>'+mapa+'</div>'
     +'</div>';
@@ -1602,6 +1615,12 @@ async function cargarFotosFicha(dialogEl){
   });
   if(items.length<2) minis.style.display="none";
   elegir(0);
+}
+function archivosAsociadosHtml(r){
+  var pdfs=(r.publicacionesPdf||[]).filter(Boolean), adj=(r.adjuntos||[]).filter(function(a){ return /^Adjuntos\//.test(a.archivo||""); });
+  var h=pdfs.map(function(n){ return '<button type="button" class="btn tenue small btn-abrir-pdf" data-pdf="'+escapeHtml(n)+'" title="'+escapeHtml(n)+'">📄 '+escapeHtml(n.split("/").pop())+'</button>'; }).join("")
+    +adj.map(function(a){ return '<button type="button" class="btn tenue small btn-abrir-adjunto" data-ruta="'+escapeHtml(a.archivo)+'" title="'+escapeHtml(a.archivo)+'">📎 '+escapeHtml(a.archivo.split("/").pop())+'</button>'; }).join("");
+  return {html:h, n:pdfs.length+adj.length};
 }
 function botonesAdjuntos(r){
   var l=(r.adjuntos||[]).filter(function(a){ return /^Adjuntos\//.test(a.archivo||""); });
@@ -2276,6 +2295,7 @@ function etiquetaRegistro(r){
     numeroCampo: r.numeroCampo || "",
     numeroAccesion: r.numeroAccesion || "",
     catalogo: r.catalogo || "",
+    catalogoCompleto: construirCatalogoCompleto(r) || "",
     nombreCientifico: det || r.taxon || "sin determinar",
     localidad: r.localidad || "",
     fecha: r.fechaRecepcion || r.fechaColecta || "",
@@ -2291,9 +2311,9 @@ function conPrefijo(prefijo, valor){
 }
 function resumenLinea1(et){
   var partes=[];
-  if(et.numeroCampo) partes.push(conPrefijo("Campo", et.numeroCampo));
+  if(et.catalogoCompleto) partes.push(et.catalogoCompleto);
   if(et.numeroAccesion) partes.push(conPrefijo("Entrada", et.numeroAccesion));
-  if(et.catalogo) partes.push(conPrefijo("Catálogo", et.catalogo));
+  if(et.numeroCampo) partes.push(conPrefijo("Campo", et.numeroCampo));
   return partes.length ? partes.join(" · ") : "(sin números asignados)";
 }
 function resumenDatosSinNombre(et){
@@ -2318,7 +2338,7 @@ function registroCoincideFiltro(reg, filtro){
   if(!filtro) return true;
   var et = etiquetaRegistro(reg);
   var texto = [
-    et.numeroCampo, et.numeroAccesion, et.catalogo, et.nombreCientifico, et.localidad, et.colector, et.fecha,
+    et.numeroCampo, et.numeroAccesion, et.catalogo, et.catalogoCompleto, et.nombreCientifico, et.localidad, et.colector, et.fecha,
     reg.taxon, reg.legatario, reg.procedencia, reg.destino, reg.region, reg.provincia, reg.comuna
   ].join(" ").toLowerCase();
   return texto.indexOf(filtro.toLowerCase()) > -1;
@@ -2645,6 +2665,7 @@ window.addEventListener("appinstalled", function(){ document.getElementById("btn
 document.getElementById("btn-exportar-zip").addEventListener("click", function(){ descargarDatos("zip"); });
 document.getElementById("btn-exportar-xlsx").addEventListener("click", function(){ descargarDatos("xlsx"); });
 document.getElementById("btn-exportar-csv").addEventListener("click", function(){ descargarDatos("csv"); });
+document.getElementById("btn-exportar-dwc").addEventListener("click", function(){ descargarDatos("dwc"); });
 document.getElementById("btn-importar-zip-datos").addEventListener("click", function(){ document.getElementById("input-importar-json").click(); });
 document.getElementById("btn-marcar-datos").addEventListener("click", function(){ registrosMostradosDatos().forEach(function(r){ seleccionDescarga.add(r.id); }); renderResumenDatos(); });
 document.getElementById("btn-desmarcar-datos").addEventListener("click", function(){ seleccionDescarga.clear(); renderResumenDatos(); });
@@ -3673,8 +3694,8 @@ function filasDeLista(lista){
   return [CONS_COLUMNAS.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return CONS_COLUMNAS.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
 }
 function filasConsulta(){ return filasDeLista(resultadosConsulta()); }
-function csvDeFilas(filas){
-  return "﻿"+filas.map(function(f){ return f.map(function(v){ v=String(v); return /[",\r\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(","); }).join("\r\n")+"\r\n";
+function csvDeFilas(filas, sinBom){
+  return (sinBom?"":"﻿")+filas.map(function(f){ return f.map(function(v){ v=String(v); return /[",\r\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(","); }).join("\r\n")+"\r\n";
 }
 var crcTabla=null;
 function crc32(u8){
@@ -3731,6 +3752,115 @@ function xlsxDeFilas(filas){
   return zipSinCompresion(arch);
 }
 
+
+// ---- CSV Darwin Core: una fila por ejemplar, columnas con nombres de términos DwC (más columnas propias al final) ----
+// Equivalencias de Conservación hacia dwc:preparations (vocabulario en inglés, como en los ejemplos del estándar).
+var PREPARACIONES_DWC = {
+  "Seco":"whole animal (dry)", "Montado en seco":"whole animal (dry mount)",
+  "Montaje entomológico (pinchado)":"whole animal (pinned)", "Montaje entomológico (pegado en tarjeta)":"whole animal (card mount)",
+  "Montaje entomológico (doble montaje)":"whole animal (double mount)", "Seco en sobre de papel (triangulado)":"whole animal (dry, paper envelope)",
+  "Isopropanol 50 %":"whole animal (isopropanol)", "Isopropanol 70 %":"whole animal (isopropanol)",
+  "Formolina 5 %":"whole animal (formalin)", "Formolina 10 %":"whole animal (formalin)", "Formolina tamponada 10 %":"whole animal (formalin)",
+  "Formaldehído 4 %":"whole animal (formalin)", "Formaldehído 5 %":"whole animal (formalin)", "Formaldehído 10 %":"whole animal (formalin)",
+  "Glicerina":"whole animal (glycerin)", "Glicerina–etanol":"whole animal (glycerin-ETOH)", "Propilenglicol":"whole animal (propylene glycol)",
+  "Otro líquido conservante":"whole animal (liquid preservative)", "Liofilizado":"whole animal (freeze-dried)", "Congelado":"whole animal (frozen)",
+  "Preparación microscópica":"microscope slide", "Preparación microscópica permanente":"microscope slide (permanent)",
+  "Preparación microscópica semipermanente":"microscope slide (semi-permanent)", "Preparación para microscopía electrónica (SEM)":"SEM stub",
+  "Preparación histológica":"histological slide", "Preparación osteológica":"skeleton", "Preparación taxidérmica":"skin mount",
+  "Incluido en resina":"whole animal (resin embedded)", "Desconocido":""
+};
+function preparacionesDwc(r){
+  var c=r.conservacion||"", base="";
+  if(/^Etanol/i.test(c)) base="whole animal (ETOH)";
+  else if(PREPARACIONES_DWC.hasOwnProperty(c)) base=PREPARACIONES_DWC[c];
+  else if(c) base="whole animal ("+c+")";
+  else if(/^seca/i.test(r.tipoColeccion||"")) base="whole animal (dry)";
+  var partes=base?[base]:[];
+  (r.submuestras||[]).forEach(function(sm){
+    var t=String(sm.tipoSubmuestra||"").toLowerCase(), v="";
+    if(/adn|dna/.test(t)) v="DNA extract"; else if(/tejido|tissue/.test(t)) v="tissue";
+    if(v && partes.indexOf(v)<0) partes.push(v);
+  });
+  return partes.join(" | ");
+}
+function observacionPreparacion(r){
+  return [["Conservación",r.conservacion],["Medio de fijado",r.medioFijado],["Preparación",r.preparacion],["Tipo de colección",r.tipoColeccion],["Condición del ejemplar",r.condicionEjemplar]]
+    .filter(function(x){ return x[1]; }).map(function(x){ return x[0]+": "+x[1]; }).join("; ");
+}
+// sexo y estado de desarrollo se arman concatenando los contadores, como en el registro histórico del AZI ("37 M, 24 H", "3 H, 203 Juv.")
+function sexoDwc(r){
+  var p=[]; function n(v){ var x=parseInt(v,10); return isNaN(x)||x<=0?0:x; }
+  if(n(r.cantidadMachos)) p.push(n(r.cantidadMachos)+" M");
+  if(n(r.cantidadHembras)) p.push(n(r.cantidadHembras)+" H");
+  if(n(r.cantidadNoSexados)) p.push(n(r.cantidadNoSexados)+" NS");
+  return p.join(", ");
+}
+function estadoDesarrolloDwc(r){ var x=parseInt(r.cantidadJuveniles,10); return (isNaN(x)||x<=0)?"":(x+" Juv."); }
+function vigenteDet(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1]:null; }
+function numLimpio(v){ var x=parseFloat(String(v==null?"":v).replace(",",".")); return isNaN(x)?"":x; }
+var DWC_COLUMNAS = [
+  ["occurrenceID",function(r){ return r.catalogo ? "urn:catalog:"+[r.institucionAcronimo,r.coleccionAcronimo,r.catalogo].filter(Boolean).join(":") : ("urn:uuid:libro-catalogo:"+r.id); }],
+  ["basisOfRecord",function(){ return "PreservedSpecimen"; }],
+  ["institutionCode",function(r){ return r.institucionAcronimo; }],
+  ["collectionCode",function(r){ return r.coleccionAcronimo; }],
+  ["catalogNumber",function(r){ return construirCatalogoCompleto(r); }],
+  ["fieldNumber",function(r){ return r.numeroCampo; }],
+  ["recordedBy",function(r){ return r.colector; }],
+  ["eventDate",function(r){ return r.fechaColecta; }],
+  ["eventTime",function(r){ return r.horaColecta; }],
+  ["habitat",function(r){ return r.habitat; }],
+  ["samplingProtocol",function(r){ return r.metodoColecta; }],
+  ["country",function(r){ return (r.lat||r.lng||r.localidad||r.localidadVerbatim||r.region)?"Chile":""; }],
+  ["countryCode",function(r){ return (r.lat||r.lng||r.localidad||r.localidadVerbatim||r.region)?"CL":""; }],
+  ["stateProvince",function(r){ return r.region; }],
+  ["county",function(r){ return r.provincia; }],
+  ["municipality",function(r){ return r.comuna; }],
+  ["locality",function(r){ return r.localidad; }],
+  ["verbatimLocality",function(r){ return r.localidadVerbatim; }],
+  ["decimalLatitude",function(r){ var c=coordenadasRegistro(r); return c?c.lat:""; }],
+  ["decimalLongitude",function(r){ var c=coordenadasRegistro(r); return c?c.lng:""; }],
+  ["geodeticDatum",function(r){ return coordenadasRegistro(r)?"WGS84":""; }],
+  ["verbatimCoordinates",function(r){ return r.coordenadasOriginales; }],
+  ["verbatimElevation",function(r){ return r.altitud_m; }],
+  ["minimumElevationInMeters",function(r){ return numLimpio(r.altitud_m); }],
+  ["scientificName",function(r){ var d=vigenteDet(r); return d?d.nombreCientifico:(r.taxon||""); }],
+  ["identificationQualifier",function(r){ var d=vigenteDet(r); return d?d.calificador:""; }],
+  ["kingdom",function(){ return "Animalia"; }],
+  ["phylum",function(r){ return r.phylum; }], ["class",function(r){ return r.clase; }], ["order",function(r){ return r.orden; }],
+  ["family",function(r){ return r.familia; }], ["genus",function(r){ return r.genero; }],
+  ["identifiedBy",function(r){ var d=vigenteDet(r); return d?d.determinador:""; }],
+  ["dateIdentified",function(r){ var d=vigenteDet(r); return d?d.fechaDeterminacion:""; }],
+  ["typeStatus",function(r){ return r.tipoNomenclatural; }],
+  ["namePublishedIn",function(r){ return r.publicacionOriginal; }],
+  ["individualCount",function(r){ return numLimpio(r.individuos); }],
+  ["sex",sexoDwc],
+  ["lifeStage",estadoDesarrolloDwc],
+  ["preparations",preparacionesDwc],
+  ["preparationRemarks",observacionPreparacion],
+  ["disposition",function(r){ return r.estadoUbicacion; }],
+  ["associatedTaxa",function(r){ return r.asociacionesBiologicas; }],
+  ["organismRemarks",function(r){ return r.observacionesBiologicas; }],
+  ["occurrenceRemarks",function(r){ return r.observaciones; }],
+  ["associatedMedia",function(r){ return (r.fotos||[]).map(function(f){ return f.archivo; }).filter(Boolean).join(" | "); }],
+  ["modified",function(r){ return r.modificadoEn; }],
+  // columnas propias de Libro de Catálogo (sin término Darwin Core; el IPT puede ignorarlas)
+  ["fechaIngreso",function(r){ return r.fechaRecepcion; }],
+  ["numeroEntrada",function(r){ return r.numeroAccesion; }],
+  ["procedencia",function(r){ return r.procedencia; }],
+  ["destino",function(r){ return r.destino; }],
+  ["legatario",function(r){ return r.legatario; }],
+  ["tipoAccesion",function(r){ return r.tipoAccesion; }],
+  ["ubicacionColeccion",function(r){ return r.ubicacionColeccion; }]
+];
+function filasDwc(lista){
+  return [DWC_COLUMNAS.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return DWC_COLUMNAS.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
+}
+function avisosDwc(lista){
+  var sinCat=lista.filter(function(r){ return !r.catalogo; }).length, sinNom=lista.filter(function(r){ return !(vigenteDet(r)&&vigenteDet(r).nombreCientifico) && !r.taxon; }).length, sinCoord=lista.filter(function(r){ return !coordenadasRegistro(r); }).length;
+  var a=[]; if(sinCat) a.push(sinCat+" sin N.º de catálogo (su occurrenceID usa el identificador interno)"); if(sinNom) a.push(sinNom+" sin nombre científico"); if(sinCoord) a.push(sinCoord+" sin coordenadas");
+  return a;
+}
+
 // ---- descargas desde Gestión de Datos: zip de respaldo, Excel y CSV de los registros marcados ----
 function listaParaDescarga(){
   var sel=registros.filter(function(r){ return seleccionDescarga.has(r.id); });
@@ -3753,8 +3883,9 @@ function zipDeRespaldo(lista){
 async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
   var lista=listaParaDescarga(); if(!lista) return;
   var f=new Date(), sello=f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes());
-  var nombre=(formato==="zip"?"Respaldo_":"Registros_")+"Libro_de_Catalogo_"+sello+"."+formato, blob;
+  var nombre=(formato==="zip"?"Respaldo_":formato==="dwc"?"DarwinCore_":"Registros_")+"Libro_de_Catalogo_"+sello+"."+(formato==="dwc"?"csv":formato), blob;
   if(formato==="zip") blob=zipDeRespaldo(lista);
+  else if(formato==="dwc") blob=new Blob([csvDeFilas(filasDwc(lista),true)],{type:"text/csv;charset=utf-8"});
   else { var filas=filasDeLista(lista); blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas); }
   var url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
@@ -3764,6 +3895,7 @@ async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
     try{ await escribirArchivo(formato==="zip"?"Respaldos":"Exportaciones", nombre, blob); extra=" Copia guardada en "+(formato==="zip"?"Respaldos/":"Exportaciones/")+" de la Carpeta local."; }catch(e){}
   }
   var msg=lista.length+" registro(s) descargados en "+nombre+"."+extra;
+  if(formato==="dwc"){ var av=avisosDwc(lista); if(av.length) msg+=" Revisa antes de publicar: "+av.join("; ")+"."; }
   var m=document.getElementById("datos-msg"); if(m) m.textContent=msg;
   mensajeCarpeta(msg);
   registrarActividad("descarga", formato.toUpperCase()+" (Gestión de Datos) · "+lista.length+" registro(s)");

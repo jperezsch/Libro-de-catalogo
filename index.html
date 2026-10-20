@@ -249,6 +249,22 @@
   .fila-registro .ts2{font-size:12.5px;color:var(--ink-soft);}
   .tag-activo-mini{font-size:10px;font-family:var(--mono);color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 7px;margin-right:6px;}
   .acciones-fila{display:flex;align-items:center;gap:6px;white-space:nowrap;}
+  .acciones-fila .btn-sec{font-size:12px;padding:3px 9px;opacity:.78;border-color:transparent;}
+  .acciones-fila .btn-sec:hover{opacity:1;border-color:var(--line-fuerte);}
+  .acciones-fila .btn-sec.btn-eliminar-registro:hover{color:#a3261c;}
+  button.btn.principal-fila{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
+  .ico-arch{margin-left:6px;font-size:13px;white-space:nowrap;}
+  button.btn.peligro{background:#fff;border-color:#a3261c;color:#a3261c;}
+  button.btn.peligro:disabled{opacity:.5;cursor:default;}
+  .btn-borrar-compacto{background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;opacity:.7;}
+  .btn-borrar-compacto:hover{opacity:1;}
+  .cons-filtros-esp{margin-top:10px;}
+  @media (max-width:640px){
+    .fila-registro .acciones-fila,.cons-fila .acciones-fila{flex-direction:column;align-items:stretch;gap:4px;flex-shrink:0;}
+    .fila-registro .acciones-fila .btn,.cons-fila .acciones-fila .btn{width:100%;text-align:center;}
+    .fila-registro .acciones-fila .tag-activo-mini{text-align:center;}
+    .fila-registro .info,.cons-fila .info{flex:1 1 auto;min-width:0;overflow-wrap:anywhere;}
+  }
   .archivo-estado{font-size:12px;color:var(--ink-soft);margin-top:6px;}
   .fila-conteo{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px 22px;}
   .total-conteo{display:flex;flex-direction:column;justify-content:flex-end;}
@@ -283,7 +299,7 @@
   .mapa-sat{position:relative;overflow:hidden;background:#1d2420;touch-action:none;cursor:grab;user-select:none;}
   .mapa-sat.arrastrando{cursor:grabbing;}
   .mapa-lienzo{position:absolute;inset:0;}
-  .mapa-lienzo img{position:absolute;width:256px;height:256px;max-width:none;display:block;-webkit-user-drag:none;}
+  .mapa-lienzo img{position:absolute;width:256px;height:256px;max-width:none;display:block;-webkit-user-drag:none;pointer-events:none;}
   .mapa-pin{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:3px solid #fff;background:#e0342b;box-shadow:0 0 0 2px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.5);pointer-events:none;}
   .mapa-ctl{position:absolute;top:8px;right:8px;display:flex;flex-direction:column;gap:4px;}
   .mapa-ctl button{width:34px;height:34px;border:none;border-radius:6px;background:#fff;color:#26332b;font-size:20px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4);}
@@ -360,7 +376,7 @@
   #resumen-datos details[open] summary::before{transform:rotate(90deg);}
   #resumen-datos .ficha-seccion-body{padding:0;border-top:1px solid var(--line);}
   .resumen-conteo{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);font-weight:400;}
-  .fila-compacta{display:grid;grid-template-columns:1fr auto auto;align-items:center;column-gap:8px;padding:5px 12px;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .fila-compacta{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;column-gap:8px;padding:5px 12px;border-bottom:1px solid var(--line);font-size:13.5px;}
   .fila-compacta:last-child{border-bottom:none;}
   .fila-compacta:hover{background:#f5f2e6;}
   .fila-compacta-texto{min-width:0;color:var(--ink);cursor:pointer;line-height:1.4;}
@@ -433,7 +449,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.28</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.29</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -473,7 +489,7 @@
         <button type="button" class="btn small tenue oculto" id="cons-limpiar">Limpiar filtros</button>
       </div>
       <div class="cons-chips" id="cons-chips"></div>
-      <div class="cons-cols" id="cons-principales"></div>
+      <div class="cons-filtros-esp"><div class="nota" style="margin:0 0 4px;"><strong>Filtros específicos</strong></div><div id="cons-principales"></div></div>
       <details class="det-carpetas cons-mas"><summary>Más filtros</summary><div id="cons-secundarios"></div></details>
     </div>
     <div class="bloque">
@@ -795,7 +811,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.28</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.29</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -834,7 +850,10 @@
         <button class="btn secundario" id="btn-exportar-dwc" title="CSV con los nombres de columna de Darwin Core, listo para mapear en el IPT de GBIF">Descargar CSV Darwin Core</button>
         <button class="btn tenue" id="btn-importar-zip-datos" title="Trae los registros de un zip de respaldo hecho con esta app">Importar zip de respaldo…</button>
       </div>
-      <p class="nota" id="datos-msg">Se descargan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados.</p>
+      <div class="barra-botones">
+        <button class="btn peligro" id="btn-eliminar-datos" disabled title="Elimina los registros marcados (o usa el 🗑️ de cada fila para uno solo)">Eliminar marcados</button>
+      </div>
+      <p class="nota" id="datos-msg">Se descargan o eliminan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados.</p>
       <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
     </div>
 
@@ -842,7 +861,7 @@
       <details id="det-importar">
         <summary class="imp-resumen-titulo">Importar desde planilla (Excel o CSV)</summary>
         <p class="nota">Trae registros desde una planilla propia. El archivo se lee tal como viene: tú decides a qué campo de la app va cada columna, arrastrándola o eligiéndola en su selector. Los valores que no calcen con una lista controlada se pueden conservar como texto libre. Nada se guarda hasta que revises la vista previa y confirmes.</p>
-        <div class="barra-botones"><label class="btn secundario" for="imp-archivo" style="cursor:pointer">Elegir archivo .xlsx o .csv…</label><input type="file" id="imp-archivo" accept=".xlsx,.csv,.tsv,.txt,text/csv" class="oculto"></div>
+        <div class="barra-botones"><button type="button" class="btn secundario" id="imp-elegir">Elegir archivo .xlsx o .csv…</button><input type="file" id="imp-archivo" accept=".xlsx,.csv,.tsv,.txt,text/csv" class="oculto"></div>
         <p class="nota" id="imp-msg"></p>
         <div id="imp-cont"></div>
       </details>
@@ -939,7 +958,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.28";
+var APP_VERSION = "v0.9.29";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1645,7 +1664,7 @@ function bloqueMediaHtml(r, general, terreno, determinacion){
   var c=coordenadasRegistro(r), mapa;
   if(c){
     var grande="https://www.google.com/maps/@"+c.lat.toFixed(6)+","+c.lng.toFixed(6)+",17z/data=!3m1!1e3";
-    mapa='<div class="ficha-mapa mapa-sat" data-lat="'+c.lat+'" data-lng="'+c.lng+'" role="img" aria-label="Mapa satelital del origen del ejemplar"><div class="mapa-lienzo"></div><div class="mapa-pin" title="Origen del ejemplar"></div><div class="mapa-ctl"><button type="button" data-z="1" title="Acercar" aria-label="Acercar">+</button><button type="button" data-z="-1" title="Alejar" aria-label="Alejar">−</button></div><div class="mapa-msg oculto">Sin conexión: no se pudo cargar el mapa satelital.</div><div class="mapa-attr">Imágenes © Esri, Maxar, Earthstar Geographics</div></div>'
+    mapa='<div class="ficha-mapa mapa-sat" data-lat="'+c.lat+'" data-lng="'+c.lng+'" role="img" aria-label="Mapa satelital del origen del ejemplar"><div class="mapa-lienzo"></div><div class="mapa-pin" title="Origen del ejemplar"></div><div class="mapa-ctl"><button type="button" data-z="1" title="Acercar" aria-label="Acercar">+</button><button type="button" data-z="-1" title="Alejar" aria-label="Alejar">−</button></div><div class="mapa-msg oculto">Sin conexión: no se pudo cargar el mapa satelital.</div><div class="mapa-attr">Imágenes y capas © Esri, Maxar, Earthstar Geographics</div></div>'
       +'<div class="media-pie"><span>Lat '+c.lat.toFixed(5)+', Lng '+c.lng.toFixed(5)+'</span><a href="'+grande+'" target="_blank" rel="noopener">Abrir en Google Maps (satélite) ↗</a></div>';
   } else mapa='<div class="media-vacio">Este ejemplar no tiene coordenadas (latitud y longitud) en Datos de terreno, por eso no se puede mostrar el mapa.</div>';
   var fotos=(r.fotos||[]).filter(function(f){ return /^Fotos\//.test(f.archivo||""); });
@@ -1676,12 +1695,7 @@ async function cargarFotosFicha(dialogEl){
   if(!gal) return;
   var princ=gal.querySelector(".gal-principal"), pie=gal.querySelector(".gal-pie"), minis=gal.querySelector(".gal-minis");
   var lista=[]; try{ lista=JSON.parse(gal.getAttribute("data-fotos")||"[]"); }catch(e){}
-  var ok=await permisoCarpeta(true);
-  if(!ok){
-    princ.innerHTML='<div class="msg-foto">Para ver las fotos hay que dar acceso a la Carpeta local.<br><button type="button" class="btn small">Dar acceso</button></div>';
-    princ.querySelector("button").onclick=function(){ cargarFotosFicha(dialogEl); };
-    return;
-  }
+  var ok=carpetaHandle ? await permisoCarpeta(true) : false;
   var items=[], noMostrables=0, faltan=0;
   await Promise.all(lista.map(async function(it,i){
     try{
@@ -1691,6 +1705,11 @@ async function cargarFotosFicha(dialogEl){
   }));
   items=items.filter(Boolean);
   minis.innerHTML=""; 
+  if(!items.length && !ok){
+    princ.innerHTML='<div class="msg-foto">Para ver las fotos hay que conectar la Carpeta local en la pestaña Sistema y dar acceso.'+(carpetaHandle?'<br><button type="button" class="btn small">Dar acceso</button>':'')+'</div>';
+    var bAcc=princ.querySelector("button"); if(bAcc) bAcc.onclick=function(){ cargarFotosFicha(dialogEl); };
+    return;
+  }
   if(!items.length){
     princ.innerHTML='<div class="msg-foto">No se pudo mostrar ninguna foto'+(faltan?' (no se encontraron '+faltan+' archivo(s) en la Carpeta local)':'')+(noMostrables?' ('+noMostrables+' en un formato que el navegador no muestra, como TIFF; ábrelos desde Preparación con «Abrir foto»)':'')+'.</div>';
     return;
@@ -1813,6 +1832,12 @@ function mostrarFichaConsulta(id){
 
 // ---------- mapa satelital de la ficha (teselas Esri World Imagery, proyección Web Mercator) ----------
 var ESRI_TESELA="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+// Capas de referencia de Esri sobre la imagen satelital: rutas y caminos, y límites político-administrativos con toponimia.
+var ESRI_CAPAS=[
+  {id:"b", url:ESRI_TESELA, base:true},
+  {id:"t", url:"https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"},
+  {id:"l", url:"https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"}
+];
 function mercatorPx(lat,lng,z){
   var n=256*Math.pow(2,z), s=Math.sin(Math.max(-85.0511,Math.min(85.0511,lat))*Math.PI/180);
   return {x:(lng+180)/360*n, y:(0.5-Math.log((1+s)/(1-s))/(4*Math.PI))*n};
@@ -1829,17 +1854,22 @@ function iniciarMapaSatelital(dialogEl){
     var tx0=Math.floor(x0/256), tx1=Math.floor((x0+w)/256), ty0=Math.max(0,Math.floor(y0/256)), ty1=Math.min(n-1,Math.floor((y0+h)/256));
     var vivas={};
     for(var ty=ty0;ty<=ty1;ty++) for(var tx=tx0;tx<=tx1;tx++){
-      var tw=((tx%n)+n)%n, k=z+"/"+tw+"/"+ty+"@"+tx;
-      vivas[k]=1;
-      var im=teselas[k];
-      if(!im){
-        im=document.createElement("img"); im.alt=""; im.draggable=false; im.decoding="async";
-        im.onload=function(){ cargadas++; msg.classList.add("oculto"); };
-        im.onerror=function(){ fallos++; if(!cargadas && fallos>=2) msg.classList.remove("oculto"); };
-        im.src=ESRI_TESELA.replace("{z}",z).replace("{y}",ty).replace("{x}",tw);
-        lienzo.appendChild(im); teselas[k]=im;
-      }
-      im.style.left=Math.round(tx*256-x0)+"px"; im.style.top=Math.round(ty*256-y0)+"px";
+      var tw=((tx%n)+n)%n;
+      ESRI_CAPAS.forEach(function(cp){
+        var k=cp.id+z+"/"+tw+"/"+ty+"@"+tx;
+        vivas[k]=1;
+        var im=teselas[k];
+        if(!im){
+          im=document.createElement("img"); im.alt=""; im.draggable=false; im.decoding="async";
+          if(cp.base){
+            im.onload=function(){ cargadas++; msg.classList.add("oculto"); };
+            im.onerror=function(){ fallos++; if(!cargadas && fallos>=2) msg.classList.remove("oculto"); };
+          } else { im.onerror=function(){ im.style.visibility="hidden"; }; }
+          im.src=cp.url.replace("{z}",z).replace("{y}",ty).replace("{x}",tw);
+          lienzo.appendChild(im); teselas[k]=im;
+        }
+        im.style.left=Math.round(tx*256-x0)+"px"; im.style.top=Math.round(ty*256-y0)+"px";
+      });
     }
     Object.keys(teselas).forEach(function(k){ if(!vivas[k]){ teselas[k].remove(); delete teselas[k]; } });
     var p=mercatorPx(lat,lng,z);
@@ -1855,10 +1885,34 @@ function iniciarMapaSatelital(dialogEl){
     b.addEventListener("pointerdown", function(e){ e.stopPropagation(); });
     b.addEventListener("click", function(){ zoom(parseInt(b.getAttribute("data-z"),10)); });
   });
-  var arr=null;
-  cont.addEventListener("pointerdown", function(e){ arr={x:e.clientX,y:e.clientY,cx:centro.x,cy:centro.y}; cont.classList.add("arrastrando"); try{ cont.setPointerCapture(e.pointerId); }catch(er){} });
-  cont.addEventListener("pointermove", function(e){ if(!arr) return; centro={x:arr.cx-(e.clientX-arr.x), y:arr.cy-(e.clientY-arr.y)}; dibujar(); });
-  function soltar(){ arr=null; cont.classList.remove("arrastrando"); }
+  // Arrastre con un dedo o el ratón; pellizco con dos dedos y doble toque para acercar.
+  var ptrs={}, arr=null, dist0=0, ultToque=0;
+  function nPtr(){ return Object.keys(ptrs).length; }
+  function distancia(){ var k=Object.keys(ptrs); if(k.length<2) return 0; var a=ptrs[k[0]], b=ptrs[k[1]]; return Math.hypot(a.x-b.x,a.y-b.y); }
+  cont.addEventListener("pointerdown", function(e){
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    try{ cont.setPointerCapture(e.pointerId); }catch(er){}
+    if(nPtr()===1){
+      arr={x:e.clientX,y:e.clientY,cx:centro.x,cy:centro.y}; cont.classList.add("arrastrando");
+      var ahora=Date.now(); if(ahora-ultToque<350){ zoom(1); ultToque=0; } else ultToque=ahora;
+    } else { arr=null; dist0=distancia(); }
+  });
+  cont.addEventListener("pointermove", function(e){
+    if(!ptrs[e.pointerId]) return;
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    if(nPtr()>=2){
+      var d=distancia();
+      if(dist0 && d){ if(d/dist0>1.5){ zoom(1); dist0=d; } else if(d/dist0<0.67){ zoom(-1); dist0=d; } }
+      return;
+    }
+    if(!arr) return;
+    centro={x:arr.cx-(e.clientX-arr.x), y:arr.cy-(e.clientY-arr.y)}; dibujar();
+  });
+  function soltar(e){
+    delete ptrs[e.pointerId];
+    if(nPtr()===1){ var k=Object.keys(ptrs)[0]; arr={x:ptrs[k].x,y:ptrs[k].y,cx:centro.x,cy:centro.y}; }
+    else if(!nPtr()){ arr=null; cont.classList.remove("arrastrando"); }
+  }
   cont.addEventListener("pointerup", soltar); cont.addEventListener("pointercancel", soltar);
   cont.addEventListener("wheel", function(e){ e.preventDefault(); zoom(e.deltaY<0?1:-1); }, {passive:false});
   dibujar();
@@ -2200,7 +2254,6 @@ function pintarLista(tipo){
           fila.appendChild(mini);
           (async function(){
             try{
-              if(!(await permisoCarpeta(false))) return;
               var url=URL.createObjectURL(await archivoDeRuta(entrada.archivo));
               mini.onload=function(){ mini.style.display="block"; };
               mini.onerror=function(){ URL.revokeObjectURL(url); };
@@ -2404,6 +2457,29 @@ function eliminarRegistro(id){ if(modoAcceso!=="admin") return;
   refrescarPanelesRegistros();
 }
 
+// Elimina uno o varios registros (con una sola confirmación). Cada uno se archiva en Registros/_eliminados.
+function eliminarRegistros(ids){ if(modoAcceso!=="admin") return;
+  ids=ids.filter(function(id){ return indicePorId(id)>-1; });
+  if(!ids.length) return;
+  var msg = ids.length===1
+    ? "¿Eliminar este registro? No se puede deshacer."
+    : "¿Eliminar "+ids.length+" registros? No se puede deshacer.";
+  if(!confirm(msg)) return;
+  var eliminados=[];
+  ids.forEach(function(id){
+    var idx=indicePorId(id);
+    if(idx>-1){ eliminados.push(registros[idx]); registros.splice(idx,1); }
+    seleccionDescarga.delete(id);
+  });
+  if(ids.indexOf(activoId)>-1){
+    if(registros.length) consultarRegistro(registros[0].id);
+    else iniciarNuevoBorrador();
+  }
+  persistir();
+  eliminados.forEach(function(r){ archivarEliminado(r); });
+  refrescarPanelesRegistros();
+}
+
 function aplicarCatalogadorSiCorresponde(obj){
   if(!obj.catalogador && obj.catalogo){ obj.catalogador = operadorActual(); }
 }
@@ -2483,6 +2559,11 @@ function guardarActualizacion(siguienteTab){
 }
 
 // ---------- panel de registros (transversal) ----------
+function iconosArchivos(reg){
+  var nf=(reg.fotos||[]).filter(function(f){ return f && f.archivo; }).length;
+  var na=(reg.publicacionesPdf||[]).filter(Boolean).length+(reg.adjuntos||[]).filter(function(a){ return a && a.archivo; }).length;
+  return (nf?'<span class="ico-arch" title="'+nf+' foto(s) asociada(s)">📷</span>':'')+(na?'<span class="ico-arch" title="'+na+' archivo(s) asociado(s) (PDF y adjuntos)">📄</span>':'');
+}
 function etiquetaRegistro(r){
   var detO = r.determinaciones && r.determinaciones.length ? r.determinaciones[r.determinaciones.length-1] : null;
   var det = detO ? detO.nombreCientifico : "";
@@ -2556,7 +2637,7 @@ function montarPanelRegistros(cont){
       if(!listaC.length) hc+='<p class="nota" style="padding:8px;">Ningún registro coincide con los filtros actuales.</p>';
       listaC.slice(0,150).forEach(function(reg){
         var etc=etiquetaRegistro(reg);
-        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong><br><span class="ts2">'+resumenLinea2Html(etc)+'</span></div><div class="acciones-fila"><button class="btn tenue small btn-consultar-registro">Consultar</button></div></div>';
+        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong>'+iconosArchivos(reg)+'<br><span class="ts2">'+resumenLinea2Html(etc)+'</span></div><div class="acciones-fila"><button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button></div></div>';
       });
       if(listaC.length>150) hc+='<p class="nota" style="padding:8px;">Se muestran 150 de '+listaC.length+'. Afina los filtros o usa la lista completa de abajo.</p>';
       hc+='</div></div>';
@@ -2598,13 +2679,13 @@ function montarPanelRegistros(cont){
       var esActivo = reg.id===activoId;
       var et = esActivo && borrador ? etiquetaRegistro(borrador) : etiquetaRegistro(reg);
       html += '<div class="fila-registro'+(esActivo?' activa':'')+'" data-id="'+reg.id+'">';
-      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong><br><span class="ts2">'+resumenLinea2Html(et)+'</span></div>';
+      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(reg)+'<br><span class="ts2">'+resumenLinea2Html(et)+'</span></div>';
       html += '<div class="acciones-fila">';
       if(esActivo) html += '<span class="tag-activo-mini">'+(editando?'editando':'consultando')+'</span>';
-      html += '<button class="btn tenue small btn-consultar-registro">Consultar</button>';
-      html += '<button class="btn tenue small btn-editar-registro">Editar</button>';
-      html += '<button class="btn tenue small btn-duplicar-fila">Duplicar</button>';
-      html += '<button class="btn tenue small btn-eliminar-registro">Eliminar</button>';
+      html += '<button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button>';
+      html += '<button class="btn tenue small principal-fila btn-editar-registro">Editar</button>';
+      html += '<button class="btn tenue small btn-sec btn-duplicar-fila">Duplicar</button>';
+      html += '<button class="btn tenue small btn-sec btn-eliminar-registro">Eliminar</button>';
       html += '</div>';
       html += '</div>';
     });
@@ -2772,10 +2853,11 @@ function renderResumenDatos(){
         if(agruparDatosPor!=="coleccion") partesExtra.push(coleccionDeRegistro(reg));
         if(agruparDatosPor!=="sesion") partesExtra.push("Ingreso "+sesionDeRegistro(reg));
         if(agruparDatosPor!=="sesionEdicion" && reg.modificadoEn) partesExtra.push("Edición "+sesionEdicionDeRegistro(reg));
-        var textoCompleto = [escapeHtml(resumenLinea1(et)), resumenLinea2Html(et)].concat(partesExtra.map(escapeHtml)).join(" · ");
+        var textoCompleto = [escapeHtml(resumenLinea1(et)), resumenLinea2Html(et)].concat(partesExtra.map(escapeHtml)).join(" · ")+iconosArchivos(reg);
         html += '<div class="fila-compacta" data-id="'+reg.id+'">';
         html += '<span class="fila-compacta-texto">'+textoCompleto+'</span>';
         html += '<button class="btn-ver-compacto btn-ver-resumen" title="Ver ficha">👁️</button>';
+        html += '<button class="btn-borrar-compacto" title="Eliminar este registro">🗑️</button>';
         html += '<input type="checkbox" class="chk-registro" data-id="'+reg.id+'"'+(marcado?' checked':'')+' title="Seleccionar para descarga">';
         html += '</div>';
       });
@@ -2786,6 +2868,11 @@ function renderResumenDatos(){
   cont.querySelectorAll(".btn-ver-resumen").forEach(function(btn){
     btn.onclick = function(){ mostrarFichaConsulta(btn.closest(".fila-compacta").getAttribute("data-id")); };
   });
+  cont.querySelectorAll(".btn-borrar-compacto").forEach(function(btn){
+    btn.onclick = function(){ eliminarRegistros([btn.closest(".fila-compacta").getAttribute("data-id")]); };
+  });
+  var bEl=document.getElementById("btn-eliminar-datos");
+  if(bEl){ var nSel=seleccionDescarga.size; bEl.disabled=!nSel; bEl.textContent="Eliminar marcados"+(nSel?" ("+nSel+")":""); bEl.classList.toggle("oculto", modoAcceso!=="admin"); }
   cont.querySelectorAll(".fila-compacta-texto").forEach(function(span){
     span.onclick = function(){
       var chk = span.closest(".fila-compacta").querySelector(".chk-registro");
@@ -2865,6 +2952,7 @@ document.getElementById("btn-exportar-csv").addEventListener("click", function()
 document.getElementById("btn-exportar-dwc").addEventListener("click", function(){ descargarDatos("dwc"); });
 document.getElementById("btn-importar-zip-datos").addEventListener("click", function(){ document.getElementById("input-importar-json").click(); });
 document.getElementById("btn-marcar-datos").addEventListener("click", function(){ registrosMostradosDatos().forEach(function(r){ seleccionDescarga.add(r.id); }); renderResumenDatos(); });
+document.getElementById("btn-eliminar-datos").addEventListener("click", function(){ eliminarRegistros(Array.from(seleccionDescarga)); });
 document.getElementById("btn-desmarcar-datos").addEventListener("click", function(){ seleccionDescarga.clear(); renderResumenDatos(); });
 document.getElementById("sel-filtro-sesion-edicion").addEventListener("change", function(){
   filtroEdicionDatos = this.value;
@@ -3308,10 +3396,24 @@ function carpetaTaxon(v){ return sanitizarNombre(v)||"Sin_clasificar"; }
 function rutaTaxonomica(reg){
   return ["phylum","clase","orden","familia","genero"].map(function(k){ return carpetaTaxon(reg && reg[k]); }).join("/");
 }
+// Fotos que vinieron en un zip sin Carpeta local conectada: se guardan como archivos en el navegador (clave «foto:ruta»).
+function mimePorNombre(n){ var m=(String(n).toLowerCase().match(/\.([a-z0-9]+)$/)||[])[1]; return {jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",gif:"image/gif",webp:"image/webp",bmp:"image/bmp",avif:"image/avif"}[m]||""; }
+async function fotoLocalLeer(ruta){
+  try{ var b=await cfgLeer("foto:"+ruta); if(!b) return null; return new File([b], ruta.split("/").pop(), {type:b.type||mimePorNombre(ruta)}); }catch(e){ return null; }
+}
 async function archivoDeRuta(ruta){
-  var partes=ruta.split("/"), d=carpetaHandle;
-  for(var i=0;i<partes.length-1;i++) d=await d.getDirectoryHandle(partes[i]);
-  return await (await d.getFileHandle(partes[partes.length-1])).getFile();
+  var err=null;
+  if(carpetaHandle){
+    try{
+      var partes=ruta.split("/"), d=carpetaHandle;
+      for(var i=0;i<partes.length-1;i++) d=await d.getDirectoryHandle(partes[i]);
+      return await (await d.getFileHandle(partes[partes.length-1])).getFile();
+    }catch(e){ err=e; }
+  }
+  var loc=await fotoLocalLeer(ruta);
+  if(loc) return loc;
+  if(err) throw err;
+  var e2=new Error("No hay Carpeta local conectada"); e2.name="NotFoundError"; throw e2;
 }
 // Escribe una copia del archivo y comprueba que quedó con el mismo tamaño que el original.
 async function copiarVerificado(rutaDir, nombre, file){
@@ -3393,7 +3495,8 @@ async function elegirArchivoFoto(entrada){ if(modoAcceso!=="admin") return;
   pintarLista("fotos"); refrescarPanelesRegistros();
 }
 async function abrirRuta(ruta){
-  if(!carpetaHandle || !(await permisoCarpeta(true))){ alert("Conecta la Carpeta local en la pestaña Sistema para abrir archivos."); return; }
+  var okc=!!carpetaHandle && await permisoCarpeta(true);
+  if(!okc && !(await fotoLocalLeer(ruta))){ alert("Conecta la Carpeta local en la pestaña Sistema para abrir archivos."); return; }
   try{
     var file=await archivoDeRuta(ruta);
     var url=URL.createObjectURL(file);
@@ -3510,6 +3613,7 @@ async function retirarOriginales(origenes){
   for(var i=0;i<origenes.length;i++){
     var o=origenes[i];
     if(rutaEnUso(o.ruta, null)) continue;
+    try{ await cfgBorrar("foto:"+o.ruta); }catch(e){}
     try{
       var partes=o.ruta.split("/"), nombre=partes.pop();
       var d=await dirAnidado(partes.join("/"));
@@ -3756,11 +3860,13 @@ function construirConsultas(){
     ["Colección",["coleccion","catalogo","numeroCampo","estadoUbicacion","colector"],["colecta"]]
   ];
   COLUMNAS.forEach(function(col){
-    var div=document.createElement("div"); div.className="cons-col";
-    div.innerHTML='<h3>'+escapeHtml(col[0])+'</h3>';
-    col[1].forEach(function(k){ div.appendChild(campoUI(CONS_CAMPOS.filter(function(c){ return c.k===k; })[0])); });
-    col[2].forEach(function(k){ div.appendChild(rangoUI(CONS_RANGOS.filter(function(g){ return g.k===k; })[0])); });
-    pr.appendChild(div);
+    var det=document.createElement("details"); det.className="det-carpetas cons-col-det";
+    det.innerHTML='<summary>'+escapeHtml(col[0])+'</summary>';
+    var cuerpo=document.createElement("div"); cuerpo.className="cons-col"; cuerpo.style.cssText="border:none;background:none;margin:0;padding:4px 12px 10px;";
+    col[1].forEach(function(k){ cuerpo.appendChild(campoUI(CONS_CAMPOS.filter(function(c){ return c.k===k; })[0])); });
+    col[2].forEach(function(k){ cuerpo.appendChild(rangoUI(CONS_RANGOS.filter(function(g){ return g.k===k; })[0])); });
+    det.appendChild(cuerpo);
+    pr.appendChild(det);
   });
   CONS_GRUPOS.forEach(function(gr){
     var det=document.createElement("details"); det.className="cons-grupo";
@@ -3861,7 +3967,7 @@ function pintarConsultas(){
   lista.slice(0,e.mostrar).forEach(function(r){
     var et=etiquetaRegistro(r);
     var extra=[r.phylum,r.clase,r.orden,r.familia,r.genero].filter(Boolean).join(" › ");
-    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong><br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small cons-btn-ver">Consultar</button><label class="cons-sel" title="Marcar para descargar solo los registros marcados"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Descargar</label></div></div>';
+    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Marcar para descargar solo los registros marcados"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Descargar</label></div></div>';
   });
   cont.innerHTML=h;
   document.getElementById("cons-mas-btn").classList.toggle("oculto", lista.length<=e.mostrar);
@@ -4675,6 +4781,7 @@ function impAsignar(ci,k){
 }
 function iniciarImportador(){
   var cont=impElem("imp-cont"); if(!cont) return;
+  impElem("imp-elegir").addEventListener("click", function(){ impElem("imp-archivo").click(); });
   impElem("imp-archivo").addEventListener("change", function(){ var f=this.files&&this.files[0]; if(f) impCargarArchivo(f); this.value=""; });
   cont.addEventListener("change", function(e){
     var t=e.target;
@@ -4885,23 +4992,32 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
       "Ejemplares a importar: "+nuevos.length+"\n"+
       (repetidos.length ? "Omitidos por tener ya un registro con el mismo número de campo: "+repetidos.length+"\n" : "")+
       (otros.length ? "No se importan (Libro de Catálogo registra ejemplares): "+otros.join(", ")+"\n" : "")+
-      "Fotos: "+nFotos+(nFotos ? (conCarpeta ? " (se copiarán a Fotos/ de la Carpeta local)" : " (la Carpeta local no está conectada: solo se registrarán los nombres)") : "")+"\n\n¿Importar?";
+      "Fotos: "+nFotos+(nFotos ? (conCarpeta ? " (se copiarán a Fotos/ de la Carpeta local)" : " (la Carpeta local no está conectada: se guardarán en este navegador y podrás verlas; al conectar la Carpeta local, «Reordenar archivos de este ejemplar» las copia a Fotos/)") : "")+"\n\n¿Importar?";
     if(!nuevos.length){ alert(msg.replace("\n\n¿Importar?","\n\nNo hay nada nuevo que importar.")); return; }
     if(!confirm(msg)) return;
 
-    var copiadas=0, faltan=0;
-    if(conCarpeta){
-      for(var i=0;i<nuevos.length;i++){
-        var r=nuevos[i], base="Fotos/"+rutaTaxonomica(r);
-        for(var j=0;j<r.fotos.length;j++){
-          var ft=r.fotos[j], datos=await datosZip(z,"fotos/"+ft.archivo);
-          if(!datos){ faltan++; continue; }
+    var copiadas=0, faltan=0, enNavegador=0, usadas={};
+    for(var i=0;i<nuevos.length;i++){
+      var r=nuevos[i], base="Fotos/"+rutaTaxonomica(r);
+      for(var j=0;j<r.fotos.length;j++){
+        var ft=r.fotos[j], datos=await datosZip(z,"fotos/"+ft.archivo);
+        if(!datos){ faltan++; continue; }
+        if(conCarpeta){
           var dir=await dirAnidado(base);
           var disp=await nombreDisponible(dir, ft.archivo, datos.length);
           if(!disp.existe) await escribirArchivo(base, disp.nombre, new Blob([datos]));
           ft.archivo=base+"/"+disp.nombre; copiadas++;
+        } else {
+          var nom=ft.archivo, k=0, ruta;
+          do{ ruta=base+"/"+(k ? nom.replace(/(\.[^.]*)?$/, "_"+k+"$1") : nom); k++; }
+          while(usadas[ruta] || rutaEnUso(ruta,null) || await cfgLeer("foto:"+ruta));
+          usadas[ruta]=1;
+          await cfgGuardar("foto:"+ruta, new Blob([datos], {type:mimePorNombre(nom)}));
+          ft.archivo=ruta; enNavegador++;
         }
       }
+    }
+    if(conCarpeta){
       if(!yaEnEntradas){
         try{
           var ent=await dirAnidado("Entradas"), dz=await nombreDisponible(ent, file.name, file.size);
@@ -4913,7 +5029,7 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
     persistir();
     nuevos.forEach(function(r){ espejarRegistro(r); });
     refrescarPanelesRegistros();
-    alert("Importación lista: "+nuevos.length+" ejemplar(es) agregados"+(copiadas?", "+copiadas+" foto(s) copiadas a Fotos/":"")+
+    alert("Importación lista: "+nuevos.length+" ejemplar(es) agregados"+(copiadas?", "+copiadas+" foto(s) copiadas a Fotos/":"")+(enNavegador?", "+enNavegador+" foto(s) guardadas en este navegador":"")+
       (faltan?". No se encontraron "+faltan+" foto(s) dentro del zip":"")+
       ".\n\nCompleta ahora los datos de ingreso, preparación y catalogado de cada registro.");
   }catch(e){

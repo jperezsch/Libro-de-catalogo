@@ -259,6 +259,10 @@
   .btn-borrar-compacto{background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;opacity:.7;}
   .btn-borrar-compacto:hover{opacity:1;}
   .cons-filtros-esp{margin-top:10px;}
+  #cons-principales{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start;}
+  #cons-principales details.cons-col-det{margin-top:0;}
+  #cons-principales details.cons-col-det>summary{padding:9px 12px;font-size:15px;}
+  @media (max-width:860px){ #cons-principales{grid-template-columns:1fr;} }
   @media (max-width:640px){
     .fila-registro .acciones-fila,.cons-fila .acciones-fila{flex-direction:column;align-items:stretch;gap:4px;flex-shrink:0;}
     .fila-registro .acciones-fila .btn,.cons-fila .acciones-fila .btn{width:100%;text-align:center;}
@@ -449,7 +453,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.29</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.30</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -811,7 +815,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.29</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.30</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -958,7 +962,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.29";
+var APP_VERSION = "v0.9.30";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 

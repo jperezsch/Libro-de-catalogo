@@ -38,7 +38,7 @@
   .operador-actual-wrap input{font-family:var(--sans);font-size:14.5px;padding:5px 9px;border-radius:6px;border:1px solid rgba(242,239,228,.35);background:rgba(242,239,228,.1);color:var(--paper);min-width:170px;}
   .operador-actual-wrap input::placeholder{color:rgba(242,239,228,.55);}
   .operador-actual-wrap input:focus{outline:2px solid var(--accent-2);outline-offset:1px;}
-  nav#tabs{background:var(--paper-2);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;box-shadow:0 2px 6px rgba(38,51,43,.05);}
+  nav#tabs{background:var(--paper-2);border-bottom:1px solid var(--line);box-shadow:0 2px 6px rgba(38,51,43,.05);}
   #tabs-inner{display:flex;overflow-x:auto;max-width:var(--ancho-max);margin:0 auto;padding:8px var(--gutter) 0;gap:6px;}
   nav#tabs{background:#d9d2b6;border-bottom:3px solid var(--accent);}
   nav#tabs button{font-family:var(--sans);font-size:15.5px;font-weight:700;padding:11px 22px;background:#fffdf8;border:1.5px solid var(--line-fuerte);border-bottom:none;border-radius:9px 9px 0 0;color:var(--ink);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
@@ -97,7 +97,17 @@
   .cons-col .campo input{padding:6px 9px;}
   .cons-col .campo input{width:100%;}
   @media (max-width:860px){.cons-cols{grid-template-columns:1fr;}}
-  .barra-activo .btn-toggle-lista{margin-left:auto;align-self:center;flex-shrink:0;}
+  .barra-activo .btn-toggle-lista{align-self:stretch;flex-shrink:0;order:-1;font-size:15.5px;font-weight:700;padding:10px 16px;background:var(--accent);color:#fff;border:2px solid var(--accent);border-radius:8px;box-shadow:0 2px 6px rgba(38,51,43,.25);min-width:150px;text-align:left;}
+  .barra-activo .btn-toggle-lista:hover{filter:brightness(1.1);}
+  #cabecera-fija{position:sticky;top:0;z-index:40;background:var(--paper);box-shadow:0 3px 8px rgba(38,51,43,.12);}
+  #cabecera-fija .panel-registros{margin-bottom:6px;}
+  #cabecera-fija .lista-scroll{max-height:min(280px,42vh);}
+  .mantener-sesion{display:flex !important;flex-direction:row !important;align-items:center;gap:6px;margin-top:4px;font-size:12px !important;text-transform:none !important;letter-spacing:0 !important;cursor:pointer;}
+  .mantener-sesion input{width:auto !important;min-width:0 !important;padding:0 !important;margin:0;accent-color:var(--accent-2);}
+  .fila-pdf-extra{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 8px 22px;}
+  .fila-pdf-extra select,.fila-pdf-extra input{font-size:13px;padding:3px 6px;}
+  .fila-pdf-extra input{flex:1;min-width:140px;}
+  .pdf-motivo{font-size:12px;color:var(--ink-soft);margin-left:6px;}
   .cons-buscador{display:flex;gap:8px;align-items:center;margin:6px 0;}
   .cons-in-general{flex:1;font-size:16px;padding:10px 12px;border:2px solid var(--accent-2);border-radius:9px;}
   .cons-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;}
@@ -251,7 +261,7 @@
   .banda-baja{background:var(--danger-soft);border:1px solid var(--danger);border-radius:var(--radius);padding:14px 16px;margin-top:10px;}
 
   .panel-registros{margin-bottom:16px;position:relative;}
-  .barra-nuevo{display:flex;justify-content:flex-end;margin-bottom:8px;}
+  .barra-nuevo{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
   .barra-activo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#ddd6bb;border:1px solid var(--line-fuerte);border-left:8px solid var(--accent);border-radius:var(--radius);padding:10px 14px;box-shadow:0 2px 8px rgba(38,51,43,.14);}
   .chip-activo{font-size:14.5px;flex:1;min-width:160px;color:var(--ink);}
   .chip-titulo{display:block;font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;color:var(--accent);font-weight:700;margin-bottom:2px;}
@@ -474,11 +484,12 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.33</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.34</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
     <input type="text" id="input-operador-actual" placeholder="Tu nombre" autocomplete="off" readonly>
+    <label class="mantener-sesion" for="chk-mantener-sesion" title="Evita que el equipo apague la pantalla y recuerda la sesión si se recarga la página. Se desactiva al pulsar Salir."><input type="checkbox" id="chk-mantener-sesion"> Mantener la sesión abierta</label>
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
 </header>
@@ -489,6 +500,7 @@
   <button class="btn small tenue oculto" id="btn-aviso-ignorar">Ahora no</button>
 </div>
 
+<div id="cabecera-fija">
 <div id="panel-registros-wrap">
   <div class="panel-registros slot-panel-registros"></div>
 </div>
@@ -501,6 +513,7 @@
   <button data-tab="manejo">Manejo</button>
   <button data-tab="sistema">Sistema</button>
 </div></nav>
+</div>
 
 <main>
 
@@ -837,7 +850,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.33</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.34</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -847,7 +860,8 @@
     </div>
 
     <details class="bloque bloque-desp" id="det-gestion">
-      <summary>Gestión de Datos</summary>
+      <summary>Gestión de Datos <button type="button" class="ayuda-btn" data-ayuda="ayuda-gestion" aria-label="Ayuda" title="Ayuda">?</button></summary>
+      <div class="ayuda-panel oculto" id="ayuda-gestion">Aquí se administran los registros guardados: puedes agrupar y filtrar por colección o por sesión de ingreso o edición, marcar registros (todos los mostrados o uno a uno), descargar un respaldo en zip, una planilla Excel, un CSV o un CSV con nombres Darwin Core, importar un zip de respaldo hecho con esta app y, solo en este bloque, eliminar los registros marcados. Si no hay ninguno marcado, las descargas ofrecen los registros mostrados.</div>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
           <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option><option value="sesionEdicion">Sesión de edición</option></select>
@@ -983,7 +997,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.33";
+var APP_VERSION = "v0.9.34";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1060,7 +1074,7 @@ function escapeHtml(s){
   });
 }
 function clonar(obj){ return JSON.parse(JSON.stringify(obj)); }
-function registroVacioBase(){ return {determinaciones:[], submuestras:[], fotos:[], adjuntos:[], prestamos:[], usos:[], publicacionesPdf:[]}; }
+function registroVacioBase(){ return {determinaciones:[], submuestras:[], fotos:[], adjuntos:[], prestamos:[], usos:[], publicacionesPdf:[], publicacionesPdfInfo:{}}; }
 function registroActivo(){ return borrador; }
 function registroPorId(id){ return registros.find(function(r){ return r.id===id; }); }
 function indicePorId(id){ return registros.findIndex(function(r){ return r.id===id; }); }
@@ -1108,8 +1122,13 @@ function persistir(){ if(modoAcceso!=="admin") return;
 document.addEventListener("click", function(e){
   var b=e.target.closest && e.target.closest(".ayuda-btn");
   if(!b) return;
+  e.preventDefault(); e.stopPropagation();
   var p=document.getElementById(b.getAttribute("data-ayuda"));
   if(p) p.classList.toggle("oculto");
+});
+// los paneles de ayuda de los bloques plegables quedan encima del bloque, visibles aunque esté contraído
+document.querySelectorAll("details.bloque-desp .ayuda-panel").forEach(function(p){
+  var d=p.closest("details"); if(d) d.parentNode.insertBefore(p, d);
 });
 
 // ---------- pestañas ----------
@@ -1532,6 +1551,7 @@ document.addEventListener("input", function(e){
 });
 
 // ---------- listas repetibles ----------
+var MOTIVOS_ARCHIVO=["Descripción original","Redescripción","Mención"];
 var listasCfg = {
   determinaciones: {contenedorId:"lista-determinaciones", destacarUltimo:true, campos:[
     {key:"nombreCientifico",label:"Nombre científico",req:true},
@@ -1556,6 +1576,8 @@ var listasCfg = {
   ]},
   adjuntos: {contenedorId:"lista-adjuntos", campos:[
     {key:"descripcion",label:"Descripción"},
+    {key:"motivo",label:"Motivo de la asociación",type:"select",options:MOTIVOS_ARCHIVO},
+    {key:"comentario",label:"Aclaración (p. ej. páginas)"},
     {key:"archivo",label:"Archivo"}
   ]},
   prestamos: {contenedorId:"lista-prestamos", campos:[
@@ -1740,7 +1762,7 @@ function construirFicha(r){
     + '<div class="ficha-header"><div><div class="ficha-header-titulo">'+escapeHtml(construirCatalogoCompleto(r) || resumenLinea1(et))+'</div><div class="ficha-header-sub">'+resumenLinea2Html(et)+'</div></div>'
     + '<button type="button" class="btn-cerrar-ficha" title="Cerrar" aria-label="Cerrar">✕</button></div>'
     + '<div class="ficha-body">'+body+'</div>'
-    + '<div class="ficha-footer"><button class="btn small btn-editar-desde-ficha">Editar este registro</button></div>'
+    + (modoAcceso==="admin" ? '<div class="ficha-footer"><button class="btn small btn-editar-desde-ficha">Editar este registro</button></div>' : '')
     + '</div>';
 }
 function coordenadasRegistro(r){
@@ -1831,7 +1853,8 @@ async function cargarFotosFicha(dialogEl){
 }
 function archivosAsociadosHtml(r){
   var pdfs=(r.publicacionesPdf||[]).filter(Boolean), adj=(r.adjuntos||[]).filter(function(a){ return /^Adjuntos\//.test(a.archivo||""); });
-  var h=pdfs.map(function(n){ return '<button type="button" class="btn tenue small btn-abrir-pdf" data-pdf="'+escapeHtml(n)+'" title="'+escapeHtml(n)+'">📄 '+escapeHtml(n.split("/").pop())+'</button>'; }).join("")
+  var inf=r.publicacionesPdfInfo||{};
+  var h=pdfs.map(function(n){ var i0=inf[n]||{}, mo=[i0.motivo,i0.comentario].filter(Boolean).join(" · "); return '<button type="button" class="btn tenue small btn-abrir-pdf" data-pdf="'+escapeHtml(n)+'" title="'+escapeHtml(n+(mo?" — "+mo:""))+'">📄 '+escapeHtml(n.split("/").pop())+(mo?'<span class="pdf-motivo">'+escapeHtml(mo)+'</span>':'')+'</button>'; }).join("")
     +adj.map(function(a){ return '<button type="button" class="btn tenue small btn-abrir-adjunto" data-ruta="'+escapeHtml(a.archivo)+'" title="'+escapeHtml(a.archivo)+'">📎 '+escapeHtml(a.archivo.split("/").pop())+'</button>'; }).join("");
   return {html:h, n:pdfs.length+adj.length};
 }
@@ -1909,7 +1932,7 @@ function mostrarFichaConsulta(id){
   dialogEl.querySelectorAll(".btn-abrir-pdf").forEach(function(b){ b.onclick = function(){ abrirPdf(b.getAttribute("data-pdf")); }; });
   dialogEl.querySelector(".btn-cerrar-ficha").onclick = function(){ dialogEl.close(); };
   var btnEd = dialogEl.querySelector(".btn-editar-desde-ficha");
-  if(btnEd){ if(modoAcceso==="admin") btnEd.onclick = function(){ dialogEl.close(); editarRegistro(id); }; else btnEd.remove(); }
+  if(btnEd){ if(modoAcceso==="admin") btnEd.onclick = function(){ dialogEl.close(); editarRegistro(id); }; else { var ft=btnEd.closest(".ficha-footer"); (ft||btnEd).remove(); } }
   dialogEl.onclick = function(e){ if(e.target===dialogEl) dialogEl.close(); };
   dialogEl.onclose = liberarUrlsFicha;
   liberarUrlsFicha();
@@ -2530,7 +2553,13 @@ function cargarRegistroEnBorrador(id, modoEdicion){ if(modoAcceso!=="admin") mod
 }
 function nuevoRegistro(){ if(modoAcceso!=="admin") return; iniciarNuevoBorrador(); }
 function consultarRegistro(id){ cargarRegistroEnBorrador(id, false); }
-function editarRegistro(id){ if(modoAcceso!=="admin") return; cargarRegistroEnBorrador(id, true); }
+function editarRegistro(id){ if(modoAcceso!=="admin") return;
+  var tb=document.querySelector("#tabs button.active");
+  var cur=tb ? tb.getAttribute("data-tab") : "";
+  cargarRegistroEnBorrador(id, true);
+  if(cur==="consultas") activarTab("entrada");   // el formulario de edición vive en Entrada
+  try{ window.scrollTo(0,0); }catch(e){}
+}
 function eliminarRegistro(id){ if(modoAcceso!=="admin") return;
   if(!confirm("¿Eliminar este registro? No se puede deshacer.")) return;
   var idx=indicePorId(id);
@@ -2718,8 +2747,8 @@ function montarPanelRegistros(cont){
   if(btnTabActivo && btnTabActivo.getAttribute("data-tab")==="consultas"){
     var abiertoC = cont.getAttribute("data-abierto")==="1";
     var listaC = resultadosConsulta();
-    var hc='<div class="barra-activo"><span class="badge-modo badge-modo-consulta">Consulta</span><span class="chip-activo"><span class="chip-titulo">Consulta actual</span>'+resumenConsultaHtml(listaC)+'</span>';
-    hc+='<button class="btn small btn-toggle-lista">'+(abiertoC?'Ocultar resultados ▲':'Ver resultados ('+listaC.length+') ▾')+'</button></div>';
+    var hc='<div class="barra-activo"><button class="btn small btn-toggle-lista">'+(abiertoC?'Ocultar resultados ▲':'Ver resultados ('+listaC.length+') ▾')+'</button><span class="badge-modo badge-modo-consulta">Consulta</span><span class="chip-activo"><span class="chip-titulo">Consulta actual</span>'+resumenConsultaHtml(listaC)+'</span>';
+    hc+='</div>';
     if(abiertoC){
       hc+='<div class="desplegable-registros"><div class="lista-scroll">';
       if(!listaC.length) hc+='<p class="nota" style="padding:8px;">Ningún registro coincide con los filtros actuales.</p>';
@@ -2744,9 +2773,9 @@ function montarPanelRegistros(cont){
     html += '<button class="btn secundario small btn-importar-zip">Importar zip de Libreta de Campo…</button>';
     html += '<input type="file" id="input-zip" accept=".zip" class="oculto">';
   }
-  html += '<button class="btn small btn-toggle-lista">'+(abierto?'Ocultar registros ▲':'Ver registros ('+registros.length+') ▾')+'</button>';
   html += '</div>';
   html += '<div class="barra-activo">';
+  html += '<button class="btn small btn-toggle-lista">'+(abierto?'Ocultar registros ▲':'Ver registros ('+registros.length+') ▾')+'</button>';
   html += '<span class="badge-modo badge-modo-'+modoTexto.toLowerCase()+'">'+modoTexto+'</span>';
   html += '<span class="chip-activo"><span class="chip-titulo">Registro Actual</span>'+(etAct ? (nombreDestacadoHtml(etAct)+'<strong>'+escapeHtml(resumenLinea1(etAct))+'</strong>'+(resumenDatosSinNombre(etAct)?'<br>'+escapeHtml(resumenDatosSinNombre(etAct)):'')) : 'Sin registro activo')+'</span>';
   if(activoId!==null){
@@ -3396,9 +3425,25 @@ function pintarPdfs(){
     abrir.onclick=function(){ abrirPdf(nombre); };
     var quitar=document.createElement("button"); quitar.type="button"; quitar.className="btn tenue small"; quitar.textContent="Quitar";
     quitar.classList.toggle("oculto", !editando);
-    quitar.onclick=function(){ borrador.publicacionesPdf.splice(i,1); pintarPdfs(); refrescarPanelesRegistros(); };
+    quitar.onclick=function(){ borrador.publicacionesPdf.splice(i,1); if(borrador.publicacionesPdfInfo) delete borrador.publicacionesPdfInfo[nombre]; pintarPdfs(); refrescarPanelesRegistros(); };
     fila.appendChild(txt); fila.appendChild(abrir); fila.appendChild(quitar);
     cont.appendChild(fila);
+    var info=(r.publicacionesPdfInfo||{})[nombre]||{};
+    if(editando){
+      if(!borrador.publicacionesPdfInfo) borrador.publicacionesPdfInfo={};
+      var ex=document.createElement("div"); ex.className="fila-pdf-extra";
+      var sel=document.createElement("select"); sel.className="nav";
+      sel.innerHTML='<option value="">Motivo…</option>'+MOTIVOS_ARCHIVO.map(function(m){ return '<option>'+m+'</option>'; }).join("");
+      sel.value=info.motivo||"";
+      var com=document.createElement("input"); com.type="text"; com.className="nav"; com.placeholder="Aclaración (p. ej. pp. 12-15)"; com.value=info.comentario||"";
+      var guardar=function(){ borrador.publicacionesPdfInfo[nombre]={motivo:sel.value, comentario:com.value}; refrescarPanelesRegistros(); };
+      sel.onchange=guardar; com.oninput=guardar;
+      ex.appendChild(sel); ex.appendChild(com); cont.appendChild(ex);
+    } else if(info.motivo || info.comentario){
+      var ex2=document.createElement("div"); ex2.className="fila-pdf-extra";
+      ex2.textContent=[info.motivo, info.comentario].filter(Boolean).join(" · ");
+      cont.appendChild(ex2);
+    }
   });
 }
 async function nombreDisponible(dir, nombre, tam){
@@ -3546,6 +3591,52 @@ async function asociarAdjuntos(entrada){ if(modoAcceso!=="admin") return;
 }
 document.getElementById("btn-add-adjunto-archivo").addEventListener("click", function(){ asociarAdjuntos(null); });
 // Copia (si hace falta) una foto elegida a Fotos/<clasificación>/ y devuelve su ruta relativa y fecha.
+// lectura mínima de metadatos EXIF (JPEG y TIFF/RAW): fecha de la toma, autor y cámara
+function exifDeBuffer(buf){
+  var dv=new DataView(buf), out={}, off=0, le=true;
+  try{
+    if(dv.getUint16(0)===0xFFD8){
+      var p=2;
+      while(p<dv.byteLength-4){
+        var mk=dv.getUint16(p), ln=dv.getUint16(p+2);
+        if(mk===0xFFE1 && dv.getUint32(p+4)===0x45786966){ off=p+10; break; }
+        if((mk&0xFF00)!==0xFF00) break;
+        p+=2+ln;
+      }
+      if(!off) return out;
+    }
+    var b0=dv.getUint16(off); le = b0===0x4949;
+    if(!le && b0!==0x4D4D) return out;
+    if(dv.getUint16(off+2,le)!==42) return out;
+    function ascii(o,n){ var t=""; for(var k=0;k<n;k++){ var c=dv.getUint8(o+k); if(!c) break; t+=String.fromCharCode(c); } return t.trim(); }
+    function ifd(o, nivel){
+      var n=dv.getUint16(o,le), ptr=0;
+      for(var k=0;k<n;k++){
+        var e=o+2+k*12, tag=dv.getUint16(e,le), tipo=dv.getUint16(e+2,le), cnt=dv.getUint32(e+4,le);
+        if(tag===0x8769 && nivel<2) ptr=dv.getUint32(e+8,le);
+        if(tipo===2){
+          var vo = cnt>4 ? off+dv.getUint32(e+8,le) : e+8;
+          if(tag===0x9003) out.fecha=ascii(vo,cnt);
+          else if(tag===0x0132 && !out.fechaMod) out.fechaMod=ascii(vo,cnt);
+          else if(tag===0x013B) out.autor=ascii(vo,cnt);
+          else if(tag===0x010F) out.marca=ascii(vo,cnt);
+          else if(tag===0x0110) out.modelo=ascii(vo,cnt);
+        }
+      }
+      if(ptr) ifd(off+ptr, nivel+1);
+    }
+    ifd(off+dv.getUint32(off+4,le), 0);
+  }catch(e){}
+  return out;
+}
+async function leerExif(file){
+  try{
+    var buf=await file.slice(0, 1024*1024).arrayBuffer();
+    var x=exifDeBuffer(buf);
+    var f=x.fecha||x.fechaMod||"", m=f.match(/^(\d{4}):(\d{2}):(\d{2})/);
+    return {fecha:m?(m[1]+"-"+m[2]+"-"+m[3]):"", autor:x.autor||"", camara:[x.marca,x.modelo].filter(Boolean).join(" ")};
+  }catch(e){ return {fecha:"",autor:"",camara:""}; }
+}
 async function fotoEnCarpeta(fh){
   var rutaTax="Fotos/"+rutaTaxonomica(borrador);
   var cat=sanitizarNombre(construirCatalogoCompleto(borrador)) || "sin-catalogo";
@@ -3561,8 +3652,8 @@ async function fotoEnCarpeta(fh){
     if(!disp.existe) await copiarVerificado(rutaTax, disp.nombre, file);
     rel=rutaTax+"/"+disp.nombre;
   }
-  var f=new Date(file.lastModified);
-  return {rel:rel, fecha:f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate()), rutaTax:rutaTax};
+  var f=new Date(file.lastModified), ex=await leerExif(file);
+  return {rel:rel, fecha:ex.fecha||(f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())), autor:ex.autor, camara:ex.camara, rutaTax:rutaTax};
 }
 async function elegirArchivoFoto(entrada){ if(modoAcceso!=="admin") return;
   if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar archivos. Usa Chrome o Edge."); return; }
@@ -3575,6 +3666,8 @@ async function elegirArchivoFoto(entrada){ if(modoAcceso!=="admin") return;
   var r=await fotoEnCarpeta(fh[0]);
   entrada.archivo=r.rel;
   if(!entrada.fechaFoto) entrada.fechaFoto=r.fecha;
+  if(!entrada.fotografo && r.autor) entrada.fotografo=r.autor;
+  if(!entrada.notaCalidad && r.camara) entrada.notaCalidad="Cámara: "+r.camara;
   pintarLista("fotos"); refrescarPanelesRegistros();
 }
 async function abrirRuta(ruta){
@@ -3604,7 +3697,7 @@ async function asociarFotos(){ if(modoAcceso!=="admin") return;
   for(var i=0;i<fhs.length;i++){
     var r=await fotoEnCarpeta(fhs[i]), rel=r.rel;
     if(borrador.fotos.some(function(f){ return f.archivo===rel; })) continue;
-    borrador.fotos.push({fechaFoto:r.fecha, tipoFoto:"", archivo:rel, fotografo:"", notaCalidad:""});
+    borrador.fotos.push({fechaFoto:r.fecha, tipoFoto:"", archivo:rel, fotografo:r.autor||"", notaCalidad:r.camara?("Cámara: "+r.camara):""});
     agregadas++;
   }
   pintarLista("fotos"); refrescarPanelesRegistros();
@@ -3682,7 +3775,7 @@ async function capturaTraer(){
     try{
       var r=await fotoEnCarpeta(elegidas[k].h);
       if(!borrador.fotos.some(function(f){ return f.archivo===r.rel; })){
-        borrador.fotos.push({fechaFoto:r.fecha, tipoFoto:"", archivo:r.rel, fotografo:"", notaCalidad:""}); agregadas++;
+        borrador.fotos.push({fechaFoto:r.fecha, tipoFoto:"", archivo:r.rel, fotografo:r.autor||"", notaCalidad:r.camara?("Cámara: "+r.camara):""}); agregadas++;
       }
       if(capturaVistos.indexOf(elegidas[k].clave)<0) capturaVistos.push(elegidas[k].clave);
       capturaSel.delete(elegidas[k].clave);
@@ -3757,7 +3850,7 @@ function referenciasArchivos(reg){
   var refs=[], tax=rutaTaxonomica(reg);
   (reg.fotos||[]).forEach(function(f){ if(/^Fotos\//.test(f.archivo||"")) refs.push({ruta:f.archivo, destino:"Fotos/"+tax, set:function(v){ f.archivo=v; }}); });
   (reg.adjuntos||[]).forEach(function(a){ if(/^Adjuntos\//.test(a.archivo||"")) refs.push({ruta:a.archivo, destino:carpetaAdjuntos(reg), set:function(v){ a.archivo=v; }}); });
-  (reg.publicacionesPdf||[]).forEach(function(n,i){ refs.push({ruta:rutaNormalPdf(n), destino:"Publicaciones/"+tax, set:function(v){ reg.publicacionesPdf[i]=v; }}); });
+  (reg.publicacionesPdf||[]).forEach(function(n,i){ refs.push({ruta:rutaNormalPdf(n), destino:"Publicaciones/"+tax, set:function(v){ var viejo=reg.publicacionesPdf[i]; if(reg.publicacionesPdfInfo && reg.publicacionesPdfInfo[viejo]){ reg.publicacionesPdfInfo[v]=reg.publicacionesPdfInfo[viejo]; delete reg.publicacionesPdfInfo[viejo]; } reg.publicacionesPdf[i]=v; }}); });
   return refs;
 }
 function contarPorReordenar(reg){
@@ -4202,7 +4295,8 @@ var CONS_COLUMNAS = [
   ["Determinador",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].determinador:""; }],
   ["Fecha de determinación",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].fechaDeterminacion:""; }],
   ["N.º de fotos",function(r){ return (r.fotos||[]).filter(function(f){ return f.archivo; }).length; },"n"],
-  ["PDF de publicaciones",function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }).join("; "); }]
+  ["PDF de publicaciones",function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }).join("; "); }],
+  ["Motivo de PDF",function(r){ var inf=r.publicacionesPdfInfo||{}; return (r.publicacionesPdf||[]).map(function(n){ var i0=inf[n]||{}; return n.split("/").pop()+": "+[i0.motivo,i0.comentario].filter(Boolean).join(", "); }).filter(function(t){ return /: .+/.test(t); }).join("; "); }]
 ];
 function filasDeLista(lista){
   return [CONS_COLUMNAS.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return CONS_COLUMNAS.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
@@ -5483,12 +5577,48 @@ document.getElementById("btn-actividad-csv").addEventListener("click", descargar
   inp.addEventListener("keydown", function(e){ if(e.key==="Enter") e.preventDefault(); }); // Enter no ingresa: hay que pulsar el botón elegido
   document.getElementById("btn-cerrar-sesion").addEventListener("click", function(){
     if(modoAcceso==="admin" && !confirm("Se cerrará la sesión y volverá la pantalla de inicio. Lo que no hayas guardado se perderá. ¿Continuar?")) return;
+    olvidarSesion();
     registrarActividad("salida","");
     volcarActividad().then(function(){ location.reload(); });
     setTimeout(function(){ location.reload(); }, 1500);
   });
 })();
 
+// ---------- mantener la sesión abierta ----------
+var CLAVE_SESION="libroCatalogoSesionMantenida", wakeLock=null;
+function pedirWakeLock(){
+  try{
+    if(!("wakeLock" in navigator)) return;
+    navigator.wakeLock.request("screen").then(function(w){ wakeLock=w; w.addEventListener("release", function(){ wakeLock=null; }); }).catch(function(){});
+  }catch(e){}
+}
+function soltarWakeLock(){ try{ if(wakeLock) wakeLock.release(); }catch(e){} wakeLock=null; }
+function olvidarSesion(){
+  try{ localStorage.removeItem(CLAVE_SESION); }catch(e){}
+  soltarWakeLock();
+  var c=document.getElementById("chk-mantener-sesion"); if(c) c.checked=false;
+}
+function guardarSesionMantenida(){
+  try{ localStorage.setItem(CLAVE_SESION, JSON.stringify({modo:modoAcceso, nombre:nombreSesion, t:Date.now()})); }catch(e){}
+  pedirWakeLock();
+}
+(function(){
+  var c=document.getElementById("chk-mantener-sesion"); if(!c) return;
+  c.addEventListener("change", function(){
+    if(!modoAcceso){ c.checked=false; return; }
+    if(c.checked) guardarSesionMantenida(); else { try{ localStorage.removeItem(CLAVE_SESION); }catch(e){} soltarWakeLock(); }
+  });
+  document.addEventListener("visibilitychange", function(){ if(document.visibilityState==="visible" && c.checked && !wakeLock) pedirWakeLock(); });
+})();
+function restaurarSesionMantenida(){
+  var d=null; try{ d=JSON.parse(localStorage.getItem(CLAVE_SESION)||"null"); }catch(e){}
+  if(!d || !d.nombre || modoAcceso) return;
+  var inp=document.getElementById("inicio-nombre"); if(inp) inp.value=d.nombre;
+  if(d.modo==="admin"){ if(listaAdmins().indexOf(d.nombre)<0) return; iniciarAdmin(d.nombre, "sesión mantenida"); }
+  else if(d.modo==="consulta") entrarConsulta();
+  else return;
+  var c=document.getElementById("chk-mantener-sesion"); if(c){ c.checked=true; guardarSesionMantenida(); }
+}
 cargarDesdeIndexedDB(function(lista){
   registros = lista || [];
   registros.forEach(function(r){ LISTAS_REGISTRO.forEach(function(k){ if(!r[k]) r[k]=[]; }); });
@@ -5496,6 +5626,7 @@ cargarDesdeIndexedDB(function(lista){
   if(registros.length) consultarRegistro(registros[0].id); else iniciarNuevoBorrador();
   refrescarPanelesRegistros();
   iniciarCarpeta();
+  restaurarSesionMantenida();
 });
 
 })();

@@ -97,7 +97,7 @@
   .cons-col .campo input{padding:6px 9px;}
   .cons-col .campo input{width:100%;}
   @media (max-width:860px){.cons-cols{grid-template-columns:1fr;}}
-  .barra-activo .btn-toggle-lista{align-self:stretch;flex-shrink:0;order:-1;font-size:15.5px;font-weight:700;padding:10px 16px;background:var(--accent);color:#fff;border:2px solid var(--accent);border-radius:8px;box-shadow:0 2px 6px rgba(38,51,43,.25);min-width:150px;text-align:left;}
+  .barra-activo .btn-toggle-lista{align-self:stretch;flex-shrink:0;order:99;margin-left:auto;font-size:15.5px;font-weight:700;padding:10px 16px;background:var(--accent);color:#fff;border:2px solid var(--accent);border-radius:8px;box-shadow:0 2px 6px rgba(38,51,43,.25);min-width:150px;text-align:left;}
   .barra-activo .btn-toggle-lista:hover{filter:brightness(1.1);}
   #cabecera-fija{position:sticky;top:0;z-index:40;background:var(--paper);box-shadow:0 3px 8px rgba(38,51,43,.12);}
   #cabecera-fija .panel-registros{margin-bottom:6px;}
@@ -484,7 +484,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.34</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.35</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -850,7 +850,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.34</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.35</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -997,7 +997,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.34";
+var APP_VERSION = "v0.9.35";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1128,7 +1128,12 @@ document.addEventListener("click", function(e){
 });
 // los paneles de ayuda de los bloques plegables quedan encima del bloque, visibles aunque esté contraído
 document.querySelectorAll("details.bloque-desp .ayuda-panel").forEach(function(p){
-  var d=p.closest("details"); if(d) d.parentNode.insertBefore(p, d);
+  var d=p.closest("details"); if(!d) return;
+  d.parentNode.insertBefore(p, d.nextSibling);      // contraído: el panel se despliega bajo el bloque
+  d.addEventListener("toggle", function(){
+    if(d.open){ var sm=d.querySelector("summary"); sm.parentNode.insertBefore(p, sm.nextSibling); }
+    else d.parentNode.insertBefore(p, d.nextSibling);
+  });
 });
 
 // ---------- pestañas ----------

@@ -131,6 +131,14 @@
   .tabpanel{display:none;} .tabpanel.active{display:block;animation:aparecer .15s ease-out;}
   @keyframes aparecer{ from{opacity:0; transform:translateY(3px);} to{opacity:1; transform:translateY(0);} }
   .bloque{background:#fffdf8;border:1px solid var(--line);border-left:4px solid var(--accent-2);border-radius:var(--radius);padding:17px 19px;margin-bottom:16px;box-shadow:var(--sombra);}
+  .bloque-desp>summary{cursor:pointer;list-style:none;font-family:var(--serif);font-weight:700;font-size:19px;color:var(--accent);}
+  .bloque-desp>summary::-webkit-details-marker{display:none;}
+  .bloque-desp>summary::before{content:"▸ ";}
+  .bloque-desp[open]>summary::before{content:"▾ ";}
+  .bloque-desp[open]>summary{margin-bottom:8px;}
+  .sug-panel{position:fixed;z-index:3000;background:#fffdf8;border:1px solid var(--line-fuerte);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.22);max-height:240px;overflow:auto;text-align:left;font-size:14px;color:var(--ink);}
+  .sug-op{padding:7px 12px;cursor:pointer;text-align:left;white-space:normal;overflow-wrap:anywhere;}
+  .sug-op.sel,.sug-op:hover{background:var(--accent-soft);}
   .bloque h2{font-family:var(--serif);font-size:19px;margin:0 0 6px;color:var(--accent);}
   .bloque .sub{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px;}
   .bloque .grid.espaciado{margin-top:12px;}
@@ -249,7 +257,7 @@
   .fila-registro .ts2{font-size:12.5px;color:var(--ink-soft);}
   .tag-activo-mini{font-size:10px;font-family:var(--mono);color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 7px;margin-right:6px;}
   .acciones-fila{display:flex;align-items:center;gap:6px;white-space:nowrap;}
-  .acciones-fila .btn-sec{font-size:12px;padding:3px 9px;opacity:.78;border-color:transparent;}
+  .acciones-fila .btn-sec{font-size:11px;padding:2px 7px;opacity:.78;border-color:transparent;}
   .acciones-fila .btn-sec:hover{opacity:1;border-color:var(--line-fuerte);}
   .acciones-fila .btn-sec.btn-eliminar-registro:hover{color:#a3261c;}
   button.btn.principal-fila{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
@@ -453,7 +461,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.30</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.31</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -815,7 +823,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.30</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.31</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -824,8 +832,8 @@
       <p class="nota" id="estado-almacenamiento"></p>
     </div>
 
-    <div class="bloque">
-      <h2>Gestión de Datos</h2>
+    <details class="bloque bloque-desp" id="det-gestion">
+      <summary>Gestión de Datos</summary>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
           <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option><option value="sesionEdicion">Sesión de edición</option></select>
@@ -859,20 +867,18 @@
       </div>
       <p class="nota" id="datos-msg">Se descargan o eliminan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados.</p>
       <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
-    </div>
+    </details>
 
-    <div class="bloque">
-      <details id="det-importar">
+    <details class="bloque bloque-desp" id="det-importar">
         <summary class="imp-resumen-titulo">Importar desde planilla (Excel o CSV)</summary>
         <p class="nota">Trae registros desde una planilla propia. El archivo se lee tal como viene: tú decides a qué campo de la app va cada columna, arrastrándola o eligiéndola en su selector. Los valores que no calcen con una lista controlada se pueden conservar como texto libre. Nada se guarda hasta que revises la vista previa y confirmes.</p>
         <div class="barra-botones"><button type="button" class="btn secundario" id="imp-elegir">Elegir archivo .xlsx o .csv…</button><input type="file" id="imp-archivo" accept=".xlsx,.csv,.tsv,.txt,text/csv" class="oculto"></div>
         <p class="nota" id="imp-msg"></p>
         <div id="imp-cont"></div>
       </details>
-    </div>
 
-    <div class="bloque">
-      <h2>Administradores autorizados <button type="button" class="ayuda-btn" data-ayuda="ayuda-admins" aria-label="Ayuda" title="Ayuda">?</button></h2>
+    <details class="bloque bloque-desp" id="det-admins">
+      <summary>Administradores autorizados <button type="button" class="ayuda-btn" data-ayuda="ayuda-admins" aria-label="Ayuda" title="Ayuda">?</button></summary>
       <div class="ayuda-panel oculto" id="ayuda-admins">Solo los nombres registrados aquí pueden ingresar como Administrador, y deben escribirse exactamente igual (mayúsculas, tildes y guiones). Estos nombres no se ofrecen como sugerencias en la pantalla de inicio. La lista se guarda en este navegador y en Registros/_administradores.json de la Carpeta local, de modo que otro equipo con la misma carpeta la recupera. Si el nombre no figura, o la lista está vacía, se puede ingresar con la clave de seguridad (primer ingreso o pérdida de acceso); en el primer ingreso el nombre queda registrado.</div>
       <div class="fila-admin">
         <div class="campo opc"><div class="lbl"><span class="name">Nombre y apellido</span></div>
@@ -881,10 +887,10 @@
       </div>
       <p class="nota" id="admin-mensaje"></p>
       <ul class="lista-admins" id="admin-lista"></ul>
-    </div>
+    </details>
 
-    <div class="bloque">
-      <h2>Carpeta local <button type="button" class="ayuda-btn" data-ayuda="ayuda-carpeta" aria-label="Ayuda" title="Ayuda">?</button></h2>
+    <details class="bloque bloque-desp" id="det-carpeta">
+      <summary>Carpeta local <button type="button" class="ayuda-btn" data-ayuda="ayuda-carpeta" aria-label="Ayuda" title="Ayuda">?</button></summary>
       <div class="ayuda-panel oculto" id="ayuda-carpeta">Es la carpeta de este equipo donde la app guarda una copia de cada registro, las fotos y los archivos asociados. Los datos siguen guardándose también en el navegador. Funciona en Chrome y Edge.<br><strong>Ubicación recomendada:</strong> créala directamente en la unidad C: (por ejemplo C:\Libro_de_Catalogo), no dentro de Documentos, Escritorio ni OneDrive. Así todos los equipos usan la misma ruta corta y se evitan bloqueos del navegador.</div>
 
       <div class="carpeta-estado" id="carpeta-estado-caja">
@@ -936,17 +942,17 @@
           <li><strong>Adjuntos/</strong> Otros archivos, en carpetas por clasificación y una subcarpeta por ejemplar.</li>
         </ul>
       </details>
-    </div>
+    </details>
 
-      <div class="bloque">
-      <h2>Registro de actividad <button type="button" class="ayuda-btn" data-ayuda="ayuda-actividad" aria-label="Ayuda" title="Ayuda">?</button></h2>
+      <details class="bloque bloque-desp" id="det-actividad">
+      <summary>Registro de actividad <button type="button" class="ayuda-btn" data-ayuda="ayuda-actividad" aria-label="Ayuda" title="Ayuda">?</button></summary>
       <div class="ayuda-panel oculto" id="ayuda-actividad">Cada ingreso, búsqueda, consulta de ficha y descarga queda anotado con fecha, modo, persona y detalle en la carpeta Registros/_actividad de la Carpeta local (un archivo por equipo y día, para que varios equipos puedan escribir a la vez sin pisarse) (también para quienes entran con «Consultar la colección»). Si la Carpeta local no está disponible, los eventos esperan en el navegador hasta que lo esté.</div>
       <div class="barra-botones">
         <button class="btn small secundario" id="btn-actividad-ver">Ver últimos eventos</button>
         <button class="btn small secundario" id="btn-actividad-csv">Descargar todo (CSV)</button>
       </div>
       <div id="actividad-lista"></div>
-    </div>
+    </details>
   </section>
 
 </main>
@@ -962,7 +968,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.30";
+var APP_VERSION = "v0.9.31";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1161,6 +1167,69 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   pintarDatalist(campo);
   input.addEventListener("change", function(){ guardarSug(campo, input.value.trim()); });
 });
+
+// ---------- sugerencias propias: reemplazan el desplegable nativo de los datalist, alineadas a la izquierda bajo el campo ----------
+(function(){
+  var panel=null, activo=null, items=[], sel=-1, ignorar=false;
+  function norm(t){ return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+  function adoptar(inp){ if(inp && inp.tagName==="INPUT" && inp.hasAttribute("list")){ inp.setAttribute("data-lista",inp.getAttribute("list")); inp.removeAttribute("list"); } }
+  function valores(inp){
+    var dl=document.getElementById(inp.getAttribute("data-lista")||"");
+    return dl ? Array.prototype.map.call(dl.options,function(o){ return o.value; }) : [];
+  }
+  function cerrar(){ if(panel){ panel.remove(); panel=null; } activo=null; items=[]; sel=-1; }
+  function posicionar(){
+    if(!panel||!activo) return;
+    var r=activo.getBoundingClientRect(), h=panel.offsetHeight, abajo=window.innerHeight-r.bottom;
+    panel.style.left=Math.max(4,r.left)+"px"; panel.style.width=Math.max(r.width,160)+"px";
+    panel.style.top=((abajo<h+8 && r.top>h+8) ? r.top-h-2 : r.bottom+2)+"px";
+  }
+  function marcar(i){
+    sel=i; Array.prototype.forEach.call(panel.children,function(c,k){ c.classList.toggle("sel",k===i); });
+    if(panel.children[i]) panel.children[i].scrollIntoView({block:"nearest"});
+  }
+  function elegir(v){
+    var inp=activo; cerrar(); if(!inp) return;
+    ignorar=true; inp.value=v;
+    inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true}));
+    ignorar=false;
+  }
+  function abrir(inp){
+    adoptar(inp);
+    if(!inp.getAttribute("data-lista") || inp.readOnly || inp.disabled){ cerrar(); return; }
+    var q=norm(inp.value), todos=valores(inp);
+    var lista=todos.filter(function(v){ return !q || norm(v).indexOf(q)>-1; }).slice(0,200);
+    if(!lista.length || (lista.length===1 && norm(lista[0])===q)){ cerrar(); return; }
+    cerrar(); activo=inp; items=lista;
+    panel=document.createElement("div"); panel.className="sug-panel";
+    lista.forEach(function(v,i){
+      var d=document.createElement("div"); d.className="sug-op"; d.textContent=v;
+      d.addEventListener("mousedown",function(e){ e.preventDefault(); elegir(v); });
+      panel.appendChild(d);
+    });
+    (inp.closest("dialog")||document.body).appendChild(panel);
+    posicionar();
+  }
+  document.querySelectorAll("input[list]").forEach(adoptar);
+  document.addEventListener("pointerdown",function(e){ adoptar(e.target); },true);
+  document.addEventListener("focusin",function(e){ adoptar(e.target); },true);
+  document.addEventListener("click",function(e){ var t=e.target; if(t && t.tagName==="INPUT" && t.hasAttribute("data-lista")) abrir(t); else if(panel && !panel.contains(t)) cerrar(); });
+  document.addEventListener("input",function(e){ if(ignorar) return; var t=e.target; if(t && t.tagName==="INPUT" && t.hasAttribute("data-lista")) abrir(t); });
+  document.addEventListener("keydown",function(e){
+    var t=e.target;
+    if(t && t.tagName==="INPUT" && t.hasAttribute("data-lista") && !panel && e.key==="ArrowDown"){ abrir(t); if(panel){ marcar(0); e.preventDefault(); } return; }
+    if(!panel || t!==activo) return;
+    if(e.key==="ArrowDown"){ marcar(Math.min(items.length-1,sel+1)); e.preventDefault(); }
+    else if(e.key==="ArrowUp"){ marcar(Math.max(0,sel-1)); e.preventDefault(); }
+    else if(e.key==="Enter" && sel>-1){ e.preventDefault(); e.stopPropagation(); elegir(items[sel]); }
+    else if(e.key==="Escape"){ cerrar(); }
+    else if(e.key==="Tab"){ cerrar(); }
+  },true);
+  document.addEventListener("focusout",function(e){ if(panel && e.target===activo) setTimeout(function(){ if(document.activeElement!==activo) cerrar(); },120); });
+  window.addEventListener("scroll",posicionar,true); window.addEventListener("resize",posicionar);
+  // ayuda (?) dentro de un título desplegable: no debe plegar el bloque
+  document.addEventListener("click",function(e){ var b=e.target.closest && e.target.closest("summary .ayuda-btn"); if(b) e.preventDefault(); },false);
+})();
 
 // ---------- estado/ubicación → panel Baja ----------
 var selEstado=document.getElementById("sel-estado-ubicacion");
@@ -2669,7 +2738,6 @@ function montarPanelRegistros(cont){
     html += '<button class="btn small btn-icono btn-icono-ver btn-consultar-activo" title="Consultar">👁️</button>';
     html += '<button class="btn small btn-icono btn-icono-editar btn-editar-activo" title="Editar">✏️</button>';
     html += '<button class="btn small btn-icono btn-icono-duplicar btn-duplicar-activo" title="Duplicar">🗐</button>';
-    html += '<button class="btn small btn-icono btn-icono-eliminar btn-eliminar-activo" title="Eliminar">🗑️</button>';
   }
   html += '</div>';
   if(abierto){
@@ -2689,7 +2757,6 @@ function montarPanelRegistros(cont){
       html += '<button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button>';
       html += '<button class="btn tenue small principal-fila btn-editar-registro">Editar</button>';
       html += '<button class="btn tenue small btn-sec btn-duplicar-fila">Duplicar</button>';
-      html += '<button class="btn tenue small btn-sec btn-eliminar-registro">Eliminar</button>';
       html += '</div>';
       html += '</div>';
     });
@@ -2724,8 +2791,6 @@ function montarPanelRegistros(cont){
   if(editarActivoBtn) editarActivoBtn.onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; editarRegistro(idActivo); };
   var duplicarActivoBtn = cont.querySelector(".btn-duplicar-activo");
   if(duplicarActivoBtn) duplicarActivoBtn.onclick = accionDuplicarComoNuevo;
-  var eliminarActivoBtn = cont.querySelector(".btn-eliminar-activo");
-  if(eliminarActivoBtn) eliminarActivoBtn.onclick = function(){ eliminarRegistro(idActivo); };
   var filtroInput = cont.querySelector(".input-filtro-registros");
   if(filtroInput){
     filtroInput.addEventListener("input", function(){
@@ -2740,7 +2805,6 @@ function montarPanelRegistros(cont){
     fila.querySelector(".btn-consultar-registro").onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; abrirConsultaConFicha(id); };
     fila.querySelector(".btn-editar-registro").onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; editarRegistro(id); };
     fila.querySelector(".btn-duplicar-fila").onclick = function(){ cont.setAttribute("data-abierto","0"); filtroRegistros=""; duplicarDesdeLista(id); };
-    fila.querySelector(".btn-eliminar-registro").onclick = function(){ eliminarRegistro(id); };
   });
 }
 document.addEventListener("click", function(e){

@@ -131,6 +131,19 @@
   .tabpanel{display:none;} .tabpanel.active{display:block;animation:aparecer .15s ease-out;}
   @keyframes aparecer{ from{opacity:0; transform:translateY(3px);} to{opacity:1; transform:translateY(0);} }
   .bloque{background:#fffdf8;border:1px solid var(--line);border-left:4px solid var(--accent-2);border-radius:var(--radius);padding:17px 19px;margin-bottom:16px;box-shadow:var(--sombra);}
+  .dialog-camara{border:none;border-radius:14px;padding:0;max-width:760px;width:94vw;max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.35);background:#fffdf8;color:var(--ink);}
+  .dialog-camara::backdrop{background:rgba(20,26,22,.55);}
+  .cam-in{padding:16px 18px;}
+  .cam-in h3{margin:0 0 6px;font-family:var(--serif);color:var(--accent);font-size:19px;}
+  .cam-lista{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:10px;margin:10px 0;background:#fff;}
+  .cam-item{display:flex;align-items:center;gap:10px;padding:6px 10px;border-bottom:1px solid var(--line);cursor:pointer;}
+  .cam-item:last-child{border-bottom:none;}
+  .cam-item:hover{background:#f5f2e6;}
+  .cam-item img,.cam-item .cam-sinprev{width:72px;height:54px;object-fit:cover;border-radius:6px;background:#e7e2cf;flex-shrink:0;font-size:10.5px;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;text-align:center;}
+  .cam-item .cam-nom{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere;}
+  .cam-item .cam-meta{font-size:12px;color:var(--ink-soft);}
+  .cam-item.vista{opacity:.6;}
+  .cam-pie{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
   .bloque-desp>summary{cursor:pointer;list-style:none;font-family:var(--serif);font-weight:700;font-size:19px;color:var(--accent);}
   .bloque-desp>summary::-webkit-details-marker{display:none;}
   .bloque-desp>summary::before{content:"▸ ";}
@@ -461,7 +474,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.31</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.33</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -630,6 +643,7 @@
       <div id="lista-fotos"></div>
       <div class="barra-botones">
         <button class="btn small" id="btn-add-foto-archivo">+ Agregar fotos desde el PC…</button>
+        <button class="btn small secundario" id="btn-camara-fotos" title="Trae las fotos que un programa de disparo remoto (digiCamControl, NX Tether, Entangle, gPhoto2, darktable…) va guardando en una carpeta">📷 Traer fotos de la cámara…</button>
         <button class="btn small tenue" id="btn-add-foto">+ Fila vacía</button>
         <button class="btn small secundario" id="btn-reordenar-registro" title="Mueve las fotos, PDF y otros archivos de este ejemplar a la carpeta que corresponde a su clasificación actual">Reordenar archivos de este ejemplar</button>
       </div>
@@ -823,7 +837,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.31</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.33</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -964,11 +978,12 @@
 
 <dialog id="dialog-ficha" class="dialog-ficha"></dialog>
 <dialog id="dialog-visor" class="dialog-visor"></dialog>
+<dialog id="dialog-camara" class="dialog-camara"></dialog>
 
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.31";
+var APP_VERSION = "v0.9.33";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2453,7 +2468,7 @@ function aplicarModoFormulario(){
     if(el.tagName==="SELECT"){ el.disabled = !editando; }
     else { el.readOnly = !editando; }
   });
-  ["btn-add-determinacion","btn-add-submuestra","btn-add-foto","btn-add-prestamo","btn-add-uso","btn-add-pdf","btn-add-foto-archivo","btn-add-adjunto","btn-add-adjunto-archivo"].forEach(function(id){
+  ["btn-add-determinacion","btn-add-submuestra","btn-add-foto","btn-add-prestamo","btn-add-uso","btn-add-pdf","btn-add-foto-archivo","btn-camara-fotos","btn-add-adjunto","btn-add-adjunto-archivo"].forEach(function(id){
     var b=document.getElementById(id);
     if(b){ b.disabled = !editando; b.classList.toggle("oculto", !editando); }
   });
@@ -2940,7 +2955,7 @@ function renderResumenDatos(){
     btn.onclick = function(){ eliminarRegistros([btn.closest(".fila-compacta").getAttribute("data-id")]); };
   });
   var bEl=document.getElementById("btn-eliminar-datos");
-  if(bEl){ var nSel=seleccionDescarga.size; bEl.disabled=!nSel; bEl.textContent="Eliminar marcados"+(nSel?" ("+nSel+")":""); bEl.classList.toggle("oculto", modoAcceso!=="admin"); }
+  if(bEl){ var nSel=seleccionDescarga.size; bEl.disabled=!nSel; bEl.textContent="Eliminar marcados"+(nSel?" ("+nSel+")":""); }
   cont.querySelectorAll(".fila-compacta-texto").forEach(function(span){
     span.onclick = function(){
       var chk = span.closest(".fila-compacta").querySelector(".chk-registro");
@@ -3596,6 +3611,116 @@ async function asociarFotos(){ if(modoAcceso!=="admin") return;
   if(agregadas) mensajeCarpeta(agregadas+" foto(s) agregadas en "+rutaTax+"/. Recuerda guardar el registro.");
 }
 document.getElementById("btn-add-foto-archivo").addEventListener("click", asociarFotos);
+
+// ---------- fotos desde la cámara: carpeta de captura vigilada ----------
+// El programa de disparo remoto (digiCamControl, NX Tether, Entangle, gPhoto2, darktable...) guarda cada foto en una carpeta;
+// la app la mira cada pocos segundos, muestra las fotos y copia las elegidas a Fotos/<clasificación>/ asociándolas al ejemplar.
+var capturaHandle=null, capturaVistos=null, capturaTimer=null, capturaUrls=[], capturaSel=new Set(), capturaConocidos=null, capturaFirma="", capturaMostrarVistas=false, capturaItems=[];
+var EXT_CAPTURA=/\.(jpe?g|png|webp|tiff?|nef|nrw|cr2|cr3|arw|dng|orf|raf|rw2)$/i, EXT_PREVIA=/\.(jpe?g|png|webp)$/i;
+function claveCaptura(f){ return f.name+"|"+f.size+"|"+f.lastModified; }
+function capturaLiberarUrls(){ capturaUrls.forEach(function(u){ URL.revokeObjectURL(u); }); capturaUrls=[]; }
+async function capturaListar(){
+  var out=[];
+  if(!capturaHandle) return out;
+  for await (var h of capturaHandle.values()){
+    if(h.kind!=="file" || !EXT_CAPTURA.test(h.name)) continue;
+    try{ var f=await h.getFile(); out.push({h:h, file:f, clave:claveCaptura(f)}); }catch(e){}
+  }
+  out.sort(function(a,b){ return b.file.lastModified-a.file.lastModified; });
+  return out.slice(0,60);
+}
+async function capturaPintar(forzar){
+  var dlg=document.getElementById("dialog-camara"), box=dlg.querySelector(".cam-lista"), cab=dlg.querySelector(".cam-carpeta");
+  if(!box) return;
+  cab.textContent=capturaHandle ? capturaHandle.name : "(ninguna elegida)";
+  if(!capturaHandle){ capturaItems=[]; box.innerHTML='<p class="nota" style="padding:10px;">Elige la carpeta donde tu programa de disparo remoto guarda las fotos.</p>'; capturaActualizarBoton(); return; }
+  try{ var ok=(await capturaHandle.queryPermission({mode:"read"}))==="granted"; if(!ok){ box.innerHTML='<p class="nota" style="padding:10px;">El navegador necesita permiso para leer esa carpeta. Pulsa «Elegir carpeta…».</p>'; return; } }catch(e){}
+  var items; try{ items=await capturaListar(); }catch(e){ box.innerHTML='<p class="nota" style="padding:10px;">No se pudo leer la carpeta: '+escapeHtml((e&&e.message)||e)+'</p>'; return; }
+  var firma=items.map(function(i){ return i.clave; }).join(",")+"|"+capturaMostrarVistas;
+  if(!forzar && firma===capturaFirma){ return; }
+  capturaFirma=firma; capturaItems=items;
+  if(capturaConocidos===null){ capturaConocidos=new Set(items.map(function(i){ return i.clave; })); }
+  else items.forEach(function(i){ if(!capturaConocidos.has(i.clave)){ capturaConocidos.add(i.clave); if(capturaVistos.indexOf(i.clave)<0 && Date.now()-i.file.lastModified<86400000) capturaSel.add(i.clave); } });
+  capturaLiberarUrls();
+  var visibles=items.filter(function(i){ return capturaMostrarVistas || capturaVistos.indexOf(i.clave)<0; });
+  if(!visibles.length){ box.innerHTML='<p class="nota" style="padding:10px;">'+(items.length ? 'No hay fotos nuevas. Todas las de la carpeta ya fueron traídas (marca «Mostrar las ya traídas» para verlas).' : 'La carpeta no tiene fotos todavía. Dispara desde tu programa y aparecerán aquí.')+'</p>'; capturaActualizarBoton(); return; }
+  box.innerHTML="";
+  visibles.forEach(function(i){
+    var f=i.file, vista=capturaVistos.indexOf(i.clave)>-1, d=new Date(f.lastModified);
+    var lab=document.createElement("label"); lab.className="cam-item"+(vista?" vista":"");
+    var prev;
+    if(EXT_PREVIA.test(f.name)){ prev=document.createElement("img"); prev.alt=""; prev.loading="lazy"; var u=URL.createObjectURL(f); capturaUrls.push(u); prev.src=u; }
+    else { prev=document.createElement("div"); prev.className="cam-sinprev"; prev.textContent="sin vista previa"; }
+    var chk=document.createElement("input"); chk.type="checkbox"; chk.checked=capturaSel.has(i.clave); chk.setAttribute("data-clave",i.clave);
+    chk.onchange=function(){ if(chk.checked) capturaSel.add(i.clave); else capturaSel.delete(i.clave); capturaActualizarBoton(); };
+    var tx=document.createElement("div");
+    tx.innerHTML='<div class="cam-nom">'+escapeHtml(f.name)+'</div><div class="cam-meta">'+pad2(d.getDate())+"-"+pad2(d.getMonth()+1)+"-"+d.getFullYear()+" "+pad2(d.getHours())+":"+pad2(d.getMinutes())+":"+pad2(d.getSeconds())+" · "+Math.round(f.size/1024)+" KB"+(vista?" · ya traída":"")+'</div>';
+    lab.appendChild(chk); lab.appendChild(prev); lab.appendChild(tx); box.appendChild(lab);
+  });
+  capturaActualizarBoton();
+}
+function capturaActualizarBoton(){
+  var b=document.getElementById("cam-traer"); if(!b) return;
+  var n=capturaItems.filter(function(i){ return capturaSel.has(i.clave); }).length;
+  b.disabled=!n; b.textContent="Traer seleccionadas"+(n?" ("+n+")":"");
+}
+async function capturaElegirCarpeta(){
+  try{
+    var h=await window.showDirectoryPicker({id:"libro-captura", mode:"read"});
+    capturaHandle=h; capturaConocidos=null; capturaFirma=""; capturaSel.clear();
+    await cfgGuardar("carpetaCaptura", h);
+    await capturaPintar(true);
+  }catch(e){ if(!(e&&e.name==="AbortError")) alert("No se pudo elegir la carpeta: "+((e&&e.message)||e)); }
+}
+async function capturaTraer(){
+  if(modoAcceso!=="admin" || !borrador) return;
+  if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
+  if(!exigirClasificacion(borrador)) return;
+  if(!borrador.fotos) borrador.fotos=[];
+  var elegidas=capturaItems.filter(function(i){ return capturaSel.has(i.clave); }).reverse(), agregadas=0, errores=0;
+  for(var k=0;k<elegidas.length;k++){
+    try{
+      var r=await fotoEnCarpeta(elegidas[k].h);
+      if(!borrador.fotos.some(function(f){ return f.archivo===r.rel; })){
+        borrador.fotos.push({fechaFoto:r.fecha, tipoFoto:"", archivo:r.rel, fotografo:"", notaCalidad:""}); agregadas++;
+      }
+      if(capturaVistos.indexOf(elegidas[k].clave)<0) capturaVistos.push(elegidas[k].clave);
+      capturaSel.delete(elegidas[k].clave);
+    }catch(e){ errores++; }
+  }
+  if(capturaVistos.length>3000) capturaVistos=capturaVistos.slice(-3000);
+  try{ await cfgGuardar("capturaVistos", capturaVistos); }catch(e){}
+  pintarLista("fotos"); refrescarPanelesRegistros();
+  mensajeCarpeta(agregadas+" foto(s) traídas de la cámara a Fotos/"+rutaTaxonomica(borrador)+"/."+(errores?" "+errores+" con error de copia.":"")+" Recuerda guardar el registro.");
+  capturaFirma=""; await capturaPintar(true);
+}
+async function abrirCamara(){ if(modoAcceso!=="admin") return;
+  if(!soportaCarpeta()){ alert("Este navegador no permite leer carpetas. Usa Chrome o Edge en el computador."); return; }
+  if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
+  if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
+  if(!borrador){ borrador=registroVacioBase(); activoId=null; }
+  if(!exigirClasificacion(borrador)) return;
+  try{ capturaHandle=await cfgLeer("carpetaCaptura"); }catch(e){ capturaHandle=null; }
+  try{ capturaVistos=(await cfgLeer("capturaVistos"))||[]; }catch(e){ capturaVistos=[]; }
+  capturaConocidos=null; capturaFirma=""; capturaSel.clear(); capturaItems=[];
+  if(capturaHandle){ try{ if((await capturaHandle.queryPermission({mode:"read"}))!=="granted") await capturaHandle.requestPermission({mode:"read"}); }catch(e){} }
+  var dlg=document.getElementById("dialog-camara");
+  dlg.innerHTML='<div class="cam-in"><h3>Fotos desde la cámara</h3>'
+    +'<p class="nota" style="margin:0 0 6px;">Configura tu programa de disparo remoto (digiCamControl, Nikon NX Tether, Entangle, gPhoto2, darktable u otro) para guardar cada foto en una carpeta, y elígela aquí. La lista se actualiza sola; las fotos que lleguen mientras esta ventana está abierta quedan marcadas. Las elegidas se copian a <strong>Fotos/'+escapeHtml(rutaTaxonomica(borrador))+'/</strong> y se asocian a este ejemplar; los originales no se tocan.</p>'
+    +'<div class="cam-pie"><span>Carpeta de captura: <strong class="cam-carpeta"></strong></span><button type="button" class="btn small secundario" id="cam-elegir">Elegir carpeta…</button></div>'
+    +'<div class="cam-lista"></div>'
+    +'<div class="cam-pie"><label style="font-size:13.5px;"><input type="checkbox" id="cam-vistas"> Mostrar las ya traídas</label><span><button type="button" class="btn small tenue" id="cam-actualizar">Actualizar</button> <button type="button" class="btn small" id="cam-traer" disabled>Traer seleccionadas</button> <button type="button" class="btn small tenue" id="cam-cerrar">Cerrar</button></span></div></div>';
+  dlg.querySelector("#cam-elegir").onclick=capturaElegirCarpeta;
+  dlg.querySelector("#cam-actualizar").onclick=function(){ capturaPintar(true); };
+  dlg.querySelector("#cam-traer").onclick=capturaTraer;
+  dlg.querySelector("#cam-cerrar").onclick=function(){ dlg.close(); };
+  dlg.querySelector("#cam-vistas").onchange=function(){ capturaMostrarVistas=this.checked; capturaPintar(true); };
+  dlg.onclose=function(){ clearInterval(capturaTimer); capturaTimer=null; capturaLiberarUrls(); };
+  if(!dlg.open) dlg.showModal();
+  await capturaPintar(true);
+  clearInterval(capturaTimer); capturaTimer=setInterval(function(){ capturaPintar(false); }, 3000);
+}
+document.getElementById("btn-camara-fotos").addEventListener("click", abrirCamara);
 
 // ---------- Clasificación obligatoria y reordenamiento de archivos ----------
 var NIVELES_TAX = [["phylum","Phylum"],["clase","Clase"],["orden","Orden"],["familia","Familia"],["genero","Género"]];

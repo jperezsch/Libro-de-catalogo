@@ -142,6 +142,15 @@
   @keyframes aparecer{ from{opacity:0; transform:translateY(3px);} to{opacity:1; transform:translateY(0);} }
   .bloque{background:#fffdf8;border:1px solid var(--line);border-left:4px solid var(--accent-2);border-radius:var(--radius);padding:17px 19px;margin-bottom:16px;box-shadow:var(--sombra);}
   .dialog-camara{border:none;border-radius:14px;padding:0;max-width:760px;width:94vw;max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.35);background:#fffdf8;color:var(--ink);}
+  .bib-caja{padding:16px;display:flex;flex-direction:column;gap:10px;max-height:88vh;}
+  .bib-cab{font-family:var(--serif);font-size:18px;color:var(--accent);}
+  .bib-letras{display:flex;flex-wrap:wrap;gap:4px;}
+  .bib-letra{border:1px solid var(--line-fuerte);background:#fff;border-radius:6px;padding:3px 9px;font-size:13px;cursor:pointer;}
+  .bib-letra.activa{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .bib-lista{overflow-y:auto;max-height:46vh;border:1px solid var(--line);border-radius:8px;background:#fffdf8;}
+  .bib-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer;}
+  .bib-item input{width:auto !important;margin:0;}
+  .bib-pie{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .dialog-camara::backdrop{background:rgba(20,26,22,.55);}
   .cam-in{padding:16px 18px;}
   .cam-in h3{margin:0 0 6px;font-family:var(--serif);color:var(--accent);font-size:19px;}
@@ -484,7 +493,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.35</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.36</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -735,10 +744,10 @@
         </div>
         <div class="campo opc full"><div class="lbl"><span class="name">Publicación original</span><span class="key">publicacionOriginal</span></div><input class="nav" data-f="publicacionOriginal"></div>
         <div class="campo opc full">
-          <div class="lbl"><span class="name">PDF de publicaciones asociadas</span><span class="key">publicacionesPdf → carpeta Publicaciones/</span></div>
+          <div class="lbl"><span class="name">PDF de publicaciones asociadas</span><span class="key">publicacionesPdf → associatedReferences · carpeta Publicaciones/</span></div>
           <div id="lista-pdfs"></div>
           <button type="button" class="btn small secundario" id="btn-add-pdf">+ Asociar PDF…</button>
-          <p class="nota">Los PDF se guardan una sola vez en la subcarpeta Publicaciones de la Carpeta local, y cada ejemplar solo registra el nombre del archivo. Un mismo PDF puede asociarse a varios ejemplares. Convención de nombre: Autor_etal_AÑO_Palabras_clave.pdf (ejemplo: Perez_etal_2024_Gonyleptidae_Chile.pdf).</p>
+          <p class="nota">Todos los PDF se guardan una sola vez en la carpeta única Publicaciones de la Carpeta local (sin subcarpetas por clasificación) y cada ejemplar solo registra la ruta. Al asociar, eliges de la lista de PDF ya guardados (con búsqueda y letras) o subes uno nuevo desde el PC. Un mismo PDF puede asociarse a varios ejemplares. Convención de nombre: Autor_etal_AÑO_Palabras_clave.pdf (ejemplo: Perez_etal_2024_Gonyleptidae_Chile.pdf).</p>
         </div>
       </div>
     </div>
@@ -850,7 +859,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.35</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.36</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -965,7 +974,7 @@
           <li><strong>Entradas/</strong> Los .zip de Libreta de Campo importados.</li>
           <li><strong>Exportaciones/</strong> Aquí irán el zip para el Generador de Proyectos y el CSV para GBIF (aún no implementado).</li>
           <li><strong>Respaldos/</strong> Respaldos completos con fecha.</li>
-          <li><strong>Publicaciones/</strong> PDF de publicaciones (Autor_etal_AÑO_Palabras_clave.pdf), en carpetas por clasificación.</li>
+          <li><strong>Publicaciones/</strong> PDF de publicaciones (Autor_etal_AÑO_Palabras_clave.pdf), todos en esta misma carpeta, ordenados por nombre.</li>
           <li><strong>Fotos/</strong> Fotos, en carpetas por clasificación del ejemplar.</li>
           <li><strong>Adjuntos/</strong> Otros archivos, en carpetas por clasificación y una subcarpeta por ejemplar.</li>
         </ul>
@@ -993,11 +1002,12 @@
 <dialog id="dialog-ficha" class="dialog-ficha"></dialog>
 <dialog id="dialog-visor" class="dialog-visor"></dialog>
 <dialog id="dialog-camara" class="dialog-camara"></dialog>
+<dialog id="dialog-biblioteca" class="dialog-camara"></dialog>
 
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.35";
+var APP_VERSION = "v0.9.36";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2750,9 +2760,9 @@ function montarPanelRegistros(cont){
   var btnTabActivo = document.querySelector("#tabs button.active");
   var esTabEntrada = !!btnTabActivo && btnTabActivo.getAttribute("data-tab")==="entrada";
   if(btnTabActivo && btnTabActivo.getAttribute("data-tab")==="consultas"){
-    var abiertoC = cont.getAttribute("data-abierto")==="1";
+    var abiertoC = false;   // en Consultas la lista vive en el bloque Resultados
     var listaC = resultadosConsulta();
-    var hc='<div class="barra-activo"><button class="btn small btn-toggle-lista">'+(abiertoC?'Ocultar resultados ▲':'Ver resultados ('+listaC.length+') ▾')+'</button><span class="badge-modo badge-modo-consulta">Consulta</span><span class="chip-activo"><span class="chip-titulo">Consulta actual</span>'+resumenConsultaHtml(listaC)+'</span>';
+    var hc='<div class="barra-activo"><span class="badge-modo badge-modo-consulta">Consulta</span><span class="chip-activo"><span class="chip-titulo">Consulta actual</span>'+resumenConsultaHtml(listaC)+'</span>';
     hc+='</div>';
     if(abiertoC){
       hc+='<div class="desplegable-registros"><div class="lista-scroll">';
@@ -3480,37 +3490,96 @@ function pedirNombrePdf(original){
     propuesta=r;
   }
 }
-async function asociarPdf(){ if(modoAcceso!=="admin") return;
-  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar PDF. Usa Chrome o Edge."); return; }
-  if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
-  if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
-  if(!exigirClasificacion(borrador)) return;
-  var pub=await dirAnidado("Publicaciones");
-  var fhs;
-  try{ fhs=await window.showOpenFilePicker({multiple:true, id:"libro-pdf", startIn:pub, types:[{description:"PDF", accept:{"application/pdf":[".pdf"]}}]}); }
-  catch(e){ return; }
+function quitarAcentos(t){ return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(); }
+async function listarPdfsBiblioteca(){
+  var out=[];
+  async function rec(dir, pref){
+    for await (var e of dir.values()){
+      if(e.kind==="directory") await rec(e, pref+e.name+"/");
+      else if(/\.pdf$/i.test(e.name)) out.push({ruta:RUTA_BIBLIOTECA+"/"+pref+e.name, nombre:e.name});
+    }
+  }
+  try{ await rec(await dirAnidado(RUTA_BIBLIOTECA), ""); }catch(e){}
+  out.sort(function(x,y){ return x.nombre.localeCompare(y.nombre, "es", {sensitivity:"base"}); });
+  return out;
+}
+function agregarPdfARegistro(ruta){
   if(!borrador.publicacionesPdf) borrador.publicacionesPdf=[];
+  var norm=rutaNormalPdf(ruta);
+  if(borrador.publicacionesPdf.some(function(n){ return rutaNormalPdf(n)===norm; })) return false;
+  borrador.publicacionesPdf.push(norm); return true;
+}
+async function subirPdfsDesdePC(){
+  var pub=await dirAnidado(RUTA_BIBLIOTECA), fhs;
+  try{ fhs=await window.showOpenFilePicker({multiple:true, id:"libro-pdf", startIn:pub, types:[{description:"PDF", accept:{"application/pdf":[".pdf"]}}]}); }
+  catch(e){ return 0; }
   var agregados=0;
   for(var i=0;i<fhs.length;i++){
-    var fh=fhs[i], nombre=null;
-    var ruta=null;
+    var fh=fhs[i], nombre=null, ruta=null;
     try{ ruta=await pub.resolve(fh); }catch(e){}
-    if(ruta && ruta.length===1){ nombre=ruta[0]; }                       // PDF antiguo, directo en Publicaciones/
-    else if(ruta && ruta.length>1){ nombre="Publicaciones/"+ruta.join("/"); } // ya está en una subcarpeta
+    if(ruta && ruta.length){ nombre=RUTA_BIBLIOTECA+"/"+ruta.join("/"); }      // ya estaba en la carpeta Publicaciones
     else {
       var file=await fh.getFile();
       var elegido=pedirNombrePdf(file.name);
       if(elegido===null) continue;
-      var rutaDir="Publicaciones/"+rutaTaxonomica(borrador);
-      var dirDest=await dirAnidado(rutaDir);
-      var disp=await nombreDisponible(dirDest, elegido, file.size);
-      if(!disp.existe) await copiarVerificado(rutaDir, disp.nombre, file);
-      nombre=rutaDir+"/"+disp.nombre;
+      var disp=await nombreDisponible(pub, elegido, file.size);
+      if(!disp.existe) await copiarVerificado(RUTA_BIBLIOTECA, disp.nombre, file);
+      nombre=RUTA_BIBLIOTECA+"/"+disp.nombre;
     }
-    if(nombre && borrador.publicacionesPdf.indexOf(nombre)<0){ borrador.publicacionesPdf.push(nombre); agregados++; }
+    if(agregarPdfARegistro(nombre)) agregados++;
   }
-  pintarPdfs(); refrescarPanelesRegistros();
-  if(agregados) mensajeCarpeta(agregados+" PDF asociado(s). Recuerda guardar el registro.");
+  return agregados;
+}
+async function asociarPdf(){ if(modoAcceso!=="admin") return;
+  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar PDF. Usa Chrome o Edge."); return; }
+  if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
+  if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
+  var lista=await listarPdfsBiblioteca();
+  var dlg=document.getElementById("dialog-biblioteca"), letra="", texto="", sel=new Set();
+  var usados=function(){ return (borrador.publicacionesPdf||[]).map(rutaNormalPdf); };
+  var letras=[]; lista.forEach(function(x){ var l=quitarAcentos(x.nombre).charAt(0).toUpperCase(); if(l && letras.indexOf(l)<0) letras.push(l); });
+  letras.sort();
+  dlg.innerHTML='<div class="bib-caja"><div class="bib-cab"><strong>Biblioteca de PDF</strong> <span class="nota" id="bib-n"></span></div>'
+    +'<input type="search" class="nav" id="bib-buscar" placeholder="Buscar por autor, año o palabra clave…">'
+    +'<div class="bib-letras" id="bib-letras"></div>'
+    +'<div class="bib-lista" id="bib-lista"></div>'
+    +'<div class="bib-pie"><button type="button" class="btn secundario" id="bib-subir">Subir PDF desde el PC…</button>'
+    +'<span style="flex:1"></span><button type="button" class="btn" id="bib-asociar" disabled>Asociar seleccionados</button>'
+    +'<button type="button" class="btn tenue" id="bib-cerrar">Cerrar</button></div></div>';
+  var elLetras=dlg.querySelector("#bib-letras"), elLista=dlg.querySelector("#bib-lista"), btnAs=dlg.querySelector("#bib-asociar");
+  function pintar(){
+    elLetras.innerHTML="";
+    [""].concat(letras).forEach(function(l){
+      var b=document.createElement("button"); b.type="button"; b.className="bib-letra"+(l===letra?" activa":""); b.textContent=l||"Todas";
+      b.onclick=function(){ letra=l; pintar(); }; elLetras.appendChild(b);
+    });
+    var q=quitarAcentos(texto), ya=usados();
+    var vis=lista.filter(function(x){ var n=quitarAcentos(x.nombre); return (!letra || n.charAt(0).toUpperCase()===letra) && (!q || n.indexOf(q)>-1); });
+    dlg.querySelector("#bib-n").textContent=vis.length+" de "+lista.length+" PDF";
+    elLista.innerHTML="";
+    if(!vis.length) elLista.innerHTML='<p class="nota" style="padding:10px;">'+(lista.length?'Ningún PDF coincide.':'La carpeta Publicaciones aún no tiene PDF. Usa «Subir PDF desde el PC…».')+'</p>';
+    vis.forEach(function(x){
+      var lab=document.createElement("label"); lab.className="bib-item";
+      var c=document.createElement("input"); c.type="checkbox"; c.checked=sel.has(x.ruta); c.disabled=ya.indexOf(x.ruta)>-1;
+      c.onchange=function(){ if(c.checked) sel.add(x.ruta); else sel.delete(x.ruta); btnAs.disabled=!sel.size; };
+      var t=document.createElement("span"); t.textContent="📄 "+x.nombre+(c.disabled?"  (ya asociado)":"");
+      lab.appendChild(c); lab.appendChild(t); elLista.appendChild(lab);
+    });
+    btnAs.disabled=!sel.size;
+  }
+  dlg.querySelector("#bib-buscar").oninput=function(e){ texto=e.target.value; pintar(); };
+  btnAs.onclick=function(){
+    var n=0; sel.forEach(function(r){ if(agregarPdfARegistro(r)) n++; });
+    dlg.close(); pintarPdfs(); refrescarPanelesRegistros();
+    if(n) mensajeCarpeta(n+" PDF asociado(s). Recuerda guardar el registro.");
+  };
+  dlg.querySelector("#bib-subir").onclick=async function(){
+    var n=await subirPdfsDesdePC();
+    if(n){ dlg.close(); pintarPdfs(); refrescarPanelesRegistros(); mensajeCarpeta(n+" PDF asociado(s). Recuerda guardar el registro."); }
+  };
+  dlg.querySelector("#bib-cerrar").onclick=function(){ dlg.close(); };
+  dlg.onclick=function(e){ if(e.target===dlg) dlg.close(); };
+  pintar(); dlg.showModal();
 }
 async function abrirPdf(nombre){
   if(!carpetaHandle || !(await permisoCarpeta(true))){ alert("Conecta la Carpeta local en la pestaña Sistema para abrir los PDF."); return; }
@@ -3840,6 +3909,7 @@ function pintarAvisoClasif(){
     else el.classList.add("oculto");
   });
 }
+var RUTA_BIBLIOTECA="Publicaciones";   // carpeta única, sin subcarpetas taxonómicas
 function rutaNormalPdf(v){ return /^Publicaciones\//.test(v) ? v : "Publicaciones/"+v; }
 // ¿Algún registro (distinto de `salvo`) sigue usando esta ruta?
 function rutaEnUso(ruta, salvo){
@@ -3855,12 +3925,12 @@ function referenciasArchivos(reg){
   var refs=[], tax=rutaTaxonomica(reg);
   (reg.fotos||[]).forEach(function(f){ if(/^Fotos\//.test(f.archivo||"")) refs.push({ruta:f.archivo, destino:"Fotos/"+tax, set:function(v){ f.archivo=v; }}); });
   (reg.adjuntos||[]).forEach(function(a){ if(/^Adjuntos\//.test(a.archivo||"")) refs.push({ruta:a.archivo, destino:carpetaAdjuntos(reg), set:function(v){ a.archivo=v; }}); });
-  (reg.publicacionesPdf||[]).forEach(function(n,i){ refs.push({ruta:rutaNormalPdf(n), destino:"Publicaciones/"+tax, set:function(v){ var viejo=reg.publicacionesPdf[i]; if(reg.publicacionesPdfInfo && reg.publicacionesPdfInfo[viejo]){ reg.publicacionesPdfInfo[v]=reg.publicacionesPdfInfo[viejo]; delete reg.publicacionesPdfInfo[viejo]; } reg.publicacionesPdf[i]=v; }}); });
+  (reg.publicacionesPdf||[]).forEach(function(n,i){ refs.push({pdf:true, ruta:rutaNormalPdf(n), destino:RUTA_BIBLIOTECA, set:function(v){ var viejo=reg.publicacionesPdf[i]; if(reg.publicacionesPdfInfo && reg.publicacionesPdfInfo[viejo]){ reg.publicacionesPdfInfo[v]=reg.publicacionesPdfInfo[viejo]; delete reg.publicacionesPdfInfo[viejo]; } reg.publicacionesPdf[i]=v; }}); });
   return refs;
 }
 function contarPorReordenar(reg){
-  if(clasificacionFaltante(reg).length) return 0;
-  return referenciasArchivos(reg).filter(function(x){ return x.ruta.split("/").slice(0,-1).join("/")!==x.destino; }).length;
+  var falta=clasificacionFaltante(reg).length;
+  return referenciasArchivos(reg).filter(function(x){ return !falta || x.pdf; }).filter(function(x){ return x.ruta.split("/").slice(0,-1).join("/")!==x.destino; }).length;
 }
 // Borra carpetas vacías hacia arriba, sin tocar la subcarpeta de primer nivel (Fotos, Adjuntos, Publicaciones).
 async function limpiarCarpetasVacias(rutaDir){
@@ -3878,8 +3948,11 @@ async function limpiarCarpetasVacias(rutaDir){
 // `solo` (opcional) limita la operación a una ruta. Devuelve {movidos, faltan, errores, sinClasificar}.
 async function reordenarRegistro(reg, solo){
   var res={movidos:0, faltan:0, errores:0, sinClasificar:false, origenes:[], mapa:{}};
-  if(clasificacionFaltante(reg).length){ res.sinClasificar=true; return res; }
   var refs=referenciasArchivos(reg);
+  if(clasificacionFaltante(reg).length){          // sin clasificación solo se pueden ordenar los PDF (carpeta única)
+    res.sinClasificar=refs.some(function(x){ return !x.pdf; });
+    refs=refs.filter(function(x){ return x.pdf; });
+  }
   for(var i=0;i<refs.length;i++){
     var x=refs[i], partes=x.ruta.split("/"), nombre=partes.pop(), dirActual=partes.join("/");
     if(solo && x.ruta!==solo) continue;
@@ -4457,6 +4530,7 @@ var DWC_COLUMNAS = [
   ["associatedTaxa",function(r){ return r.asociacionesBiologicas; }],
   ["organismRemarks",function(r){ return r.observacionesBiologicas; }],
   ["occurrenceRemarks",function(r){ return r.observaciones; }],
+  ["associatedReferences",function(r){ var inf=r.publicacionesPdfInfo||{}; return (r.publicacionesPdf||[]).map(function(n){ var i0=inf[rutaNormalPdf(n)]||inf[n]||{}, d=[i0.motivo,i0.comentario].filter(Boolean).join(", "); return n.split("/").pop()+(d?": "+d:""); }).join(" | "); }],
   ["associatedMedia",function(r){ return (r.fotos||[]).map(function(f){ return f.archivo; }).filter(Boolean).join(" | "); }],
   ["modified",function(r){ return r.modificadoEn; }],
   // columnas propias de Libro de Catálogo (sin término Darwin Core; el IPT puede ignorarlas)

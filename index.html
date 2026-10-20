@@ -28,6 +28,8 @@
   .btn-icono-ver{background:#3b6f8f;}
   .btn-icono-editar{background:var(--warn);}
   .btn-icono-duplicar{background:#5c4d8a;}
+  .barra-activo .btn-icono:not(.modo-on){opacity:.5;}
+  .barra-activo .btn-icono.modo-on{opacity:1;transform:scale(1.15);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ink);font-weight:800;}
   .btn-icono-eliminar{background:var(--danger);}
   .btn-icono:hover{filter:brightness(1.12);transform:translateY(-1px);}
   header h1{font-family:var(--serif);font-size:24px;margin:0;color:var(--paper);letter-spacing:.3px;}
@@ -101,7 +103,6 @@
   .barra-activo .btn-toggle-lista:hover{filter:brightness(1.1);}
   #cabecera-fija{position:sticky;top:0;z-index:40;background:var(--paper);box-shadow:0 3px 8px rgba(38,51,43,.12);}
   #cabecera-fija .panel-registros{margin-bottom:6px;}
-  #cabecera-fija .lista-scroll{max-height:min(280px,42vh);}
   .mantener-sesion{display:flex !important;flex-direction:row !important;align-items:center;gap:6px;margin-top:4px;font-size:12px !important;text-transform:none !important;letter-spacing:0 !important;cursor:pointer;}
   .mantener-sesion input{width:auto !important;min-width:0 !important;padding:0 !important;margin:0;accent-color:var(--accent-2);}
   .fila-pdf-extra{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 8px 22px;}
@@ -493,7 +494,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.36</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.37</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -666,7 +667,7 @@
       <div class="barra-botones">
         <button class="btn small" id="btn-add-foto-archivo">+ Agregar fotos desde el PC…</button>
         <button class="btn small secundario" id="btn-camara-fotos" title="Trae las fotos que un programa de disparo remoto (digiCamControl, NX Tether, Entangle, gPhoto2, darktable…) va guardando en una carpeta">📷 Traer fotos de la cámara…</button>
-        <button class="btn small tenue" id="btn-add-foto">+ Fila vacía</button>
+        <button class="btn small tenue" id="btn-add-foto">+ Nuevo</button>
         <button class="btn small secundario" id="btn-reordenar-registro" title="Mueve las fotos, PDF y otros archivos de este ejemplar a la carpeta que corresponde a su clasificación actual">Reordenar archivos de este ejemplar</button>
       </div>
       <p class="nota oculto" id="aviso-clasif-fotos"></p>
@@ -674,13 +675,12 @@
 
     <div class="bloque">
       <h2>Otros archivos <button type="button" class="ayuda-btn" data-ayuda="ayuda-adjuntos" aria-label="Ayuda" title="Ayuda">?</button></h2>
-      <div class="ayuda-panel oculto" id="ayuda-adjuntos">Sirve para cualquier tipo de archivo (PDF, planilla, informe, audio…). Eliges el archivo en cualquier carpeta del PC y la app guarda una copia idéntica en Adjuntos/ de la Carpeta local, dentro de las carpetas Phylum/Clase/Orden/Familia/Género del ejemplar y de una subcarpeta con su número de catálogo. Las carpetas se crean solas. El registro queda apuntando a esa copia. Para los PDF de publicaciones usa el bloque Catalogado, que aplica la convención de nombre Autor_etal_AÑO_Palabras_clave.pdf.</div>
+      <div class="ayuda-panel oculto" id="ayuda-adjuntos">Sirve para cualquier tipo de archivo (PDF, planilla, informe, audio…). Eliges el archivo en cualquier carpeta del PC y la app guarda una copia idéntica en Adjuntos/ de la Carpeta local, en una carpeta propia con el número de catálogo del ejemplar (no necesita clasificación). La carpeta se crea sola. El registro queda apuntando a esa copia. Para los PDF de publicaciones usa el bloque Catalogado, que aplica la convención de nombre Autor_etal_AÑO_Palabras_clave.pdf.</div>
       <div id="lista-adjuntos"></div>
       <div class="barra-botones">
         <button class="btn small" id="btn-add-adjunto-archivo">+ Asociar archivos desde el PC…</button>
-        <button class="btn small tenue" id="btn-add-adjunto">+ Fila vacía</button>
+        <button class="btn small tenue" id="btn-add-adjunto">+ Nuevo</button>
       </div>
-      <p class="nota oculto" id="aviso-clasif-adjuntos"></p>
     </div>
 
     <footer class="acciones" id="footer-acciones-preparacion">
@@ -859,7 +859,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.36</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.37</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -976,7 +976,7 @@
           <li><strong>Respaldos/</strong> Respaldos completos con fecha.</li>
           <li><strong>Publicaciones/</strong> PDF de publicaciones (Autor_etal_AÑO_Palabras_clave.pdf), todos en esta misma carpeta, ordenados por nombre.</li>
           <li><strong>Fotos/</strong> Fotos, en carpetas por clasificación del ejemplar.</li>
-          <li><strong>Adjuntos/</strong> Otros archivos, en carpetas por clasificación y una subcarpeta por ejemplar.</li>
+          <li><strong>Adjuntos/</strong> Otros archivos, en una carpeta propia por ejemplar (sin carpetas por clasificación).</li>
         </ul>
       </details>
     </details>
@@ -1007,7 +1007,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.36";
+var APP_VERSION = "v0.9.37";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1566,6 +1566,7 @@ document.addEventListener("input", function(e){
 });
 
 // ---------- listas repetibles ----------
+var TIPOS_FOTO=["Ejemplar capturado","Ejemplar en su hábitat","Ejemplar vivo en laboratorio","Espécimen conservado","Vista dorsal","Vista ventral","Vista lateral","Vista frontal","Detalle morfológico","Genitalia o estructura interna","Etiqueta del ejemplar","Hábitat o paisaje","Microscopía","Terreno"];
 var MOTIVOS_ARCHIVO=["Descripción original","Redescripción","Mención"];
 var listasCfg = {
   determinaciones: {contenedorId:"lista-determinaciones", destacarUltimo:true, campos:[
@@ -1584,10 +1585,10 @@ var listasCfg = {
   ]},
   fotos: {contenedorId:"lista-fotos", campos:[
     {key:"fechaFoto",label:"Fecha",type:"date"},
-    {key:"tipoFoto",label:"Tipo de foto"},
+    {key:"tipoFoto",label:"Tipo de foto",type:"select",options:TIPOS_FOTO},
     {key:"archivo",label:"Archivo"},
     {key:"fotografo",label:"Fotógrafo"},
-    {key:"notaCalidad",label:"Nota de calidad"}
+    {key:"notaCalidad",label:"Comentarios"}
   ]},
   adjuntos: {contenedorId:"lista-adjuntos", campos:[
     {key:"descripcion",label:"Descripción"},
@@ -2338,6 +2339,7 @@ function pintarLista(tipo){
         input=document.createElement("select");
         var op0=document.createElement("option"); op0.value=""; op0.textContent="—"; input.appendChild(op0);
         (c.options||[]).forEach(function(o){ var op=document.createElement("option"); op.value=o; op.textContent=o; input.appendChild(op); });
+        var vAct=entrada[c.key]; if(vAct && (c.options||[]).indexOf(vAct)<0){ var op2=document.createElement("option"); op2.value=vAct; op2.textContent=vAct; input.appendChild(op2); }   // valor antiguo o importado
         input.disabled = !editando;
       } else { input=document.createElement("input"); input.type=c.type||"text"; input.readOnly = !editando; }
       input.className="nav"; input.value=entrada[c.key]||"";
@@ -2364,7 +2366,7 @@ function pintarLista(tipo){
       el.onclick=function(){ if(esFoto) elegirArchivoFoto(entrada); else asociarAdjuntos(entrada); };
       barra.appendChild(el);
       if(prefijo.test(entrada.archivo||"")){
-        var destinoOk = !clasificacionFaltante(borrador).length && (entrada.archivo.split("/").slice(0,-1).join("/") !== (esFoto ? "Fotos/"+rutaTaxonomica(borrador) : carpetaAdjuntos(borrador)));
+        var destinoOk = (!esFoto || !clasificacionFaltante(borrador).length) && (entrada.archivo.split("/").slice(0,-1).join("/") !== (esFoto ? "Fotos/"+rutaTaxonomica(borrador) : carpetaAdjuntos(borrador)));
         if(destinoOk){
           var mv=document.createElement("button"); mv.type="button"; mv.className="btn secundario small"; mv.textContent="Mover a su carpeta";
           mv.title="Copia este archivo a la carpeta que corresponde a la clasificación actual";
@@ -2753,6 +2755,13 @@ function registroCoincideFiltro(reg, filtro){
   ].join(" ").toLowerCase();
   return texto.indexOf(filtro.toLowerCase()) > -1;
 }
+function ajustarAlturaLista(cont){
+  var ls=cont.querySelector(".desplegable-registros .lista-scroll");
+  if(!ls) return;
+  var libre=window.innerHeight-ls.getBoundingClientRect().top-34;   // hasta el borde inferior de la ventana
+  ls.style.maxHeight=Math.max(220, Math.floor(libre))+"px";
+}
+window.addEventListener("resize", function(){ var c=document.querySelector(".slot-panel-registros"); if(c) ajustarAlturaLista(c); });
 function montarPanelRegistros(cont){
   var abierto = cont.getAttribute("data-abierto")==="1";
   var etAct = borrador ? etiquetaRegistro(borrador) : null;
@@ -2794,8 +2803,8 @@ function montarPanelRegistros(cont){
   html += '<span class="badge-modo badge-modo-'+modoTexto.toLowerCase()+'">'+modoTexto+'</span>';
   html += '<span class="chip-activo"><span class="chip-titulo">Registro Actual</span>'+(etAct ? (nombreDestacadoHtml(etAct)+'<strong>'+escapeHtml(resumenLinea1(etAct))+'</strong>'+(resumenDatosSinNombre(etAct)?'<br>'+escapeHtml(resumenDatosSinNombre(etAct)):'')) : 'Sin registro activo')+'</span>';
   if(activoId!==null){
-    html += '<button class="btn small btn-icono btn-icono-ver btn-consultar-activo" title="Consultar">👁️</button>';
-    html += '<button class="btn small btn-icono btn-icono-editar btn-editar-activo" title="Editar">✏️</button>';
+    html += '<button class="btn small btn-icono btn-icono-ver btn-consultar-activo'+(!editando?' modo-on':'')+'" title="Consultar">👁️</button>';
+    html += '<button class="btn small btn-icono btn-icono-editar btn-editar-activo'+(editando?' modo-on':'')+'" title="Editar">✏️</button>';
     html += '<button class="btn small btn-icono btn-icono-duplicar btn-duplicar-activo" title="Duplicar">🗐</button>';
   }
   html += '</div>';
@@ -2822,6 +2831,7 @@ function montarPanelRegistros(cont){
     html += '</div></div>';
   }
   cont.innerHTML = html;
+  ajustarAlturaLista(cont);
   var toggleBtn = cont.querySelector(".btn-toggle-lista");
   if(toggleBtn) toggleBtn.onclick = function(){
     var nuevoAbierto = abierto ? "0" : "1";
@@ -3625,7 +3635,7 @@ async function copiarVerificado(rutaDir, nombre, file){
   if(copia.size!==file.size) throw new Error("La copia de «"+nombre+"» no coincide con el original ("+copia.size+" de "+file.size+" bytes).");
 }
 function carpetaAdjuntos(reg){
-  return "Adjuntos/"+rutaTaxonomica(reg)+"/"+(sanitizarNombre(construirCatalogoCompleto(reg)) || (reg.numeroCampo ? "campo_"+sanitizarNombre(reg.numeroCampo) : "") || "sin-catalogo");
+  return "Adjuntos/"+(sanitizarNombre(construirCatalogoCompleto(reg)) || (reg.numeroCampo ? "campo_"+sanitizarNombre(reg.numeroCampo) : "") || "sin-catalogo");
 }
 // Copia (si hace falta) un archivo cualquiera a Adjuntos/<ejemplar>/ y devuelve su ruta relativa.
 async function adjuntoEnCarpeta(fh){
@@ -3647,7 +3657,6 @@ async function asociarAdjuntos(entrada){ if(modoAcceso!=="admin") return;
   if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
   if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
   if(!borrador){ borrador=registroVacioBase(); activoId=null; }
-  if(!exigirClasificacion(borrador)) return;
   if(!borrador.adjuntos) borrador.adjuntos=[];
   var fhs;
   try{ fhs=await window.showOpenFilePicker({multiple:!entrada, id:"libro-adjunto"}); }
@@ -3676,6 +3685,23 @@ function exifDeBuffer(buf){
         if(mk===0xFFE1 && dv.getUint32(p+4)===0x45786966){ off=p+10; break; }
         if((mk&0xFF00)!==0xFF00) break;
         p+=2+ln;
+      }
+      if(!off) return out;
+    }
+    else if(dv.getUint32(0)===0x89504E47){            // PNG: fragmento eXIf
+      var q=8;
+      while(q<dv.byteLength-12){
+        var cl=dv.getUint32(q), ct=dv.getUint32(q+4);
+        if(ct===0x65584966){ off=q+8; break; }
+        q+=12+cl;
+      }
+      if(!off) return out;
+    } else if(dv.getUint32(0)===0x52494646 && dv.getUint32(8)===0x57454250){   // WebP: fragmento EXIF
+      var w2=12;
+      while(w2<dv.byteLength-8){
+        var wt=dv.getUint32(w2), wl=dv.getUint32(w2+4,true);
+        if(wt===0x45584946){ off=w2+8; if(dv.getUint32(off)===0x45786966) off+=6; break; }
+        w2+=8+wl+(wl&1);
       }
       if(!off) return out;
     }
@@ -3727,7 +3753,7 @@ async function fotoEnCarpeta(fh){
     rel=rutaTax+"/"+disp.nombre;
   }
   var f=new Date(file.lastModified), ex=await leerExif(file);
-  return {rel:rel, fecha:ex.fecha||(f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())), autor:ex.autor, camara:ex.camara, rutaTax:rutaTax};
+  return {rel:rel, fechaExif:!!ex.fecha, fecha:ex.fecha||(f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())), autor:ex.autor, camara:ex.camara, rutaTax:rutaTax};
 }
 async function elegirArchivoFoto(entrada){ if(modoAcceso!=="admin") return;
   if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar archivos. Usa Chrome o Edge."); return; }
@@ -3739,7 +3765,7 @@ async function elegirArchivoFoto(entrada){ if(modoAcceso!=="admin") return;
   catch(e){ return; }
   var r=await fotoEnCarpeta(fh[0]);
   entrada.archivo=r.rel;
-  if(!entrada.fechaFoto) entrada.fechaFoto=r.fecha;
+  if(!entrada.fechaFoto || r.fechaExif) entrada.fechaFoto=r.fecha;   // la fecha de los metadatos manda
   if(!entrada.fotografo && r.autor) entrada.fotografo=r.autor;
   if(!entrada.notaCalidad && r.camara) entrada.notaCalidad="Cámara: "+r.camara;
   pintarLista("fotos"); refrescarPanelesRegistros();
@@ -3903,7 +3929,7 @@ function exigirClasificacion(reg){
 }
 function pintarAvisoClasif(){
   var f=clasificacionFaltante(borrador);
-  ["aviso-clasif-fotos","aviso-clasif-adjuntos"].forEach(function(id){
+  ["aviso-clasif-fotos"].forEach(function(id){
     var el=document.getElementById(id); if(!el) return;
     if(f.length){ el.textContent="Para asociar archivos falta completar en Depósito > Determinación: "+f.join(", ")+"."; el.classList.remove("oculto"); }
     else el.classList.add("oculto");
@@ -3924,7 +3950,7 @@ function rutaEnUso(ruta, salvo){
 function referenciasArchivos(reg){
   var refs=[], tax=rutaTaxonomica(reg);
   (reg.fotos||[]).forEach(function(f){ if(/^Fotos\//.test(f.archivo||"")) refs.push({ruta:f.archivo, destino:"Fotos/"+tax, set:function(v){ f.archivo=v; }}); });
-  (reg.adjuntos||[]).forEach(function(a){ if(/^Adjuntos\//.test(a.archivo||"")) refs.push({ruta:a.archivo, destino:carpetaAdjuntos(reg), set:function(v){ a.archivo=v; }}); });
+  (reg.adjuntos||[]).forEach(function(a){ if(/^Adjuntos\//.test(a.archivo||"")) refs.push({pdf:true, ruta:a.archivo, destino:carpetaAdjuntos(reg), set:function(v){ a.archivo=v; }}); });
   (reg.publicacionesPdf||[]).forEach(function(n,i){ refs.push({pdf:true, ruta:rutaNormalPdf(n), destino:RUTA_BIBLIOTECA, set:function(v){ var viejo=reg.publicacionesPdf[i]; if(reg.publicacionesPdfInfo && reg.publicacionesPdfInfo[viejo]){ reg.publicacionesPdfInfo[v]=reg.publicacionesPdfInfo[viejo]; delete reg.publicacionesPdfInfo[viejo]; } reg.publicacionesPdf[i]=v; }}); });
   return refs;
 }

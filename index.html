@@ -165,6 +165,13 @@
   .bib-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer;}
   .bib-item input{width:auto !important;margin:0;}
   .bib-pie{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .docs-ingreso{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;}
+  .docs-nuevo{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+  .docs-nuevo select,.docs-nuevo input{padding:6px 8px;border:1px solid var(--line-fuerte);border-radius:6px;font:inherit;font-size:13.5px;}
+  .docs-nuevo input{flex:1;min-width:140px;}
+  .docs-cat{background:var(--accent-soft);padding:5px 10px;font-weight:800;font-size:12.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-soft);}
+  .docs-fila{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .docs-fila .docs-det{flex:1;color:var(--ink-soft);}
   .dialog-camara::backdrop{background:rgba(20,26,22,.55);}
   .cam-in{padding:16px 18px;}
   .cam-in h3{margin:0 0 6px;font-family:var(--serif);color:var(--accent);font-size:19px;}
@@ -521,7 +528,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.41</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.42</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -647,6 +654,7 @@
           <select class="nav" data-f="tipoAccesion"><option value="">—</option><option>Colecta propia</option><option>Donación</option><option>Compra</option><option>Intercambio</option><option>Depósito</option></select>
         </div>
       </div>
+      <div class="docs-ingreso"><button type="button" class="btn secundario small" id="btn-docs-ingreso">📎 Documentos del ingreso</button><span class="nota" id="docs-ingreso-resumen"></span></div>
     </div>
 
     <footer class="acciones" id="footer-acciones-entrada">
@@ -883,7 +891,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.41</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.42</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -985,9 +993,9 @@
         </div>
         <div class="accion-card oculto" id="ac-reordenar">
           <span class="rot">Ordenar archivos <button type="button" class="ayuda-btn" data-ayuda="ayuda-reordenar" aria-label="Ayuda" title="Ayuda">?</button></span>
+          <div class="ayuda-panel oculto" id="ayuda-reordenar">Úsalo después de cambiar Phylum, Clase, Orden, Familia o Género de un ejemplar, o de completar la clasificación de ejemplares traídos desde Libreta de Campo (sus fotos quedan en Sin_clasificar). Cada archivo se copia a su carpeta nueva, se verifica y recién entonces se retira el original, salvo que otro ejemplar lo use. Los ejemplares con clasificación incompleta se omiten.</div>
           <button class="btn secundario small" id="btn-carpeta-reordenar">Reordenar archivos</button>
           <span class="cap">Lleva cada archivo a la carpeta de su clasificación actual.</span>
-          <div class="ayuda-panel oculto" id="ayuda-reordenar">Úsalo después de cambiar Phylum, Clase, Orden, Familia o Género de un ejemplar, o de completar la clasificación de ejemplares traídos desde Libreta de Campo (sus fotos quedan en Sin_clasificar). Cada archivo se copia a su carpeta nueva, se verifica y recién entonces se retira el original, salvo que otro ejemplar lo use. Los ejemplares con clasificación incompleta se omiten.</div>
         </div>
         <div class="accion-card" id="ac-importar">
           <span class="rot">Traer registros</span>
@@ -1002,7 +1010,7 @@
         <summary>Qué guarda cada subcarpeta</summary>
         <ul class="lista-carpetas">
           <li><strong>Registros/</strong> Un .json por ejemplar, actualizado al guardar. Los eliminados pasan a <strong>_eliminados/</strong>.</li>
-          <li><strong>Entradas/</strong> Los .zip de Libreta de Campo importados.</li>
+          <li><strong>Entradas/</strong> Los .zip de Libreta de Campo importados y, en una subcarpeta por número de entrada (<code>Entradas/&lt;N.º de entrada&gt;/&lt;categoría&gt;/</code>), los documentos del ingreso: formulario, documentos legales, planillas de terreno, libreta de campo, etc.</li>
           <li><strong>Exportaciones/</strong> Aquí irán el zip para el Generador de Proyectos y el CSV para GBIF (aún no implementado).</li>
           <li><strong>Respaldos/</strong> Respaldos completos con fecha.</li>
           <li><strong>Publicaciones/</strong> PDF de publicaciones (Autor_etal_AÑO_Palabras_clave.pdf), todos en esta misma carpeta, ordenados por nombre.</li>
@@ -1035,11 +1043,12 @@
 <dialog id="dialog-archivo" class="dialog-archivo"></dialog>
 <dialog id="dialog-camara" class="dialog-camara"></dialog>
 <dialog id="dialog-biblioteca" class="dialog-camara"></dialog>
+<dialog id="dialog-docs-ingreso" class="dialog-camara"></dialog>
 
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.41";
+var APP_VERSION = "v0.9.42";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1837,7 +1846,7 @@ function bloqueMediaHtml(r, general, terreno, determinacion){
   return '<div class="ficha-media">'
     +'<div class="media-panel panel-info"><div class="media-titulo">Información general</div><div class="media-cuerpo">'+(general||vacio)+'</div></div>'
     +'<div class="media-panel panel-fotos"><div class="fotos-sup"><div class="media-titulo">Fotografías'+(fotos.length?' ('+fotos.length+')':'')+'</div>'+gal+'</div>'
-    +'<div class="fotos-inf"><div class="media-titulo">Otros archivos asociados'+(otros.n?' ('+otros.n+')':'')+'</div><div class="otros-lista">'+(otros.html||'<span class="otros-vacio">Sin PDF ni otros archivos asociados.</span>')+'</div></div></div>'
+    +'<div class="fotos-inf"><div class="media-titulo">Otros archivos asociados'+(otros.n?' ('+otros.n+')':'')+'</div><div class="otros-lista" data-entrada="'+escapeHtml(r.numeroAccesion||'')+'" data-n="'+otros.n+'">'+(otros.html||'<span class="otros-vacio">Sin PDF ni otros archivos asociados.</span>')+'</div></div></div>'
     +(determinacion ? '<div class="media-completo">'+determinacion+'</div>' : '')
     +'<div class="media-panel"><div class="media-titulo">Datos de terreno</div><div class="media-cuerpo">'+(terreno||vacio)+'</div></div>'
     +'<div class="media-panel"><div class="media-titulo">Ubicación geográfica</div>'+mapa+'</div>'
@@ -1988,6 +1997,7 @@ function mostrarFichaConsulta(id){
   dialogEl.showModal();
   cargarFotosFicha(dialogEl);
   iniciarMapaSatelital(dialogEl);
+  cargarDocsFicha(dialogEl, r);
 }
 
 // ---------- mapa satelital de la ficha (teselas Esri World Imagery, proyección Web Mercator) ----------
@@ -2493,6 +2503,7 @@ function cargarRegistroEnFormulario(){
   actualizarVisibilidadEstado();
   actualizarAvisoConteo();
   aplicarModoFormulario();
+  docsActualizarResumen();
 }
 
 function actualizarAvisoConteo(){
@@ -3643,6 +3654,203 @@ async function abrirPdf(nombre){
   }catch(e){ alert("No se encontró «"+nombre+"» en la subcarpeta Publicaciones de la Carpeta local."); }
 }
 document.getElementById("btn-add-pdf").addEventListener("click", asociarPdf);
+
+// ---------- Documentos del ingreso: archivos únicos de un N.º de entrada, en Entradas/<N.º de entrada>/<categoría>/ ----------
+// Valen para todos los ejemplares con el mismo número de entrada. Cada carpeta lleva un _indice.json (categoría, descripción, comentario).
+// Con la Carpeta local conectada se copian ahí (verificados). Sin ella, el navegador los guarda solo como respaldo temporal.
+var DOC_CATEGORIAS=["Formulario de ingreso","Documentos legales y administrativos","Planillas de terreno","Libreta de campo","Fotografías del sitio o del lote","Correspondencia","Informes","Otros"];
+function docCarpetaEntrada(n){ return sanitizarNombre(n); }
+function docCarpetaCat(c){ return sanitizarNombre(c); }
+function docNumeroActual(){ var el=document.querySelector('[data-f="numeroAccesion"]'); return el?el.value.trim():""; }
+async function docDirExistente(partes){ var d=carpetaHandle; for(var i=0;i<partes.length;i++) d=await d.getDirectoryHandle(partes[i]); return d; }
+async function docLeerIndiceCarpeta(carpetaE){
+  var items=[];
+  if(!carpetaHandle) return items;
+  try{
+    var d=await docDirExistente(["Entradas",carpetaE]);
+    try{ var obj=JSON.parse(await (await (await d.getFileHandle("_indice.json")).getFile()).text()); items=(obj.archivos||[]).slice(); }catch(e){}
+    var vistos={}; items.forEach(function(a){ vistos[a.archivo]=1; });
+    var revisar=async function(dirH, ruta, cat){
+      for await (var h of dirH.values()){
+        if(h.kind!=="file" || h.name==="_indice.json") continue;
+        var rel=ruta+"/"+h.name;
+        if(!vistos[rel]){ items.push({archivo:rel, categoria:cat, descripcion:"", comentario:"", adoptado:true}); vistos[rel]=1; }
+      }
+    };
+    await revisar(d, "Entradas/"+carpetaE, "Otros");
+    for(var i=0;i<DOC_CATEGORIAS.length;i++){
+      var cc=docCarpetaCat(DOC_CATEGORIAS[i]);
+      try{ await revisar(await d.getDirectoryHandle(cc), "Entradas/"+carpetaE+"/"+cc, DOC_CATEGORIAS[i]); }catch(e){}
+    }
+  }catch(e){}
+  return items;
+}
+async function docLeerIndiceNavegador(carpetaE){ try{ var v=await cfgLeer("docsIdx:"+carpetaE); return (v&&v.archivos)||[]; }catch(e){ return []; } }
+async function docPendientes(){ try{ return (await cfgLeer("docsPend"))||[]; }catch(e){ return []; } }
+async function docEscribirIndiceCarpeta(carpetaE, n, items){
+  var lim=items.filter(function(a){ return !a.enNavegador; }).map(function(a){ var o=Object.assign({},a); delete o.adoptado; return o; });
+  await escribirArchivo("Entradas/"+carpetaE, "_indice.json", JSON.stringify({entrada:n, archivos:lim}, null, 2));
+}
+async function docEscribirIndiceNavegador(carpetaE, n, items){
+  var nav=items.filter(function(a){ return a.enNavegador; });
+  var pend=await docPendientes(), i=pend.indexOf(carpetaE);
+  if(nav.length){ await cfgGuardar("docsIdx:"+carpetaE,{entrada:n, archivos:nav}); if(i<0){ pend.push(carpetaE); await cfgGuardar("docsPend",pend); } }
+  else { await cfgBorrar("docsIdx:"+carpetaE); if(i>-1){ pend.splice(i,1); await cfgGuardar("docsPend",pend); } }
+}
+async function docCargar(n){
+  var carpetaE=docCarpetaEntrada(n);
+  var f=await docLeerIndiceCarpeta(carpetaE);
+  var nav=(await docLeerIndiceNavegador(carpetaE)).map(function(a){ return Object.assign({}, a, {enNavegador:true}); });
+  return {carpetaE:carpetaE, items:f.concat(nav)};
+}
+async function docAgregar(n, categoria, descripcion){
+  if(modoAcceso!=="admin") return 0;
+  var carpetaE=docCarpetaEntrada(n);
+  if(typeof window.showOpenFilePicker!=="function"){ alert("Este navegador no permite elegir archivos. Usa Chrome o Edge."); return 0; }
+  var enCarpeta=!!carpetaHandle && await permisoCarpeta(true);
+  if(!enCarpeta && !confirm("La Carpeta local no está conectada.\n\nLos documentos se guardarán solo de forma temporal en este navegador (respaldo de emergencia) y habrá que pasarlos a la Carpeta local cuando la conectes. Los archivos grandes pueden no caber.\n\n¿Continuar?")) return 0;
+  var fhs;
+  try{ fhs=await window.showOpenFilePicker({multiple:true, id:"libro-docs-ingreso"}); }catch(e){ return 0; }
+  var d=await docCargar(n), items=d.items, nuevos=0, rutaDir="Entradas/"+carpetaE+"/"+docCarpetaCat(categoria);
+  try{
+    for(var i=0;i<fhs.length;i++){
+      var file=await fhs[i].getFile(), base=limpiarNombre(file.name)||"archivo";
+      var nombre=base.indexOf(carpetaE+"_")===0 ? base : carpetaE+"_"+base, rel;
+      if(enCarpeta){
+        var dir=await dirAnidado(rutaDir), disp=await nombreDisponible(dir, nombre, file.size);
+        if(!disp.existe) await copiarVerificado(rutaDir, disp.nombre, file);
+        rel=rutaDir+"/"+disp.nombre;
+      } else { rel=rutaDir+"/"+nombre; await cfgGuardar("foto:"+rel, file); }
+      if(items.some(function(a){ return a.archivo===rel; })) continue;
+      var it={archivo:rel, categoria:categoria, descripcion:descripcion||"", comentario:"", agregadoEn:new Date().toISOString(), agregadoPor:operadorActual()};
+      if(!enCarpeta) it.enNavegador=true;
+      items.push(it); nuevos++;
+    }
+  }catch(e){ alert("No se pudo guardar el archivo: "+((e&&e.message)||e)); }
+  try{
+    if(enCarpeta) await docEscribirIndiceCarpeta(carpetaE, n, items);
+    await docEscribirIndiceNavegador(carpetaE, n, items);
+  }catch(e){ alert("No se pudo actualizar el índice: "+((e&&e.message)||e)); }
+  return nuevos;
+}
+async function docGuardarCambio(n, items){
+  var carpetaE=docCarpetaEntrada(n);
+  if(carpetaHandle && await permisoCarpeta(true)) await docEscribirIndiceCarpeta(carpetaE, n, items);
+  await docEscribirIndiceNavegador(carpetaE, n, items);
+}
+// «Quitar» no borra: el archivo se mueve a Entradas/<N.º>/_quitados/ para poder recuperarlo.
+async function docQuitar(n, it, items){
+  var carpetaE=docCarpetaEntrada(n);
+  if(it.enNavegador){ try{ await cfgBorrar("foto:"+it.archivo); }catch(e){} }
+  else if(carpetaHandle && await permisoCarpeta(true)){
+    var partes=it.archivo.split("/"), nombre=partes.pop(), file=await archivoDeRuta(it.archivo);
+    var qd=await dirAnidado("Entradas/"+carpetaE+"/_quitados"), disp=await nombreDisponible(qd, nombre, file.size);
+    if(!disp.existe) await copiarVerificado("Entradas/"+carpetaE+"/_quitados", disp.nombre, file);
+    var dir=await docDirExistente(partes); await dir.removeEntry(nombre);
+  }
+  await docGuardarCambio(n, items.filter(function(a){ return a!==it; }));
+}
+async function docPasarNavegadorACarpeta(){
+  if(!carpetaHandle || !(await permisoCarpeta(true))){ alert("Conecta primero la Carpeta local en la pestaña Sistema."); return 0; }
+  var pend=(await docPendientes()).slice(), total=0;
+  for(var p=0;p<pend.length;p++){
+    var carpetaE=pend[p], obj=await cfgLeer("docsIdx:"+carpetaE); if(!obj) continue;
+    var fold=await docLeerIndiceCarpeta(carpetaE);
+    for(var k=0;k<obj.archivos.length;k++){
+      var a=obj.archivos[k], file=await fotoLocalLeer(a.archivo); if(!file) continue;
+      var partes=a.archivo.split("/"), nombre=partes.pop(), rutaDir=partes.join("/");
+      var dir=await dirAnidado(rutaDir), disp=await nombreDisponible(dir, nombre, file.size);
+      if(!disp.existe) await copiarVerificado(rutaDir, disp.nombre, file);
+      var rel=rutaDir+"/"+disp.nombre, o=Object.assign({}, a); delete o.enNavegador; o.archivo=rel;
+      if(!fold.some(function(x){ return x.archivo===rel; })) fold.push(o);
+      await cfgBorrar("foto:"+a.archivo); total++;
+    }
+    await docEscribirIndiceCarpeta(carpetaE, obj.entrada, fold);
+    await docEscribirIndiceNavegador(carpetaE, obj.entrada, []);
+  }
+  return total;
+}
+async function docsActualizarResumen(){
+  var el=document.getElementById("docs-ingreso-resumen"); if(!el) return;
+  var n=docNumeroActual();
+  if(!n){ el.textContent="Escribe el número de entrada para asociar documentos."; return; }
+  try{ var d=await docCargar(n); el.textContent=d.items.length ? d.items.length+" documento(s) asociado(s) a la entrada "+n+"." : "Sin documentos asociados a la entrada "+n+"."; }
+  catch(e){ el.textContent=""; }
+}
+async function abrirDocsIngreso(){
+  var n=docNumeroActual(), dlg=document.getElementById("dialog-docs-ingreso"), admin=modoAcceso==="admin";
+  if(!n){ alert("Escribe primero el Número de entrada para ver o asociar los documentos del ingreso."); return; }
+  var carpetaE=docCarpetaEntrada(n);
+  if(!carpetaE){ alert("El Número de entrada no tiene caracteres válidos para nombrar una carpeta."); return; }
+  if(carpetaHandle) await permisoCarpeta(true);
+  var actual=[];
+  async function pintar(){
+    var d=await docCargar(n); actual=d.items;
+    var nEj=registros.filter(function(r){ return sanitizarNombre(r.numeroAccesion||"")===carpetaE; }).length + ((typeof activoId!=="undefined" && activoId===null) ? 1 : 0);
+    var hayCarpeta=!!carpetaHandle, pend=(await docPendientes()).length, nNav=actual.filter(function(a){ return a.enNavegador; }).length;
+    var h='<div class="bib-caja"><div class="bib-cab"><strong>Documentos del ingreso</strong> <span class="nota">N.º de entrada <b>'+escapeHtml(n)+'</b> · '+nEj+' ejemplar(es) con este número</span></div>'
+      +'<p class="nota" style="margin:0;">Valen para todos los ejemplares de esta entrada. Carpeta: <code>Entradas/'+escapeHtml(carpetaE)+'/</code>'+(hayCarpeta?'':' · <strong>Carpeta local sin conectar</strong>: solo se verán los guardados temporalmente en el navegador.')+'</p>';
+    if(admin) h+='<div class="docs-nuevo"><select id="docs-cat" title="Categoría">'+DOC_CATEGORIAS.map(function(c){ return '<option>'+escapeHtml(c)+'</option>'; }).join("")+'</select><input id="docs-desc" placeholder="Descripción (opcional)"><button type="button" class="btn small" id="docs-add">Agregar archivos…</button></div>';
+    h+='<div class="bib-lista" id="docs-lista">';
+    if(!actual.length) h+='<p class="nota" style="padding:10px;">Todavía no hay documentos para esta entrada.</p>';
+    DOC_CATEGORIAS.forEach(function(c){
+      var l=actual.map(function(a,i){ return {a:a,i:i}; }).filter(function(x){ return x.a.categoria===c; });
+      if(!l.length) return;
+      h+='<div class="docs-cat">'+escapeHtml(c)+' ('+l.length+')</div>';
+      l.forEach(function(x){
+        var a=x.a, det=[a.descripcion,a.comentario].filter(Boolean).join(" · ");
+        h+='<div class="docs-fila"><button type="button" class="btn tenue small docs-abrir" data-i="'+x.i+'" title="'+escapeHtml(a.archivo)+'">📎 '+escapeHtml(a.archivo.split("/").pop())+'</button>'
+          +'<span class="docs-det">'+escapeHtml(det)+(a.enNavegador?' <em>(solo en el navegador)</em>':'')+'</span>'
+          +(admin?'<button type="button" class="btn tenue small docs-edit" data-i="'+x.i+'" title="Editar descripción">✎</button><button type="button" class="btn tenue small docs-quitar" data-i="'+x.i+'" title="Quitar de la lista (el archivo se guarda en _quitados)">🗑️</button>':'')+'</div>';
+      });
+    });
+    h+='</div><div class="bib-pie">';
+    if(admin && hayCarpeta && pend) h+='<button type="button" class="btn secundario small" id="docs-pasar">Pasar los guardados en el navegador a la Carpeta local</button>';
+    h+='<span style="flex:1"></span><button type="button" class="btn tenue" id="docs-cerrar">Cerrar</button></div></div>';
+    dlg.innerHTML=h;
+    var c=dlg.querySelector("#docs-cerrar"); if(c) c.onclick=function(){ dlg.close(); };
+    dlg.querySelectorAll(".docs-abrir").forEach(function(b){ b.onclick=function(){ abrirRuta(actual[+b.getAttribute("data-i")].archivo); }; });
+    dlg.querySelectorAll(".docs-edit").forEach(function(b){ b.onclick=async function(){
+      var it=actual[+b.getAttribute("data-i")], v=prompt("Descripción del documento:", it.descripcion||""); if(v===null) return;
+      it.descripcion=v.trim(); try{ await docGuardarCambio(n, actual); }catch(e){ alert("No se pudo guardar: "+((e&&e.message)||e)); } pintar(); }; });
+    dlg.querySelectorAll(".docs-quitar").forEach(function(b){ b.onclick=async function(){
+      var it=actual[+b.getAttribute("data-i")];
+      if(!confirm("¿Quitar «"+it.archivo.split("/").pop()+"» de los documentos del ingreso?\n\nEl archivo se mueve a Entradas/"+carpetaE+"/_quitados/ y no se borra.")) return;
+      try{ await docQuitar(n, it, actual); }catch(e){ alert("No se pudo quitar: "+((e&&e.message)||e)); } pintar(); }; });
+    var add=dlg.querySelector("#docs-add");
+    if(add) add.onclick=async function(){
+      var k=await docAgregar(n, dlg.querySelector("#docs-cat").value, dlg.querySelector("#docs-desc").value.trim());
+      await pintar(); if(k) mensajeCarpeta(k+" documento(s) asociado(s) a la entrada "+n+".");
+    };
+    var pas=dlg.querySelector("#docs-pasar");
+    if(pas) pas.onclick=async function(){ try{ var k=await docPasarNavegadorACarpeta(); alert(k+" archivo(s) pasados a la Carpeta local."); }catch(e){ alert("No se pudo completar: "+((e&&e.message)||e)); } pintar(); };
+    if(nNav && !hayCarpeta){} // aviso ya incluido arriba
+  }
+  dlg.onclose=docsActualizarResumen;
+  dlg.onclick=function(e){ if(e.target===dlg) dlg.close(); };
+  await pintar(); dlg.showModal();
+}
+async function cargarDocsFicha(dlgEl, r){
+  var cont=dlgEl.querySelector(".otros-lista[data-entrada]"); if(!cont) return;
+  var n=cont.getAttribute("data-entrada"); if(!n || !docCarpetaEntrada(n)) return;
+  try{
+    var d=await docCargar(n); if(!d.items.length) return;
+    var vacio=cont.querySelector(".otros-vacio"); if(vacio) vacio.remove();
+    d.items.forEach(function(a){
+      var b=document.createElement("button"); b.type="button"; b.className="btn tenue small";
+      b.textContent="📋 "+a.archivo.split("/").pop();
+      b.title=a.categoria+(a.descripcion?" · "+a.descripcion:"")+" (documento del ingreso "+n+")";
+      b.onclick=function(){ abrirRuta(a.archivo); }; cont.appendChild(b);
+    });
+    var t=dlgEl.querySelector(".fotos-inf .media-titulo");
+    if(t) t.textContent="Otros archivos asociados ("+((parseInt(cont.getAttribute("data-n"),10)||0)+d.items.length)+")";
+  }catch(e){}
+}
+(function(){
+  var b=document.getElementById("btn-docs-ingreso"); if(b) b.addEventListener("click", abrirDocsIngreso);
+  var inp=document.querySelector('[data-f="numeroAccesion"]');
+  if(inp){ inp.addEventListener("change", docsActualizarResumen); }
+})();
 
 // ---------- Fotos (ordenadas por Phylum/Clase/Orden/Familia/Género dentro de Fotos/) ----------
 function carpetaTaxon(v){ return sanitizarNombre(v)||"Sin_clasificar"; }

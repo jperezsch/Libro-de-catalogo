@@ -283,7 +283,7 @@
   .imp-tabla-caja{overflow:auto;margin:8px 0;}
   .imp-resp{display:block;margin:8px 0;font-size:14px;}
   @media (max-width:760px){ .imp-cols{grid-template-columns:1fr;} }
-  /* ---- v0.9.46: emparejado ---- */
+  /* ---- v0.9.47: emparejado ---- */
   .imp-estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin:8px 0;color:var(--ink-soft);}
   .imp-filtro{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0;}
   .imp-filtro input{flex:1 1 150px;min-width:0;}
@@ -313,7 +313,7 @@
   .imp-ayuda p{margin:6px 0;}
   .imp-alerta{color:var(--danger);}
   .imp-no{margin-top:8px;}
-  /* ---- v0.9.46: asistente ---- */
+  /* ---- v0.9.47: asistente ---- */
   .imp-pasos{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
   .imp-paso-btn{flex:1 1 150px;border:1px solid var(--line-fuerte);background:var(--paper-2);border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;color:var(--ink);}
   .imp-paso-btn.activo{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
@@ -322,7 +322,7 @@
   .imp-fila-enc th{background:var(--accent-soft);}
   .imp-plantilla-sug{background:var(--warn-soft);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:14px;}
   .imp-sin{border-bottom:1px solid var(--line);padding:6px 0;font-size:13.5px;}
-  /* ---- v0.9.46: previsualización y emparejado con tabla ---- */
+  /* ---- v0.9.47: previsualización y emparejado con tabla ---- */
   .imp-paso-btn:disabled{opacity:.45;cursor:not-allowed;}
   .imp-nombre-in{width:100%;min-width:110px;font-size:12px;padding:2px 4px;font-weight:600;border:1px solid var(--line-fuerte);border-radius:4px;background:#fff;}
   .imp-fila-otra td,.imp-fila-otra th{background:var(--paper-2);color:var(--ink-soft);}
@@ -341,6 +341,12 @@
   .imp-man-sel{width:100%;font-size:13px;}
   .imp-man-acc{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
   .imp-sug-fila{margin:4px 0;font-size:13px;}
+  /* ---- v0.9.47: bloques de emparejado ---- */
+  .imp-sec-tit{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-soft);margin:8px 0 3px;}
+  .imp-destino{border-left:3px solid var(--accent);background:var(--paper-2);border-radius:6px;padding:6px 10px;margin:6px 0;}
+  .imp-cand{border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin:5px 0;background:#fff;}
+  .imp-cand-cab{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;font-size:13.5px;}
+  .imp-cand-bt{display:flex;gap:6px;}
   @media (max-width:900px){ .imp-dos{grid-template-columns:1fr;} .imp-der-tabla{position:static;} }
   @media (max-width:760px){ .imp-par{grid-template-columns:1fr;} .imp-par-flecha{display:none;} .imp-par-acc{flex-direction:row;} }
   .full{grid-column:1/-1;}
@@ -588,7 +594,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.46</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.47</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -684,7 +690,7 @@
         <div class="campo opc"><div class="lbl"><span class="name">Coordenadas originales</span><span class="key">coordenadasOriginales → dwc:verbatimCoordinates</span></div><input class="nav" data-f="coordenadasOriginales"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Latitud</span><span class="key">lat</span></div><input class="nav" data-f="lat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Longitud</span><span class="key">lng</span></div><input class="nav" data-f="lng"></div>
-        <div class="campo opc"><div class="lbl"><span class="name">Altitud (m)</span><span class="key">altitud_m</span></div><input class="nav" data-f="altitud_m"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Altitud/profundidad (m)</span><span class="key">altitud_m</span></div><input class="nav" data-f="altitud_m" placeholder="profundidad en negativo, ej. -35"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hora de colecta</span><span class="key">horaColecta → dwc:eventTime</span></div><input type="time" class="nav" data-f="horaColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hábitat</span><span class="key">habitat → dwc:habitat</span></div><input class="nav sugerido" data-f="habitat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Microhábitat</span><span class="key">microhabitat</span></div><input class="nav sugerido" data-f="microhabitat"></div>
@@ -951,7 +957,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.46</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.47</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1117,7 +1123,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.46";
+var APP_VERSION = "v0.9.47";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1826,7 +1832,7 @@ function construirFicha(r){
     ["Localidad (verbatim)","localidadVerbatim"], ["Localidad","localidad"],
     ["Región","region"], ["Provincia","provincia"], ["Comuna","comuna"],
     ["Fecha de colecta","fechaColecta"], ["Colector","colector"],
-    ["Coordenadas originales","coordenadasOriginales"], ["Latitud","lat"], ["Longitud","lng"], ["Altitud (m)","altitud_m"],
+    ["Coordenadas originales","coordenadasOriginales"], ["Latitud","lat"], ["Longitud","lng"], ["Altitud/profundidad (m)","altitud_m"],
     ["Hora de colecta","horaColecta"], ["Hábitat","habitat"], ["Microhábitat","microhabitat"],
     ["Método de recolección","metodoColecta"], ["Estación","estacion"]
   ], r);
@@ -4458,7 +4464,7 @@ var CONS_CAMPOS = [
   campoSimple("provincia","Provincia","Lugar",true), campoSimple("comuna","Comuna","Lugar",true),
   campoSimple("habitat","Hábitat","Terreno"), campoSimple("microhabitat","Microhábitat","Terreno"),
   campoSimple("metodoColecta","Método de recolección","Terreno"), campoSimple("estacion","Estación","Terreno"),
-  campoSimple("altitud_m","Altitud (m)","Terreno"), campoSimple("coordenadasOriginales","Coordenadas originales","Terreno"),
+  campoSimple("altitud_m","Altitud/profundidad (m)","Terreno"), campoSimple("coordenadasOriginales","Coordenadas originales","Terreno"),
   campoSimple("numeroAccesion","N.º de entrada","Entrada",true), campoSimple("procedencia","Procedencia","Entrada"),
   campoSimple("destino","Destino","Entrada"), campoSimple("condicionAccesion","Condición de la accesión","Entrada"),
   campoSimple("legatario","Legatario","Entrada"), campoSimple("proyectoOrigen","Proyecto de origen","Entrada"),
@@ -4749,7 +4755,7 @@ var CONS_COLUMNAS = [
   ["Localidad",function(r){ return r.localidad; }], ["Localidad (verbatim)",function(r){ return r.localidadVerbatim; }],
   ["Región",function(r){ return r.region; }], ["Provincia",function(r){ return r.provincia; }], ["Comuna",function(r){ return r.comuna; }],
   ["Latitud",function(r){ var c=coordenadasRegistro(r); return c?c.lat:""; },"n"], ["Longitud",function(r){ var c=coordenadasRegistro(r); return c?c.lng:""; },"n"],
-  ["Altitud (m)",function(r){ return r.altitud_m; },"n"],
+  ["Altitud/profundidad (m)",function(r){ return r.altitud_m; },"n"],
   ["Fecha de colecta",function(r){ return r.fechaColecta; }], ["Colector",function(r){ return r.colector; }],
   ["Hábitat",function(r){ return r.habitat; }], ["Método de recolección",function(r){ return r.metodoColecta; }],
   ["Institución",function(r){ return r.institucionAcronimo; }], ["Colección",function(r){ return r.coleccionAcronimo; }],
@@ -5013,6 +5019,7 @@ var IMP_ESPECIALES = [
   {k:"@prevDet", l:"Determinación anterior (nombre)", g:"Determinación y especiales", tipo:"texto"},
   {k:"@sexo", l:"Sexo y estado (texto como «2 ♂ 1 ♀ 1 ninfa»)", g:"Determinación y especiales", tipo:"sexo"},
   {k:"@coord", l:"Coordenadas en una sola columna (latitud y longitud)", g:"Determinación y especiales", tipo:"coordpar"},
+  {k:"@operador", l:"Operador actual (quién registra; se guarda como «modificado por» y «catalogador»)", g:"Determinación y especiales", tipo:"texto"},
   {k:"@obs", l:"Observaciones generales (anexar con el nombre de la columna)", g:"Determinación y especiales", tipo:"anexo"}
 ];
 function impObjetivos(){
@@ -5158,7 +5165,7 @@ var IMP_SINONIMOS = {
   "@nombre":["scientificname","nombrecientifico","especie","taxon","nombre"],
   "@determinador":["identifiedby","determinador","determinadopor"], "@fechaDet":["dateidentified","fechadeterminacion","fechadeterminacion"],
   "@prevDet":["previousidentification","determinacionanterior"],
-  "@obs":["eventremarks"], "@sexo":["sexo","sex","sexoyestado","lifestage"], tipoNomenclatural:["typestatus","tiponomenclatural","tipo"],
+  "@obs":["eventremarks"], "@operador":["operador","operadoractual","ingresadopor","registradopor","catalogador","modificadopor","digitador"], "@sexo":["sexo","sex","sexoyestado","lifestage"], tipoNomenclatural:["typestatus","tiponomenclatural","tipo"],
   individuos:["individualcount","individuos","nindividuos","cantidad"],
   estadoUbicacion:["disposition","estado","estadoubicacion"], region:["region","stateprovince"], provincia:["provincia","county"], comuna:["comuna","municipality"],
   localidad:["locality","localidad"], localidadVerbatim:["verbatimlocality","localidadverbatim"],
@@ -5167,7 +5174,7 @@ var IMP_SINONIMOS = {
   legatario:["legatee","legatario"], metodoColecta:["samplingprotocol","metodocolecta","metododerecoleccion"], habitat:["habitat"],
   tipoColeccion:["preparations","tipocoleccion","preparaciones"], asociacionesBiologicas:["associatedtaxa","asociacionesbiologicas"],
   observacionesBiologicas:["organismremarks","observacionesbiologicas"], observaciones:["occurrenceremarks","observaciones","notas","remarks"],
-  procedencia:["basisofrecord","procedencia"], altitud_m:["altitud","elevation","verbatimelevation","altitudm","minimumelevationinmeters"],
+  procedencia:["basisofrecord","procedencia"], altitud_m:["altitud","elevation","verbatimelevation","altitudm","minimumelevationinmeters","profundidad","depth","profundidadmaxima","profundidadminima","minimumdepthinmeters","maximumdepthinmeters"],
   fechaRecepcion:["fechaingreso","fecharecepcion","fechadeingreso"], horaColecta:["eventtime","hora","horacolecta"]
 };
 function impSugerir(preservar){
@@ -5192,6 +5199,7 @@ function impSugerir(preservar){
 function impNuevoMapa(ci,k,conf,score){
   var m={col:ci, target:k, conf:conf!==false?(conf===undefined?true:!!conf):false, score:score||0, cid:(imp.nextCid=(imp.nextCid||0)+1), opts:{fmt:"auto", error:"obs", valores:{}}}, o=impObjetivo(k);
   if(o&&o.tipo==="lista") impAutoValores(m);
+  if(k==="altitud_m" && imp.cols[ci] && /profund|depth/i.test(imp.cols[ci].nombre)) m.opts.neg=true;
   return m;
 }
 function impNorm(s){ return normTxt(s).replace(/[^a-z0-9]/g,""); }
@@ -5291,13 +5299,14 @@ function impConstruir(){
   imp.datos.forEach(function(row){
     var llenos=0; imp.mapas.forEach(function(m){ var c=imp.cols[m.col]; if(!c.constante && row.v[m.col]!=="") llenos++; });
     if(llenos<imp.minLlenos){ filasOmitidas.push(row.fila); return; }
-    var r=registroVacioBase(), anexos=[], det={nombreCientifico:"",determinador:"",fechaDeterminacion:"",calificador:""}, prev=null, hayDet=false, listasFila={};
+    var r=registroVacioBase(), anexos=[], det={nombreCientifico:"",determinador:"",fechaDeterminacion:"",calificador:""}, prev=null, hayDet=false, listasFila={}, opFila="";
     function poner(k,v){ if(v===""||v==null) return; if(k.indexOf("L:")===0){ var q=k.slice(2).split("."); var li=listasFila[q[0]]=listasFila[q[0]]||{}; if(li[q[1]]===undefined) li[q[1]]=String(v); return; } if(r[k]!==undefined && r[k]!=="") return; r[k]=String(v); }
     function anexar(etq,v){ anexos.push(etq+": "+v); }
     orden.forEach(function(i){
       var m=imp.mapas[i], o=impObjetivo(m.target), raw=row.v[m.col], c=imp.cols[m.col]; if(!o||raw==="") return;
       var k=o.k, enError=function(motivo){ aviso(motivo+": "+o.l,row.fila,c.nombre+" = «"+raw+"»"); if(m.opts.error==="obs") anexar(c.nombre+" (original)",raw); };
       if(k==="@obs"){ anexar(c.nombre,raw); return; }
+      if(k==="@operador"){ if(!opFila) opFila=raw; return; }
       if(k==="@nombre"){ if(!det.nombreCientifico){ det.nombreCientifico=raw; hayDet=true; } return; }
       if(k==="@determinador"){ if(!det.determinador){ det.determinador=raw; hayDet=true; } return; }
       if(k==="@prevDet"){ prev=raw; return; }
@@ -5313,7 +5322,7 @@ function impConstruir(){
       if(k==="@coord"){ var cp=impCoordPar(raw); if(cp){ poner("lat",cp.lat); poner("lng",cp.lng); } else enError("Coordenadas no interpretables"); return; }
       switch(o.tipo){
         case "fecha": { var fd=impFecha(raw,detFmt[i].fmt); if(fd.ok){ poner(k,fd.val); if(fd.nota==="rango") anexar(c.nombre+" (rango original)",raw); } else enError("Fecha no interpretable"); break; }
-        case "numero": { var nn=impNumero(raw); if(nn!==null) poner(k,nn); else enError("Sin número"); break; }
+        case "numero": { var nn=impNumero(raw); if(nn!==null){ if(m.opts.neg && parseFloat(nn)>0) nn=String(-parseFloat(nn)); poner(k,nn); } else enError("Sin número"); break; }
         case "lat": case "lng": { var cv=impDms(raw,o.tipo); if(cv!=null) poner(k,cv); else enError("Coordenada no interpretable"); break; }
         case "hora": { var h=impHora(raw); if(h) poner(k,h); else enError("Hora no interpretable"); break; }
         case "lista": { poner(k,impValorLista(m,o,raw)); break; }
@@ -5331,8 +5340,8 @@ function impConstruir(){
     if(suma && r.individuos && parseInt(r.individuos,10)!==suma) aviso("El total de individuos no coincide con el desglose",row.fila,"total "+r.individuos+", desglose "+suma);
     if(suma && !r.individuos) r.individuos=String(suma);
     if(r.coleccionAcronimo && /^\s*$/.test(r.institucionAcronimo||"")) { /* se deja tal cual */ }
-    r.creadoEn=ahora; r.modificadoEn=ahora; r.modificadoPor=operadorActual();
-    if(r.catalogo) r.catalogador=operadorActual();
+    r.creadoEn=ahora; r.modificadoEn=ahora; r.modificadoPor=opFila||operadorActual();
+    if(r.catalogo) r.catalogador=opFila||operadorActual();
     r.origenImportacion={archivo:imp.nombreArchivo, hoja:imp.hojaNombre||"", fila:row.fila, importadoEn:ahora, importadoPor:operadorActual()};
     // clave de coincidencia
     var clave=imp.clave.map(function(k){ return impNorm(impValorClave(r,k)); });
@@ -5379,7 +5388,7 @@ async function impCargarArchivo(file){
   try{
     impMensaje("Leyendo «"+file.name+"»…");
     var buf=await file.arrayBuffer(), nombre=file.name, esXlsx=/\.xlsx?m?$/i.test(nombre)||(new Uint8Array(buf,0,2)[0]===0x50&&new Uint8Array(buf,0,2)[1]===0x4B);
-    imp={nombreArchivo:nombre, filaEnc:1, minLlenos:3, politica:"omitir", clave:[], fijos:[], mapas:[], hojas:null, hojaIdx:0, resultado:null, sel:null, ejem:{}, ejemApp:{}, filIzq:"", filDer:"", estIzq:"todas", estDer:"todos", ocultarConf:true, nextCid:0, paso:1, prevOk:false, autoHecho:false, sub:"auto", foco:null, tent:{}, ign:{}, nombres:{}, datosManual:false, filaDatos:2, verVacias:false};
+    imp={nombreArchivo:nombre, filaEnc:1, minLlenos:3, politica:"omitir", clave:[], fijos:[], mapas:[], hojas:null, hojaIdx:0, resultado:null, sel:null, ejem:{}, ejemApp:{}, filIzq:"", filDer:"", estIzq:"todas", estDer:"todos", ocultarConf:true, nextCid:0, paso:1, prevOk:false, autoHecho:false, sub:"auto", foco:null, tent:{}, ign:{}, desc:{}, nombres:{}, datosManual:false, filaDatos:2, verVacias:false};
     if(/\.xls$/i.test(nombre)){ impMensaje("Los archivos .xls antiguos no se pueden leer. Guárdalo como .xlsx o como CSV desde Excel.",true); imp=null; return; }
     if(esXlsx){ var libro=await impXlsx(buf); imp.hojas=libro.hojas; if(!imp.hojas.length) throw new Error("El libro no tiene hojas."); imp.hojaIdx=0; imp.filas=await imp.hojas[0].leer(); imp.hojaNombre=imp.hojas[0].nombre; }
     else { imp.filas=impCsv(impDecodificar(buf)); imp.hojaNombre=""; }
@@ -5400,16 +5409,17 @@ function impOpcionesObjetivos(sel,c){
 }
 function impPintar(){
   var cont=impElem("imp-cont"); if(!cont) return;
-  var pos={y:window.pageYOffset||0, izq:0, der:0}, ei=impElem("imp-izq"), ed=impElem("imp-der");
+  var pos={y:window.pageYOffset||0, izq:0, der:0}, ei=impElem("imp-izq"), ed=impElem("imp-der"), tp0=cont.querySelector(".imp-tabla-previa"), tpL=tp0?tp0.scrollLeft:0, tpT=tp0?tp0.scrollTop:0, paso0=imp?imp.paso:0;
   if(ei) pos.izq=ei.scrollTop; if(ed) pos.der=ed.scrollTop;
   var foco=document.activeElement, focoVal=foco&&foco.getAttribute?(foco.getAttribute("data-val")||foco.getAttribute("data-valtxt")):null, focoI=foco&&foco.getAttribute?foco.getAttribute("data-i"):null;
   impPintarInterno(cont);
   ei=impElem("imp-izq"); ed=impElem("imp-der");
+  if(imp && imp.paso===1 && paso0===1){ var tp1=cont.querySelector(".imp-tabla-previa"); if(tp1){ tp1.scrollLeft=tpL; tp1.scrollTop=tpT; } }
   if(ei) ei.scrollTop=pos.izq; if(ed) ed.scrollTop=pos.der;
   window.scrollTo(0,pos.y);
   if(focoVal!==null&&focoVal!==undefined){ var nf=Array.prototype.filter.call(cont.querySelectorAll("[data-val],[data-valtxt]"),function(x){ return (x.getAttribute("data-val")||x.getAttribute("data-valtxt"))===focoVal && x.getAttribute("data-i")===focoI; })[0]; if(nf&&nf.focus){ try{ nf.focus({preventScroll:true}); }catch(e){} } }
 }
-function impReiniciarEmparejado(){ imp.mapas=[]; imp.clave=[]; imp.prevOk=false; imp.autoHecho=false; imp.tent={}; imp.ign={}; imp.foco=null; imp.resultado=null; }
+function impReiniciarEmparejado(){ imp.mapas=[]; imp.clave=[]; imp.prevOk=false; imp.autoHecho=false; imp.tent={}; imp.ign={}; imp.desc={}; imp.foco=null; imp.resultado=null; }
 function impTablaPrevia(){
   var filas=imp.filas, enc=Math.max(1,imp.filaEnc), dat=imp.filaDatos, ancho=imp.cols.length;
   var n=Math.min(filas.length, Math.min(40, Math.max(dat+8, enc+3)));
@@ -5450,14 +5460,16 @@ function impPintarPasos(){
 }
 function impEjemplosCampoHtml(o,n){
   var ej=impEjemplosApp(o,n);
-  if(ej.length) return impPintarEjemplos(ej);
-  var op=(o.opciones||[]).slice(0,n);
-  return op.length?'<div class="imp-ej-etq">Opciones de la lista:</div>'+impPintarEjemplos(op):'<div class="imp-ej-etq">Aún no hay datos en tu colección. '+escapeHtml(IMP_PISTA[o.tipo]||"")+'</div>';
+  if(ej.length) return '<div class="imp-ej-etq">Ya contiene en tu colección:</div>'+impPintarEjemplos(ej);
+  var op=(o.opciones||[]).slice(0,n+4);
+  if(op.length) return '<div class="imp-ej-etq">Opciones válidas de la lista:</div>'+impPintarEjemplos(op);
+  return '<div class="imp-ej-etq">Todavía sin datos en tu colección. '+escapeHtml(IMP_PISTA[o.tipo]||"")+'</div>';
 }
-function impSugerencias(c){
-  imp.sugCache=imp.sugCache||{}; if(imp.sugCache[c.i]) return imp.sugCache[c.i];
-  var r=impObjetivos().map(function(o){ return {o:o,s:impPuntaje(c.nombre,o,c)}; }).filter(function(x){ return x.s>=0.3; }).sort(function(a,b){ return b.s-a.s; }).slice(0,3);
-  return (imp.sugCache[c.i]=r);
+function impSugerencias(c,n){
+  imp.sugCache=imp.sugCache||{};
+  if(!imp.sugCache[c.i]) imp.sugCache[c.i]=impObjetivos().map(function(o){ return {o:o,s:impPuntaje(c.nombre,o,c)}; }).filter(function(x){ return x.s>=0.3; }).sort(function(a,b){ return b.s-a.s; }).slice(0,12);
+  var d=imp.desc[c.i]||{};
+  return imp.sugCache[c.i].filter(function(x){ return !d[x.o.k]; }).slice(0,n||5);
 }
 function impPendientesManual(){
   return imp.cols.filter(function(c){ return !imp.mapas.some(function(m){ return m.col===c.i; }) && !imp.ign[c.i] && (imp.verVacias||c.llenos>0); });
@@ -5469,9 +5481,8 @@ function impPanelAuto(){
   if(!props.length) return h+'<p class="nota"><strong>No quedan propuestas por revisar.</strong> Las columnas sin emparejar están en el emparejado manual.</p><div class="barra-botones"><button type="button" class="btn" data-sub="man">Ir al emparejado manual →</button></div>';
   props.forEach(function(x){
     var m=x.m, c=imp.cols[m.col], o=impObjetivo(m.target)||{l:m.target,k:m.target,tipo:"texto"}, pct=Math.round((m.score||0)*100);
-    h+='<div class="imp-prop-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'"'+impAttrColor(m)+'><div class="imp-prop-cab"><span><strong>'+escapeHtml(c.nombre)+'</strong> <span class="imp-flecha">→</span> <strong>'+escapeHtml(o.l)+'</strong></span><span class="imp-sug">'+pct+' %</span></div>'
-      +'<div class="imp-ej-etq">En tu planilla ('+c.llenos+'/'+imp.datos.length+' llenos):</div>'+impPintarEjemplos(impEjemplosCol(c.i,5))
-      +'<div class="imp-ej-etq">En la app («'+escapeHtml(o.g||"")+'»):</div>'+impEjemplosCampoHtml(o,4)
+    h+='<div class="imp-prop-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'"'+impAttrColor(m)+'><div class="imp-sec-tit">Columna de tu planilla <span class="imp-sug">parecido '+pct+' %</span></div><div class="imp-col-nombre"><strong>'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos</span></div>'+impPintarEjemplos(impEjemplosCol(c.i,5))
+      +'<div class="imp-sec-tit">Se propone emparejar con</div><div class="imp-destino"><div><strong>'+escapeHtml(o.l)+'</strong> <span class="imp-tipo">'+escapeHtml(o.g||"")+'</span></div>'+impEjemplosCampoHtml(o,4)+'</div>'
       +'<div class="imp-prop">'+impOpcionesMapa(m,x.i,o)+'</div><div class="barra-botones"><button type="button" class="btn small" data-confirmar="'+x.i+'">✓ Aceptar</button><button type="button" class="btn tenue small" data-quitar="'+x.i+'" title="Descartar esta propuesta; la columna pasa al emparejado manual">Descartar</button></div></div>';
   });
   return h;
@@ -5479,21 +5490,27 @@ function impPanelAuto(){
 function impPanelManual(){
   var pend=impPendientesManual(), nIgn=Object.keys(imp.ign).filter(function(k){ return imp.ign[k]; }).length;
   var h='<div class="imp-fila-opc"><label><input type="checkbox" id="imp-ver-vacias"'+(imp.verVacias?' checked':'')+'> Mostrar también columnas sin datos</label>'+(nIgn?'<button type="button" class="btn tenue small" id="imp-restaurar-ign">Restaurar '+nIgn+' columna(s) que no se importan</button>':'')+'</div>';
-  h+='<p class="nota">Elige para cada columna el campo de la app que le corresponde y pulsa «Emparejar». Debajo verás ejemplos de los datos de ese campo en tu colección. Pulsa un bloque para ver su columna resaltada en la tabla de la derecha.</p>';
+  h+='<p class="nota">Cada bloque tiene tres partes: la columna de tu planilla, el campo de la app con el que la quieres emparejar y los datos de ese campo. Pulsa un bloque para ver su columna resaltada en la tabla de la derecha.</p>';
   if(!pend.length) return h+'<p class="nota"><strong>No quedan columnas por emparejar.</strong> Puedes seguir al paso 3.</p>';
   pend.forEach(function(c){
     var n=imp.ejem[c.i]||8, ej=impEjemplosCol(c.i,n);
     var mas=(c.distintos>ej.length)?'<button type="button" class="imp-mas" data-mascol="'+c.i+'">+8 más</button>':"", menos=n>8?'<button type="button" class="imp-mas" data-menoscol="'+c.i+'">menos</button>':"";
-    var tent=imp.tent[c.i], ot=tent?impObjetivo(tent):null;
-    h+='<div class="imp-man-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'"><div class="imp-col-nombre"><strong>'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos</span></div>'
+    var tent=imp.tent[c.i], ot=tent?impObjetivo(tent):null, nd=Object.keys(imp.desc[c.i]||{}).length;
+    h+='<div class="imp-man-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'">'
+      +'<div class="imp-sec-tit">Columna de tu planilla</div>'
+      +'<div class="imp-col-nombre"><strong>'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos</span></div>'
       +impPintarEjemplos(ej,mas,menos)
-      +'<label class="imp-man-lbl">Campo de la app <select class="imp-man-sel" data-col="'+c.i+'">'+impOpcionesObjetivos(tent||"",c)+'</select></label>';
+      +'<div class="imp-sec-tit">Emparejar con</div>'
+      +'<select class="imp-man-sel" data-col="'+c.i+'">'+impOpcionesObjetivos(tent||"",c)+'</select>';
     if(ot){
-      h+='<div class="imp-ej-etq">Datos de «'+escapeHtml(ot.l)+'» en tu colección:</div>'+impEjemplosCampoHtml(ot,6)
-        +'<div class="barra-botones"><button type="button" class="btn small" data-emparejar="'+c.i+'">✓ Emparejar con «'+escapeHtml(impCorto(ot.l,30))+'»</button></div>';
+      h+='<div class="imp-destino"><div><strong>'+escapeHtml(ot.l)+'</strong> <span class="imp-tipo">'+escapeHtml(ot.g||"")+'</span></div>'+impEjemplosCampoHtml(ot,6)
+        +'<div class="barra-botones"><button type="button" class="btn small" data-emparejar="'+c.i+'">✓ Emparejar</button><button type="button" class="btn tenue small" data-deselegir="'+c.i+'">↩ Elegir otro campo</button></div></div>';
     } else {
-      var sg=impSugerencias(c);
-      if(sg.length){ h+='<div class="imp-ej-etq">Campos que podrían corresponder:</div>'; sg.forEach(function(x){ h+='<div class="imp-sug-fila"><div><button type="button" class="btn tenue small" data-usar="'+c.i+'" data-k="'+escapeHtml(x.o.k)+'">Ver</button> <strong>'+escapeHtml(x.o.l)+'</strong> <span class="imp-sug">'+Math.round(x.s*100)+' %</span></div>'+impPintarEjemplos(impEjemplosApp(x.o,3))+'</div>'; }); }
+      var sg=impSugerencias(c,5);
+      h+='<div class="imp-ej-etq">Campos que podrían corresponder:</div>';
+      if(sg.length) sg.forEach(function(x){ h+='<div class="imp-cand"><div class="imp-cand-cab"><span><strong>'+escapeHtml(x.o.l)+'</strong> <span class="imp-sug">'+Math.round(x.s*100)+' %</span></span><span class="imp-cand-bt"><button type="button" class="btn small" data-usar="'+c.i+'" data-k="'+escapeHtml(x.o.k)+'">Elegir</button><button type="button" class="btn tenue small" data-descand="'+c.i+'" data-k="'+escapeHtml(x.o.k)+'" title="Quitar este campo de las posibilidades de esta columna">Descartar</button></span></div>'+impEjemplosCampoHtml(x.o,4)+'</div>'; });
+      else h+='<p class="nota">No quedan campos sugeridos. Usa el selector para elegir uno.</p>';
+      if(nd) h+='<button type="button" class="btn tenue small" data-restcand="'+c.i+'">Restaurar '+nd+' campo(s) descartado(s)</button>';
     }
     h+='<div class="imp-man-acc"><button type="button" class="btn tenue small" data-anexar="'+c.i+'" title="Agrega el contenido a Observaciones con el nombre de la columna">Anexar a Observaciones</button><button type="button" class="btn tenue small" data-ignorar="'+c.i+'">No importar esta columna</button></div></div>';
   });
@@ -5580,6 +5597,7 @@ function impEjemplosApp(o,n){
       case "@sexo": var p=[]; if(r.cantidadMachos) p.push(r.cantidadMachos+" ♂"); if(r.cantidadHembras) p.push(r.cantidadHembras+" ♀"); if(r.cantidadJuveniles) p.push(r.cantidadJuveniles+" juv."); if(r.cantidadNoSexados) p.push(r.cantidadNoSexados+" ns"); if(p.length) add(p.join(" ")); break;
       case "@coord": if(r.lat&&r.lng) add(r.lat+", "+r.lng); break;
       case "@obs": add(r.observaciones); break;
+      case "@operador": add(r.modificadoPor); break;
       default:
         if(o.k.indexOf("L:")===0){ var q=o.k.slice(2).split("."); (r[q[0]]||[]).forEach(function(it){ add(it[q[1]]); }); }
         else add(r[o.k]);
@@ -5608,6 +5626,7 @@ function impOpcionesMapa(m,i,o){
     ex+='<label>Formato <select data-opt="fmt" data-i="'+i+'"><option value="auto"'+(m.opts.fmt==="auto"?' selected':'')+'>Automático'+(d?' ('+({dmy:"DD-MM-AAAA",mdy:"MM-DD-AAAA",ymd:"AAAA-MM-DD"}[d.fmt])+(d.seguro?"":", sin certeza")+')':'')+'</option><option value="dmy"'+(m.opts.fmt==="dmy"?' selected':'')+'>DD-MM-AAAA</option><option value="mdy"'+(m.opts.fmt==="mdy"?' selected':'')+'>MM-DD-AAAA</option><option value="ymd"'+(m.opts.fmt==="ymd"?' selected':'')+'>AAAA-MM-DD</option></select></label>'; }
   if(["fecha","numero","lat","lng","hora","sexo","coordpar"].indexOf(o.tipo)>-1) ex+='<label>Si no se entiende <select data-opt="error" data-i="'+i+'"><option value="obs"'+(m.opts.error==="obs"?' selected':'')+'>anexar a Observaciones</option><option value="ignorar"'+(m.opts.error==="ignorar"?' selected':'')+'>ignorar</option></select></label>';
   if(o.tipo==="lista") ex+=impPintarValores(m,i,o);
+  if(o.k==="altitud_m") ex+='<label><input type="checkbox" data-optchk="neg" data-i="'+i+'"'+(m.opts.neg?' checked':'')+'> Son profundidades (se guardan como números negativos)</label>';
   return ex?'<div class="imp-opts"><span class="imp-opt-col">'+escapeHtml(imp.cols[m.col].nombre)+'</span>'+ex+'</div>':'';
 }
 function impPintarConfirmados(){
@@ -5728,6 +5747,7 @@ function impConjuntoApp(k){
     var vals=[];
     if(k==="@nombre"){ (r.determinaciones||[]).forEach(function(d){ vals.push(d.nombreCientifico); }); }
     else if(k==="@determinador"){ (r.determinaciones||[]).forEach(function(d){ vals.push(d.determinador); }); }
+    else if(k==="@operador"){ vals.push(r.modificadoPor); }
     else if(k.charAt(0)!=="@" && k.indexOf("L:")!==0) vals.push(r[k]);
     vals.forEach(function(v){ v=impNorm(v==null?"":String(v)); if(v){ set[v]=1; n++; } });
   });
@@ -5897,7 +5917,8 @@ function iniciarImportador(){
     if(t.id==="imp-hoja") impCambiarHoja(parseInt(t.value,10));
     else if(t.id==="imp-fila-enc"){ imp.filaEnc=Math.max(1,parseInt(t.value,10)||1); imp.nombres={}; impReiniciarEmparejado(); impPreparar(); impPintar(); }
     else if(t.id==="imp-fila-datos"){ imp.filaDatos=Math.max(1,parseInt(t.value,10)||1); imp.datosManual=true; impReiniciarEmparejado(); impPreparar(); impPintar(); }
-    else if(t.hasAttribute("data-nombre")){ imp.nombres[parseInt(t.getAttribute("data-nombre"),10)]=t.value.trim(); impPreparar(); impPintar(); }
+    else if(t.hasAttribute("data-nombre")){ imp.nombres[parseInt(t.getAttribute("data-nombre"),10)]=t.value.trim(); impPreparar(); }
+    else if(t.hasAttribute("data-optchk")){ imp.mapas[parseInt(t.getAttribute("data-i"),10)].opts[t.getAttribute("data-optchk")]=t.checked; imp.resultado=null; impPintar(); }
     else if(t.id==="imp-ver-vacias"){ imp.verVacias=t.checked; impPintar(); }
     else if(t.classList.contains("imp-man-sel")){ var cm0=parseInt(t.getAttribute("data-col"),10); if(t.value) imp.tent[cm0]=t.value; else delete imp.tent[cm0]; imp.foco=cm0; impPintar(); }
     else if(t.id==="imp-est-izq"){ imp.estIzq=t.value; impPintar(); }
@@ -5946,6 +5967,9 @@ function iniciarImportador(){
     else if(t.hasAttribute("data-sub")){ imp.sub=t.getAttribute("data-sub"); var pr2=imp.mapas.filter(function(m){ return !m.conf; }); imp.foco=imp.sub==="auto"?(pr2[0]?pr2[0].col:null):((impPendientesManual()[0]||{}).i===undefined?null:impPendientesManual()[0].i); impPintar(); }
     else if(t.id==="imp-recalcular"){ imp.mapas=imp.mapas.filter(function(m){ return m.conf; }); impSugerir(true); impAutoSimilar(); impMensaje("Propuestas calculadas de nuevo con los nombres de columna actuales."); var pr3=imp.mapas.filter(function(m){ return !m.conf; }); imp.foco=pr3[0]?pr3[0].col:null; impPintar(); }
     else if(t.hasAttribute("data-usar")){ imp.tent[parseInt(t.getAttribute("data-usar"),10)]=t.getAttribute("data-k"); imp.foco=parseInt(t.getAttribute("data-usar"),10); impPintar(); }
+    else if(t.hasAttribute("data-deselegir")){ var cd=parseInt(t.getAttribute("data-deselegir"),10); delete imp.tent[cd]; imp.foco=cd; impPintar(); }
+    else if(t.hasAttribute("data-descand")){ var cx=parseInt(t.getAttribute("data-descand"),10); imp.desc[cx]=imp.desc[cx]||{}; imp.desc[cx][t.getAttribute("data-k")]=true; imp.foco=cx; impPintar(); }
+    else if(t.hasAttribute("data-restcand")){ imp.desc[parseInt(t.getAttribute("data-restcand"),10)]={}; impPintar(); }
     else if(t.hasAttribute("data-emparejar")){ var ce=parseInt(t.getAttribute("data-emparejar"),10); impAsignar(ce,imp.tent[ce]); delete imp.tent[ce]; var sig=impPendientesManual()[0]; imp.foco=sig?sig.i:null; impPintar(); }
     else if(t.hasAttribute("data-ignorar")){ imp.ign[parseInt(t.getAttribute("data-ignorar"),10)]=true; var sg2=impPendientesManual()[0]; imp.foco=sg2?sg2.i:null; impPintar(); }
     else if(t.id==="imp-restaurar-ign"){ imp.ign={}; impPintar(); }

@@ -521,7 +521,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.40</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.41</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -883,7 +883,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.40</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.41</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1039,7 +1039,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.40";
+var APP_VERSION = "v0.9.41";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1171,6 +1171,7 @@ document.addEventListener("click", function(e){
 // los paneles de ayuda de los bloques plegables quedan encima del bloque, visibles aunque esté contraído
 document.querySelectorAll("details.bloque-desp .ayuda-panel").forEach(function(p){
   var d=p.closest("details"); if(!d) return;
+  if(p.closest(".accion-card")) return;   // la ayuda de una acción queda bajo su propio subtítulo
   d.parentNode.insertBefore(p, d.nextSibling);      // contraído: el panel se despliega bajo el bloque
   d.addEventListener("toggle", function(){
     if(d.open){ var sm=d.querySelector("summary"); sm.parentNode.insertBefore(p, sm.nextSibling); }
@@ -2985,6 +2986,12 @@ function renderResumenDatos(){
     return a.localeCompare(b);
   });
 
+  // conservar grupos abiertos y posiciones de scroll al repintar
+  var gruposAbiertosPrev = {}, scrollListasPrev = {}, scrollVentanaPrev = window.pageYOffset;
+  cont.querySelectorAll("details[data-clave]").forEach(function(d){
+    var k = d.getAttribute("data-clave");
+    if(d.open){ gruposAbiertosPrev[k] = true; var ls = d.querySelector(".lista-scroll"); if(ls) scrollListasPrev[k] = ls.scrollTop; }
+  });
   var html = '<p class="nota" style="margin:0 0 10px;">Registros mostrados: <strong>'+filtrados.length+'</strong> de '+registros.length+' · Seleccionados para descarga: <strong>'+seleccionDescarga.size+'</strong></p>';
   if(!registros.length){
     html += '<p class="nota">Todavía no hay registros cargados.</p>';
@@ -2996,7 +3003,7 @@ function renderResumenDatos(){
       var lista = grupos[clave];
       var todosSeleccionados = lista.every(function(r){ return seleccionDescarga.has(r.id); });
       var etiquetaGrupo = (agruparDatosPor!=="coleccion" && CLAVES_VACIAS.indexOf(clave)===-1) ? formatearNombreSesion(clave, agruparDatosPor==="sesionEdicion" ? "edición" : "ingreso") : clave;
-      html += '<details><summary>'
+      html += '<details data-clave="'+escapeHtml(clave)+'"'+(gruposAbiertosPrev[clave]?' open':'')+'><summary>'
         + '<span class="resumen-grupo-titulo">'+escapeHtml(etiquetaGrupo)+'</span>'
         + ' <span class="resumen-conteo">('+lista.length+')</span>'
         + '<input type="checkbox" class="chk-grupo" data-grupo="'+idxGrupo+'"'+(todosSeleccionados?' checked':'')+' title="Seleccionar todo el grupo" onclick="event.stopPropagation()">'
@@ -3022,6 +3029,11 @@ function renderResumenDatos(){
     html += '</div>';
   }
   cont.innerHTML = html;
+  cont.querySelectorAll("details[data-clave]").forEach(function(d){
+    var k = d.getAttribute("data-clave");
+    if(d.open && scrollListasPrev[k]){ var ls = d.querySelector(".lista-scroll"); if(ls) ls.scrollTop = scrollListasPrev[k]; }
+  });
+  if(window.pageYOffset !== scrollVentanaPrev) window.scrollTo(0, scrollVentanaPrev);
   cont.querySelectorAll(".btn-ver-resumen").forEach(function(btn){
     btn.onclick = function(){ mostrarFichaConsulta(btn.closest(".fila-compacta").getAttribute("data-id")); };
   });

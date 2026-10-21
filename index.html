@@ -283,6 +283,46 @@
   .imp-tabla-caja{overflow:auto;margin:8px 0;}
   .imp-resp{display:block;margin:8px 0;font-size:14px;}
   @media (max-width:760px){ .imp-cols{grid-template-columns:1fr;} }
+  /* ---- v0.9.44: emparejado ---- */
+  .imp-estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin:8px 0;color:var(--ink-soft);}
+  .imp-filtro{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0;}
+  .imp-filtro input{flex:1 1 150px;min-width:0;}
+  .imp-filtro select{font-size:13px;}
+  .imp-ocultar{display:flex;flex-direction:row;align-items:center;gap:6px;font-size:13.5px;margin:8px 0;}
+  .imp-ejemplos{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0;}
+  .imp-ej{background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12px;max-width:100%;overflow-wrap:anywhere;color:var(--ink);}
+  .imp-ej-etq{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+  .imp-mas{background:none;border:1px dashed var(--line-fuerte);border-radius:6px;font-size:12px;padding:1px 7px;cursor:pointer;color:var(--ink-soft);}
+  .imp-sel-btn{cursor:pointer;text-decoration:underline dotted;}
+  .imp-col-card.elegida,.imp-obj.elegida{outline:2px solid var(--accent);}
+  .imp-col-card.propuesta,.imp-obj.propuesta{border-style:dashed;border-color:var(--pc-bd,var(--accent));background:var(--pc-bg,var(--accent-soft));}
+  .imp-obj.asignado{background:var(--pc-bg,var(--accent-soft));border-color:var(--pc-bd,var(--accent));}
+  .imp-chip{background:var(--pc-bd,var(--accent));}
+  .imp-chip button{padding:0 3px;}
+  .imp-prop{font-size:13px;margin-top:4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .imp-sugeridos{border:1px solid var(--accent);border-radius:8px;padding:4px 8px;margin-bottom:8px;background:var(--accent-soft);}
+  .imp-sug-tit{font-size:13px;font-weight:600;}
+  .imp-parear{margin-top:5px;}
+  .imp-conf{border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin:8px 0;background:#fff;}
+  .imp-conf>summary{cursor:pointer;font-weight:600;font-size:14px;}
+  .imp-par{display:grid;grid-template-columns:1fr 26px 1fr auto;gap:8px;align-items:start;border:1px solid var(--pc-bd,var(--line));background:var(--pc-bg,#fff);border-radius:8px;padding:6px 8px;margin:6px 0;font-size:13.5px;}
+  .imp-par-cab{background:none;border:none;font-size:12px;color:var(--ink-soft);margin-bottom:0;padding-bottom:0;}
+  .imp-par-flecha{text-align:center;font-size:18px;color:var(--ink-soft);}
+  .imp-par-acc{display:flex;flex-direction:column;gap:4px;}
+  .imp-ayuda{background:var(--paper-2);border-radius:8px;padding:2px 10px;margin:6px 0;font-size:13.5px;}
+  .imp-ayuda p{margin:6px 0;}
+  .imp-alerta{color:var(--danger);}
+  .imp-no{margin-top:8px;}
+  /* ---- v0.9.44: asistente ---- */
+  .imp-pasos{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
+  .imp-paso-btn{flex:1 1 150px;border:1px solid var(--line-fuerte);background:var(--paper-2);border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;color:var(--ink);}
+  .imp-paso-btn.activo{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
+  .imp-tabla-previa{max-height:320px;border:1px solid var(--line);border-radius:8px;}
+  .imp-tabla-previa th,.imp-tabla-previa td{font-size:12px;white-space:nowrap;padding:3px 7px;}
+  .imp-fila-enc th{background:var(--accent-soft);}
+  .imp-plantilla-sug{background:var(--warn-soft);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:14px;}
+  .imp-sin{border-bottom:1px solid var(--line);padding:6px 0;font-size:13.5px;}
+  @media (max-width:760px){ .imp-par{grid-template-columns:1fr;} .imp-par-flecha{display:none;} .imp-par-acc{flex-direction:row;} }
   .full{grid-column:1/-1;}
   .leyenda-campos{font-size:13px;color:var(--ink-soft);margin:-4px 0 14px;}
   button.btn{font-family:var(--sans);font-size:14.5px;padding:9px 18px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 1px 2px rgba(38,51,43,.15);transition:transform .08s, box-shadow .08s;}
@@ -528,7 +568,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.42</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.44</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -891,7 +931,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.42</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.44</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1048,7 +1088,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.42";
+var APP_VERSION = "v0.9.44";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -4950,6 +4990,14 @@ function impObjetivos(){
   });
   var conteo={}; lista.forEach(function(o){ conteo[o.l]=(conteo[o.l]||0)+1; });
   lista.forEach(function(o){ if(conteo[o.l]>1) o.l+=" ("+o.g.split(" › ").pop()+")"; });
+  var LT={submuestras:"Submuestra",prestamos:"Préstamo",usos:"Uso"};
+  Object.keys(LT).forEach(function(ln){
+    listasCfg[ln].campos.forEach(function(c){
+      var o={k:"L:"+ln+"."+c.key, l:LT[ln]+": "+c.label, g:"Submuestras, préstamos y usos (se crea un elemento por registro)", tipo:"texto"};
+      if(c.type==="date") o.tipo="fecha"; else if(c.type==="select"){ o.tipo="lista"; o.opciones=c.options.slice(); }
+      lista.push(o);
+    });
+  });
   impObjCache=lista.concat(IMP_ESPECIALES);
   return impObjCache;
 }
@@ -5029,6 +5077,7 @@ async function impXlsx(buf){
 
 // ---------- preparar columnas ----------
 function impPreparar(){
+  imp.sel=null; imp.ejem={}; imp.ejemApp={}; imp.vcache={}; imp.appSet={};
   var filas=imp.filas, enc=Math.max(1,imp.filaEnc)-1, cab=(filas[enc]||[]).map(function(x){ return String(x==null?"":x).trim(); });
   var ancho=Math.max(cab.length, filas.slice(enc+1,enc+200).reduce(function(m,f){ return Math.max(m,f.length); },0)), usados={};
   imp.cols=[];
@@ -5086,13 +5135,13 @@ function impSugerir(){
     visto[h]=k;
     if(c.llenos===0) return;
     if(k==="@nombre" && tomados["@nombre"]) return;
-    tomados[k]=1; mapas.push(impNuevoMapa(c.i,k));
+    tomados[k]=1; mapas.push(impNuevoMapa(c.i,k,false,1));
   });
   // columnas repetidas con el mismo encabezado base: región y luego provincia
   imp.mapas=mapas;
 }
-function impNuevoMapa(ci,k){
-  var m={col:ci, target:k, opts:{fmt:"auto", error:"obs", valores:{}}}, o=impObjetivo(k);
+function impNuevoMapa(ci,k,conf,score){
+  var m={col:ci, target:k, conf:conf!==false?(conf===undefined?true:!!conf):false, score:score||0, cid:(imp.nextCid=(imp.nextCid||0)+1), opts:{fmt:"auto", error:"obs", valores:{}}}, o=impObjetivo(k);
   if(o&&o.tipo==="lista") impAutoValores(m);
   return m;
 }
@@ -5193,8 +5242,8 @@ function impConstruir(){
   imp.datos.forEach(function(row){
     var llenos=0; imp.mapas.forEach(function(m){ var c=imp.cols[m.col]; if(!c.constante && row.v[m.col]!=="") llenos++; });
     if(llenos<imp.minLlenos){ filasOmitidas.push(row.fila); return; }
-    var r=registroVacioBase(), anexos=[], det={nombreCientifico:"",determinador:"",fechaDeterminacion:"",calificador:""}, prev=null, hayDet=false;
-    function poner(k,v){ if(v===""||v==null) return; if(r[k]!==undefined && r[k]!=="") return; r[k]=String(v); }
+    var r=registroVacioBase(), anexos=[], det={nombreCientifico:"",determinador:"",fechaDeterminacion:"",calificador:""}, prev=null, hayDet=false, listasFila={};
+    function poner(k,v){ if(v===""||v==null) return; if(k.indexOf("L:")===0){ var q=k.slice(2).split("."); var li=listasFila[q[0]]=listasFila[q[0]]||{}; if(li[q[1]]===undefined) li[q[1]]=String(v); return; } if(r[k]!==undefined && r[k]!=="") return; r[k]=String(v); }
     function anexar(etq,v){ anexos.push(etq+": "+v); }
     orden.forEach(function(i){
       var m=imp.mapas[i], o=impObjetivo(m.target), raw=row.v[m.col], c=imp.cols[m.col]; if(!o||raw==="") return;
@@ -5225,6 +5274,7 @@ function impConstruir(){
     // valores fijos
     imp.fijos.forEach(function(f){ if(f.target&&f.valor!==""){ if(f.target==="@nombre"){ if(!det.nombreCientifico){ det.nombreCientifico=f.valor; hayDet=true; } } else poner(f.target,f.valor); } });
     if(anexos.length) r.observaciones=(r.observaciones?r.observaciones+"\n":"")+anexos.join("\n");
+    Object.keys(listasFila).forEach(function(ln){ var it={}; listasCfg[ln].campos.forEach(function(c){ it[c.key]=""; }); Object.keys(listasFila[ln]).forEach(function(kk){ it[kk]=listasFila[ln][kk]; }); r[ln]=[it]; });
     if(prev){ r.determinaciones.push({nombreCientifico:prev,determinador:"",fechaDeterminacion:"",calificador:""}); }
     if(hayDet){ r.determinaciones.push(det); }
     // coherencia de conteos
@@ -5262,7 +5312,7 @@ function impResolver(res){
     var c=clonar(ex), cambios=0;
     Object.keys(r).forEach(function(k){
       if(/^__|^creadoEn$|^id$|^origenImportacion$|^modificado/.test(k)) return;
-      var v=r[k]; if(Array.isArray(v)){ if(k==="determinaciones"&&v.length&&!(c.determinaciones||[]).length){ c.determinaciones=v; cambios++; } return; }
+      var v=r[k]; if(Array.isArray(v)){ if((k==="determinaciones"||k==="submuestras"||k==="prestamos"||k==="usos")&&v.length&&!(c[k]||[]).length){ c[k]=v; cambios++; } return; }
       if(v===""||v==null) return;
       if(imp.politica==="vacios" && c[k]!==undefined && c[k]!=="") return;
       if(c[k]!==v){ c[k]=v; cambios++; }
@@ -5280,12 +5330,12 @@ async function impCargarArchivo(file){
   try{
     impMensaje("Leyendo «"+file.name+"»…");
     var buf=await file.arrayBuffer(), nombre=file.name, esXlsx=/\.xlsx?m?$/i.test(nombre)||(new Uint8Array(buf,0,2)[0]===0x50&&new Uint8Array(buf,0,2)[1]===0x4B);
-    imp={nombreArchivo:nombre, filaEnc:1, minLlenos:3, politica:"omitir", clave:[], fijos:[], mapas:[], hojas:null, hojaIdx:0, resultado:null};
+    imp={nombreArchivo:nombre, filaEnc:1, minLlenos:3, politica:"omitir", clave:[], fijos:[], mapas:[], hojas:null, hojaIdx:0, resultado:null, sel:null, ejem:{}, ejemApp:{}, filIzq:"", filDer:"", estIzq:"todas", estDer:"todos", ocultarConf:true, nextCid:0, paso:1};
     if(/\.xls$/i.test(nombre)){ impMensaje("Los archivos .xls antiguos no se pueden leer. Guárdalo como .xlsx o como CSV desde Excel.",true); imp=null; return; }
     if(esXlsx){ var libro=await impXlsx(buf); imp.hojas=libro.hojas; if(!imp.hojas.length) throw new Error("El libro no tiene hojas."); imp.hojaIdx=0; imp.filas=await imp.hojas[0].leer(); imp.hojaNombre=imp.hojas[0].nombre; }
     else { imp.filas=impCsv(impDecodificar(buf)); imp.hojaNombre=""; }
     impPreparar(); impSugerir(); imp.clave=impClaveSugerida();
-    impMensaje(imp.datos.length+" fila(s) y "+imp.cols.length+" columna(s) leídas de «"+nombre+"». Revisa el emparejamiento y pulsa «Revisar importación».");
+    impMensaje(imp.datos.length+" fila(s) y "+imp.cols.length+" columna(s) leídas de «"+nombre+"». Sigue con el paso 2 para emparejar las columnas.");
     impPintar();
   }catch(e){ impMensaje("No se pudo leer el archivo: "+((e&&e.message)||e),true); imp=null; impPintar(); }
 }
@@ -5309,56 +5359,302 @@ function impPintar(){
   window.scrollTo(0,pos.y);
   if(focoVal!==null&&focoVal!==undefined){ var nf=Array.prototype.filter.call(cont.querySelectorAll("[data-val],[data-valtxt]"),function(x){ return (x.getAttribute("data-val")||x.getAttribute("data-valtxt"))===focoVal && x.getAttribute("data-i")===focoI; })[0]; if(nf&&nf.focus){ try{ nf.focus({preventScroll:true}); }catch(e){} } }
 }
+function impTablaPrevia(abierta){
+  var filas=imp.filas, enc=Math.max(1,imp.filaEnc)-1, ini=Math.max(0,enc), n=Math.min(filas.length,ini+11), ancho=imp.cols.length;
+  var h='<div class="imp-tabla-caja imp-tabla-previa"><table class="ficha-tabla"><tbody>';
+  for(var i=ini;i<n;i++){
+    var f=filas[i]||[];
+    h+='<tr'+(i===enc?' class="imp-fila-enc"':'')+'><th>'+(i+1)+'</th>';
+    for(var j=0;j<ancho;j++) h+=(i===enc?'<th>':'<td>')+escapeHtml(impCorto(f[j]==null?"":String(f[j]),40))+(i===enc?'</th>':'</td>');
+    h+='</tr>';
+  }
+  return h+'</tbody></table></div>';
+}
+function impPintarPasos(){
+  var nombres=["1. Leer la planilla","2. Emparejar columnas","3. Revisar e importar"];
+  return '<div class="imp-pasos">'+nombres.map(function(n,i){ return '<button type="button" class="imp-paso-btn'+(imp.paso===i+1?' activo':'')+'" data-paso="'+(i+1)+'">'+n+'</button>'; }).join("")+'</div>';
+}
+function impPlantillaSugerida(){
+  var g=impLeerGuardados(), porNombre={}, mejor=null;
+  imp.cols.forEach(function(c){ porNombre[normTxt(c.nombre)]=1; });
+  Object.keys(g).forEach(function(n){
+    var ms=g[n].mapas||[]; if(ms.length<3) return;
+    var ok=ms.filter(function(m){ return porNombre[normTxt(m.nombre)]; }).length, pct=ok/ms.length;
+    if(pct>=0.7 && (!mejor||pct>mejor.pct)) mejor={nombre:n,pct:pct,ok:ok,total:ms.length};
+  });
+  return mejor;
+}
+function impPintarSinDestino(){
+  var sin=imp.cols.filter(function(c){ return c.llenos>0 && !imp.mapas.some(function(m){ return m.col===c.i; }); });
+  var h='<details class="imp-fijos" '+(sin.length?'open':'')+'><summary>Columnas con datos que no se importarán ('+sin.length+')</summary>';
+  if(!sin.length) return h+'<p class="nota">Todas las columnas con datos tienen destino.</p></details>';
+  h+='<p class="nota">Estos datos quedarían fuera. Puedes volver al paso 2 para emparejarlos, o anexarlos a Observaciones con el nombre de la columna.</p>';
+  sin.forEach(function(c){ h+='<div class="imp-sin"><strong>'+escapeHtml(c.nombre)+'</strong> <small>'+c.llenos+'/'+imp.datos.length+' llenos</small>'+impPintarEjemplos(impEjemplosCol(c.i,4))+'<button type="button" class="btn tenue small" data-anexar="'+c.i+'">Anexar a Observaciones</button></div>'; });
+  return h+'</details>';
+}
 function impPintarInterno(cont){
   if(!imp){ cont.innerHTML=""; return; }
-  var h="";
-  h+='<div class="imp-paso"><div class="imp-fila-opc">';
-  if(imp.hojas&&imp.hojas.length>1) h+='<label>Hoja <select id="imp-hoja">'+imp.hojas.map(function(x,i){ return '<option value="'+i+'"'+(i===imp.hojaIdx?' selected':'')+'>'+escapeHtml(x.nombre)+'</option>'; }).join("")+'</select></label>';
-  h+='<label>Fila de encabezados <input type="number" id="imp-fila-enc" min="1" value="'+imp.filaEnc+'" style="width:70px"></label>';
-  h+='<label>Omitir filas con menos de <input type="number" id="imp-min" min="0" value="'+imp.minLlenos+'" style="width:60px"> dato(s) propio(s)</label>';
-  h+='</div></div>';
-  h+='<div class="imp-cols"><div class="imp-panel"><h3>Columnas de tu planilla ('+imp.cols.length+')</h3><p class="nota">Arrastra una columna hacia el campo de la app, o elígelo en su selector. Una columna puede ir a varios campos.</p><div id="imp-izq">'+impPintarColumnas()+'</div></div>';
-  h+='<div class="imp-panel"><h3>Campos de la app</h3><input type="search" id="imp-buscar" placeholder="Buscar un campo…" class="nav"><div id="imp-der">'+impPintarObjetivos()+'</div></div></div>';
-  h+=impPintarFijos();
-  h+=impPintarOpciones();
-  h+='<div class="barra-botones"><button type="button" class="btn" id="imp-revisar">Revisar importación</button><button type="button" class="btn tenue" id="imp-sugerir">Volver a sugerir</button><button type="button" class="btn tenue" id="imp-limpiar">Quitar todos los emparejamientos</button></div>';
-  h+='<div id="imp-resultado">'+(imp.resultado?impPintarResultado():"")+'</div>';
+  if(!imp.paso) imp.paso=1;
+  var est=impEstado(), sinPar=imp.cols.filter(function(c){ return c.llenos>0 && !imp.mapas.some(function(m){ return m.col===c.i; }); }).length;
+  var h=impPintarPasos();
+  if(imp.paso===1){
+    h+='<div class="imp-paso"><p class="nota">Revisa que la planilla se haya leído bien. La fila resaltada es la que se usa como encabezados.</p><div class="imp-fila-opc">';
+    if(imp.hojas&&imp.hojas.length>1) h+='<label>Hoja <select id="imp-hoja">'+imp.hojas.map(function(x,i){ return '<option value="'+i+'"'+(i===imp.hojaIdx?' selected':'')+'>'+escapeHtml(x.nombre)+'</option>'; }).join("")+'</select></label>';
+    h+='<label>Fila de encabezados <input type="number" id="imp-fila-enc" min="1" value="'+imp.filaEnc+'" style="width:70px"></label>';
+    h+='<label>Omitir filas con menos de <input type="number" id="imp-min" min="0" value="'+imp.minLlenos+'" style="width:60px"> dato(s) propio(s)</label>';
+    h+='</div><p class="nota"><strong>'+imp.datos.length+'</strong> fila(s) de datos y <strong>'+imp.cols.length+'</strong> columna(s). Se muestran las primeras filas.</p>'+impTablaPrevia()
+      +'<div class="barra-botones"><button type="button" class="btn" data-paso="2">Siguiente: emparejar columnas →</button></div></div>';
+  } else if(imp.paso===2){
+    var pl=impPlantillaSugerida();
+    if(pl) h+='<div class="imp-plantilla-sug">La plantilla «'+escapeHtml(pl.nombre)+'» coincide con '+pl.ok+' de sus '+pl.total+' columnas. <button type="button" class="btn small" data-plantilla="'+escapeHtml(pl.nombre)+'">Aplicar plantilla</button></div>';
+    h+='<div class="imp-estado"><span><strong>'+est.conf+'</strong> confirmados</span><span><strong>'+est.prop+'</strong> propuestos por confirmar</span><span><strong>'+sinPar+'</strong> columnas con datos sin emparejar</span></div>';
+    h+='<div class="barra-botones"><button type="button" class="btn secundario" id="imp-auto" title="Compara los encabezados y también los valores de cada columna con los campos de la app">⚡ Emparejado automático</button>'
+      +'<button type="button" class="btn secundario" id="imp-confirmar-todo"'+(est.prop?'':' disabled')+'>✓ Confirmar todos los propuestos ('+est.prop+')</button>'
+      +'<button type="button" class="btn tenue" id="imp-limpiar-prop"'+(est.prop?'':' disabled')+'>Quitar los no confirmados</button>'
+      +'<button type="button" class="btn tenue" id="imp-limpiar">Quitar todos los emparejamientos</button></div>';
+    h+='<p class="nota">El emparejado automático solo <em>propone</em> (borde punteado y un porcentaje de parecido, que considera el encabezado y los valores): revisa los ejemplos de ambos lados y pulsa «✓ Confirmar». Un par que armas tú a mano queda confirmado de inmediato. Cada par confirmado sube a la lista de abajo, frente a su pareja y con un color común, y sale de las listas de pendientes.</p>';
+    h+='<details class="imp-fijos"><summary>Ver la tabla de la planilla</summary>'+impTablaPrevia()+'</details>';
+    h+='<label class="imp-ocultar"><input type="checkbox" id="imp-ocultar-conf"'+(imp.ocultarConf?' checked':'')+'> Quitar de las listas de pendientes lo que ya está confirmado</label>';
+    h+=impPintarConfirmados();
+    h+='<div class="imp-cols"><div class="imp-panel"><h3>Columnas de tu planilla pendientes</h3>'
+      +'<div class="imp-filtro"><input type="search" id="imp-buscar-izq" placeholder="Filtrar columnas por texto o parecido…" class="nav" value="'+escapeHtml(imp.filIzq)+'"><select id="imp-est-izq"><option value="todas"'+(imp.estIzq==="todas"?' selected':'')+'>Todas</option><option value="sin"'+(imp.estIzq==="sin"?' selected':'')+'>Sin emparejar</option><option value="prop"'+(imp.estIzq==="prop"?' selected':'')+'>Con propuesta</option><option value="llenas"'+(imp.estIzq==="llenas"?' selected':'')+'>Solo con datos</option></select></div>'
+      +'<p class="nota">Pulsa el nombre de una columna para ver a la derecha los campos más parecidos, o arrástrala hasta un campo. Una columna puede ir a varios campos.</p><div id="imp-izq">'+impPintarColumnasLista()+'</div></div>';
+    h+='<div class="imp-panel"><h3>Campos de la app pendientes</h3>'
+      +'<div class="imp-filtro"><input type="search" id="imp-buscar" placeholder="Filtrar campos por texto o parecido…" class="nav" value="'+escapeHtml(imp.filDer)+'"><select id="imp-est-der"><option value="todos"'+(imp.estDer==="todos"?' selected':'')+'>Todos</option><option value="sin"'+(imp.estDer==="sin"?' selected':'')+'>Sin asignar</option><option value="prop"'+(imp.estDer==="prop"?' selected':'')+'>Con propuesta</option></select></div>'
+      +'<div id="imp-der">'+impPintarObjetivosLista()+'</div>'
+      +'<p class="nota imp-no">No se importan por planilla: fotos, PDF y otros archivos (se asocian desde la app con la Carpeta local) ni los datos automáticos (catalogador, fechas y operador de creación o modificación). De las determinaciones se importan la vigente y una anterior.</p></div></div>';
+    h+=impPintarFijos();
+    h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="1">← Volver a la planilla</button><button type="button" class="btn" data-paso="3">Siguiente: revisar →</button></div>';
+  } else {
+    h+=impPintarSinDestino();
+    h+=impPintarOpciones();
+    h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="2">← Volver al emparejado</button><button type="button" class="btn" id="imp-revisar">Revisar importación</button></div>';
+    h+='<div id="imp-resultado">'+(imp.resultado?impPintarResultado():"")+'</div>';
+  }
   cont.innerHTML=h;
 }
-function impPintarColumnas(){
-  return imp.cols.map(function(c){
-    var usos=imp.mapas.filter(function(m){ return m.col===c.i; });
-    var sel=usos.length?usos[0].target:"";
-    return '<div class="imp-col-card'+(usos.length?' mapeada':'')+(c.llenos===0?' vacia':'')+'" draggable="true" data-col="'+c.i+'">'
-      +'<div class="imp-col-nombre"><strong>'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos</span></div>'
-      +'<div class="imp-col-muestra">'+escapeHtml(c.muestra.map(function(x){ return x.length>38?x.slice(0,36)+"…":x; }).join("  |  ")||"(vacía)")+'</div>'
-      +'<select class="imp-col-sel" data-col="'+c.i+'">'+impOpcionesObjetivos(sel)+'</select>'
-      +(usos.length>1?'<div class="imp-col-mas">También va a: '+escapeHtml(usos.slice(1).map(function(u){ return (impObjetivo(u.target)||{}).l; }).join(", "))+'</div>':'')
-      +'</div>';
-  }).join("");
+function impEstado(){ var c=imp.mapas.filter(function(m){ return m.conf; }).length; return {conf:c, prop:imp.mapas.length-c}; }
+function impAttrColor(m){ var h=(m.cid*47+12)%360; return ' style="--pc-bg:hsl('+h+',62%,92%);--pc-bd:hsl('+h+',45%,44%)"'; }
+var IMP_PISTA={fecha:"Formato AAAA-MM-DD (también se leen DD-MM-AAAA y las fechas de Excel).",numero:"Un número, por ejemplo 850.",lat:"Grados decimales (-33.4569) o grados-minutos-segundos.",lng:"Grados decimales (-70.6483) o grados-minutos-segundos.",hora:"HH:MM, por ejemplo 14:30.",texto:"Texto libre.",lista:"Una de las opciones de la lista (o texto libre).",sexo:"Texto como «2 ♂ 1 ♀ 1 ninfa».",coordpar:"Latitud y longitud juntas, por ejemplo «-33.4569, -70.6483».",anexo:"Se anexa a Observaciones con el nombre de la columna."};
+function impCorto(v,n){ v=String(v); return v.length>n?v.slice(0,n-2)+"…":v; }
+function impEjemplosCol(ci,n){ var out=[], vistos={}; for(var j=0;j<imp.datos.length&&out.length<n;j++){ var v=imp.datos[j].v[ci]; if(v===""||vistos[v]) continue; vistos[v]=1; out.push(v); } return out; }
+function impEjemplosApp(o,n){
+  var out=[], vistos={};
+  function add(v){ v=(v==null?"":String(v)).trim(); if(v===""||vistos[v]) return; vistos[v]=1; out.push(v); }
+  for(var i=registros.length-1;i>=0&&out.length<n;i--){
+    var r=registros[i], d=r.determinaciones||[], u=d.length?d[d.length-1]:null;
+    switch(o.k){
+      case "@nombre": if(u) add(u.nombreCientifico); break;
+      case "@calificador": if(u) add(u.calificador); break;
+      case "@determinador": if(u) add(u.determinador); break;
+      case "@fechaDet": if(u) add(u.fechaDeterminacion); break;
+      case "@prevDet": if(d.length>1) add(d[d.length-2].nombreCientifico); break;
+      case "@sexo": var p=[]; if(r.cantidadMachos) p.push(r.cantidadMachos+" ♂"); if(r.cantidadHembras) p.push(r.cantidadHembras+" ♀"); if(r.cantidadJuveniles) p.push(r.cantidadJuveniles+" juv."); if(r.cantidadNoSexados) p.push(r.cantidadNoSexados+" ns"); if(p.length) add(p.join(" ")); break;
+      case "@coord": if(r.lat&&r.lng) add(r.lat+", "+r.lng); break;
+      case "@obs": add(r.observaciones); break;
+      default:
+        if(o.k.indexOf("L:")===0){ var q=o.k.slice(2).split("."); (r[q[0]]||[]).forEach(function(it){ add(it[q[1]]); }); }
+        else add(r[o.k]);
+    }
+  }
+  return out;
 }
-function impPintarObjetivos(filtro){
-  var objs=impObjetivos(), grupos={}, orden=[], f=normTxt(filtro||"");
-  objs.forEach(function(o){ if(f && normTxt(o.l+" "+o.k).indexOf(f)<0) return; if(!grupos[o.g]){ grupos[o.g]=[]; orden.push(o.g); } grupos[o.g].push(o); });
-  return orden.map(function(g){
-    var asignados=grupos[g].filter(function(o){ return imp.mapas.some(function(m){ return m.target===o.k; }); }).length;
-    return '<details class="imp-grupo" data-g="'+escapeHtml(g)+'"'+((impAbiertos[g]||asignados||f)?' open':'')+'><summary>'+escapeHtml(g)+(asignados?' <span class="imp-badge">'+asignados+'</span>':'')+'</summary>'
-      +grupos[g].map(impPintarObjetivo).join("")+'</details>';
-  }).join("")||'<p class="nota">Ningún campo coincide con la búsqueda.</p>';
+function impPintarEjemplos(chips, mas, menos){
+  return '<div class="imp-ejemplos">'+chips.map(function(v){ return '<span class="imp-ej" title="'+escapeHtml(v)+'">'+escapeHtml(impCorto(v,40))+'</span>'; }).join("")+(mas||"")+(menos||"")+'</div>';
 }
-function impPintarObjetivo(o){
-  var ms=imp.mapas.map(function(m,i){ return {m:m,i:i}; }).filter(function(x){ return x.m.target===o.k; });
-  var h='<div class="imp-obj'+(ms.length?' asignado':'')+'" data-k="'+escapeHtml(o.k)+'"><div class="imp-obj-cab"><span class="imp-obj-nombre">'+escapeHtml(o.l)+'</span><span class="imp-tipo">'+({texto:"texto",lista:"lista",fecha:"fecha",numero:"número",lat:"coordenada",lng:"coordenada",hora:"hora",sexo:"texto",coordpar:"coordenadas",anexo:"anexar"}[o.tipo]||"")+'</span></div>';
-  h+='<div class="imp-chips">'+(ms.length?ms.map(function(x){ return '<span class="imp-chip" title="Quitar">'+escapeHtml(imp.cols[x.m.col].nombre)+' <button type="button" data-quitar="'+x.i+'" aria-label="Quitar">✕</button></span>'; }).join(""):'<span class="imp-soltar">Suelta aquí una columna</span>')+'</div>';
-  ms.forEach(function(x){
-    var m=x.m, i=x.i, ex="";
-    if(o.tipo==="fecha"){ var d=m.opts.fmt==="auto"?impDetectarFmtFecha(m.col):null;
-      ex+='<label>Formato <select data-opt="fmt" data-i="'+i+'"><option value="auto"'+(m.opts.fmt==="auto"?' selected':'')+'>Automático'+(d?' ('+({dmy:"DD-MM-AAAA",mdy:"MM-DD-AAAA",ymd:"AAAA-MM-DD"}[d.fmt])+(d.seguro?"":", sin certeza")+')':'')+'</option><option value="dmy"'+(m.opts.fmt==="dmy"?' selected':'')+'>DD-MM-AAAA</option><option value="mdy"'+(m.opts.fmt==="mdy"?' selected':'')+'>MM-DD-AAAA</option><option value="ymd"'+(m.opts.fmt==="ymd"?' selected':'')+'>AAAA-MM-DD</option></select></label>'; }
-    if(["fecha","numero","lat","lng","hora","sexo","coordpar"].indexOf(o.tipo)>-1) ex+='<label>Si no se entiende <select data-opt="error" data-i="'+i+'"><option value="obs"'+(m.opts.error==="obs"?' selected':'')+'>anexar a Observaciones</option><option value="ignorar"'+(m.opts.error==="ignorar"?' selected':'')+'>ignorar</option></select></label>';
-    if(o.tipo==="lista") ex+=impPintarValores(m,i,o);
-    if(ex) h+='<div class="imp-opts"><span class="imp-opt-col">'+escapeHtml(imp.cols[m.col].nombre)+'</span>'+ex+'</div>';
+function impPrevia(m,o,raw){
+  try{
+    switch(o.tipo){
+      case "fecha": var dd=m.opts.fmt==="auto"?impDetectarFmtFecha(m.col):{fmt:m.opts.fmt}; var f=impFecha(raw,dd.fmt); return f.ok?f.val:"✗ no se entiende";
+      case "numero": var n=impNumero(raw); return n!==null?n:"✗ sin número";
+      case "lat": case "lng": var c=impDms(raw,o.tipo); return c!=null?String(c):"✗ no se entiende";
+      case "hora": var hh=impHora(raw); return hh||"✗ no se entiende";
+      case "lista": impAutoValores(m); var v=impValorLista(m,o,raw); return v||"(vacío)";
+    }
+  }catch(e){}
+  return null;
+}
+function impOpcionesMapa(m,i,o){
+  var ex="";
+  if(o.tipo==="fecha"){ var d=m.opts.fmt==="auto"?impDetectarFmtFecha(m.col):null;
+    ex+='<label>Formato <select data-opt="fmt" data-i="'+i+'"><option value="auto"'+(m.opts.fmt==="auto"?' selected':'')+'>Automático'+(d?' ('+({dmy:"DD-MM-AAAA",mdy:"MM-DD-AAAA",ymd:"AAAA-MM-DD"}[d.fmt])+(d.seguro?"":", sin certeza")+')':'')+'</option><option value="dmy"'+(m.opts.fmt==="dmy"?' selected':'')+'>DD-MM-AAAA</option><option value="mdy"'+(m.opts.fmt==="mdy"?' selected':'')+'>MM-DD-AAAA</option><option value="ymd"'+(m.opts.fmt==="ymd"?' selected':'')+'>AAAA-MM-DD</option></select></label>'; }
+  if(["fecha","numero","lat","lng","hora","sexo","coordpar"].indexOf(o.tipo)>-1) ex+='<label>Si no se entiende <select data-opt="error" data-i="'+i+'"><option value="obs"'+(m.opts.error==="obs"?' selected':'')+'>anexar a Observaciones</option><option value="ignorar"'+(m.opts.error==="ignorar"?' selected':'')+'>ignorar</option></select></label>';
+  if(o.tipo==="lista") ex+=impPintarValores(m,i,o);
+  return ex?'<div class="imp-opts"><span class="imp-opt-col">'+escapeHtml(imp.cols[m.col].nombre)+'</span>'+ex+'</div>':'';
+}
+function impPintarConfirmados(){
+  var lista=imp.mapas.map(function(m,i){ return {m:m,i:i}; }).filter(function(x){ return x.m.conf; });
+  var h='<details class="imp-conf"'+(impAbiertos.conf===false?'':' open')+'><summary>Emparejados confirmados ('+lista.length+')</summary>';
+  if(!lista.length) return h+'<p class="nota">Aquí aparecerán, uno frente a otro y con un color común, los pares que confirmes.</p></details>';
+  h+='<div class="imp-par imp-par-cab"><div>Columna de tu planilla</div><div></div><div>Campo de la app</div><div></div></div>';
+  lista.forEach(function(x){
+    var m=x.m, i=x.i, o=impObjetivo(m.target)||{l:m.target,tipo:"texto"}, c=imp.cols[m.col], ej=impEjemplosCol(m.col,3);
+    var prev=ej.map(function(v){ var p=impPrevia(m,o,v); return p===null?'<span class="imp-ej" title="'+escapeHtml(v)+'">'+escapeHtml(impCorto(v,34))+'</span>':'<span class="imp-ej" title="'+escapeHtml(v)+'">'+escapeHtml(impCorto(v,24))+' → <b>'+escapeHtml(impCorto(p,24))+'</b></span>'; }).join("");
+    h+='<div class="imp-par"'+impAttrColor(m)+'><div class="imp-par-izq"><strong>'+escapeHtml(c.nombre)+'</strong> <small>'+c.llenos+'/'+imp.datos.length+' llenos</small><div class="imp-ejemplos">'+prev+'</div></div>'
+      +'<div class="imp-par-flecha">⇄</div>'
+      +'<div class="imp-par-der"><strong>'+escapeHtml(o.l)+'</strong> <span class="imp-tipo">'+escapeHtml(o.g||"")+'</span>'+impOpcionesMapa(m,i,o)+'</div>'
+      +'<div class="imp-par-acc"><button type="button" class="btn tenue small" data-deshacer="'+i+'" title="Vuelve a la lista de pendientes">↩ Deshacer</button><button type="button" class="btn tenue small" data-quitar="'+i+'" title="Quitar este emparejamiento">✕</button></div></div>';
   });
+  return h+'</details>';
+}
+// ---- listas de pendientes ----
+function impColVisible(c){
+  var ms=imp.mapas.filter(function(m){ return m.col===c.i; });
+  if(imp.ocultarConf && ms.some(function(m){ return m.conf; })) return false;
+  if(imp.estIzq==="sin" && ms.length) return false;
+  if(imp.estIzq==="prop" && !ms.some(function(m){ return !m.conf; })) return false;
+  if(imp.estIzq==="llenas" && c.llenos===0) return false;
+  var f=imp.filIzq; if(f){ var q=normTxt(f); if(normTxt(c.nombre).indexOf(q)<0 && impSimTexto(f,c.nombre)<0.5) return false; }
+  return true;
+}
+function impObjetivoVisible(o){
+  var ms=imp.mapas.filter(function(m){ return m.target===o.k; });
+  if(imp.ocultarConf && o.tipo!=="anexo" && ms.some(function(m){ return m.conf; })) return false;
+  if(imp.estDer==="sin" && ms.length) return false;
+  if(imp.estDer==="prop" && !ms.some(function(m){ return !m.conf; })) return false;
+  var f=imp.filDer; if(f){ var q=normTxt(f); if(normTxt(o.l+" "+o.k+" "+o.g).indexOf(q)<0 && impSimTexto(f,o.l)<0.5) return false; }
+  return true;
+}
+function impPintarColumnasLista(){
+  var cols=imp.cols.filter(impColVisible), sims={};
+  if(imp.sel&&imp.sel.lado==="obj"){
+    var o=impObjetivo(imp.sel.id);
+    if(o){ cols.forEach(function(c){ sims[c.i]=impPuntaje(c.nombre,o,c); }); cols.sort(function(a,b){ return sims[b.i]-sims[a.i]; }); }
+  }
+  var h=cols.map(function(c){ return impPintarColumna(c, sims[c.i]); }).join("");
+  return h||'<p class="nota">'+(imp.cols.length?'No hay columnas pendientes con este filtro.':'')+'</p>';
+}
+function impPintarColumna(c, sim){
+  var usos=imp.mapas.map(function(m,i){ return {m:m,i:i}; }).filter(function(x){ return x.m.col===c.i; }), prop=usos.filter(function(x){ return !x.m.conf; });
+  var n=imp.ejem[c.i]||8, ej=impEjemplosCol(c.i,n);
+  var mas=(c.distintos>ej.length)?'<button type="button" class="imp-mas" data-mascol="'+c.i+'">+8 más</button>':"", menos=n>8?'<button type="button" class="imp-mas" data-menoscol="'+c.i+'">menos</button>':"";
+  var elegida=imp.sel&&imp.sel.lado==="col"&&imp.sel.id===c.i;
+  var h='<div class="imp-col-card'+(usos.length?' mapeada':'')+(prop.length?' propuesta':'')+(c.llenos===0?' vacia':'')+(elegida?' elegida':'')+'" draggable="true" data-col="'+c.i+'"'+(prop.length?impAttrColor(prop[0].m):'')+'>'
+    +'<div class="imp-col-nombre"><strong class="imp-sel-btn" data-selcol="'+c.i+'" title="Ver los campos más parecidos">'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos'+(sim!=null?' · parecido '+Math.round(sim*100)+' %':'')+'</span></div>'
+    +impPintarEjemplos(ej,mas,menos)
+    +'<select class="imp-col-sel" data-col="'+c.i+'">'+impOpcionesObjetivos(usos.length?usos[0].m.target:"")+'</select>';
+  prop.forEach(function(x){ var o=impObjetivo(x.m.target)||{l:x.m.target}; h+='<div class="imp-prop">→ <b>'+escapeHtml(o.l)+'</b>'+(x.m.score?' <span class="imp-sug">'+Math.round(x.m.score*100)+' %</span>':'')+' <button type="button" class="btn tenue small" data-confirmar="'+x.i+'">✓ Confirmar</button><button type="button" class="btn tenue small" data-quitar="'+x.i+'" title="Quitar">✕</button></div>'; });
+  var conf=usos.filter(function(x){ return x.m.conf; });
+  if(conf.length) h+='<div class="imp-col-mas">Confirmada con: '+escapeHtml(conf.map(function(u){ return (impObjetivo(u.m.target)||{}).l; }).join(", "))+'</div>';
+  if(imp.sel&&imp.sel.lado==="obj"){ var oo=impObjetivo(imp.sel.id); if(oo) h+='<button type="button" class="btn small imp-parear" data-pc="'+c.i+'" data-pk="'+escapeHtml(oo.k)+'">Emparejar con «'+escapeHtml(impCorto(oo.l,34))+'»</button>'; }
   return h+'</div>';
+}
+function impPintarObjetivosLista(){
+  var objs=impObjetivos().filter(impObjetivoVisible), grupos={}, orden=[], h="";
+  if(imp.sel&&imp.sel.lado==="col"){
+    var c=imp.cols[imp.sel.id];
+    if(c){
+      var sc=objs.map(function(o){ return {o:o,s:impPuntaje(c.nombre,o,c)}; }).filter(function(x){ return x.s>=0.3; }).sort(function(a,b){ return b.s-a.s; }).slice(0,6);
+      h+='<div class="imp-sugeridos"><div class="imp-sug-tit">★ Más parecidos a «'+escapeHtml(c.nombre)+'»</div>'+(sc.length?sc.map(function(x){ return impPintarObjetivo(x.o,x.s); }).join(""):'<p class="nota">Ningún campo se parece mucho; búscalo con el filtro o en los grupos de abajo.</p>')+'</div>';
+    }
+  }
+  objs.forEach(function(o){ if(!grupos[o.g]){ grupos[o.g]=[]; orden.push(o.g); } grupos[o.g].push(o); });
+  var hayFiltro=!!imp.filDer;
+  h+=orden.map(function(g){
+    var asignados=grupos[g].filter(function(o){ return imp.mapas.some(function(m){ return m.target===o.k; }); }).length;
+    return '<details class="imp-grupo" data-g="'+escapeHtml(g)+'"'+((impAbiertos[g]||asignados||hayFiltro)?' open':'')+'><summary>'+escapeHtml(g)+' <span class="imp-cuenta">('+grupos[g].length+')</span>'+(asignados?' <span class="imp-badge">'+asignados+'</span>':'')+'</summary>'
+      +grupos[g].map(function(o){ return impPintarObjetivo(o); }).join("")+'</details>';
+  }).join("")||'<p class="nota">No hay campos pendientes con este filtro.</p>';
+  return h;
+}
+function impPintarObjetivo(o, sim){
+  var ms=imp.mapas.map(function(m,i){ return {m:m,i:i}; }).filter(function(x){ return x.m.target===o.k; });
+  var prop=ms.filter(function(x){ return !x.m.conf; });
+  var elegido=imp.sel&&imp.sel.lado==="obj"&&imp.sel.id===o.k;
+  var h='<div class="imp-obj'+(ms.length?' asignado':'')+(prop.length?' propuesta':'')+(elegido?' elegida':'')+'" data-k="'+escapeHtml(o.k)+'"'+(ms.length?impAttrColor(ms[0].m):'')+'><div class="imp-obj-cab"><span class="imp-obj-nombre imp-sel-btn" data-selobj="'+escapeHtml(o.k)+'" title="Ver las columnas más parecidas">'+escapeHtml(o.l)+'</span><span class="imp-tipo">'+({texto:"texto",lista:"lista",fecha:"fecha",numero:"número",lat:"coordenada",lng:"coordenada",hora:"hora",sexo:"texto",coordpar:"coordenadas",anexo:"anexar"}[o.tipo]||"")+(sim!=null?' · parecido '+Math.round(sim*100)+' %':'')+'</span></div>';
+  var n=imp.ejemApp[o.k]||8, ej=impEjemplosApp(o,n);
+  if(ej.length){
+    var mas=ej.length>=n?'<button type="button" class="imp-mas" data-masapp="'+escapeHtml(o.k)+'">+8 más</button>':"", menos=n>8?'<button type="button" class="imp-mas" data-menosapp="'+escapeHtml(o.k)+'">menos</button>':"";
+    h+='<div class="imp-ej-etq">Ejemplos en tu colección:</div>'+impPintarEjemplos(ej,mas,menos);
+  } else {
+    var op=(o.opciones||[]).slice(0,n);
+    h+='<div class="imp-ej-etq">'+(op.length?'Opciones de la lista:':'Sin registros que mostrar. '+escapeHtml(IMP_PISTA[o.tipo]||""))+'</div>'+(op.length?impPintarEjemplos(op,(o.opciones.length>n?'<button type="button" class="imp-mas" data-masapp="'+escapeHtml(o.k)+'">+8 más</button>':""),(n>8?'<button type="button" class="imp-mas" data-menosapp="'+escapeHtml(o.k)+'">menos</button>':"")):"");
+  }
+  h+='<div class="imp-chips">'+(ms.length?ms.map(function(x){ return '<span class="imp-chip'+(x.m.conf?' conf':'')+'"'+impAttrColor(x.m)+'>'+escapeHtml(imp.cols[x.m.col].nombre)+(x.m.conf?' ✓':(x.m.score?' · '+Math.round(x.m.score*100)+' %':''))+(x.m.conf?'':' <button type="button" data-confirmar="'+x.i+'" title="Confirmar">✓</button>')+' <button type="button" data-quitar="'+x.i+'" aria-label="Quitar" title="Quitar">✕</button></span>'; }).join(""):'<span class="imp-soltar">Suelta aquí una columna</span>')+'</div>';
+  if(imp.sel&&imp.sel.lado==="col"){ var cc=imp.cols[imp.sel.id]; if(cc) h+='<button type="button" class="btn small imp-parear" data-pc="'+cc.i+'" data-pk="'+escapeHtml(o.k)+'">← Emparejar con «'+escapeHtml(impCorto(cc.nombre,30))+'»</button>'; }
+  ms.filter(function(x){ return !x.m.conf; }).forEach(function(x){ h+=impOpcionesMapa(x.m,x.i,o); });
+  return h+'</div>';
+}
+
+// ---------- parecido entre textos ----------
+function impBigramas(s){ var o={}, n=0; for(var i=0;i<s.length-1;i++){ var b=s.substr(i,2); o[b]=(o[b]||0)+1; n++; } return {o:o,n:n}; }
+function impSimTexto(a,b){
+  var ca=impNorm(String(a).replace(/\s*\(\d+\)$/,"")), cb=impNorm(String(b).replace(/\s*\(\d+\)$/,""));
+  if(!ca||!cb) return 0; if(ca===cb) return 1;
+  var corto=ca.length<=cb.length?ca:cb, largo=ca.length<=cb.length?cb:ca, s1=0;
+  if(corto.length>=4 && (largo.indexOf(corto)===0 || largo.lastIndexOf(corto)===largo.length-corto.length)) s1=0.75+0.2*(corto.length/largo.length);
+  var A=impBigramas(ca), B=impBigramas(cb), com=0;
+  if(A.n&&B.n){ Object.keys(A.o).forEach(function(k){ if(B.o[k]) com+=Math.min(A.o[k],B.o[k]); }); }
+  var dice=(A.n+B.n)?2*com/(A.n+B.n):0;
+  var ta=normTxt(a).split(/[^a-z0-9]+/).filter(function(x){ return x.length>1; }), tb=normTxt(b).split(/[^a-z0-9]+/).filter(function(x){ return x.length>1; }), tok=0;
+  if(ta.length&&tb.length){
+    var hit=ta.filter(function(x){ return tb.some(function(y){ return x===y || (Math.min(x.length,y.length)>=4 && (x.indexOf(y)===0||y.indexOf(x)===0)); }); }).length;
+    tok=0.9*hit/Math.max(ta.length,tb.length);
+  }
+  return Math.min(1,Math.max(s1,dice,tok));
+}
+function impConjuntoApp(k){
+  imp.appSet=imp.appSet||{}; if(imp.appSet[k]) return imp.appSet[k];
+  var set={}, n=0;
+  registros.forEach(function(r){
+    var vals=[];
+    if(k==="@nombre"){ (r.determinaciones||[]).forEach(function(d){ vals.push(d.nombreCientifico); }); }
+    else if(k==="@determinador"){ (r.determinaciones||[]).forEach(function(d){ vals.push(d.determinador); }); }
+    else if(k.charAt(0)!=="@" && k.indexOf("L:")!==0) vals.push(r[k]);
+    vals.forEach(function(v){ v=impNorm(v==null?"":String(v)); if(v){ set[v]=1; n++; } });
+  });
+  return (imp.appSet[k]={set:set,n:n});
+}
+function impSimValores(c,o){
+  imp.vcache=imp.vcache||{}; var ck=c.i+"|"+o.k; if(ck in imp.vcache) return imp.vcache[ck];
+  var vals=[], r=null;
+  for(var j=0;j<imp.datos.length&&vals.length<40;j++){ var v=imp.datos[j].v[c.i]; if(v!=="") vals.push(v); }
+  if(vals.length){
+    var ok=0, pur=function(v){ return /^[-+\d.,\s°'"′″NSEWOnsewo]+$/.test(v); };
+    try{
+      switch(o.tipo){
+        case "fecha": var fm=impDetectarFmtFecha(c.i).fmt; vals.forEach(function(v){ if(impFecha(v,fm).ok) ok++; }); r=ok/vals.length; break;
+        case "numero": vals.forEach(function(v){ if(pur(v)&&impNumero(v)!==null) ok++; }); r=ok/vals.length; break;
+        case "lat": case "lng": vals.forEach(function(v){ var x=impDms(v,o.tipo); if(pur(v)&&x!=null&&Math.abs(parseFloat(x))<=(o.tipo==="lat"?90:180)) ok++; }); r=ok/vals.length; break;
+        case "hora": vals.forEach(function(v){ if(impHora(v)) ok++; }); r=ok/vals.length; break;
+        case "coordpar": vals.forEach(function(v){ if(impCoordPar(v)) ok++; }); r=ok/vals.length; break;
+        case "sexo": vals.forEach(function(v){ if(impSexo(v).ok) ok++; }); r=ok/vals.length; break;
+        case "lista": vals.forEach(function(v){ if(impCoincidencia(v,o).modo==="opt") ok++; }); r=ok/vals.length; break;
+        case "texto": if(o.k!=="@obs"){ var cj=impConjuntoApp(o.k); if(cj.n>=3){ vals.forEach(function(v){ if(cj.set[impNorm(v)]) ok++; }); r=ok/vals.length; } } break;
+      }
+    }catch(e){ r=null; }
+  }
+  imp.vcache[ck]=r; return r;
+}
+function impPuntaje(nombre,o,c){
+  var n=impPuntajeNombre(nombre,o);
+  if(!c) return n;
+  var v=impSimValores(c,o);
+  if(v!=null && o.tipo=="texto" && v>=0.6 && o.k.charAt(0)!=="@") return Math.max(n,0.6+0.35*v);
+  if(n<0.3 || v==null) return n;
+  if(v<0.3 && ["fecha","numero","lat","lng","hora"].indexOf(o.tipo)>-1) return n*0.75;
+  return Math.min(1,Math.max(n,0.6*n+0.4*v));
+}
+function impPuntajeNombre(nombre,o){
+  var h=impNorm(String(nombre).replace(/\s*\(\d+\)$/,"")), best=0;
+  var cands=[o.l, o.l.replace(/\s*\([^)]*\)\s*/g," ").trim()];
+  if(o.k.charAt(0)!=="@" && o.k.indexOf("L:")!==0) cands.push(o.k);
+  cands.forEach(function(c){ best=Math.max(best,impSimTexto(nombre,c)); });
+  (IMP_SINONIMOS[o.k]||[]).forEach(function(s){ if(s===h) best=1; else best=Math.max(best,0.95*impSimTexto(nombre,s)); });
+  return best;
+}
+function impAutoSimilar(){
+  var objs=impObjetivos().filter(function(o){ return o.tipo!=="anexo"; }), cand=[], tomadoCol={}, tomadoObj={};
+  imp.mapas.forEach(function(m){ tomadoCol[m.col]=1; tomadoObj[m.target]=1; });
+  imp.cols.forEach(function(c){
+    if(tomadoCol[c.i]||c.llenos===0) return;
+    objs.forEach(function(o){ if(tomadoObj[o.k]) return; var s=impPuntaje(c.nombre,o,c); if(s>=0.6) cand.push({c:c.i,k:o.k,s:s}); });
+  });
+  cand.sort(function(a,b){ return b.s-a.s; });
+  var n=0;
+  cand.forEach(function(x){ if(tomadoCol[x.c]||tomadoObj[x.k]) return; tomadoCol[x.c]=1; tomadoObj[x.k]=1; imp.mapas.push(impNuevoMapa(x.c,x.k,false,x.s)); n++; });
+  imp.resultado=null; if(!imp.clave.length) imp.clave=impClaveSugerida();
+  return n;
 }
 function impPintarValores(m,i,o){
   impAutoValores(m);
@@ -5377,28 +5673,38 @@ function impPintarValores(m,i,o){
 }
 function impPintarFijos(){
   var objs=impObjetivos().filter(function(o){ return o.tipo!=="anexo"&&o.tipo!=="sexo"&&o.tipo!=="coordpar"; });
-  return '<details class="imp-fijos"'+(imp.fijos.length?' open':'')+'><summary>Valores fijos para todos los registros'+(imp.fijos.length?' ('+imp.fijos.length+')':'')+'</summary><p class="nota">Sirven para datos que la planilla no trae, por ejemplo el Phylum, la Clase y el Orden de una colección completa.</p>'
+  return '<details class="imp-fijos"'+(imp.fijos.length?' open':'')+'><summary>Valores que se repiten en todos los registros'+(imp.fijos.length?' ('+imp.fijos.length+')':'')+'</summary>'
+    +'<div class="imp-ayuda"><p><strong>Para qué sirve.</strong> Escribe el mismo dato en todos los registros que se importen, para campos que la planilla no tiene como columna porque toda la planilla comparte ese dato.</p>'
+    +'<p><strong>Ejemplo.</strong> Una planilla de Opiliones sin columnas de clasificación superior. Agregas tres valores: Phylum = Arthropoda, Clase = Arachnida, Orden = Opiliones, y cada registro nuevo los trae.</p>'
+    +'<p><strong>Cómo se combina con la planilla.</strong> Si la planilla sí tiene el dato en esa fila, se usa el de la planilla. El valor repetido solo rellena lo que queda vacío.</p></div>'
     +imp.fijos.map(function(f,i){
       var o=impObjetivo(f.target)||{};
       var campo=(o.tipo==="lista"&&o.opciones)?'<select data-fijo-val="'+i+'"><option value="">—</option>'+o.opciones.map(function(op){ return '<option'+(op===f.valor?' selected':'')+'>'+escapeHtml(op)+'</option>'; }).join("")+'</select>':'<input type="text" data-fijo-val="'+i+'" value="'+escapeHtml(f.valor||"")+'" placeholder="Valor">';
       return '<div class="imp-fijo"><select data-fijo-t="'+i+'"><option value="">Elige un campo…</option>'+objs.map(function(x){ return '<option value="'+escapeHtml(x.k)+'"'+(x.k===f.target?' selected':'')+'>'+escapeHtml(x.l)+'</option>'; }).join("")+'</select>'+campo+'<button type="button" class="btn tenue small" data-fijo-quitar="'+i+'">✕</button></div>';
-    }).join("")+'<button type="button" class="btn tenue small" id="imp-fijo-agregar">+ Agregar valor fijo</button></details>';
+    }).join("")+'<button type="button" class="btn tenue small" id="imp-fijo-agregar">+ Agregar valor repetido</button></details>';
 }
 function impPintarOpciones(){
   var posibles=imp.mapas.map(function(m){ return m.target; }).filter(function(k,i,a){ return a.indexOf(k)===i && k.charAt(0)!=="@" || k==="@nombre"; });
   var guardados=impLeerGuardados(), nombres=Object.keys(guardados);
-  return '<details class="imp-fijos" open><summary>Cómo identificar registros que ya existen</summary><div class="imp-fila-opc">'
-    +posibles.map(function(k){ var o=impObjetivo(k)||{l:k}; return '<label><input type="checkbox" data-clave="'+escapeHtml(k)+'"'+(imp.clave.indexOf(k)>-1?' checked':'')+'> '+escapeHtml(o.l)+'</label>'; }).join("")
-    +'</div><div class="imp-fila-opc"><label>Si ya existe <select id="imp-politica"><option value="omitir"'+(imp.politica==="omitir"?' selected':'')+'>omitir la fila</option><option value="vacios"'+(imp.politica==="vacios"?' selected':'')+'>completar solo los campos vacíos</option><option value="sobrescribir"'+(imp.politica==="sobrescribir"?' selected':'')+'>sobrescribir los campos importados</option></select></label></div>'
-    +'<p class="nota">Sin ninguna casilla marcada, todas las filas se importan como registros nuevos.</p></details>'
-    +'<details class="imp-fijos"><summary>Emparejamientos guardados</summary><div class="imp-fila-opc"><input type="text" id="imp-nombre-guardar" placeholder="Nombre (por ejemplo: Planilla de Opiliones)" class="nav"><button type="button" class="btn tenue small" id="imp-guardar">Guardar este emparejamiento</button></div>'
-    +(nombres.length?'<div class="imp-fila-opc"><select id="imp-guardados">'+nombres.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'</select><button type="button" class="btn tenue small" id="imp-aplicar">Aplicar</button><button type="button" class="btn tenue small" id="imp-borrar-guardado">Borrar</button></div>':'<p class="nota">Aún no hay emparejamientos guardados en este navegador.</p>')+'</details>';
+  return '<details class="imp-fijos" open><summary>Evitar duplicados: registros que ya existen en la app</summary>'
+    +'<div class="imp-ayuda"><p><strong>Para qué sirve.</strong> Si importas una planilla que ya cargaste antes (o una versión corregida), la app necesita saber cuándo una fila corresponde a un registro que ya tiene. Marca abajo el dato que identifica a cada ejemplar, normalmente el N.º de catálogo o el N.º de entrada.</p>'
+    +'<p><strong>Ejemplo.</strong> Marcas «N.º de catálogo». La fila con CAT-0012 se compara con los registros guardados: si ya existe CAT-0012, la fila cuenta como «existente» y se aplica lo que elijas en «Si ya existe». Si no existe, entra como registro nuevo.</p>'
+    +'<p><strong>Si no marcas nada,</strong> todas las filas entran como registros nuevos, y al importar dos veces la misma planilla quedan registros duplicados. Solo aparecen como opciones los campos que ya emparejaste.</p></div>'
+    +'<div class="imp-fila-opc">'
+    +(posibles.length?posibles.map(function(k){ var o=impObjetivo(k)||{l:k}; return '<label><input type="checkbox" data-clave="'+escapeHtml(k)+'"'+(imp.clave.indexOf(k)>-1?' checked':'')+'> '+escapeHtml(o.l)+'</label>'; }).join(""):'<span class="nota">Empareja primero algún campo identificador.</span>')
+    +'</div><div class="imp-fila-opc"><label>Si ya existe <select id="imp-politica"><option value="omitir"'+(imp.politica==="omitir"?' selected':'')+'>omitir la fila (no tocar el registro)</option><option value="vacios"'+(imp.politica==="vacios"?' selected':'')+'>completar solo los campos que están vacíos en la app</option><option value="sobrescribir"'+(imp.politica==="sobrescribir"?' selected':'')+'>sobrescribir con los datos de la planilla</option></select></label></div></details>'
+    +'<details class="imp-fijos"><summary>Plantillas de emparejamiento (para planillas con el mismo formato)</summary>'
+    +'<div class="imp-ayuda"><p><strong>Para qué sirve.</strong> No le pone nombre a la importación. Guarda tu trabajo de emparejado (qué columna va a qué campo, los valores repetidos y la regla de duplicados) para reutilizarlo.</p>'
+    +'<p><strong>Ejemplo.</strong> Cada mes recibes una planilla de Opiliones con las mismas columnas. La primera vez emparejas todo y guardas la plantilla «Planilla Opiliones». Los meses siguientes cargas la planilla, eliges la plantilla, pulsas «Aplicar» y todos los pares quedan confirmados de una vez.</p>'
+    +'<p>Las plantillas se guardan en este navegador. Cada columna se reconoce por su nombre de encabezado.</p></div>'
+    +'<div class="imp-fila-opc"><input type="text" id="imp-nombre-guardar" placeholder="Nombre (por ejemplo: Planilla Opiliones)" class="nav"><button type="button" class="btn tenue small" id="imp-guardar">Guardar plantilla con el emparejado actual</button></div>'
+    +(nombres.length?'<div class="imp-fila-opc"><select id="imp-guardados">'+nombres.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'</select><button type="button" class="btn tenue small" id="imp-aplicar">Aplicar</button><button type="button" class="btn tenue small" id="imp-borrar-guardado">Borrar</button></div>':'<p class="nota">Aún no hay plantillas guardadas en este navegador.</p>')+'</details>';
 }
 function impLeerGuardados(){ try{ return JSON.parse(localStorage.getItem("libroCatalogo_mapeosImport")||"{}"); }catch(e){ return {}; } }
 function impEscribirGuardados(o){ try{ localStorage.setItem("libroCatalogo_mapeosImport",JSON.stringify(o)); }catch(e){} }
 function impPintarResultado(){
-  var res=imp.resultado, rs=res.resolucion, tipos=Object.keys(res.avisos);
-  var h='<div class="imp-resumen"><strong>Vista previa</strong><ul><li>'+rs.nuevos.length+' registro(s) nuevo(s)</li>'
+  var res=imp.resultado, rs=res.resolucion, tipos=Object.keys(res.avisos), sinConf=imp.mapas.filter(function(m){ return !m.conf; }).length;
+  var h=(sinConf?'<p class="nota imp-alerta">Atención: '+sinConf+' emparejamiento(s) propuesto(s) todavía sin confirmar se están usando en esta importación. Confírmalos o quítalos antes de importar.</p>':'')+'<div class="imp-resumen"><strong>Vista previa</strong><ul><li>'+rs.nuevos.length+' registro(s) nuevo(s)</li>'
     +(rs.actualizados.length?'<li>'+rs.actualizados.length+' existente(s) que se actualizarían</li>':'')
     +(rs.omitidos.length?'<li>'+rs.omitidos.length+' existente(s) sin cambios u omitidos</li>':'')
     +(res.omitidas.length?'<li>'+res.omitidas.length+' fila(s) omitida(s) por tener muy pocos datos o estar repetidas</li>':'')+'</ul></div>';
@@ -5443,8 +5749,16 @@ function impAsignar(ci,k){
   if(!k) return;
   var o=impObjetivo(k); if(!o) return;
   if(imp.mapas.some(function(m){ return m.col===ci&&m.target===k; })) return;
-  imp.mapas.push(impNuevoMapa(ci,k)); imp.resultado=null;
+  imp.mapas.push(impNuevoMapa(ci,k,true)); imp.resultado=null;
   if(imp.clave.length===0) imp.clave=impClaveSugerida();
+}
+function impAplicarPlantilla(nombre){
+  var g2=impLeerGuardados(), cfg=g2[nombre]; if(!cfg) return;
+  var porNombre={}; imp.cols.forEach(function(c){ porNombre[normTxt(c.nombre)]=c; });
+  imp.mapas=[]; var sin=0;
+  cfg.mapas.forEach(function(m){ var c=porNombre[normTxt(m.nombre)]; if(!c||!impObjetivo(m.target)){ sin++; return; } var nm=impNuevoMapa(c.i,m.target,true); nm.opts=JSON.parse(JSON.stringify(m.opts)); impAutoValores(nm); imp.mapas.push(nm); });
+  imp.fijos=cfg.fijos||[]; imp.clave=(cfg.clave||[]).filter(function(k){ return imp.mapas.some(function(m){ return m.target===k; }); }); imp.politica=cfg.politica||"omitir"; imp.minLlenos=cfg.minLlenos==null?3:cfg.minLlenos; imp.resultado=null;
+  impMensaje("Plantilla «"+nombre+"» aplicada"+(sin?" ("+sin+" columna(s) guardadas no están en esta planilla)":"")+"."); impPintar();
 }
 function iniciarImportador(){
   var cont=impElem("imp-cont"); if(!cont) return;
@@ -5454,6 +5768,9 @@ function iniciarImportador(){
     var t=e.target;
     if(t.id==="imp-hoja") impCambiarHoja(parseInt(t.value,10));
     else if(t.id==="imp-fila-enc"){ imp.filaEnc=Math.max(1,parseInt(t.value,10)||1); impPreparar(); impSugerir(); imp.clave=impClaveSugerida(); imp.resultado=null; impPintar(); }
+    else if(t.id==="imp-est-izq"){ imp.estIzq=t.value; impPintar(); }
+    else if(t.id==="imp-est-der"){ imp.estDer=t.value; impPintar(); }
+    else if(t.id==="imp-ocultar-conf"){ imp.ocultarConf=t.checked; impPintar(); }
     else if(t.id==="imp-min"){ imp.minLlenos=Math.max(0,parseInt(t.value,10)||0); imp.resultado=null; impPintar(); }
     else if(t.classList.contains("imp-col-sel")){
       var ci=parseInt(t.getAttribute("data-col"),10);
@@ -5473,17 +5790,30 @@ function iniciarImportador(){
   });
   cont.addEventListener("input", function(e){
     var t=e.target;
-    if(t.id==="imp-buscar"){ impElem("imp-der").innerHTML=impPintarObjetivos(t.value); }
+    if(t.id==="imp-buscar"){ imp.filDer=t.value; impElem("imp-der").innerHTML=impPintarObjetivosLista(); }
+    else if(t.id==="imp-buscar-izq"){ imp.filIzq=t.value; impElem("imp-izq").innerHTML=impPintarColumnasLista(); }
     else if(t.hasAttribute("data-fijo-val")&&t.tagName==="INPUT"){ imp.fijos[parseInt(t.getAttribute("data-fijo-val"),10)].valor=t.value; }
     else if(t.hasAttribute("data-valtxt")){ var m=imp.mapas[parseInt(t.getAttribute("data-i"),10)]; m.opts.valores[t.getAttribute("data-valtxt")]={modo:"texto",val:t.value}; }
   });
-  cont.addEventListener("toggle", function(e){ var d=e.target; if(d.classList&&d.classList.contains("imp-grupo")) impAbiertos[d.getAttribute("data-g")]=d.open; if(d.classList&&d.classList.contains("imp-valores")) impAbiertos["v"+d.getAttribute("data-vi")]=d.open; }, true);
+  cont.addEventListener("toggle", function(e){ var d=e.target; if(d.classList&&d.classList.contains("imp-grupo")) impAbiertos[d.getAttribute("data-g")]=d.open; if(d.classList&&d.classList.contains("imp-valores")) impAbiertos["v"+d.getAttribute("data-vi")]=d.open; if(d.classList&&d.classList.contains("imp-conf")) impAbiertos.conf=d.open; }, true);
   cont.addEventListener("click", function(e){
+    var sc=e.target.closest("[data-selcol]"), so=e.target.closest("[data-selobj]");
+    if(sc){ var ci0=parseInt(sc.getAttribute("data-selcol"),10); imp.sel=(imp.sel&&imp.sel.lado==="col"&&imp.sel.id===ci0)?null:{lado:"col",id:ci0}; impPintar(); return; }
+    if(so){ var k0=so.getAttribute("data-selobj"); imp.sel=(imp.sel&&imp.sel.lado==="obj"&&imp.sel.id===k0)?null:{lado:"obj",id:k0}; impPintar(); return; }
     var t=e.target.closest("button"); if(!t) return;
-    if(t.hasAttribute("data-quitar")){ imp.mapas.splice(parseInt(t.getAttribute("data-quitar"),10),1); imp.resultado=null; impPintar(); }
+    if(t.id==="imp-auto"){ var nA=impAutoSimilar(); impMensaje(nA?nA+" par(es) propuesto(s) por parecido de encabezados. Revisa los ejemplos y confirma.":"No se encontraron más pares con suficiente parecido."); impPintar(); }
+    else if(t.id==="imp-confirmar-todo"){ imp.mapas.forEach(function(m){ m.conf=true; }); imp.resultado=null; impPintar(); }
+    else if(t.id==="imp-limpiar-prop"){ imp.mapas=imp.mapas.filter(function(m){ return m.conf; }); imp.resultado=null; impPintar(); }
+    else if(t.hasAttribute("data-confirmar")){ var mc=imp.mapas[parseInt(t.getAttribute("data-confirmar"),10)]; if(mc) mc.conf=true; imp.resultado=null; impPintar(); }
+    else if(t.hasAttribute("data-deshacer")){ var md=imp.mapas[parseInt(t.getAttribute("data-deshacer"),10)]; if(md) md.conf=false; imp.resultado=null; impPintar(); }
+    else if(t.hasAttribute("data-pc")){ var cp=parseInt(t.getAttribute("data-pc"),10), kp=t.getAttribute("data-pk"); impAsignar(cp,kp); imp.sel=null; impPintar(); }
+    else if(t.hasAttribute("data-mascol")){ var cm=parseInt(t.getAttribute("data-mascol"),10); imp.ejem[cm]=(imp.ejem[cm]||8)+8; impPintar(); }
+    else if(t.hasAttribute("data-menoscol")){ imp.ejem[parseInt(t.getAttribute("data-menoscol"),10)]=8; impPintar(); }
+    else if(t.hasAttribute("data-masapp")){ var ka=t.getAttribute("data-masapp"); imp.ejemApp[ka]=(imp.ejemApp[ka]||8)+8; impPintar(); }
+    else if(t.hasAttribute("data-menosapp")){ imp.ejemApp[t.getAttribute("data-menosapp")]=8; impPintar(); }
+    else if(t.hasAttribute("data-quitar")){ imp.mapas.splice(parseInt(t.getAttribute("data-quitar"),10),1); imp.resultado=null; impPintar(); }
     else if(t.id==="imp-revisar") impRevisar();
     else if(t.id==="imp-importar") impImportar();
-    else if(t.id==="imp-sugerir"){ impSugerir(); imp.clave=impClaveSugerida(); imp.resultado=null; impPintar(); }
     else if(t.id==="imp-limpiar"){ imp.mapas=[]; imp.clave=[]; imp.resultado=null; impPintar(); }
     else if(t.id==="imp-fijo-agregar"){ imp.fijos.push({target:"",valor:""}); impPintar(); }
     else if(t.hasAttribute("data-fijo-quitar")){ imp.fijos.splice(parseInt(t.getAttribute("data-fijo-quitar"),10),1); imp.resultado=null; impPintar(); }
@@ -5492,14 +5822,10 @@ function iniciarImportador(){
       var g=impLeerGuardados(); g[nom]={mapas:imp.mapas.map(function(m){ return {nombre:imp.cols[m.col].nombre,target:m.target,opts:m.opts}; }),fijos:imp.fijos,clave:imp.clave,politica:imp.politica,minLlenos:imp.minLlenos};
       impEscribirGuardados(g); impMensaje("Emparejamiento «"+nom+"» guardado en este navegador."); impPintar();
     }
-    else if(t.id==="imp-aplicar"){
-      var g2=impLeerGuardados(), cfg=g2[impElem("imp-guardados").value]; if(!cfg) return;
-      var porNombre={}; imp.cols.forEach(function(c){ porNombre[normTxt(c.nombre)]=c; });
-      imp.mapas=[]; var sin=0;
-      cfg.mapas.forEach(function(m){ var c=porNombre[normTxt(m.nombre)]; if(!c||!impObjetivo(m.target)){ sin++; return; } var nm=impNuevoMapa(c.i,m.target); nm.opts=JSON.parse(JSON.stringify(m.opts)); impAutoValores(nm); imp.mapas.push(nm); });
-      imp.fijos=cfg.fijos||[]; imp.clave=(cfg.clave||[]).filter(function(k){ return imp.mapas.some(function(m){ return m.target===k; }); }); imp.politica=cfg.politica||"omitir"; imp.minLlenos=cfg.minLlenos==null?3:cfg.minLlenos; imp.resultado=null;
-      impMensaje("Emparejamiento aplicado"+(sin?" ("+sin+" columna(s) guardadas no están en esta planilla)":"")+"."); impPintar();
-    }
+    else if(t.id==="imp-aplicar"){ impAplicarPlantilla(impElem("imp-guardados").value); }
+    else if(t.hasAttribute("data-plantilla")){ impAplicarPlantilla(t.getAttribute("data-plantilla")); }
+    else if(t.hasAttribute("data-paso")){ imp.paso=parseInt(t.getAttribute("data-paso"),10); impPintar(); var cc=impElem("imp-cont"); if(cc&&cc.scrollIntoView) cc.scrollIntoView({block:"start"}); }
+    else if(t.hasAttribute("data-anexar")){ impAsignar(parseInt(t.getAttribute("data-anexar"),10),"@obs"); impPintar(); }
     else if(t.id==="imp-borrar-guardado"){ var g3=impLeerGuardados(); delete g3[impElem("imp-guardados").value]; impEscribirGuardados(g3); impPintar(); }
   });
   // arrastrar y soltar

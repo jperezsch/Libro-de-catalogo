@@ -123,7 +123,9 @@
   .cons-rango-in input{flex:1;min-width:0;}
   .cons-grupo{margin:8px 0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:#fffdf8;}
   .cons-grupo summary{cursor:pointer;font-weight:800;color:var(--accent);}
-  .cons-tiene{margin:10px 0;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:14px;}
+  .cons-tiene label{display:inline-flex !important;flex-direction:row !important;align-items:center;gap:6px;margin:0;}
+  .cons-tiene input[type=checkbox]{width:auto !important;flex:none;margin:0;}
+  .cons-tiene{margin:6px 0 10px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:14px;}
   .cons-cab{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;}
   .cons-acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;}
   .cons-fila{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:9px;background:#fffdf8;padding:8px 12px;margin:6px 0;}
@@ -217,13 +219,15 @@
   .ficha-foto.grande img{height:auto;max-height:70vh;object-fit:contain;cursor:zoom-out;}
   .ficha-foto .msg-foto{padding:14px 10px;font-size:12.5px;color:var(--ink-soft);text-align:center;}
   .miniatura-foto{display:block;max-width:140px;max-height:100px;margin-top:8px;border:1px solid var(--line);border-radius:6px;object-fit:cover;}
-  details.subbloque-gest{border:1px solid var(--line);border-radius:10px;background:#fffdf8;margin-top:12px;padding:0 14px 12px;}
-  details.subbloque-gest>summary{cursor:pointer;padding:10px 0;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--accent);list-style:none;}
+  details.subbloque-gest{border:1.5px solid var(--line-fuerte);border-left:6px solid var(--accent);border-radius:10px;background:#fffdf8;margin-top:14px;padding:0 16px 14px;box-shadow:0 1px 3px rgba(38,51,43,.10);}
+  details.subbloque-gest>summary{cursor:pointer;margin:0 -16px 8px;padding:10px 16px;font-family:var(--serif);font-weight:700;font-size:18px;color:var(--accent);list-style:none;background:var(--accent-soft);border-radius:4px 8px 0 0;}
+  details.subbloque-gest .barra-botones .btn{border-width:1.5px;font-weight:600;}
+  details.subbloque-gest .barra-botones .btn.secundario{border-color:var(--accent);}
+  .imp-planilla{margin-top:14px;padding-top:12px;border-top:1px solid var(--line-fuerte);}
+  .imp-planilla h4{margin:0 0 6px;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink);}
   details.subbloque-gest>summary::-webkit-details-marker{display:none;}
   details.subbloque-gest>summary::before{content:"▸ ";}
   details.subbloque-gest[open]>summary::before{content:"▾ ";}
-  details.subbloque-anid{margin-top:10px;}
-  .imp-resumen-titulo-sub{font-family:var(--serif);font-size:15.5px;font-weight:600;cursor:pointer;margin-bottom:8px;}
   #btn-marcar-datos[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
   /* ---- Importar desde planilla ---- */
   .imp-resumen-titulo{font-family:var(--serif);font-size:19px;font-weight:600;cursor:pointer;margin-bottom:8px;}
@@ -433,12 +437,16 @@
   .ficha-tabla tr.fila-vigente{background:var(--accent-soft);}
   .ficha-vacio{font-size:12.5px;color:var(--ink-soft);font-style:italic;padding:8px 0;}
   .ficha-footer{padding:12px 20px;border-top:1px solid var(--line);background:var(--paper-2);border-radius:0 0 14px 14px;display:flex;justify-content:flex-end;}
-  #resumen-datos details{border:1px solid var(--line);border-radius:6px;margin-bottom:6px;background:#fffdf8;overflow:hidden;}
-  #resumen-datos summary{cursor:pointer;padding:8px 12px;font-family:var(--serif);font-size:14.5px;font-weight:700;color:var(--ink);list-style:none;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;column-gap:6px;}
+  #resumen-datos .res-lista{border:1px solid var(--line-fuerte);border-radius:6px;background:#fbf9f1;margin-bottom:10px;}
+  #resumen-datos details{border:none;border-bottom:1px solid var(--line);border-radius:0;margin:0;background:transparent;overflow:hidden;}
+  #resumen-datos details:last-child{border-bottom:none;}
+  #resumen-datos summary{cursor:pointer;padding:6px 10px;font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--ink);list-style:none;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;column-gap:6px;}
+  #resumen-datos summary:hover{background:#f1eedf;}
   #resumen-datos summary::-webkit-details-marker{display:none;}
-  #resumen-datos summary::before{content:"▸";color:var(--accent-2);font-size:10px;transition:transform .12s;}
-  #resumen-datos details[open] summary::before{transform:rotate(90deg);}
-  #resumen-datos .ficha-seccion-body{padding:0;border-top:1px solid var(--line);}
+  #resumen-datos summary::before{content:"▸";color:var(--ink-soft);font-size:10px;transition:transform .12s;}
+  #resumen-datos details[open]>summary::before{transform:rotate(90deg);}
+  #resumen-datos details[open]>summary{background:#f1eedf;}
+  #resumen-datos .ficha-seccion-body{padding:0;border-top:1px solid var(--line);background:#fffdf8;}
   .resumen-conteo{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);font-weight:400;}
   .fila-compacta{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;column-gap:8px;padding:5px 12px;border-bottom:1px solid var(--line);font-size:13.5px;}
   .fila-compacta:last-child{border-bottom:none;}
@@ -513,7 +521,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.39</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.40</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -875,7 +883,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.39</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.40</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -890,17 +898,17 @@
       <details class="subbloque-gest" id="sub-importar" open>
         <summary>Importar datos</summary>
         <div class="barra-botones">
-          <button class="btn tenue" id="btn-importar-zip-libreta" title="Trae los ejemplares de un zip descargado desde Libreta de Campo">Importar datos de terreno (.zip Libreta de Campo)</button>
-          <button class="btn tenue" id="btn-importar-zip-datos" title="Trae los registros de un zip de respaldo hecho con esta app">Importar registros (.zip Libro de Catálogo)</button>
+          <button class="btn secundario" id="btn-importar-zip-libreta" title="Trae los ejemplares de un zip descargado desde Libreta de Campo">Importar datos de terreno (.zip Libreta de Campo)</button>
+          <button class="btn secundario" id="btn-importar-zip-datos" title="Trae los registros de un zip de respaldo hecho con esta app">Importar registros (.zip Libro de Catálogo)</button>
           <input type="file" id="input-zip" accept=".zip" class="oculto">
         </div>
-    <details class="subbloque-anid" id="det-importar-planilla">
-        <summary class="imp-resumen-titulo-sub">Importar desde planilla (Excel o CSV)</summary>
+      <div class="imp-planilla" id="det-importar-planilla">
+        <h4>Importar desde planilla (Excel o CSV)</h4>
         <p class="nota">Trae registros desde una planilla propia. El archivo se lee tal como viene: tú decides a qué campo de la app va cada columna, arrastrándola o eligiéndola en su selector. Los valores que no calcen con una lista controlada se pueden conservar como texto libre. Nada se guarda hasta que revises la vista previa y confirmes.</p>
         <div class="barra-botones"><button type="button" class="btn secundario" id="imp-elegir">Elegir archivo .xlsx o .csv…</button><input type="file" id="imp-archivo" accept=".xlsx,.csv,.tsv,.txt,text/csv" class="oculto"></div>
         <p class="nota" id="imp-msg"></p>
         <div id="imp-cont"></div>
-      </details>
+      </div>
       </details>
       <details class="subbloque-gest" id="sub-exportar" open>
         <summary>Exportar datos</summary>
@@ -922,7 +930,7 @@
       <div id="resumen-datos"></div>
 
       <div class="barra-botones">
-        <button class="btn tenue small" id="btn-marcar-datos" aria-pressed="false" title="Marca todos los registros mostrados; vuelve a pincharlo para quitar las marcas">Marcar todo</button>
+        <button class="btn secundario small" id="btn-marcar-datos" aria-pressed="false" title="Marca todos los registros mostrados; vuelve a pincharlo para quitar las marcas">Marcar todo</button>
         <button class="btn peligro small" id="btn-eliminar-datos" disabled title="Elimina los registros marcados (o usa el 🗑️ de cada fila para uno solo)">Eliminar marcados</button>
       </div>
       <div class="barra-botones">
@@ -1031,7 +1039,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.39";
+var APP_VERSION = "v0.9.40";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2983,6 +2991,7 @@ function renderResumenDatos(){
   } else if(!filtrados.length){
     html += '<p class="nota">Ningún registro coincide con los filtros elegidos.</p>';
   } else {
+    html += '<div class="res-lista">';
     claves.forEach(function(clave, idxGrupo){
       var lista = grupos[clave];
       var todosSeleccionados = lista.every(function(r){ return seleccionDescarga.has(r.id); });
@@ -3010,6 +3019,7 @@ function renderResumenDatos(){
       });
       html += '</div></div></details>';
     });
+    html += '</div>';
   }
   cont.innerHTML = html;
   cont.querySelectorAll(".btn-ver-resumen").forEach(function(btn){
@@ -4313,7 +4323,7 @@ function construirConsultas(){
   });
   var tiene=document.createElement("div"); tiene.className="cons-tiene";
   tiene.innerHTML='<span class="name">Solo registros con:</span> <label><input type="checkbox" data-t="coord"> coordenadas</label> <label><input type="checkbox" data-t="fotos"> fotos</label> <label><input type="checkbox" data-t="pdf"> PDF de publicaciones</label>';
-  sec.appendChild(tiene);
+  var bus=document.querySelector("#tab-consultas .cons-buscador"); bus.parentNode.insertBefore(tiene, bus.nextSibling);
   var tab=document.getElementById("tab-consultas");
   tab.addEventListener("input", function(e){
     var t=e.target;

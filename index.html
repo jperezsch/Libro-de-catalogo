@@ -283,7 +283,7 @@
   .imp-tabla-caja{overflow:auto;margin:8px 0;}
   .imp-resp{display:block;margin:8px 0;font-size:14px;}
   @media (max-width:760px){ .imp-cols{grid-template-columns:1fr;} }
-  /* ---- v0.9.44: emparejado ---- */
+  /* ---- v0.9.45: emparejado ---- */
   .imp-estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin:8px 0;color:var(--ink-soft);}
   .imp-filtro{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0;}
   .imp-filtro input{flex:1 1 150px;min-width:0;}
@@ -313,7 +313,7 @@
   .imp-ayuda p{margin:6px 0;}
   .imp-alerta{color:var(--danger);}
   .imp-no{margin-top:8px;}
-  /* ---- v0.9.44: asistente ---- */
+  /* ---- v0.9.45: asistente ---- */
   .imp-pasos{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
   .imp-paso-btn{flex:1 1 150px;border:1px solid var(--line-fuerte);background:var(--paper-2);border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;color:var(--ink);}
   .imp-paso-btn.activo{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
@@ -568,7 +568,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.44</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.45</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -931,7 +931,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.44</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.45</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -957,6 +957,15 @@
         <p class="nota" id="imp-msg"></p>
         <div id="imp-cont"></div>
       </div>
+      </details>
+      <details class="subbloque-gest" id="sub-mover">
+        <summary>Mover valores entre campos (corregir una importación)</summary>
+        <p class="nota">Copia el contenido de un campo a otro en los registros que elijas. Sirve para corregir una columna que se emparejó con el campo equivocado. Por ejemplo, mover «Nombre de la colección» a «Ubicación en colección». Primero se muestra cuántos registros cambiarían y no se modifica nada hasta que lo confirmes.</p>
+        <div class="imp-fila-opc"><label>Mover desde <select id="mv-origen"></select></label><label>hacia <select id="mv-destino"></select></label></div>
+        <div class="imp-fila-opc"><label>Registros <select id="mv-alcance"></select></label></div>
+        <div class="imp-fila-opc"><label><input type="checkbox" id="mv-vaciar" checked> Vaciar el campo de origen después de mover</label><label><input type="checkbox" id="mv-reemplazar"> Reemplazar el destino si ya tiene un valor</label><label><input type="checkbox" id="mv-respaldo" checked> Descargar un zip de respaldo antes</label></div>
+        <div class="barra-botones"><button type="button" class="btn secundario" id="mv-ver">Ver cuántos cambiarían</button><button type="button" class="btn" id="mv-aplicar" disabled>Aplicar</button></div>
+        <p class="nota" id="mv-msg"></p>
       </details>
       <details class="subbloque-gest" id="sub-exportar" open>
         <summary>Exportar datos</summary>
@@ -1088,7 +1097,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.44";
+var APP_VERSION = "v0.9.45";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1190,18 +1199,31 @@ function abrirDB(){
   });
   return dbPromise;
 }
+var idbCache = {}, idbOcupado = false, idbPendiente = false;
 function guardarEnIndexedDB(){ if(modoAcceso!=="admin") return;
+  // escribe solo los registros que cambiaron desde el último guardado (con miles de registros, reescribir todo hacía lenta la app)
+  if(idbOcupado){ idbPendiente=true; return; }
+  var nuevoCache = {}, cambiados = [], borrados = [];
+  registros.forEach(function(r){
+    var js = JSON.stringify(r); nuevoCache[r.id] = js;
+    if(idbCache[r.id] !== js) cambiados.push(r);
+  });
+  Object.keys(idbCache).forEach(function(id){ if(!(id in nuevoCache)) borrados.push(id); });
+  if(!cambiados.length && !borrados.length) return;
+  idbOcupado = true;
   abrirDB().then(function(db){
     var tx = db.transaction(DB_STORE,"readwrite");
     var store = tx.objectStore(DB_STORE);
-    store.clear();
-    registros.forEach(function(r){ store.put(r); });
-  });
+    cambiados.forEach(function(r){ store.put(r); });
+    borrados.forEach(function(id){ store.delete(id); });
+    tx.oncomplete = function(){ idbCache = nuevoCache; idbOcupado = false; if(idbPendiente){ idbPendiente=false; guardarEnIndexedDB(); } };
+    tx.onerror = tx.onabort = function(){ idbOcupado = false; idbPendiente = false; };
+  }).catch(function(){ idbOcupado = false; });
 }
 function cargarDesdeIndexedDB(cb){
   abrirDB().then(function(db){
     var tx = db.transaction(DB_STORE,"readonly");
-    tx.objectStore(DB_STORE).getAll().onsuccess = function(e){ cb(e.target.result || []); };
+    tx.objectStore(DB_STORE).getAll().onsuccess = function(e){ var res=e.target.result || []; idbCache={}; res.forEach(function(r){ try{ idbCache[r.id]=JSON.stringify(r); }catch(er){} }); cb(res); };
   }).catch(function(){ cb([]); });
 }
 
@@ -3003,6 +3025,21 @@ function registrosMostradosDatos(){
         && (!filtroEdicionDatos || sesionEdicionDeRegistro(r)===filtroEdicionDatos);
   });
 }
+var datosGrupos = {}, datosClaves = [];
+function filasGrupoHtml(lista){
+  var html="";
+  lista.forEach(function(reg){
+    var et = etiquetaRegistro(reg), marcado = seleccionDescarga.has(reg.id), partesExtra = [];
+    if(agruparDatosPor!=="coleccion") partesExtra.push(coleccionDeRegistro(reg));
+    if(agruparDatosPor!=="sesion") partesExtra.push("Ingreso "+sesionDeRegistro(reg));
+    if(agruparDatosPor!=="sesionEdicion" && reg.modificadoEn) partesExtra.push("Edición "+sesionEdicionDeRegistro(reg));
+    var textoCompleto = [escapeHtml(resumenLinea1(et)), resumenLinea2Html(et)].concat(partesExtra.map(escapeHtml)).join(" · ")+iconosArchivos(reg);
+    html += '<div class="fila-compacta" data-id="'+reg.id+'"><span class="fila-compacta-texto">'+textoCompleto+'</span>'
+      +'<button class="btn-ver-compacto btn-ver-resumen" title="Ver ficha">👁️</button><button class="btn-borrar-compacto" title="Eliminar este registro">🗑️</button>'
+      +'<input type="checkbox" class="chk-registro" data-id="'+reg.id+'"'+(marcado?' checked':'')+' title="Seleccionar para descarga"></div>';
+  });
+  return html;
+}
 function renderResumenDatos(){
   var cont = document.getElementById("resumen-datos");
   if(!cont) return;
@@ -3031,11 +3068,13 @@ function renderResumenDatos(){
   var filtrados = registrosMostradosDatos();
   var fnClave = agruparDatosPor==="sesion" ? sesionDeRegistro : (agruparDatosPor==="sesionEdicion" ? sesionEdicionDeRegistro : coleccionDeRegistro);
   var grupos = agruparRegistros(filtrados, fnClave);
+  datosGrupos = grupos;
   var claves = Object.keys(grupos).sort(function(a,b){
     if(CLAVES_VACIAS.indexOf(a)>-1) return 1;
     if(CLAVES_VACIAS.indexOf(b)>-1) return -1;
     return a.localeCompare(b);
   });
+  datosClaves = claves;
 
   // conservar grupos abiertos y posiciones de scroll al repintar
   var gruposAbiertosPrev = {}, scrollListasPrev = {}, scrollVentanaPrev = window.pageYOffset;
@@ -3059,22 +3098,7 @@ function renderResumenDatos(){
         + ' <span class="resumen-conteo">('+lista.length+')</span>'
         + '<input type="checkbox" class="chk-grupo" data-grupo="'+idxGrupo+'"'+(todosSeleccionados?' checked':'')+' title="Seleccionar todo el grupo" onclick="event.stopPropagation()">'
         + '</summary><div class="ficha-seccion-body">';
-      html += '<div class="lista-scroll" style="max-height:220px;">';
-      lista.forEach(function(reg){
-        var et = etiquetaRegistro(reg);
-        var marcado = seleccionDescarga.has(reg.id);
-        var partesExtra = [];
-        if(agruparDatosPor!=="coleccion") partesExtra.push(coleccionDeRegistro(reg));
-        if(agruparDatosPor!=="sesion") partesExtra.push("Ingreso "+sesionDeRegistro(reg));
-        if(agruparDatosPor!=="sesionEdicion" && reg.modificadoEn) partesExtra.push("Edición "+sesionEdicionDeRegistro(reg));
-        var textoCompleto = [escapeHtml(resumenLinea1(et)), resumenLinea2Html(et)].concat(partesExtra.map(escapeHtml)).join(" · ")+iconosArchivos(reg);
-        html += '<div class="fila-compacta" data-id="'+reg.id+'">';
-        html += '<span class="fila-compacta-texto">'+textoCompleto+'</span>';
-        html += '<button class="btn-ver-compacto btn-ver-resumen" title="Ver ficha">👁️</button>';
-        html += '<button class="btn-borrar-compacto" title="Eliminar este registro">🗑️</button>';
-        html += '<input type="checkbox" class="chk-registro" data-id="'+reg.id+'"'+(marcado?' checked':'')+' title="Seleccionar para descarga">';
-        html += '</div>';
-      });
+      html += '<div class="lista-scroll" style="max-height:220px;" data-g="'+idxGrupo+'">'+(gruposAbiertosPrev[clave]?filasGrupoHtml(lista):'');
       html += '</div></div></details>';
     });
     html += '</div>';
@@ -3085,39 +3109,35 @@ function renderResumenDatos(){
     if(d.open && scrollListasPrev[k]){ var ls = d.querySelector(".lista-scroll"); if(ls) ls.scrollTop = scrollListasPrev[k]; }
   });
   if(window.pageYOffset !== scrollVentanaPrev) window.scrollTo(0, scrollVentanaPrev);
-  cont.querySelectorAll(".btn-ver-resumen").forEach(function(btn){
-    btn.onclick = function(){ mostrarFichaConsulta(btn.closest(".fila-compacta").getAttribute("data-id")); };
-  });
-  cont.querySelectorAll(".btn-borrar-compacto").forEach(function(btn){
-    btn.onclick = function(){ eliminarRegistros([btn.closest(".fila-compacta").getAttribute("data-id")]); };
-  });
   var bMar=document.getElementById("btn-marcar-datos");
   if(bMar){ var lm=registrosMostradosDatos(); var act=lm.length>0 && lm.every(function(r){ return seleccionDescarga.has(r.id); }); bMar.setAttribute("aria-pressed", act?"true":"false"); bMar.textContent=act?"✓ Marcar todo":"Marcar todo"; }
   var bEl=document.getElementById("btn-eliminar-datos");
   if(bEl){ var nSel=seleccionDescarga.size; bEl.disabled=!nSel; bEl.textContent="Eliminar marcados"+(nSel?" ("+nSel+")":""); }
-  cont.querySelectorAll(".fila-compacta-texto").forEach(function(span){
-    span.onclick = function(){
-      var chk = span.closest(".fila-compacta").querySelector(".chk-registro");
-      chk.checked = !chk.checked;
-      chk.dispatchEvent(new Event("change", {bubbles:true}));
-    };
-  });
-  cont.querySelectorAll(".chk-registro").forEach(function(chk){
-    chk.onchange = function(){
-      if(chk.checked) seleccionDescarga.add(chk.getAttribute("data-id"));
-      else seleccionDescarga.delete(chk.getAttribute("data-id"));
-      renderResumenDatos();
-    };
-  });
-  cont.querySelectorAll(".chk-grupo").forEach(function(chk, i){
-    chk.onchange = function(){
-      var clave = claves[i];
-      grupos[clave].forEach(function(r){
-        if(chk.checked) seleccionDescarga.add(r.id); else seleccionDescarga.delete(r.id);
-      });
-      renderResumenDatos();
-    };
-  });
+  if(!cont.__deleg){
+    cont.__deleg=true;
+    cont.addEventListener("click", function(e){
+      var ver=e.target.closest(".btn-ver-resumen"), bor=e.target.closest(".btn-borrar-compacto"), tx=e.target.closest(".fila-compacta-texto");
+      if(ver){ mostrarFichaConsulta(ver.closest(".fila-compacta").getAttribute("data-id")); }
+      else if(bor){ eliminarRegistros([bor.closest(".fila-compacta").getAttribute("data-id")]); }
+      else if(tx){ var chk=tx.closest(".fila-compacta").querySelector(".chk-registro"); chk.checked=!chk.checked; chk.dispatchEvent(new Event("change",{bubbles:true})); }
+    });
+    cont.addEventListener("change", function(e){
+      var t=e.target;
+      if(t.classList.contains("chk-registro")){
+        if(t.checked) seleccionDescarga.add(t.getAttribute("data-id")); else seleccionDescarga.delete(t.getAttribute("data-id"));
+        renderResumenDatos();
+      } else if(t.classList.contains("chk-grupo")){
+        var lg=datosGrupos[datosClaves[parseInt(t.getAttribute("data-grupo"),10)]]||[];
+        lg.forEach(function(r){ if(t.checked) seleccionDescarga.add(r.id); else seleccionDescarga.delete(r.id); });
+        renderResumenDatos();
+      }
+    });
+    cont.addEventListener("toggle", function(e){
+      var d=e.target; if(!d.matches||!d.matches("details[data-clave]")||!d.open) return;
+      var ls=d.querySelector(".lista-scroll"); if(!ls||ls.children.length) return;
+      var g=datosGrupos[d.getAttribute("data-clave")]; if(g) ls.innerHTML=filasGrupoHtml(g);
+    }, true);
+  }
 }
 function refrescarPanelesRegistros(){
   var bAct=document.querySelector("#tabs button.active");
@@ -4488,10 +4508,12 @@ function cumpleConsulta(r, omitir){
   if(e.tiene.pdf && !((r.publicacionesPdf||[]).length)) return false;
   return true;
 }
+var consTimer=null;
 function resultadosConsulta(){
   var lista=registros.filter(function(r){ return cumpleConsulta(r); });
-  var o=consEstado.orden;
-  function clave(r){
+  var o=consEstado.orden, kc=new Map();
+  function clave(r){ var v=kc.get(r); if(v===undefined){ v=clave0(r); kc.set(r,v); } return v; }
+  function clave0(r){
     if(o==="nombre") return normTxt(nombreVigenteReg(r));
     if(o==="fecha") return r.fechaColecta||"";
     if(o==="localidad") return normTxt(r.localidad||r.localidadVerbatim);
@@ -4585,6 +4607,11 @@ function construirConsultas(){
   tiene.innerHTML='<span class="name">Solo registros con:</span> <label><input type="checkbox" data-t="coord"> coordenadas</label> <label><input type="checkbox" data-t="fotos"> fotos</label> <label><input type="checkbox" data-t="pdf"> PDF de publicaciones</label>';
   var bus=document.querySelector("#tab-consultas .cons-buscador"); bus.parentNode.insertBefore(tiene, bus.nextSibling);
   var tab=document.getElementById("tab-consultas");
+  tab.addEventListener("focusin", function(e){
+    var t=e.target; if(!t.classList||!t.classList.contains("cons-in")) return;
+    var c=CONS_CAMPOS.filter(function(x){ return x.k===t.getAttribute("data-k"); })[0], dl=document.getElementById("dl-"+t.getAttribute("data-k"));
+    if(c&&dl) dl.innerHTML=opcionesCampo(c).map(function(v){ return '<option value="'+escapeHtml(v)+'">'; }).join("");
+  });
   tab.addEventListener("input", function(e){
     var t=e.target;
     if(t.id==="cons-texto"){ consEstado.texto=t.value; }
@@ -4593,7 +4620,9 @@ function construirConsultas(){
       var k=t.getAttribute("data-r"); consEstado.r[k]=consEstado.r[k]||{d:"",h:""}; consEstado.r[k][t.getAttribute("data-lado")]=t.value;
     } else if(t.getAttribute("data-t")){ consEstado.tiene[t.getAttribute("data-t")]=t.checked; }
     else return;
-    consEstado.mostrar=100; pintarConsultas(t); programarRegistroBusqueda();
+    consEstado.mostrar=100;
+    if(registros.length>600){ clearTimeout(consTimer); consTimer=setTimeout(function(){ pintarConsultas(); programarRegistroBusqueda(); },280); }
+    else { pintarConsultas(); programarRegistroBusqueda(); }
   });
   document.getElementById("cons-orden").addEventListener("change", function(){ consEstado.orden=this.value; pintarConsultas(); });
   document.getElementById("cons-limpiar").addEventListener("click", limpiarConsulta);
@@ -4659,11 +4688,7 @@ function pintarConsultas(){
   [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"]].forEach(function(t){ if(e.tiene[t[0]]) chips.push(["t:"+t[0],"Solo "+t[1]]); });
   document.getElementById("cons-chips").innerHTML=chips.map(function(c){ return '<span class="cons-chip">'+escapeHtml(c[1])+' <button type="button" data-quitar="'+escapeHtml(c[0])+'" title="Quitar este filtro">✕</button></span>'; }).join("");
   document.getElementById("cons-limpiar").classList.toggle("oculto", !chips.length);
-  // sugerencias: sólo lo que existe entre los registros que quedan con los demás filtros
-  CONS_CAMPOS.forEach(function(c){
-    var dl=document.getElementById("dl-"+c.k); if(!dl) return;
-    dl.innerHTML=opcionesCampo(c).map(function(v){ return '<option value="'+escapeHtml(v)+'">'; }).join("");
-  });
+  // las sugerencias de cada campo se calculan al entrar en él (ver construirConsultas), no en cada repintado
   var lista=resultadosConsulta();
   document.getElementById("cons-titulo").textContent="Resultados ("+lista.length+(lista.length!==registros.length?" de "+registros.length:"")+")";
   var cont=document.getElementById("cons-lista"), h="";
@@ -5105,7 +5130,8 @@ var IMP_SINONIMOS = {
   numeroCampo:["fieldnumber","recordnumber","numerodecampo","numerocampo","ncampo","codigodecampo"],
   institucionAcronimo:["institutioncode","institucion","acronimoinstitucion"],
   coleccionAcronimo:["collectioncode","coleccion","codigocoleccion"],
-  coleccionNombre:["ubicacion","nombrecoleccion","nombredelacoleccion"],
+  coleccionNombre:["nombrecoleccion","nombredelacoleccion"],
+  ubicacionColeccion:["ubicacion","ubicaciondelejemplar","ubicacionencoleccion","caja","gabinete","estante"],
   phylum:["phylum","filo"], clase:["class","clase"], orden:["order","orden"], familia:["family","familia"], genero:["genus","genero"],
   "@nombre":["scientificname","nombrecientifico","especie","taxon","nombre"],
   "@determinador":["identifiedby","determinador","determinadopor"], "@fechaDet":["dateidentified","fechadeterminacion","fechadeterminacion"],
@@ -5392,6 +5418,14 @@ function impPintarSinDestino(){
   sin.forEach(function(c){ h+='<div class="imp-sin"><strong>'+escapeHtml(c.nombre)+'</strong> <small>'+c.llenos+'/'+imp.datos.length+' llenos</small>'+impPintarEjemplos(impEjemplosCol(c.i,4))+'<button type="button" class="btn tenue small" data-anexar="'+c.i+'">Anexar a Observaciones</button></div>'; });
   return h+'</details>';
 }
+function impAvisosMapeo(){
+  var CLAVE={coleccionNombre:"Nombre de la colección",coleccionAcronimo:"Acrónimo de la colección",institucionAcronimo:"Institución",phylum:"Phylum",clase:"Clase",orden:"Orden"}, out=[];
+  imp.mapas.forEach(function(m){
+    if(!CLAVE[m.target]) return; var c=imp.cols[m.col];
+    if(c.distintos>25) out.push('La columna «'+c.nombre+'» tiene '+c.distintos+' valores distintos y va a «'+CLAVE[m.target]+'». Ese campo agrupa los registros (cada valor distinto forma una colección o grupo). Si esa columna indica en realidad una caja, un estante o una ubicación, empareja con «Ubicación en colección».');
+  });
+  return out.length?'<div class="imp-plantilla-sug">'+out.map(escapeHtml).join('<br>')+'</div>':'';
+}
 function impPintarInterno(cont){
   if(!imp){ cont.innerHTML=""; return; }
   if(!imp.paso) imp.paso=1;
@@ -5426,6 +5460,7 @@ function impPintarInterno(cont){
     h+=impPintarFijos();
     h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="1">← Volver a la planilla</button><button type="button" class="btn" data-paso="3">Siguiente: revisar →</button></div>';
   } else {
+    h+=impAvisosMapeo();
     h+=impPintarSinDestino();
     h+=impPintarOpciones();
     h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="2">← Volver al emparejado</button><button type="button" class="btn" id="imp-revisar">Revisar importación</button></div>';
@@ -5839,6 +5874,55 @@ function iniciarImportador(){
   });
 }
 iniciarImportador();
+function iniciarMover(){
+  var det=document.getElementById("sub-mover"); if(!det) return;
+  var listo=false, plan=null;
+  function campos(){ return impObjetivos().filter(function(o){ return o.k.charAt(0)!=="@" && o.k.indexOf("L:")!==0 && (o.tipo==="texto"||o.tipo==="lista"||o.tipo==="numero"||o.tipo==="fecha"); }); }
+  function llenar(){
+    var cs=campos(), op=cs.map(function(o){ return '<option value="'+escapeHtml(o.k)+'">'+escapeHtml(o.l)+'</option>'; }).join("");
+    document.getElementById("mv-origen").innerHTML=op; document.getElementById("mv-destino").innerHTML=op;
+    document.getElementById("mv-origen").value="coleccionNombre"; document.getElementById("mv-destino").value="ubicacionColeccion";
+    var arch={}; registros.forEach(function(r){ var a=r.origenImportacion&&r.origenImportacion.archivo; if(a) arch[a]=(arch[a]||0)+1; });
+    document.getElementById("mv-alcance").innerHTML='<option value="">todos ('+registros.length+')</option>'+Object.keys(arch).map(function(a){ return '<option value="a:'+escapeHtml(a)+'">importados desde «'+escapeHtml(a)+'» ('+arch[a]+')</option>'; }).join("");
+  }
+  det.addEventListener("toggle", function(){ if(det.open && !listo){ listo=true; llenar(); } });
+  function calcular(){
+    var o=document.getElementById("mv-origen").value, d=document.getElementById("mv-destino").value, al=document.getElementById("mv-alcance").value, rem=document.getElementById("mv-reemplazar").checked;
+    if(o===d) return {error:"El origen y el destino son el mismo campo."};
+    var lista=registros.filter(function(r){ return !al || (r.origenImportacion&&"a:"+r.origenImportacion.archivo===al); });
+    var mover=[], conflicto=0, sinValor=0;
+    lista.forEach(function(r){
+      var v=r[o]; if(v==null||String(v).trim()===""){ sinValor++; return; }
+      if(r[d]!=null && String(r[d]).trim()!=="" && !rem){ conflicto++; return; }
+      mover.push(r);
+    });
+    return {o:o,d:d,mover:mover,conflicto:conflicto,sinValor:sinValor,total:lista.length};
+  }
+  document.getElementById("mv-ver").addEventListener("click", function(){
+    if(modoAcceso!=="admin") return;
+    plan=calcular(); var m=document.getElementById("mv-msg");
+    if(plan.error){ m.textContent=plan.error; document.getElementById("mv-aplicar").disabled=true; return; }
+    var ej=plan.mover.slice(0,3).map(function(r){ return "«"+r[plan.o]+"»"; }).join(", ");
+    m.textContent=plan.mover.length+" de "+plan.total+" registro(s) cambiarían"+(ej?" (por ejemplo "+ej+")":"")+". "+plan.sinValor+" no tienen valor en el origen"+(plan.conflicto?" y "+plan.conflicto+" ya tienen valor en el destino (se dejan igual)":"")+".";
+    document.getElementById("mv-aplicar").disabled=!plan.mover.length;
+  });
+  document.getElementById("mv-aplicar").addEventListener("click", function(){
+    if(modoAcceso!=="admin"||!plan||!plan.mover.length) return;
+    if(!confirm("Se modificarán "+plan.mover.length+" registro(s). ¿Continuar?")) return;
+    if(document.getElementById("mv-respaldo").checked && registros.length){
+      var f=new Date(), url=URL.createObjectURL(zipDeRespaldo(registros)), a=document.createElement("a");
+      a.href=url; a.download="Respaldo_antes_de_mover_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+    }
+    var ahora=new Date().toISOString(), vaciar=document.getElementById("mv-vaciar").checked;
+    plan.mover.forEach(function(r){ r[plan.d]=r[plan.o]; if(vaciar) r[plan.o]=""; r.modificadoEn=ahora; r.modificadoPor=operadorActual(); });
+    persistir(); refrescarPanelesRegistros();
+    registrarActividad("edicion","mover "+plan.o+" → "+plan.d+" en "+plan.mover.length+" registros");
+    if(carpetaHandle) sincronizarCarpeta(false);
+    document.getElementById("mv-msg").textContent="Listo: "+plan.mover.length+" registro(s) modificados."; document.getElementById("mv-aplicar").disabled=true; plan=null;
+  });
+}
+iniciarMover();
 
 iniciarSelectsOtro();
 

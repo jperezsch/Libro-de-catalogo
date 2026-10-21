@@ -283,7 +283,7 @@
   .imp-tabla-caja{overflow:auto;margin:8px 0;}
   .imp-resp{display:block;margin:8px 0;font-size:14px;}
   @media (max-width:760px){ .imp-cols{grid-template-columns:1fr;} }
-  /* ---- v0.9.45: emparejado ---- */
+  /* ---- v0.9.46: emparejado ---- */
   .imp-estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin:8px 0;color:var(--ink-soft);}
   .imp-filtro{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0;}
   .imp-filtro input{flex:1 1 150px;min-width:0;}
@@ -313,7 +313,7 @@
   .imp-ayuda p{margin:6px 0;}
   .imp-alerta{color:var(--danger);}
   .imp-no{margin-top:8px;}
-  /* ---- v0.9.45: asistente ---- */
+  /* ---- v0.9.46: asistente ---- */
   .imp-pasos{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
   .imp-paso-btn{flex:1 1 150px;border:1px solid var(--line-fuerte);background:var(--paper-2);border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;color:var(--ink);}
   .imp-paso-btn.activo{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
@@ -322,6 +322,26 @@
   .imp-fila-enc th{background:var(--accent-soft);}
   .imp-plantilla-sug{background:var(--warn-soft);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:14px;}
   .imp-sin{border-bottom:1px solid var(--line);padding:6px 0;font-size:13.5px;}
+  /* ---- v0.9.46: previsualización y emparejado con tabla ---- */
+  .imp-paso-btn:disabled{opacity:.45;cursor:not-allowed;}
+  .imp-nombre-in{width:100%;min-width:110px;font-size:12px;padding:2px 4px;font-weight:600;border:1px solid var(--line-fuerte);border-radius:4px;background:#fff;}
+  .imp-fila-otra td,.imp-fila-otra th{background:var(--paper-2);color:var(--ink-soft);}
+  .imp-subtabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+  .imp-sub-btn{border:1px solid var(--line-fuerte);background:var(--paper-2);border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;color:var(--ink);}
+  .imp-sub-btn.activo{background:var(--accent-soft);border-color:var(--accent);font-weight:600;}
+  .imp-dos{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start;}
+  #imp-izq{max-height:640px;overflow:auto;padding-right:4px;}
+  .imp-der-tabla{position:sticky;top:8px;}
+  .imp-der-tabla .imp-tabla-previa{max-height:560px;}
+  .imp-tabla-previa th.foco,.imp-tabla-previa td.foco{background:var(--warn-soft);outline:1px solid var(--accent);}
+  .imp-prop-card,.imp-man-card{border:1px solid var(--pc-bd,var(--line-fuerte));border-radius:8px;padding:8px 10px;margin-bottom:8px;background:var(--pc-bg,#fff);cursor:pointer;}
+  .imp-prop-card.elegida,.imp-man-card.elegida{outline:2px solid var(--accent);}
+  .imp-prop-cab{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;}
+  .imp-man-lbl{display:flex;flex-direction:column;gap:3px;font-size:13px;margin-top:6px;}
+  .imp-man-sel{width:100%;font-size:13px;}
+  .imp-man-acc{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+  .imp-sug-fila{margin:4px 0;font-size:13px;}
+  @media (max-width:900px){ .imp-dos{grid-template-columns:1fr;} .imp-der-tabla{position:static;} }
   @media (max-width:760px){ .imp-par{grid-template-columns:1fr;} .imp-par-flecha{display:none;} .imp-par-acc{flex-direction:row;} }
   .full{grid-column:1/-1;}
   .leyenda-campos{font-size:13px;color:var(--ink-soft);margin:-4px 0 14px;}
@@ -568,7 +588,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.45</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.46</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -931,7 +951,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.45</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.46</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1097,7 +1117,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.45";
+var APP_VERSION = "v0.9.46";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -5102,17 +5122,19 @@ async function impXlsx(buf){
 
 // ---------- preparar columnas ----------
 function impPreparar(){
-  imp.sel=null; imp.ejem={}; imp.ejemApp={}; imp.vcache={}; imp.appSet={};
-  var filas=imp.filas, enc=Math.max(1,imp.filaEnc)-1, cab=(filas[enc]||[]).map(function(x){ return String(x==null?"":x).trim(); });
-  var ancho=Math.max(cab.length, filas.slice(enc+1,enc+200).reduce(function(m,f){ return Math.max(m,f.length); },0)), usados={};
+  imp.sel=null; imp.ejem={}; imp.ejemApp={}; imp.vcache={}; imp.appSet={}; imp.sugCache={}; imp.nombres=imp.nombres||{};
+  if(!imp.filaDatos || !imp.datosManual) imp.filaDatos=Math.max(1,imp.filaEnc)+1;
+  imp.filaDatos=Math.max(1,imp.filaDatos);
+  var filas=imp.filas, enc=Math.max(1,imp.filaEnc)-1, ini=imp.filaDatos-1, cab=(filas[enc]||[]).map(function(x){ return String(x==null?"":x).trim(); });
+  var ancho=Math.max(cab.length, filas.slice(ini,ini+200).reduce(function(m,f){ return Math.max(m,f.length); },0)), usados={};
   imp.cols=[];
   for(var i=0;i<ancho;i++){
-    var nombre=cab[i]||("Columna "+(i+1)), base=nombre, n=2;
+    var orig=cab[i]||"", nombre=(imp.nombres[i]!==undefined&&imp.nombres[i]!=="")?imp.nombres[i]:(orig||("Columna "+(i+1))), base=nombre, n=2;
     while(usados[normTxt(nombre)]) nombre=base+" ("+(n++)+")";
     usados[normTxt(nombre)]=1;
-    imp.cols.push({i:i, nombre:nombre});
+    imp.cols.push({i:i, nombre:nombre, original:orig});
   }
-  imp.datos=filas.slice(enc+1).map(function(f,k){ return {fila:enc+2+k, v:imp.cols.map(function(c){ var x=f[c.i]; return x==null?"":String(x).replace(/\s+/g," ").trim(); })}; })
+  imp.datos=filas.slice(ini).map(function(f,k){ return {fila:ini+1+k, v:imp.cols.map(function(c){ var x=f[c.i]; return x==null?"":String(x).replace(/\s+/g," ").trim(); })}; })
     .filter(function(r){ return r.v.some(function(x){ return x!==""; }); });
   imp.cols.forEach(function(c){
     var cuenta={}, llenos=0;
@@ -5148,14 +5170,15 @@ var IMP_SINONIMOS = {
   procedencia:["basisofrecord","procedencia"], altitud_m:["altitud","elevation","verbatimelevation","altitudm","minimumelevationinmeters"],
   fechaRecepcion:["fechaingreso","fecharecepcion","fechadeingreso"], horaColecta:["eventtime","hora","horacolecta"]
 };
-function impSugerir(){
-  var objs=impObjetivos(), tomados={}, mapas=[];
+function impSugerir(preservar){
+  var objs=impObjetivos(), tomados={}, mapas=[], base=preservar?imp.mapas.filter(function(m){ return m.conf; }):[], colsUsadas={};
+  base.forEach(function(m){ tomados[m.target]=1; colsUsadas[m.col]=1; });
   var porSin={}; Object.keys(IMP_SINONIMOS).forEach(function(k){ IMP_SINONIMOS[k].forEach(function(s){ if(!porSin[s]) porSin[s]=k; }); });
   var visto={};
   imp.cols.forEach(function(c){
     var h=normTxt(c.nombre).replace(/\s*\(\d+\)$/,"").replace(/[^a-z0-9]/g,""), k=porSin[h];
     if(!k){ var o=objs.filter(function(x){ return normTxt(x.l).replace(/[^a-z0-9]/g,"")===h; })[0]; if(o) k=o.k; }
-    if(!k) return;
+    if(!k || colsUsadas[c.i]) return;
     // columna repetida (por ejemplo dos «stateProvince»): la segunda va a Provincia
     if(visto[h] && k==="region") k="provincia";
     visto[h]=k;
@@ -5164,7 +5187,7 @@ function impSugerir(){
     tomados[k]=1; mapas.push(impNuevoMapa(c.i,k,false,1));
   });
   // columnas repetidas con el mismo encabezado base: región y luego provincia
-  imp.mapas=mapas;
+  imp.mapas=base.concat(mapas);
 }
 function impNuevoMapa(ci,k,conf,score){
   var m={col:ci, target:k, conf:conf!==false?(conf===undefined?true:!!conf):false, score:score||0, cid:(imp.nextCid=(imp.nextCid||0)+1), opts:{fmt:"auto", error:"obs", valores:{}}}, o=impObjetivo(k);
@@ -5356,23 +5379,24 @@ async function impCargarArchivo(file){
   try{
     impMensaje("Leyendo «"+file.name+"»…");
     var buf=await file.arrayBuffer(), nombre=file.name, esXlsx=/\.xlsx?m?$/i.test(nombre)||(new Uint8Array(buf,0,2)[0]===0x50&&new Uint8Array(buf,0,2)[1]===0x4B);
-    imp={nombreArchivo:nombre, filaEnc:1, minLlenos:3, politica:"omitir", clave:[], fijos:[], mapas:[], hojas:null, hojaIdx:0, resultado:null, sel:null, ejem:{}, ejemApp:{}, filIzq:"", filDer:"", estIzq:"todas", estDer:"todos", ocultarConf:true, nextCid:0, paso:1};
+    imp={nombreArchivo:nombre, filaEnc:1, minLlenos:3, politica:"omitir", clave:[], fijos:[], mapas:[], hojas:null, hojaIdx:0, resultado:null, sel:null, ejem:{}, ejemApp:{}, filIzq:"", filDer:"", estIzq:"todas", estDer:"todos", ocultarConf:true, nextCid:0, paso:1, prevOk:false, autoHecho:false, sub:"auto", foco:null, tent:{}, ign:{}, nombres:{}, datosManual:false, filaDatos:2, verVacias:false};
     if(/\.xls$/i.test(nombre)){ impMensaje("Los archivos .xls antiguos no se pueden leer. Guárdalo como .xlsx o como CSV desde Excel.",true); imp=null; return; }
     if(esXlsx){ var libro=await impXlsx(buf); imp.hojas=libro.hojas; if(!imp.hojas.length) throw new Error("El libro no tiene hojas."); imp.hojaIdx=0; imp.filas=await imp.hojas[0].leer(); imp.hojaNombre=imp.hojas[0].nombre; }
     else { imp.filas=impCsv(impDecodificar(buf)); imp.hojaNombre=""; }
-    impPreparar(); impSugerir(); imp.clave=impClaveSugerida();
-    impMensaje(imp.datos.length+" fila(s) y "+imp.cols.length+" columna(s) leídas de «"+nombre+"». Sigue con el paso 2 para emparejar las columnas.");
+    impPreparar();
+    impMensaje(imp.datos.length+" fila(s) y "+imp.cols.length+" columna(s) leídas de «"+nombre+"». Revisa la previsualización y pulsa «Previsualización finalizada: continuar».");
     impPintar();
   }catch(e){ impMensaje("No se pudo leer el archivo: "+((e&&e.message)||e),true); imp=null; impPintar(); }
 }
 async function impCambiarHoja(i){
   imp.hojaIdx=i; imp.filas=await imp.hojas[i].leer(); imp.hojaNombre=imp.hojas[i].nombre;
-  impPreparar(); impSugerir(); imp.clave=impClaveSugerida(); imp.resultado=null; impPintar();
+  imp.nombres={}; impReiniciarEmparejado(); impPreparar(); imp.resultado=null; impPintar();
 }
-function impOpcionesObjetivos(sel){
-  var objs=impObjetivos(), grupos={}, orden=[];
+function impOpcionesObjetivos(sel,c){
+  var objs=impObjetivos(), grupos={}, orden=[], pre="";
+  if(c){ var sg=impSugerencias(c); if(sg.length) pre='<optgroup label="Más parecidos">'+sg.map(function(x){ return '<option value="'+escapeHtml(x.o.k)+'"'+(sel===x.o.k?' selected':'')+'>'+escapeHtml(x.o.l)+' ('+Math.round(x.s*100)+' %)</option>'; }).join("")+'</optgroup>'; }
   objs.forEach(function(o){ if(!grupos[o.g]){ grupos[o.g]=[]; orden.push(o.g); } grupos[o.g].push(o); });
-  return '<option value="">No importar</option>'+orden.map(function(g){ return '<optgroup label="'+escapeHtml(g)+'">'+grupos[g].map(function(o){ return '<option value="'+escapeHtml(o.k)+'"'+(sel===o.k?' selected':'')+'>'+escapeHtml(o.l)+'</option>'; }).join("")+'</optgroup>'; }).join("");
+  return '<option value="">'+(c?'Elige un campo…':'No importar')+'</option>'+pre+orden.map(function(g){ return '<optgroup label="'+escapeHtml(g)+'">'+grupos[g].map(function(o){ return '<option value="'+escapeHtml(o.k)+'"'+(sel===o.k?' selected':'')+'>'+escapeHtml(o.l)+'</option>'; }).join("")+'</optgroup>'; }).join("");
 }
 function impPintar(){
   var cont=impElem("imp-cont"); if(!cont) return;
@@ -5385,20 +5409,95 @@ function impPintar(){
   window.scrollTo(0,pos.y);
   if(focoVal!==null&&focoVal!==undefined){ var nf=Array.prototype.filter.call(cont.querySelectorAll("[data-val],[data-valtxt]"),function(x){ return (x.getAttribute("data-val")||x.getAttribute("data-valtxt"))===focoVal && x.getAttribute("data-i")===focoI; })[0]; if(nf&&nf.focus){ try{ nf.focus({preventScroll:true}); }catch(e){} } }
 }
-function impTablaPrevia(abierta){
-  var filas=imp.filas, enc=Math.max(1,imp.filaEnc)-1, ini=Math.max(0,enc), n=Math.min(filas.length,ini+11), ancho=imp.cols.length;
+function impReiniciarEmparejado(){ imp.mapas=[]; imp.clave=[]; imp.prevOk=false; imp.autoHecho=false; imp.tent={}; imp.ign={}; imp.foco=null; imp.resultado=null; }
+function impTablaPrevia(){
+  var filas=imp.filas, enc=Math.max(1,imp.filaEnc), dat=imp.filaDatos, ancho=imp.cols.length;
+  var n=Math.min(filas.length, Math.min(40, Math.max(dat+8, enc+3)));
   var h='<div class="imp-tabla-caja imp-tabla-previa"><table class="ficha-tabla"><tbody>';
-  for(var i=ini;i<n;i++){
-    var f=filas[i]||[];
-    h+='<tr'+(i===enc?' class="imp-fila-enc"':'')+'><th>'+(i+1)+'</th>';
-    for(var j=0;j<ancho;j++) h+=(i===enc?'<th>':'<td>')+escapeHtml(impCorto(f[j]==null?"":String(f[j]),40))+(i===enc?'</th>':'</td>');
+  for(var i=1;i<=n;i++){
+    var f=filas[i-1]||[], esNombre=(i===enc), esDato=(i>=dat), clase=esNombre?'imp-fila-enc':(esDato?'':'imp-fila-otra');
+    h+='<tr class="'+clase+'"><th title="'+(esNombre?'Fila con los nombres de columna':(esDato?'Fila de datos':'Fila de encabezado que no se usa'))+'">'+i+'</th>';
+    for(var j=0;j<ancho;j++){
+      if(esNombre) h+='<th><input type="text" class="imp-nombre-in" data-nombre="'+j+'" value="'+escapeHtml(imp.cols[j].nombre)+'" title="'+escapeHtml('Nombre original: '+(imp.cols[j].original||'(vacío)')+'. Puedes editarlo.')+'"></th>';
+      else h+='<td>'+escapeHtml(impCorto(f[j]==null?"":String(f[j]),40))+'</td>';
+    }
     h+='</tr>';
   }
   return h+'</tbody></table></div>';
 }
+function impTablaColumnas(){
+  var ancho=imp.cols.length, foco=imp.foco, h='<table class="ficha-tabla"><thead><tr>';
+  for(var j=0;j<ancho;j++) h+='<th'+(j===foco?' class="foco" data-colt="'+j+'"':'')+' title="'+escapeHtml(imp.cols[j].nombre)+'">'+escapeHtml(impCorto(imp.cols[j].nombre,24))+'</th>';
+  h+='</tr></thead><tbody>';
+  var n=Math.min(imp.datos.length,14);
+  for(var i=0;i<n;i++){ h+='<tr>'; for(j=0;j<ancho;j++) h+='<td'+(j===foco?' class="foco"':'')+'>'+escapeHtml(impCorto(imp.datos[i].v[j],40))+'</td>'; h+='</tr>'; }
+  return h+'</tbody></table>';
+}
+function impScrollTabla(){
+  var caja=impElem("imp-tabla-der"); if(!caja) return;
+  var th=caja.querySelector("th.foco"); if(!th) return;
+  caja.scrollLeft=Math.max(0,th.offsetLeft-60);
+}
+function impFoco(ci){
+  imp.foco=ci;
+  document.querySelectorAll("#imp-izq [data-foco]").forEach(function(el){ el.classList.toggle("elegida", parseInt(el.getAttribute("data-foco"),10)===ci); });
+  var caja=impElem("imp-tabla-der"); if(caja){ caja.innerHTML=impTablaColumnas(); impScrollTabla(); }
+  var t=impElem("imp-foco-nombre"); if(t&&imp.cols[ci]) t.textContent="Columna resaltada: «"+imp.cols[ci].nombre+"»";
+}
 function impPintarPasos(){
-  var nombres=["1. Leer la planilla","2. Emparejar columnas","3. Revisar e importar"];
-  return '<div class="imp-pasos">'+nombres.map(function(n,i){ return '<button type="button" class="imp-paso-btn'+(imp.paso===i+1?' activo':'')+'" data-paso="'+(i+1)+'">'+n+'</button>'; }).join("")+'</div>';
+  var nombres=["1. Previsualizar planilla","2. Emparejar columnas","3. Revisar e importar"];
+  return '<div class="imp-pasos">'+nombres.map(function(n,i){ var bloq=i>0&&!imp.prevOk; return '<button type="button" class="imp-paso-btn'+(imp.paso===i+1?' activo':'')+'" data-paso="'+(i+1)+'"'+(bloq?' disabled title="Termina primero la previsualización"':'')+'>'+n+'</button>'; }).join("")+'</div>';
+}
+function impEjemplosCampoHtml(o,n){
+  var ej=impEjemplosApp(o,n);
+  if(ej.length) return impPintarEjemplos(ej);
+  var op=(o.opciones||[]).slice(0,n);
+  return op.length?'<div class="imp-ej-etq">Opciones de la lista:</div>'+impPintarEjemplos(op):'<div class="imp-ej-etq">Aún no hay datos en tu colección. '+escapeHtml(IMP_PISTA[o.tipo]||"")+'</div>';
+}
+function impSugerencias(c){
+  imp.sugCache=imp.sugCache||{}; if(imp.sugCache[c.i]) return imp.sugCache[c.i];
+  var r=impObjetivos().map(function(o){ return {o:o,s:impPuntaje(c.nombre,o,c)}; }).filter(function(x){ return x.s>=0.3; }).sort(function(a,b){ return b.s-a.s; }).slice(0,3);
+  return (imp.sugCache[c.i]=r);
+}
+function impPendientesManual(){
+  return imp.cols.filter(function(c){ return !imp.mapas.some(function(m){ return m.col===c.i; }) && !imp.ign[c.i] && (imp.verVacias||c.llenos>0); });
+}
+function impPanelAuto(){
+  var props=imp.mapas.map(function(m,i){ return {m:m,i:i}; }).filter(function(x){ return !x.m.conf; }).sort(function(a,b){ return (b.m.score||0)-(a.m.score||0); });
+  var h='<div class="barra-botones"><button type="button" class="btn secundario" id="imp-confirmar-todo"'+(props.length?'':' disabled')+'>✓ Aceptar todas ('+props.length+')</button><button type="button" class="btn tenue" id="imp-recalcular" title="Descarta las propuestas actuales y las calcula de nuevo con los nombres de columna actuales">Volver a calcular propuestas</button></div>';
+  h+='<p class="nota">Cada propuesta compara el nombre y los valores de una columna con un campo de la app. Pulsa una propuesta para ver esa columna resaltada en tu planilla, a la derecha, y decide con los datos reales.</p>';
+  if(!props.length) return h+'<p class="nota"><strong>No quedan propuestas por revisar.</strong> Las columnas sin emparejar están en el emparejado manual.</p><div class="barra-botones"><button type="button" class="btn" data-sub="man">Ir al emparejado manual →</button></div>';
+  props.forEach(function(x){
+    var m=x.m, c=imp.cols[m.col], o=impObjetivo(m.target)||{l:m.target,k:m.target,tipo:"texto"}, pct=Math.round((m.score||0)*100);
+    h+='<div class="imp-prop-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'"'+impAttrColor(m)+'><div class="imp-prop-cab"><span><strong>'+escapeHtml(c.nombre)+'</strong> <span class="imp-flecha">→</span> <strong>'+escapeHtml(o.l)+'</strong></span><span class="imp-sug">'+pct+' %</span></div>'
+      +'<div class="imp-ej-etq">En tu planilla ('+c.llenos+'/'+imp.datos.length+' llenos):</div>'+impPintarEjemplos(impEjemplosCol(c.i,5))
+      +'<div class="imp-ej-etq">En la app («'+escapeHtml(o.g||"")+'»):</div>'+impEjemplosCampoHtml(o,4)
+      +'<div class="imp-prop">'+impOpcionesMapa(m,x.i,o)+'</div><div class="barra-botones"><button type="button" class="btn small" data-confirmar="'+x.i+'">✓ Aceptar</button><button type="button" class="btn tenue small" data-quitar="'+x.i+'" title="Descartar esta propuesta; la columna pasa al emparejado manual">Descartar</button></div></div>';
+  });
+  return h;
+}
+function impPanelManual(){
+  var pend=impPendientesManual(), nIgn=Object.keys(imp.ign).filter(function(k){ return imp.ign[k]; }).length;
+  var h='<div class="imp-fila-opc"><label><input type="checkbox" id="imp-ver-vacias"'+(imp.verVacias?' checked':'')+'> Mostrar también columnas sin datos</label>'+(nIgn?'<button type="button" class="btn tenue small" id="imp-restaurar-ign">Restaurar '+nIgn+' columna(s) que no se importan</button>':'')+'</div>';
+  h+='<p class="nota">Elige para cada columna el campo de la app que le corresponde y pulsa «Emparejar». Debajo verás ejemplos de los datos de ese campo en tu colección. Pulsa un bloque para ver su columna resaltada en la tabla de la derecha.</p>';
+  if(!pend.length) return h+'<p class="nota"><strong>No quedan columnas por emparejar.</strong> Puedes seguir al paso 3.</p>';
+  pend.forEach(function(c){
+    var n=imp.ejem[c.i]||8, ej=impEjemplosCol(c.i,n);
+    var mas=(c.distintos>ej.length)?'<button type="button" class="imp-mas" data-mascol="'+c.i+'">+8 más</button>':"", menos=n>8?'<button type="button" class="imp-mas" data-menoscol="'+c.i+'">menos</button>':"";
+    var tent=imp.tent[c.i], ot=tent?impObjetivo(tent):null;
+    h+='<div class="imp-man-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'"><div class="imp-col-nombre"><strong>'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos</span></div>'
+      +impPintarEjemplos(ej,mas,menos)
+      +'<label class="imp-man-lbl">Campo de la app <select class="imp-man-sel" data-col="'+c.i+'">'+impOpcionesObjetivos(tent||"",c)+'</select></label>';
+    if(ot){
+      h+='<div class="imp-ej-etq">Datos de «'+escapeHtml(ot.l)+'» en tu colección:</div>'+impEjemplosCampoHtml(ot,6)
+        +'<div class="barra-botones"><button type="button" class="btn small" data-emparejar="'+c.i+'">✓ Emparejar con «'+escapeHtml(impCorto(ot.l,30))+'»</button></div>';
+    } else {
+      var sg=impSugerencias(c);
+      if(sg.length){ h+='<div class="imp-ej-etq">Campos que podrían corresponder:</div>'; sg.forEach(function(x){ h+='<div class="imp-sug-fila"><div><button type="button" class="btn tenue small" data-usar="'+c.i+'" data-k="'+escapeHtml(x.o.k)+'">Ver</button> <strong>'+escapeHtml(x.o.l)+'</strong> <span class="imp-sug">'+Math.round(x.s*100)+' %</span></div>'+impPintarEjemplos(impEjemplosApp(x.o,3))+'</div>'; }); }
+    }
+    h+='<div class="imp-man-acc"><button type="button" class="btn tenue small" data-anexar="'+c.i+'" title="Agrega el contenido a Observaciones con el nombre de la columna">Anexar a Observaciones</button><button type="button" class="btn tenue small" data-ignorar="'+c.i+'">No importar esta columna</button></div></div>';
+  });
+  return h;
 }
 function impPlantillaSugerida(){
   var g=impLeerGuardados(), porNombre={}, mejor=null;
@@ -5411,7 +5510,7 @@ function impPlantillaSugerida(){
   return mejor;
 }
 function impPintarSinDestino(){
-  var sin=imp.cols.filter(function(c){ return c.llenos>0 && !imp.mapas.some(function(m){ return m.col===c.i; }); });
+  var sin=imp.cols.filter(function(c){ return c.llenos>0 && !imp.ign[c.i] && !imp.mapas.some(function(m){ return m.col===c.i; }); });
   var h='<details class="imp-fijos" '+(sin.length?'open':'')+'><summary>Columnas con datos que no se importarán ('+sin.length+')</summary>';
   if(!sin.length) return h+'<p class="nota">Todas las columnas con datos tienen destino.</p></details>';
   h+='<p class="nota">Estos datos quedarían fuera. Puedes volver al paso 2 para emparejarlos, o anexarlos a Observaciones con el nombre de la columna.</p>';
@@ -5429,36 +5528,29 @@ function impAvisosMapeo(){
 function impPintarInterno(cont){
   if(!imp){ cont.innerHTML=""; return; }
   if(!imp.paso) imp.paso=1;
-  var est=impEstado(), sinPar=imp.cols.filter(function(c){ return c.llenos>0 && !imp.mapas.some(function(m){ return m.col===c.i; }); }).length;
+  var est=impEstado(), pend=impPendientesManual().length, nIgn=Object.keys(imp.ign).filter(function(k){ return imp.ign[k]; }).length;
   var h=impPintarPasos();
   if(imp.paso===1){
-    h+='<div class="imp-paso"><p class="nota">Revisa que la planilla se haya leído bien. La fila resaltada es la que se usa como encabezados.</p><div class="imp-fila-opc">';
+    h+='<div class="imp-paso"><p class="nota">Aquí se revisa cómo se leyó la planilla. Indica qué fila contiene el nombre de cada columna y desde qué fila empiezan los datos. Si el encabezado ocupa dos o más filas, elige la fila cuyo texto quieres usar como nombre; también puedes corregir cualquier nombre directamente en la tabla.</p><div class="imp-fila-opc">';
     if(imp.hojas&&imp.hojas.length>1) h+='<label>Hoja <select id="imp-hoja">'+imp.hojas.map(function(x,i){ return '<option value="'+i+'"'+(i===imp.hojaIdx?' selected':'')+'>'+escapeHtml(x.nombre)+'</option>'; }).join("")+'</select></label>';
-    h+='<label>Fila de encabezados <input type="number" id="imp-fila-enc" min="1" value="'+imp.filaEnc+'" style="width:70px"></label>';
+    h+='<label>Fila con los nombres de columna <input type="number" id="imp-fila-enc" min="1" value="'+imp.filaEnc+'" style="width:70px"></label>';
+    h+='<label>Primera fila de datos <input type="number" id="imp-fila-datos" min="1" value="'+imp.filaDatos+'" style="width:70px"></label>';
     h+='<label>Omitir filas con menos de <input type="number" id="imp-min" min="0" value="'+imp.minLlenos+'" style="width:60px"> dato(s) propio(s)</label>';
-    h+='</div><p class="nota"><strong>'+imp.datos.length+'</strong> fila(s) de datos y <strong>'+imp.cols.length+'</strong> columna(s). Se muestran las primeras filas.</p>'+impTablaPrevia()
-      +'<div class="barra-botones"><button type="button" class="btn" data-paso="2">Siguiente: emparejar columnas →</button></div></div>';
+    h+='</div><p class="nota"><strong>'+imp.datos.length+'</strong> fila(s) de datos y <strong>'+imp.cols.length+'</strong> columna(s). Se muestran las primeras filas.</p>'
+      +'<div class="barra-botones"><button type="button" class="btn" data-continuar="1">Previsualización finalizada: continuar</button></div>'
+      +'<p class="nota">En la tabla, la fila destacada tiene los nombres (editables); las filas grises no se usan y las blancas son datos. Cambiar la hoja o las filas reinicia el emparejado; editar un nombre no.</p>'
+      +impTablaPrevia()+'</div>';
   } else if(imp.paso===2){
     var pl=impPlantillaSugerida();
     if(pl) h+='<div class="imp-plantilla-sug">La plantilla «'+escapeHtml(pl.nombre)+'» coincide con '+pl.ok+' de sus '+pl.total+' columnas. <button type="button" class="btn small" data-plantilla="'+escapeHtml(pl.nombre)+'">Aplicar plantilla</button></div>';
-    h+='<div class="imp-estado"><span><strong>'+est.conf+'</strong> confirmados</span><span><strong>'+est.prop+'</strong> propuestos por confirmar</span><span><strong>'+sinPar+'</strong> columnas con datos sin emparejar</span></div>';
-    h+='<div class="barra-botones"><button type="button" class="btn secundario" id="imp-auto" title="Compara los encabezados y también los valores de cada columna con los campos de la app">⚡ Emparejado automático</button>'
-      +'<button type="button" class="btn secundario" id="imp-confirmar-todo"'+(est.prop?'':' disabled')+'>✓ Confirmar todos los propuestos ('+est.prop+')</button>'
-      +'<button type="button" class="btn tenue" id="imp-limpiar-prop"'+(est.prop?'':' disabled')+'>Quitar los no confirmados</button>'
-      +'<button type="button" class="btn tenue" id="imp-limpiar">Quitar todos los emparejamientos</button></div>';
-    h+='<p class="nota">El emparejado automático solo <em>propone</em> (borde punteado y un porcentaje de parecido, que considera el encabezado y los valores): revisa los ejemplos de ambos lados y pulsa «✓ Confirmar». Un par que armas tú a mano queda confirmado de inmediato. Cada par confirmado sube a la lista de abajo, frente a su pareja y con un color común, y sale de las listas de pendientes.</p>';
-    h+='<details class="imp-fijos"><summary>Ver la tabla de la planilla</summary>'+impTablaPrevia()+'</details>';
-    h+='<label class="imp-ocultar"><input type="checkbox" id="imp-ocultar-conf"'+(imp.ocultarConf?' checked':'')+'> Quitar de las listas de pendientes lo que ya está confirmado</label>';
+    var nProp=est.prop;
+    h+='<div class="imp-estado"><span><strong>'+est.conf+'</strong> aceptados</span><span><strong>'+nProp+'</strong> propuestas por revisar</span><span><strong>'+pend+'</strong> columnas por emparejar a mano</span>'+(nIgn?'<span><strong>'+nIgn+'</strong> no se importan</span>':'')+'</div>';
+    h+='<div class="imp-subtabs"><button type="button" class="imp-sub-btn'+(imp.sub==="auto"?' activo':'')+'" data-sub="auto">A. Emparejado automático ('+nProp+')</button><button type="button" class="imp-sub-btn'+(imp.sub==="man"?' activo':'')+'" data-sub="man">B. Emparejado manual ('+pend+')</button></div>';
+    h+='<div class="imp-dos"><div id="imp-izq">'+(imp.sub==="auto"?impPanelAuto():impPanelManual())+'</div>'
+      +'<div class="imp-der-tabla"><div class="imp-ej-etq" id="imp-foco-nombre">'+(imp.cols[imp.foco]?'Columna resaltada: «'+escapeHtml(imp.cols[imp.foco].nombre)+'»':'Pulsa un bloque de la izquierda para resaltar su columna')+'</div><div id="imp-tabla-der" class="imp-tabla-caja imp-tabla-previa">'+impTablaColumnas()+'</div></div></div>';
     h+=impPintarConfirmados();
-    h+='<div class="imp-cols"><div class="imp-panel"><h3>Columnas de tu planilla pendientes</h3>'
-      +'<div class="imp-filtro"><input type="search" id="imp-buscar-izq" placeholder="Filtrar columnas por texto o parecido…" class="nav" value="'+escapeHtml(imp.filIzq)+'"><select id="imp-est-izq"><option value="todas"'+(imp.estIzq==="todas"?' selected':'')+'>Todas</option><option value="sin"'+(imp.estIzq==="sin"?' selected':'')+'>Sin emparejar</option><option value="prop"'+(imp.estIzq==="prop"?' selected':'')+'>Con propuesta</option><option value="llenas"'+(imp.estIzq==="llenas"?' selected':'')+'>Solo con datos</option></select></div>'
-      +'<p class="nota">Pulsa el nombre de una columna para ver a la derecha los campos más parecidos, o arrástrala hasta un campo. Una columna puede ir a varios campos.</p><div id="imp-izq">'+impPintarColumnasLista()+'</div></div>';
-    h+='<div class="imp-panel"><h3>Campos de la app pendientes</h3>'
-      +'<div class="imp-filtro"><input type="search" id="imp-buscar" placeholder="Filtrar campos por texto o parecido…" class="nav" value="'+escapeHtml(imp.filDer)+'"><select id="imp-est-der"><option value="todos"'+(imp.estDer==="todos"?' selected':'')+'>Todos</option><option value="sin"'+(imp.estDer==="sin"?' selected':'')+'>Sin asignar</option><option value="prop"'+(imp.estDer==="prop"?' selected':'')+'>Con propuesta</option></select></div>'
-      +'<div id="imp-der">'+impPintarObjetivosLista()+'</div>'
-      +'<p class="nota imp-no">No se importan por planilla: fotos, PDF y otros archivos (se asocian desde la app con la Carpeta local) ni los datos automáticos (catalogador, fechas y operador de creación o modificación). De las determinaciones se importan la vigente y una anterior.</p></div></div>';
     h+=impPintarFijos();
-    h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="1">← Volver a la planilla</button><button type="button" class="btn" data-paso="3">Siguiente: revisar →</button></div>';
+    h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="1">← Volver a la previsualización</button><button type="button" class="btn tenue" id="imp-limpiar">Deshacer todos los emparejamientos</button><button type="button" class="btn" data-paso="3">Siguiente: revisar →</button></div>';
   } else {
     h+=impAvisosMapeo();
     h+=impPintarSinDestino();
@@ -5467,6 +5559,7 @@ function impPintarInterno(cont){
     h+='<div id="imp-resultado">'+(imp.resultado?impPintarResultado():"")+'</div>';
   }
   cont.innerHTML=h;
+  if(imp.paso===2) impScrollTabla();
 }
 function impEstado(){ var c=imp.mapas.filter(function(m){ return m.conf; }).length; return {conf:c, prop:imp.mapas.length-c}; }
 function impAttrColor(m){ var h=(m.cid*47+12)%360; return ' style="--pc-bg:hsl('+h+',62%,92%);--pc-bd:hsl('+h+',45%,44%)"'; }
@@ -5802,7 +5895,11 @@ function iniciarImportador(){
   cont.addEventListener("change", function(e){
     var t=e.target;
     if(t.id==="imp-hoja") impCambiarHoja(parseInt(t.value,10));
-    else if(t.id==="imp-fila-enc"){ imp.filaEnc=Math.max(1,parseInt(t.value,10)||1); impPreparar(); impSugerir(); imp.clave=impClaveSugerida(); imp.resultado=null; impPintar(); }
+    else if(t.id==="imp-fila-enc"){ imp.filaEnc=Math.max(1,parseInt(t.value,10)||1); imp.nombres={}; impReiniciarEmparejado(); impPreparar(); impPintar(); }
+    else if(t.id==="imp-fila-datos"){ imp.filaDatos=Math.max(1,parseInt(t.value,10)||1); imp.datosManual=true; impReiniciarEmparejado(); impPreparar(); impPintar(); }
+    else if(t.hasAttribute("data-nombre")){ imp.nombres[parseInt(t.getAttribute("data-nombre"),10)]=t.value.trim(); impPreparar(); impPintar(); }
+    else if(t.id==="imp-ver-vacias"){ imp.verVacias=t.checked; impPintar(); }
+    else if(t.classList.contains("imp-man-sel")){ var cm0=parseInt(t.getAttribute("data-col"),10); if(t.value) imp.tent[cm0]=t.value; else delete imp.tent[cm0]; imp.foco=cm0; impPintar(); }
     else if(t.id==="imp-est-izq"){ imp.estIzq=t.value; impPintar(); }
     else if(t.id==="imp-est-der"){ imp.estDer=t.value; impPintar(); }
     else if(t.id==="imp-ocultar-conf"){ imp.ocultarConf=t.checked; impPintar(); }
@@ -5823,6 +5920,7 @@ function iniciarImportador(){
     else if(t.hasAttribute("data-fijo-t")){ imp.fijos[parseInt(t.getAttribute("data-fijo-t"),10)].target=t.value; imp.fijos[parseInt(t.getAttribute("data-fijo-t"),10)].valor=""; imp.resultado=null; impPintar(); }
     else if(t.hasAttribute("data-fijo-val")){ imp.fijos[parseInt(t.getAttribute("data-fijo-val"),10)].valor=t.value; imp.resultado=null; }
   });
+  cont.addEventListener("focusin", function(e){ var fc=e.target.closest&&e.target.closest("[data-foco]"); if(fc && imp && imp.foco!==parseInt(fc.getAttribute("data-foco"),10)) impFoco(parseInt(fc.getAttribute("data-foco"),10)); });
   cont.addEventListener("input", function(e){
     var t=e.target;
     if(t.id==="imp-buscar"){ imp.filDer=t.value; impElem("imp-der").innerHTML=impPintarObjetivosLista(); }
@@ -5832,11 +5930,26 @@ function iniciarImportador(){
   });
   cont.addEventListener("toggle", function(e){ var d=e.target; if(d.classList&&d.classList.contains("imp-grupo")) impAbiertos[d.getAttribute("data-g")]=d.open; if(d.classList&&d.classList.contains("imp-valores")) impAbiertos["v"+d.getAttribute("data-vi")]=d.open; if(d.classList&&d.classList.contains("imp-conf")) impAbiertos.conf=d.open; }, true);
   cont.addEventListener("click", function(e){
+    var fc=e.target.closest("[data-foco]");
+    if(fc && !e.target.closest("button,select,input,a,summary,label")){ impFoco(parseInt(fc.getAttribute("data-foco"),10)); }
     var sc=e.target.closest("[data-selcol]"), so=e.target.closest("[data-selobj]");
     if(sc){ var ci0=parseInt(sc.getAttribute("data-selcol"),10); imp.sel=(imp.sel&&imp.sel.lado==="col"&&imp.sel.id===ci0)?null:{lado:"col",id:ci0}; impPintar(); return; }
     if(so){ var k0=so.getAttribute("data-selobj"); imp.sel=(imp.sel&&imp.sel.lado==="obj"&&imp.sel.id===k0)?null:{lado:"obj",id:k0}; impPintar(); return; }
     var t=e.target.closest("button"); if(!t) return;
-    if(t.id==="imp-auto"){ var nA=impAutoSimilar(); impMensaje(nA?nA+" par(es) propuesto(s) por parecido de encabezados. Revisa los ejemplos y confirma.":"No se encontraron más pares con suficiente parecido."); impPintar(); }
+    if(t.hasAttribute("data-continuar")){
+      if(!imp.autoHecho){ imp.mapas=[]; impSugerir(false); impAutoSimilar(); imp.clave=impClaveSugerida(); imp.autoHecho=true; }
+      imp.prevOk=true; imp.paso=2; var pr=imp.mapas.filter(function(m){ return !m.conf; });
+      imp.sub=pr.length?"auto":"man";
+      var pf=pr.length?pr.sort(function(a,b){ return (b.score||0)-(a.score||0); })[0].col:(impPendientesManual()[0]||{}).i; imp.foco=pf===undefined?null:pf;
+      impPintar(); var c0=impElem("imp-cont"); if(c0&&c0.scrollIntoView) c0.scrollIntoView({block:"start"});
+    }
+    else if(t.hasAttribute("data-sub")){ imp.sub=t.getAttribute("data-sub"); var pr2=imp.mapas.filter(function(m){ return !m.conf; }); imp.foco=imp.sub==="auto"?(pr2[0]?pr2[0].col:null):((impPendientesManual()[0]||{}).i===undefined?null:impPendientesManual()[0].i); impPintar(); }
+    else if(t.id==="imp-recalcular"){ imp.mapas=imp.mapas.filter(function(m){ return m.conf; }); impSugerir(true); impAutoSimilar(); impMensaje("Propuestas calculadas de nuevo con los nombres de columna actuales."); var pr3=imp.mapas.filter(function(m){ return !m.conf; }); imp.foco=pr3[0]?pr3[0].col:null; impPintar(); }
+    else if(t.hasAttribute("data-usar")){ imp.tent[parseInt(t.getAttribute("data-usar"),10)]=t.getAttribute("data-k"); imp.foco=parseInt(t.getAttribute("data-usar"),10); impPintar(); }
+    else if(t.hasAttribute("data-emparejar")){ var ce=parseInt(t.getAttribute("data-emparejar"),10); impAsignar(ce,imp.tent[ce]); delete imp.tent[ce]; var sig=impPendientesManual()[0]; imp.foco=sig?sig.i:null; impPintar(); }
+    else if(t.hasAttribute("data-ignorar")){ imp.ign[parseInt(t.getAttribute("data-ignorar"),10)]=true; var sg2=impPendientesManual()[0]; imp.foco=sg2?sg2.i:null; impPintar(); }
+    else if(t.id==="imp-restaurar-ign"){ imp.ign={}; impPintar(); }
+    else if(t.id==="imp-auto"){ var nA=impAutoSimilar(); impMensaje(nA?nA+" par(es) propuesto(s) por parecido de encabezados. Revisa los ejemplos y confirma.":"No se encontraron más pares con suficiente parecido."); impPintar(); }
     else if(t.id==="imp-confirmar-todo"){ imp.mapas.forEach(function(m){ m.conf=true; }); imp.resultado=null; impPintar(); }
     else if(t.id==="imp-limpiar-prop"){ imp.mapas=imp.mapas.filter(function(m){ return m.conf; }); imp.resultado=null; impPintar(); }
     else if(t.hasAttribute("data-confirmar")){ var mc=imp.mapas[parseInt(t.getAttribute("data-confirmar"),10)]; if(mc) mc.conf=true; imp.resultado=null; impPintar(); }
@@ -5859,8 +5972,8 @@ function iniciarImportador(){
     }
     else if(t.id==="imp-aplicar"){ impAplicarPlantilla(impElem("imp-guardados").value); }
     else if(t.hasAttribute("data-plantilla")){ impAplicarPlantilla(t.getAttribute("data-plantilla")); }
-    else if(t.hasAttribute("data-paso")){ imp.paso=parseInt(t.getAttribute("data-paso"),10); impPintar(); var cc=impElem("imp-cont"); if(cc&&cc.scrollIntoView) cc.scrollIntoView({block:"start"}); }
-    else if(t.hasAttribute("data-anexar")){ impAsignar(parseInt(t.getAttribute("data-anexar"),10),"@obs"); impPintar(); }
+    else if(t.hasAttribute("data-paso")){ var pn=parseInt(t.getAttribute("data-paso"),10); if(pn>1&&!imp.prevOk) return; imp.paso=pn; impPintar(); var cc=impElem("imp-cont"); if(cc&&cc.scrollIntoView) cc.scrollIntoView({block:"start"}); }
+    else if(t.hasAttribute("data-anexar")){ impAsignar(parseInt(t.getAttribute("data-anexar"),10),"@obs"); var sg3=impPendientesManual()[0]; if(imp.paso===2) imp.foco=sg3?sg3.i:null; impPintar(); }
     else if(t.id==="imp-borrar-guardado"){ var g3=impLeerGuardados(); delete g3[impElem("imp-guardados").value]; impEscribirGuardados(g3); impPintar(); }
   });
   // arrastrar y soltar

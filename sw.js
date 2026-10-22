@@ -3,7 +3,7 @@
 // Así los cambios nuevos se ven de inmediato en cuanto hay internet.
 // Las cachés se comparten entre todas las apps del dominio, por eso solo se borran las propias (prefijo "libro-catalogo-").
 // Para publicar una versión nueva: subir el index.html nuevo y subir este archivo cambiando el número de CACHE_NAME.
-var CACHE_NAME = "libro-catalogo-v46";
+var CACHE_NAME = "libro-catalogo-v47";
 var ARCHIVOS = [
   "./",
   "./index.html",

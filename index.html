@@ -425,6 +425,8 @@
   .leyenda-campos{font-size:13px;color:var(--ink-soft);margin:-4px 0 14px;}
   button.btn{font-family:var(--sans);font-size:14.5px;padding:9px 18px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 1px 2px rgba(38,51,43,.15);transition:transform .08s, box-shadow .08s;}
   button.btn:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(38,51,43,.18);}
+  button.btn.btn-fuerte,button.btn.secundario.btn-fuerte{background:var(--accent);color:#fff;border:2px solid var(--accent);font-weight:700;font-size:16.5px;padding:13px 34px;border-radius:10px;box-shadow:0 4px 12px rgba(38,51,43,.38);letter-spacing:.2px;}
+  button.btn.btn-fuerte:hover{transform:translateY(-2px);box-shadow:0 7px 16px rgba(38,51,43,.45);}
   button.btn.secundario{background:#fff;color:var(--accent);box-shadow:none;}
   button.btn.small{padding:6px 13px;font-size:13.5px;}
   button.btn.tenue{background:none;border-color:var(--line-fuerte);color:var(--ink);box-shadow:none;}
@@ -462,7 +464,7 @@
   .acciones-fila .btn-sec:hover{opacity:1;border-color:var(--line-fuerte);}
   .acciones-fila .btn-sec.btn-eliminar-registro:hover{color:#a3261c;}
   button.btn.principal-fila{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
-  .ico-arch{margin-left:6px;font-size:13px;white-space:nowrap;}
+  .ico-arch{margin-left:6px;font-size:15px;white-space:nowrap;cursor:help;}
   button.btn.peligro{background:#fff;border-color:#a3261c;color:#a3261c;}
   button.btn.peligro:disabled{opacity:.5;cursor:default;}
   .btn-borrar-compacto{background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;opacity:.7;}
@@ -587,7 +589,31 @@
   .ficha-tabla td{padding:5px 8px;border-bottom:1px solid var(--line);}
   .ficha-tabla tr.fila-vigente{background:var(--accent-soft);}
   .ficha-vacio{font-size:12.5px;color:var(--ink-soft);font-style:italic;padding:8px 0;}
-  .ficha-footer{padding:12px 20px;border-top:1px solid var(--line);background:var(--paper-2);border-radius:0 0 14px 14px;display:flex;justify-content:flex-end;}
+  .ficha-footer{padding:12px 20px;border-top:1px solid var(--line);background:var(--paper-2);border-radius:0 0 14px 14px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;}
+  .dialog-mapa-dist{border:none;border-radius:14px;padding:0;width:97vw;max-width:1680px;height:92vh;max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden;}
+  .dialog-mapa-dist::backdrop{background:rgba(20,26,22,.6);}
+  .md-caja{display:flex;flex-direction:column;height:100%;background:var(--paper);}
+  .md-cab{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--paper-2);} .md-cab strong{font-family:var(--serif);font-size:19px;} .md-sub{font-size:13px;color:var(--ink-soft);flex:1;}
+  .md-cuerpo{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 380px;}
+  .md-mapa{position:relative;overflow:hidden;background:#1d2a33;touch-action:none;cursor:grab;min-height:300px;}
+  .md-lienzo{position:absolute;inset:0;} .md-lienzo img{position:absolute;width:256px;height:256px;max-width:none;user-select:none;-webkit-user-drag:none;}
+  .md-canvas{position:absolute;left:0;top:0;pointer-events:none;}
+  .md-aviso{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:var(--warn-soft);border:1px solid var(--line-fuerte);border-radius:8px;padding:6px 12px;font-size:13px;z-index:5;}
+  .md-ctl{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px;z-index:6;} .md-ctl button{width:38px;height:38px;border-radius:8px;border:1px solid rgba(0,0,0,.4);background:#fff;font-size:20px;line-height:1;cursor:pointer;}
+  .md-tip{position:absolute;z-index:7;background:rgba(20,26,22,.92);color:#fff;font-size:12.5px;padding:5px 9px;border-radius:6px;pointer-events:none;max-width:380px;}
+  .md-pop{position:absolute;z-index:8;background:#fff;border:1px solid var(--line-fuerte);border-radius:10px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);width:320px;cursor:default;}
+  .md-pop-it{display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:center;font-size:12.5px;padding:4px 0;border-bottom:1px solid var(--line);} .md-pop-it:last-child{border-bottom:none;}
+  .md-atrib{position:absolute;left:8px;bottom:4px;font-size:10.5px;color:#fff;text-shadow:0 0 3px #000;z-index:4;pointer-events:none;}
+  .md-lado{overflow:auto;padding:12px 14px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:12px;}
+  .md-tabla{width:100%;border-collapse:collapse;font-size:13px;} .md-tabla th{text-align:left;font-weight:600;color:var(--ink-soft);padding:3px 8px 3px 0;vertical-align:top;width:42%;} .md-tabla td{padding:3px 0;}
+  .md-opc{display:flex;flex-direction:column;gap:6px;font-size:13.5px;} .md-opc select{width:100%;} .md-opc label{display:flex;flex-direction:column;gap:3px;} .md-opc label:has(input[type=checkbox]){flex-direction:row;align-items:center;gap:8px;} .md-opc input[type=checkbox]{width:18px;height:18px;margin:0;}
+  .md-ley-tit{font-weight:700;font-size:13.5px;margin-bottom:4px;}
+  .md-ley{display:grid;grid-template-columns:16px 1fr auto;gap:8px;align-items:center;padding:4px 6px;border-radius:6px;cursor:pointer;font-size:13px;} .md-ley:hover{background:var(--accent-soft);} .md-ley.off{opacity:.4;text-decoration:line-through;}
+  .md-sw{width:14px;height:14px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.5);display:inline-block;} .md-ley-n{font-size:12px;color:var(--ink-soft);white-space:nowrap;}
+  @media (max-width:900px){ .md-cuerpo{grid-template-columns:1fr;grid-template-rows:55% 45%;} .md-lado{border-left:none;border-top:1px solid var(--line);} }
+  .ficha-pos{font-size:13px;color:var(--ink-soft);} .ficha-ed{display:flex;justify-content:flex-end;} .ficha-nav{display:flex;gap:12px;}
+  .ficha-nav .btn{font-size:20px;line-height:1;padding:8px 26px;min-width:64px;} .ficha-nav .btn:disabled{opacity:.35;cursor:default;}
+  @media (max-width:640px){ .ficha-footer{grid-template-columns:auto 1fr;} .ficha-pos{display:none;} .ficha-nav{justify-content:flex-start;} }
   #resumen-datos .res-lista{border:1px solid var(--line-fuerte);border-radius:6px;background:#fbf9f1;margin-bottom:10px;}
   #resumen-datos details{border:none;border-bottom:1px solid var(--line);border-radius:0;margin:0;background:transparent;overflow:hidden;}
   #resumen-datos details:last-child{border-bottom:none;}
@@ -671,7 +697,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.52</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.53</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -735,6 +761,7 @@
           <label>Ordenar por <select id="cons-orden"><option value="catalogo">N.º de catálogo</option><option value="campo">N.º de campo</option><option value="nombre">Nombre científico</option><option value="localidad">Localidad</option><option value="fecha">Fecha de colecta</option></select></label>
           <button type="button" class="btn small secundario" id="cons-csv" title="Archivo de texto separado por comas, abre en Excel y sirve para GBIF">Descargar CSV</button>
           <button type="button" class="btn small secundario" id="cons-xlsx" title="Planilla de Excel">Descargar Excel</button>
+          <button type="button" class="btn small secundario" id="cons-mapa" title="Abre un mapa con los registros seleccionados (o todos los resultados) para evaluar su distribución geográfica">🗺️ Evaluar patrón de distribución</button>
         </div>
       </div>
       <p class="nota" id="cons-msg"></p>
@@ -824,8 +851,8 @@
     </div>
 
     <footer class="acciones" id="footer-acciones-entrada">
-      <button class="btn nav" id="btn-guardar-entrada">Guardar →</button>
-      <button class="btn secundario nav" id="btn-actualizar-entrada">Actualizar →</button>
+      <button class="btn nav btn-fuerte" id="btn-guardar-entrada">Guardar →</button>
+      <button class="btn secundario nav btn-fuerte" id="btn-actualizar-entrada">Actualizar →</button>
       <p class="nota oculto" id="nota-consulta-entrada">Registro en modo consulta. Para modificarlo, ábrelo con "Editar" desde la lista de registros.</p>
     </footer>
   </section>
@@ -882,8 +909,8 @@
     </div>
 
     <footer class="acciones" id="footer-acciones-preparacion">
-      <button class="btn nav" id="btn-guardar-preparacion">Guardar →</button>
-      <button class="btn secundario nav" id="btn-actualizar-preparacion">Actualizar →</button>
+      <button class="btn nav btn-fuerte" id="btn-guardar-preparacion">Guardar →</button>
+      <button class="btn secundario nav btn-fuerte" id="btn-actualizar-preparacion">Actualizar →</button>
       <p class="nota oculto" id="nota-consulta-preparacion">Registro en modo consulta. Para modificarlo, ábrelo con "Editar" desde la lista de registros.</p>
     </footer>
   </section>
@@ -990,8 +1017,8 @@
     </div>
 
     <footer class="acciones" id="footer-acciones-deposito">
-      <button class="btn nav" id="btn-guardar-deposito">Guardar →</button>
-      <button class="btn secundario nav" id="btn-actualizar-deposito">Actualizar →</button>
+      <button class="btn nav btn-fuerte" id="btn-guardar-deposito">Guardar →</button>
+      <button class="btn secundario nav btn-fuerte" id="btn-actualizar-deposito">Actualizar →</button>
       <p class="nota oculto" id="nota-consulta-deposito">Registro en modo consulta. Para modificarlo, ábrelo con "Editar" desde la lista de registros.</p>
     </footer>
   </section>
@@ -1063,8 +1090,8 @@
     </div>
 
     <footer class="acciones" id="footer-acciones-manejo">
-      <button class="btn nav" id="btn-guardar-manejo">Finalizar guardado</button>
-      <button class="btn secundario nav" id="btn-actualizar-manejo">Finalizar actualización</button>
+      <button class="btn nav btn-fuerte" id="btn-guardar-manejo">Finalizar guardado</button>
+      <button class="btn secundario nav btn-fuerte" id="btn-actualizar-manejo">Finalizar actualización</button>
       <p class="nota oculto" id="nota-consulta-manejo">Registro en modo consulta. Para modificarlo, ábrelo con "Editar" desde la lista de registros.</p>
     </footer>
   </section>
@@ -1073,7 +1100,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.52</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.53</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1234,6 +1261,7 @@
 
 <dialog id="dialog-ficha" class="dialog-ficha"></dialog>
 <dialog id="dialog-visor" class="dialog-visor"></dialog>
+<dialog id="dialog-mapa-dist" class="dialog-mapa-dist"></dialog>
 <dialog id="dialog-archivo" class="dialog-archivo"></dialog>
 <dialog id="dialog-camara" class="dialog-camara"></dialog>
 <dialog id="dialog-biblioteca" class="dialog-camara"></dialog>
@@ -1243,7 +1271,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.52";
+var APP_VERSION = "v0.9.53";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2210,7 +2238,7 @@ function construirFicha(r){
     + '<div class="ficha-header"><div><div class="ficha-header-titulo">'+escapeHtml(construirCatalogoCompleto(r) || resumenLinea1(et))+'</div><div class="ficha-header-sub">'+resumenLinea2Html(et)+'</div></div>'
     + '<button type="button" class="btn-cerrar-ficha" title="Cerrar" aria-label="Cerrar">✕</button></div>'
     + '<div class="ficha-body">'+body+'</div>'
-    + (modoAcceso==="admin" ? '<div class="ficha-footer"><button class="btn small btn-editar-desde-ficha">Editar este registro</button></div>' : '')
+    + '<div class="ficha-footer"><span class="ficha-pos"></span><div class="ficha-nav"><button type="button" class="btn tenue ficha-ant" title="Registro anterior (flecha izquierda)" aria-label="Registro anterior">◀</button><button type="button" class="btn tenue ficha-sig" title="Registro siguiente (flecha derecha)" aria-label="Registro siguiente">▶</button></div><div class="ficha-ed">'+(modoAcceso==="admin" ? '<button class="btn small btn-editar-desde-ficha">Editar este registro</button>' : '')+'</div></div>'
     + '</div>';
 }
 function coordenadasRegistro(r){
@@ -2370,9 +2398,19 @@ function fichaPdfs(r){
   var botones = lista.map(function(n){ return '<button class="btn tenue small btn-abrir-pdf" data-pdf="'+escapeHtml(n)+'">📄 '+escapeHtml(n.split("/").pop())+'</button>'; }).join(" ");
   return '<div class="ficha-campo"><span class="ficha-label">PDF de publicaciones</span><span class="ficha-valor">'+botones+'</span></div>';
 }
-function mostrarFichaConsulta(id){
+var fichaSeq=[], fichaActual=null;
+function fichaIr(delta){
+  var i=fichaSeq.indexOf(fichaActual), n=i+delta;
+  if(i<0||n<0||n>=fichaSeq.length) return;
+  mostrarFichaConsulta(fichaSeq[n], fichaSeq);
+}
+function idsHermanos(el, sel){ var p=el&&el.parentElement; return p ? Array.prototype.map.call(p.querySelectorAll(sel), function(x){ return x.getAttribute("data-id"); }).filter(Boolean) : []; }
+function mostrarFichaConsulta(id, seq){
   var r = registroPorId(id);
   if(!r) return;
+  if(seq && seq.length) fichaSeq=seq.slice();
+  else { var rc=resultadosConsulta().map(function(x){ return x.id; }); fichaSeq = rc.indexOf(id)>-1 ? rc : registros.map(function(x){ return x.id; }); }
+  fichaActual=id;
   registrarActividad("ficha", [construirCatalogoCompleto(r)||r.catalogo||("campo "+(r.numeroCampo||"s/n")), nombreVigenteReg(r)].filter(Boolean).join(" · "));
   var dialogEl = document.getElementById("dialog-ficha");
   dialogEl.innerHTML = construirFicha(r);
@@ -2380,11 +2418,17 @@ function mostrarFichaConsulta(id){
   dialogEl.querySelectorAll(".btn-abrir-pdf").forEach(function(b){ b.onclick = function(){ abrirPdf(b.getAttribute("data-pdf")); }; });
   dialogEl.querySelector(".btn-cerrar-ficha").onclick = function(){ dialogEl.close(); };
   var btnEd = dialogEl.querySelector(".btn-editar-desde-ficha");
-  if(btnEd){ if(modoAcceso==="admin") btnEd.onclick = function(){ dialogEl.close(); editarRegistro(id); }; else { var ft=btnEd.closest(".ficha-footer"); (ft||btnEd).remove(); } }
+  if(btnEd && modoAcceso==="admin") btnEd.onclick = function(){ dialogEl.close(); editarRegistro(id); };
+  var iSeq=fichaSeq.indexOf(id), bA=dialogEl.querySelector(".ficha-ant"), bS=dialogEl.querySelector(".ficha-sig");
+  bA.disabled = iSeq<=0; bS.disabled = iSeq<0 || iSeq>=fichaSeq.length-1;
+  bA.onclick=function(){ fichaIr(-1); }; bS.onclick=function(){ fichaIr(1); };
+  dialogEl.querySelector(".ficha-pos").textContent = fichaSeq.length>1 && iSeq>-1 ? "Registro "+(iSeq+1)+" de "+fichaSeq.length : "";
+  if(fichaSeq.length<2) dialogEl.querySelector(".ficha-nav").style.visibility="hidden";
   dialogEl.onclick = function(e){ if(e.target===dialogEl) dialogEl.close(); };
   dialogEl.onclose = liberarUrlsFicha;
   liberarUrlsFicha();
-  dialogEl.showModal();
+  if(!dialogEl.open) dialogEl.showModal();
+  dialogEl.scrollTop=0; [".ficha-caja",".ficha-body"].forEach(function(q){ var e=dialogEl.querySelector(q); if(e) e.scrollTop=0; });
   cargarFotosFicha(dialogEl);
   iniciarMapaSatelital(dialogEl);
   cargarDocsFicha(dialogEl, r);
@@ -2478,6 +2522,207 @@ function iniciarMapaSatelital(dialogEl){
   dibujar();
   requestAnimationFrame(dibujar);
 }
+document.addEventListener("keydown", function(e){
+  if(e.key!=="ArrowLeft" && e.key!=="ArrowRight") return;
+  var ab=document.querySelectorAll("dialog[open]"); if(ab.length!==1 || ab[0].id!=="dialog-ficha") return;
+  if(e.target && e.target.closest && e.target.closest("input,textarea,select")) return;
+  e.preventDefault(); fichaIr(e.key==="ArrowLeft"?-1:1);
+});
+(function(){
+  var d=document.getElementById("dialog-ficha"), t0=null;
+  d.addEventListener("touchstart", function(e){ if(e.touches.length!==1 || e.target.closest(".mapa-sat,table,.galeria-miniaturas")){ t0=null; return; } t0={x:e.touches[0].clientX,y:e.touches[0].clientY,t:Date.now()}; }, {passive:true});
+  d.addEventListener("touchend", function(e){
+    if(!t0 || !e.changedTouches.length) return;
+    var dx=e.changedTouches[0].clientX-t0.x, dy=e.changedTouches[0].clientY-t0.y, dt=Date.now()-t0.t; t0=null;
+    if(Math.abs(dx)>70 && Math.abs(dy)<55 && Math.abs(dx)>2*Math.abs(dy) && dt<800) fichaIr(dx<0?1:-1);
+  }, {passive:true});
+})();
+// ---------- Evaluar patrón de distribución: mapa grande con los registros seleccionados ----------
+var MAPA_PALETA=["#e6194b","#3cb44b","#4363d8","#f58231","#911eb4","#42d4f4","#f032e6","#bfef45","#fabed4","#469990","#dcbeff","#9a6324"];
+var MAPA_CATS=[
+  ["especie","Nombre científico",function(r){ return nombreVigenteReg(r)||""; }],
+  ["genero","Género",function(r){ return r.genero||""; }],
+  ["familia","Familia",function(r){ return r.familia||""; }],
+  ["orden","Orden",function(r){ return r.orden||""; }],
+  ["colector","Colector",function(r){ return r.colector||""; }],
+  ["anio","Año de colecta",function(r){ return String(r.fechaColecta||"").slice(0,4); }],
+  ["region","Región",function(r){ return r.region||""; }],
+  ["conservacion","Conservación",function(r){ return r.conservacion||""; }],
+  ["coleccion","Colección",function(r){ return r.coleccionNombre||""; }]
+];
+function mapaNumInd(v){ var n=parseInt(String(v==null?"":v).replace(/[^\d]/g,""),10); return isNaN(n)?0:n; }
+function kmEntre(a,b,c,d){
+  var R=6371, rad=Math.PI/180, dl=(c-a)*rad, dg=(d-b)*rad, x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(dg/2)*Math.sin(dg/2);
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(x)));
+}
+function abrirMapaDistribucion(){
+  var dlg=document.getElementById("dialog-mapa-dist"); if(!dlg) return;
+  var ids=new Set(marcadosConsulta()), lista=resultadosConsulta();
+  if(ids.size) lista=lista.filter(function(r){ return ids.has(r.id); });
+  if(!lista.length) return;
+  registrarActividad("mapa","patrón de distribución · "+lista.length+" registro(s)");
+  var pts=[], sinCoord=0;
+  lista.forEach(function(r){ var c=coordenadasRegistro(r); if(c) pts.push({r:r,lat:c.lat,lng:c.lng,n:mapaNumInd(r.individuos)}); else sinCoord++; });
+  dlg.innerHTML='<div class="md-caja"><div class="md-cab"><strong>Patrón de distribución geográfica</strong><span class="md-sub"></span><button type="button" class="btn-cerrar-ficha" title="Cerrar" aria-label="Cerrar">✕</button></div>'
+    +'<div class="md-cuerpo"><div class="md-mapa"><div class="md-lienzo"></div><canvas class="md-canvas"></canvas><div class="md-aviso oculto"></div><div class="md-ctl"><button type="button" data-z="1" title="Acercar">+</button><button type="button" data-z="-1" title="Alejar">−</button><button type="button" data-fit="1" title="Ajustar a los puntos">⤢</button></div><div class="md-tip oculto"></div><div class="md-pop oculto"></div><div class="md-atrib">Imagen © Esri</div></div>'
+    +'<aside class="md-lado"><div class="md-resumen"></div><div class="md-opc"><label>Colorear por <select class="nav md-cat">'+MAPA_CATS.map(function(c,i){ return '<option value="'+i+'">'+c[1]+'</option>'; }).join("")+'</select></label><label><input type="checkbox" class="md-tam"> Tamaño según n.º de individuos</label></div><div class="md-leyenda"></div></aside></div></div>';
+  var $=function(s){ return dlg.querySelector(s); };
+  var mapa=$(".md-mapa"), lienzo=$(".md-lienzo"), cv=$(".md-canvas"), aviso=$(".md-aviso"), tip=$(".md-tip"), pop=$(".md-pop"), ctx=cv.getContext("2d");
+  var z=4, ZMIN=3, ZMAX=18, centro=mercatorPx(-35,-71,4), teselas={}, cargadas=0, fallos=0;
+  var ocultas={}, catIdx=0, colores={}, catDe=null, leyenda=[];
+  $(".md-sub").textContent=lista.length+" registro(s) seleccionado(s)"+(ids.size?"":" (todos los resultados)");
+  // ----- resumen
+  function distintos(f){ var s={}; lista.forEach(function(r){ var v=f(r); if(v) s[v]=1; }); return Object.keys(s).length; }
+  function resumen(){
+    var inds=0, sinInd=0; lista.forEach(function(r){ var n=mapaNumInd(r.individuos); if(n) inds+=n; else sinInd++; });
+    var fechas=lista.map(function(r){ return r.fechaColecta; }).filter(function(f){ return /^\d{4}/.test(f||""); }).sort();
+    var alts=lista.map(function(r){ return parseFloat(String(r.altitud_m==null?"":r.altitud_m).replace(",",".")); }).filter(function(x){ return !isNaN(x); });
+    var f=[["Registros",lista.length+" ("+pts.length+" con coordenadas"+(sinCoord?", "+sinCoord+" sin coordenadas":"")+")"],
+      ["Ejemplares (suma de individuos)",inds+(sinInd?" · "+sinInd+" registro(s) sin n.º de individuos":"")],
+      ["Taxones distintos",String(distintos(function(r){ return nombreVigenteReg(r); }))],
+      ["Géneros / familias / órdenes",distintos(function(r){ return r.genero; })+" / "+distintos(function(r){ return r.familia; })+" / "+distintos(function(r){ return r.orden; })],
+      ["Localidades distintas",String(distintos(function(r){ return r.localidad; }))],
+      ["Colectores distintos",String(distintos(function(r){ return r.colector; }))]];
+    if(fechas.length) f.push(["Fechas de colecta",fechas[0]===fechas[fechas.length-1]?fechas[0]:fechas[0]+" a "+fechas[fechas.length-1]]);
+    if(alts.length) f.push(["Altitud / profundidad (m)",Math.min.apply(null,alts)+" a "+Math.max.apply(null,alts)]);
+    if(pts.length){
+      var la=pts.map(function(p){ return p.lat; }), lo=pts.map(function(p){ return p.lng; });
+      var a=Math.min.apply(null,la), b=Math.max.apply(null,la), c=Math.min.apply(null,lo), d=Math.max.apply(null,lo);
+      f.push(["Latitud",a.toFixed(3)+" a "+b.toFixed(3)],["Longitud",c.toFixed(3)+" a "+d.toFixed(3)],
+        ["Centro aproximado",((a+b)/2).toFixed(3)+", "+((c+d)/2).toFixed(3)],
+        ["Extensión (diagonal)",Math.round(kmEntre(a,c,b,d)).toLocaleString("es-CL")+" km"],
+        ["Localidades con coordenadas",String(Object.keys(pts.reduce(function(s,p){ s[p.lat.toFixed(4)+","+p.lng.toFixed(4)]=1; return s; },{})).length)+" puntos distintos"]);
+    }
+    var reg={}; lista.forEach(function(r){ if(r.region) reg[r.region]=(reg[r.region]||0)+1; });
+    var top=Object.keys(reg).sort(function(x,y){ return reg[y]-reg[x]; }).slice(0,5);
+    if(top.length) f.push(["Regiones",top.map(function(k){ return escapeHtml(k)+" ("+reg[k]+")"; }).join(", ")+(Object.keys(reg).length>5?" …":"")]);
+    $(".md-resumen").innerHTML='<table class="md-tabla">'+f.map(function(x){ return '<tr><th>'+x[0]+'</th><td>'+(x[0]==="Regiones"?x[1]:escapeHtml(x[1]))+'</td></tr>'; }).join("")+'</table>';
+  }
+  // ----- categorías y leyenda
+  function calcularCategorias(){
+    var fn=MAPA_CATS[catIdx][2], cuenta={};
+    pts.forEach(function(p){ var k=fn(p.r)||"Sin dato"; p.cat=k; var o=cuenta[k]||(cuenta[k]={n:0,ind:0}); o.n++; o.ind+=p.n; });
+    var orden=Object.keys(cuenta).filter(function(k){ return k!=="Sin dato"; }).sort(function(a,b){ return cuenta[b].n-cuenta[a].n || (a<b?-1:1); });
+    colores={}; leyenda=[];
+    orden.slice(0,MAPA_PALETA.length).forEach(function(k,i){ colores[k]=MAPA_PALETA[i]; leyenda.push({k:k,color:MAPA_PALETA[i],n:cuenta[k].n,ind:cuenta[k].ind}); });
+    var resto=orden.slice(MAPA_PALETA.length), ro={n:0,ind:0}; resto.forEach(function(k){ colores[k]="#8a8f94"; ro.n+=cuenta[k].n; ro.ind+=cuenta[k].ind; });
+    if(resto.length) leyenda.push({k:"__otras",color:"#8a8f94",n:ro.n,ind:ro.ind,txt:"Otras ("+resto.length+" categorías)"});
+    if(cuenta["Sin dato"]){ colores["Sin dato"]="#ffffff"; leyenda.push({k:"Sin dato",color:"#ffffff",n:cuenta["Sin dato"].n,ind:cuenta["Sin dato"].ind,txt:"Sin dato"}); }
+    pts.forEach(function(p){ p.color=colores[p.cat]||"#8a8f94"; p.lk=(colores[p.cat]&&leyenda.some(function(l){ return l.k===p.cat; }))?p.cat:(p.cat==="Sin dato"?"Sin dato":"__otras"); });
+    ocultas={};
+  }
+  function pintarLeyenda(){
+    var vis=pts.filter(function(p){ return !ocultas[p.lk]; }).length;
+    var h='<div class="md-ley-tit">Leyenda: '+escapeHtml(MAPA_CATS[catIdx][1])+' <span class="nota">(pulsa para ocultar o mostrar)</span></div>';
+    h+=leyenda.map(function(l,i){ var nom=l.txt||l.k, esTax=(catIdx===0&&!l.txt);
+      return '<div class="md-ley'+(ocultas[l.k]?' off':'')+'" data-i="'+i+'"><span class="md-sw" style="background:'+l.color+'"></span><span class="md-ley-nom">'+(esTax?nombreCientificoHtml(nom):escapeHtml(nom))+'</span><span class="md-ley-n">'+l.n+' reg.'+(l.ind?' · '+l.ind+' ej.':'')+'</span></div>'; }).join("");
+    h+='<p class="nota">Mostrando '+vis+' de '+pts.length+' punto(s).</p>';
+    $(".md-leyenda").innerHTML=h;
+  }
+  // ----- teselas
+  function dibujarTeselas(){
+    var w=mapa.clientWidth||600, h=mapa.clientHeight||400, n=Math.pow(2,z), x0=centro.x-w/2, y0=centro.y-h/2;
+    var tx0=Math.floor(x0/256), tx1=Math.floor((x0+w)/256), ty0=Math.max(0,Math.floor(y0/256)), ty1=Math.min(n-1,Math.floor((y0+h)/256)), vivas={};
+    for(var ty=ty0;ty<=ty1;ty++) for(var tx=tx0;tx<=tx1;tx++){
+      var tw=((tx%n)+n)%n;
+      [ESRI_CAPAS[0],ESRI_CAPAS[2]].forEach(function(cp){
+        var k=cp.id+z+"/"+tw+"/"+ty+"@"+tx; vivas[k]=1; var im=teselas[k];
+        if(!im){
+          im=document.createElement("img"); im.alt=""; im.draggable=false; im.decoding="async";
+          if(cp.base){ im.onload=function(){ cargadas++; aviso.classList.add("oculto"); }; im.onerror=function(){ fallos++; if(!cargadas&&fallos>=2){ aviso.textContent="Sin conexión a internet: se muestran los puntos sin imagen de fondo."; aviso.classList.remove("oculto"); } }; }
+          else im.onerror=function(){ im.style.visibility="hidden"; };
+          im.src=cp.url.replace("{z}",z).replace("{y}",ty).replace("{x}",tw); lienzo.appendChild(im); teselas[k]=im;
+        }
+        im.style.left=Math.round(tx*256-x0)+"px"; im.style.top=Math.round(ty*256-y0)+"px";
+      });
+    }
+    Object.keys(teselas).forEach(function(k){ if(!vivas[k]){ teselas[k].remove(); delete teselas[k]; } });
+  }
+  function radio(p){ return $(".md-tam").checked ? 5+Math.min(11,Math.sqrt(p.n||1)*1.6) : 6; }
+  function pantalla(p){ var q=mercatorPx(p.lat,p.lng,z), w=mapa.clientWidth, h=mapa.clientHeight; return {x:q.x-(centro.x-w/2), y:q.y-(centro.y-h/2)}; }
+  function dibujar(){
+    var w=mapa.clientWidth||600, h=mapa.clientHeight||400, dpr=window.devicePixelRatio||1;
+    if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){ cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr); cv.style.width=w+"px"; cv.style.height=h+"px"; }
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h);
+    dibujarTeselas();
+    pts.forEach(function(p){
+      if(ocultas[p.lk]) return; var s=pantalla(p); p._x=s.x; p._y=s.y;
+      if(s.x<-20||s.y<-20||s.x>w+20||s.y>h+20) return;
+      ctx.beginPath(); ctx.arc(s.x,s.y,radio(p),0,6.2832); ctx.fillStyle=p.color; ctx.globalAlpha=.88; ctx.fill(); ctx.globalAlpha=1;
+      ctx.lineWidth=1.6; ctx.strokeStyle="#fff"; ctx.stroke(); ctx.lineWidth=.6; ctx.strokeStyle="rgba(0,0,0,.55)"; ctx.beginPath(); ctx.arc(s.x,s.y,radio(p)+1,0,6.2832); ctx.stroke();
+    });
+  }
+  function ajustar(){
+    if(!pts.length){ z=4; centro=mercatorPx(-35,-71,4); dibujar(); return; }
+    var w=mapa.clientWidth||600, h=mapa.clientHeight||400, la=pts.map(function(p){ return p.lat; }), lo=pts.map(function(p){ return p.lng; });
+    var a=Math.min.apply(null,la), b=Math.max.apply(null,la), c=Math.min.apply(null,lo), d=Math.max.apply(null,lo), zz=15;
+    for(;zz>ZMIN;zz--){ var p1=mercatorPx(b,c,zz), p2=mercatorPx(a,d,zz); if(Math.abs(p2.x-p1.x)<=w*0.82 && Math.abs(p2.y-p1.y)<=h*0.82) break; }
+    z=Math.min(zz,13); centro=mercatorPx((a+b)/2,(c+d)/2,z);
+    Object.keys(teselas).forEach(function(k){ teselas[k].remove(); delete teselas[k]; }); dibujar();
+  }
+  function zoom(d,cx,cy){
+    var nz=Math.max(ZMIN,Math.min(ZMAX,z+d)); if(nz===z) return;
+    var w=mapa.clientWidth, h=mapa.clientHeight; if(cx==null){ cx=w/2; cy=h/2; }
+    var f=Math.pow(2,nz-z), wx=(centro.x-w/2+cx)*f, wy=(centro.y-h/2+cy)*f;
+    centro={x:wx-cx+w/2,y:wy-cy+h/2}; z=nz;
+    Object.keys(teselas).forEach(function(k){ teselas[k].remove(); delete teselas[k]; }); pop.classList.add("oculto"); dibujar();
+  }
+  function cercanos(x,y,tol){ return pts.filter(function(p){ return !ocultas[p.lk] && p._x!=null && Math.hypot(p._x-x,p._y-y)<=radio(p)+(tol||4); }); }
+  function textoPunto(p){ var r=p.r; return [construirCatalogoCompleto(r)||r.numeroCampo||"s/n", nombreVigenteReg(r)||"sin determinar", r.localidad||"", r.fechaColecta||""].filter(Boolean).join(" · "); }
+  // ----- interacción
+  var ptrs={}, arr=null, movido=false, dist0=0;
+  function rel(e){ var b=mapa.getBoundingClientRect(); return {x:e.clientX-b.left,y:e.clientY-b.top}; }
+  mapa.addEventListener("pointerdown", function(e){
+    if(e.target.closest(".md-ctl,.md-pop")) return;
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY}; try{ mapa.setPointerCapture(e.pointerId); }catch(er){}
+    if(Object.keys(ptrs).length===1){ arr={x:e.clientX,y:e.clientY,cx:centro.x,cy:centro.y}; movido=false; }
+    else { arr=null; var k=Object.keys(ptrs); dist0=Math.hypot(ptrs[k[0]].x-ptrs[k[1]].x,ptrs[k[0]].y-ptrs[k[1]].y); }
+  });
+  mapa.addEventListener("pointermove", function(e){
+    var r=rel(e);
+    if(!ptrs[e.pointerId]){ var c=cercanos(r.x,r.y,3); if(c.length){ tip.textContent=textoPunto(c[c.length-1])+(c.length>1?"  (+"+(c.length-1)+" más aquí)":""); tip.style.left=Math.min(r.x+14,mapa.clientWidth-260)+"px"; tip.style.top=(r.y+14)+"px"; tip.classList.remove("oculto"); mapa.style.cursor="pointer"; } else { tip.classList.add("oculto"); mapa.style.cursor="grab"; } return; }
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    var k=Object.keys(ptrs);
+    if(k.length>=2){ var d=Math.hypot(ptrs[k[0]].x-ptrs[k[1]].x,ptrs[k[0]].y-ptrs[k[1]].y); if(dist0&&d){ if(d/dist0>1.5){ zoom(1); dist0=d; } else if(d/dist0<0.67){ zoom(-1); dist0=d; } } movido=true; return; }
+    if(!arr) return;
+    if(Math.hypot(e.clientX-arr.x,e.clientY-arr.y)>4) movido=true;
+    if(movido){ tip.classList.add("oculto"); pop.classList.add("oculto"); centro={x:arr.cx-(e.clientX-arr.x),y:arr.cy-(e.clientY-arr.y)}; dibujar(); }
+  });
+  function soltar(e){
+    var r=rel(e), eraUno=Object.keys(ptrs).length===1; delete ptrs[e.pointerId];
+    if(eraUno && !movido && e.type==="pointerup"){
+      var c=cercanos(r.x,r.y,5);
+      if(!c.length){ pop.classList.add("oculto"); }
+      else {
+        var ord=c.slice(-6).reverse();
+        pop.innerHTML=ord.map(function(p,i){ return '<div class="md-pop-it"><span class="md-sw" style="background:'+p.color+'"></span><span>'+escapeHtml(textoPunto(p))+'</span><button type="button" class="btn tenue small" data-v="'+i+'">Ver ejemplar</button></div>'; }).join("")+(c.length>6?'<p class="nota">… y '+(c.length-6)+' más en este punto.</p>':'');
+        pop.querySelectorAll("[data-v]").forEach(function(b){ b.onclick=function(){ mostrarFichaConsulta(ord[+b.getAttribute("data-v")].r.id, lista.map(function(x){ return x.id; })); }; });
+        pop.style.left=Math.min(r.x+12,mapa.clientWidth-330)+"px"; pop.style.top=Math.max(8,Math.min(r.y+12,mapa.clientHeight-140))+"px"; pop.classList.remove("oculto");
+      }
+    }
+    if(!Object.keys(ptrs).length) arr=null; else { var k=Object.keys(ptrs)[0]; arr={x:ptrs[k].x,y:ptrs[k].y,cx:centro.x,cy:centro.y}; }
+  }
+  mapa.addEventListener("pointerup", soltar); mapa.addEventListener("pointercancel", soltar);
+  mapa.addEventListener("wheel", function(e){ e.preventDefault(); var r=rel(e); zoom(e.deltaY<0?1:-1,r.x,r.y); }, {passive:false});
+  mapa.addEventListener("dblclick", function(e){ var r=rel(e); zoom(1,r.x,r.y); });
+  dlg.querySelectorAll(".md-ctl button").forEach(function(b){
+    b.addEventListener("pointerdown", function(e){ e.stopPropagation(); });
+    b.addEventListener("click", function(){ if(b.getAttribute("data-fit")) ajustar(); else zoom(parseInt(b.getAttribute("data-z"),10)); });
+  });
+  $(".md-cat").addEventListener("change", function(){ catIdx=+this.value; calcularCategorias(); pintarLeyenda(); dibujar(); });
+  $(".md-tam").addEventListener("change", dibujar);
+  $(".md-leyenda").addEventListener("click", function(e){ var it=e.target.closest(".md-ley"); if(!it) return; var l=leyenda[+it.getAttribute("data-i")]; if(!l) return; ocultas[l.k]=!ocultas[l.k]; pintarLeyenda(); dibujar(); });
+  $(".btn-cerrar-ficha").onclick=function(){ dlg.close(); };
+  dlg.onclick=function(e){ if(e.target===dlg) dlg.close(); };
+  dlg.onclose=function(){ window.removeEventListener("resize",redim); };
+  function redim(){ dibujar(); }
+  window.addEventListener("resize",redim);
+  resumen(); calcularCategorias(); pintarLeyenda();
+  if(!pts.length){ aviso.textContent="Ningún registro seleccionado tiene coordenadas válidas."; aviso.classList.remove("oculto"); }
+  dlg.showModal();
+  requestAnimationFrame(function(){ ajustar(); });
+}
+
 function abrirConsultaConFicha(id){
   consultarRegistro(id);
   mostrarFichaConsulta(id);
@@ -3004,6 +3249,7 @@ function actualizarAvisoConteo(){
 var FOOTERS_CFG = [
   {tab:"entrada"}, {tab:"preparacion"}, {tab:"deposito"}, {tab:"manejo", ultimo:true}
 ];
+function irAlInicioFormulario(){ try{ window.scrollTo({top:0,left:0,behavior:"auto"}); }catch(e){ window.scrollTo(0,0); } var d=document.documentElement; d.scrollTop=0; document.body.scrollTop=0; }
 function actualizarFooterAcciones(){
   var modo = activoId===null ? "nuevo" : (editando ? "edicion" : "consulta");
   FOOTERS_CFG.forEach(function(cfg){
@@ -3172,6 +3418,7 @@ function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   cargarRegistroEnFormulario();
   refrescarPanelesRegistros();
   if(siguienteTab) activarTab(siguienteTab);
+  irAlInicioFormulario();
 }
 // Si otro equipo guardó este mismo registro en la Carpeta local después de que lo abriste, pide confirmación antes de pisarlo.
 async function confirmarSinConflicto(){
@@ -3219,13 +3466,16 @@ function guardarActualizacion(siguienteTab){
   cargarRegistroEnFormulario();
   refrescarPanelesRegistros();
   if(siguienteTab) activarTab(siguienteTab);
+  irAlInicioFormulario();
 }
 
 // ---------- panel de registros (transversal) ----------
 function iconosArchivos(reg){
-  var nf=(reg.fotos||[]).filter(function(f){ return f && f.archivo; }).length;
-  var na=(reg.publicacionesPdf||[]).filter(Boolean).length+(reg.adjuntos||[]).filter(function(a){ return a && a.archivo; }).length;
-  return (nf?'<span class="ico-arch" title="'+nf+' foto(s) asociada(s)">📷</span>':'')+(na?'<span class="ico-arch" title="'+na+' archivo(s) asociado(s) (PDF y adjuntos)">📄</span>':'');
+  var lleno=function(a){ return (a||[]).filter(function(x){ return x && (typeof x==="string" ? x : (x.archivo||x.ruta)); }).length; };
+  var nf=lleno(reg.fotos), npdf=(reg.publicacionesPdf||[]).filter(Boolean).length, nad=lleno(reg.adjuntos);
+  var nman=lleno(reg.docsBaja); (reg.prestamos||[]).forEach(function(p){ nman+=lleno(p.docs); }); (reg.usos||[]).forEach(function(u){ nman+=lleno(u.docs); });
+  var ic=function(e,t){ return '<span class="ico-arch" title="'+t+'">'+e+'</span>'; };
+  return (nf?ic("📷",nf+" foto(s) asociada(s)"):"")+(npdf?ic("📕",npdf+" PDF de publicaciones"):"")+(nad?ic("📎",nad+" otro(s) archivo(s) adjunto(s)"):"")+(nman?ic("🗂️",nman+" documento(s) de manejo (baja, préstamos, usos)"):"");
 }
 function etiquetaRegistro(r){
   var detO = r.determinaciones && r.determinaciones.length ? r.determinaciones[r.determinaciones.length-1] : null;
@@ -3316,7 +3566,7 @@ function montarPanelRegistros(cont){
     var tg=cont.querySelector(".btn-toggle-lista");
     if(tg) tg.onclick=function(){ cont.setAttribute("data-abierto", abiertoC?"0":"1"); montarPanelRegistros(cont); };
     cont.querySelectorAll(".fila-registro").forEach(function(fila){
-      fila.querySelector(".btn-consultar-registro").onclick=function(){ mostrarFichaConsulta(fila.getAttribute("data-id")); };
+      fila.querySelector(".btn-consultar-registro").onclick=function(){ mostrarFichaConsulta(fila.getAttribute("data-id"), idsHermanos(fila,".fila-registro")); };
     });
     return;
   }
@@ -3536,7 +3786,7 @@ function renderResumenDatos(){
     cont.__deleg=true;
     cont.addEventListener("click", function(e){
       var ver=e.target.closest(".btn-ver-resumen"), bor=e.target.closest(".btn-borrar-compacto"), tx=e.target.closest(".fila-compacta-texto");
-      if(ver){ mostrarFichaConsulta(ver.closest(".fila-compacta").getAttribute("data-id")); }
+      if(ver){ var fc=ver.closest(".fila-compacta"); mostrarFichaConsulta(fc.getAttribute("data-id"), idsHermanos(fc,".fila-compacta")); }
       else if(bor){ eliminarRegistros([bor.closest(".fila-compacta").getAttribute("data-id")]); }
       else if(tx){ var chk=tx.closest(".fila-compacta").querySelector(".chk-registro"); chk.checked=!chk.checked; chk.dispatchEvent(new Event("change",{bubbles:true})); }
     });
@@ -5753,6 +6003,7 @@ function construirConsultas(){
   document.getElementById("cons-mas-btn").addEventListener("click", function(){ consEstado.mostrar+=100; pintarConsultas(); });
   document.getElementById("cons-csv").addEventListener("click", function(){ descargarConsulta("csv"); });
   document.getElementById("cons-xlsx").addEventListener("click", function(){ descargarConsulta("xlsx"); });
+  document.getElementById("cons-mapa").addEventListener("click", abrirMapaDistribucion);
   document.getElementById("cons-chips").addEventListener("click", function(e){
     var b=e.target.closest("button[data-quitar]"); if(!b) return;
     var q=b.getAttribute("data-quitar");
@@ -5769,7 +6020,7 @@ function construirConsultas(){
       if(e.target.classList.contains("cons-chk")){ if(e.target.checked) consSel.add(id); else consSel.delete(id); fila.classList.toggle("marcada", e.target.checked); actualizarMarcasConsulta(); }
       return;
     }
-    mostrarFichaConsulta(id);
+    mostrarFichaConsulta(id, resultadosConsulta().map(function(r){ return r.id; }));
   });
   document.getElementById("cons-marcar-todos").addEventListener("click", function(){ resultadosConsulta().forEach(function(r){ consSel.add(r.id); }); pintarConsultas(); });
   document.getElementById("cons-quitar-marcas").addEventListener("click", function(){ consSel.clear(); pintarConsultas(); });
@@ -5821,11 +6072,11 @@ function pintarConsultas(){
   lista.slice(0,e.mostrar).forEach(function(r){
     var et=etiquetaRegistro(r);
     var extra=[r.phylum,r.clase,r.orden,r.familia,r.genero].filter(Boolean).join(" › ");
-    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Marcar para descargar solo los registros marcados"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Descargar</label></div></div>';
+    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Seleccionar este registro para descargar o evaluar su distribución"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Seleccionar</label></div></div>';
   });
   cont.innerHTML=h;
   document.getElementById("cons-mas-btn").classList.toggle("oculto", lista.length<=e.mostrar);
-  document.getElementById("cons-csv").disabled=document.getElementById("cons-xlsx").disabled=!lista.length;
+  document.getElementById("cons-csv").disabled=document.getElementById("cons-xlsx").disabled=document.getElementById("cons-mapa").disabled=!lista.length;
   document.getElementById("cons-marcar-todos").disabled=!lista.length;
   actualizarMarcasConsulta();
   document.querySelectorAll(".slot-panel-registros").forEach(montarPanelRegistros);
@@ -5833,7 +6084,7 @@ function pintarConsultas(){
 function marcadosConsulta(){ var ids=new Set(resultadosConsulta().map(function(r){ return r.id; })); return Array.from(consSel).filter(function(id){ return ids.has(id); }); }
 function actualizarMarcasConsulta(){
   var n=marcadosConsulta().length, t=document.getElementById("cons-marcas-txt");
-  if(t) t.textContent=n ? n+" registro(s) marcado(s): la descarga incluirá solo esos." : "Sin marcas: la descarga incluye todos los resultados.";
+  if(t) t.textContent=n ? n+" registro(s) seleccionado(s): la descarga y el mapa incluirán solo esos." : "Sin selección: la descarga y el mapa incluyen todos los resultados.";
   var csv=document.getElementById("cons-csv"), xl=document.getElementById("cons-xlsx");
   if(csv) csv.textContent=n?"Descargar CSV ("+n+")":"Descargar CSV";
   if(xl) xl.textContent=n?"Descargar Excel ("+n+")":"Descargar Excel";

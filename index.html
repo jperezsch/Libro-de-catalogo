@@ -283,7 +283,7 @@
   .imp-tabla-caja{overflow:auto;margin:8px 0;}
   .imp-resp{display:block;margin:8px 0;font-size:14px;}
   @media (max-width:760px){ .imp-cols{grid-template-columns:1fr;} }
-  /* ---- v0.9.48: emparejado ---- */
+  /* ---- v0.9.49: emparejado ---- */
   .imp-estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin:8px 0;color:var(--ink-soft);}
   .imp-filtro{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0;}
   .imp-filtro input{flex:1 1 150px;min-width:0;}
@@ -313,7 +313,7 @@
   .imp-ayuda p{margin:6px 0;}
   .imp-alerta{color:var(--danger);}
   .imp-no{margin-top:8px;}
-  /* ---- v0.9.48: asistente ---- */
+  /* ---- v0.9.49: asistente ---- */
   .imp-pasos{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
   .imp-paso-btn{flex:1 1 150px;border:1px solid var(--line-fuerte);background:var(--paper-2);border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;color:var(--ink);}
   .imp-paso-btn.activo{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
@@ -322,7 +322,7 @@
   .imp-fila-enc th{background:var(--accent-soft);}
   .imp-plantilla-sug{background:var(--warn-soft);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:14px;}
   .imp-sin{border-bottom:1px solid var(--line);padding:6px 0;font-size:13.5px;}
-  /* ---- v0.9.48: previsualización y emparejado con tabla ---- */
+  /* ---- v0.9.49: previsualización y emparejado con tabla ---- */
   .imp-paso-btn:disabled{opacity:.45;cursor:not-allowed;}
   .imp-nombre-in{width:100%;min-width:110px;font-size:12px;padding:2px 4px;font-weight:600;border:1px solid var(--line-fuerte);border-radius:4px;background:#fff;}
   .imp-fila-otra td,.imp-fila-otra th{background:var(--paper-2);color:var(--ink-soft);}
@@ -341,16 +341,17 @@
   .imp-man-sel{width:100%;font-size:13px;}
   .imp-man-acc{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
   .imp-sug-fila{margin:4px 0;font-size:13px;}
-  /* ---- v0.9.48: bloques de emparejado ---- */
+  /* ---- v0.9.49: bloques de emparejado ---- */
   .imp-sec-tit{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-soft);margin:8px 0 3px;}
   .imp-destino{border-left:3px solid var(--accent);background:var(--paper-2);border-radius:6px;padding:6px 10px;margin:6px 0;}
   .imp-cand{border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin:5px 0;background:#fff;}
   .imp-cand-cab{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;font-size:13.5px;}
   .imp-cand-bt{display:flex;gap:6px;}
-  /* ---- v0.9.48 ---- */
-  .ayuda-campo{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--accent);background:#fff;color:var(--accent);font-size:11px;font-weight:800;line-height:1;cursor:pointer;vertical-align:middle;margin-left:6px;padding:0;}
-  .ayuda-campo:hover{background:var(--accent);color:#fff;}
-  .ayuda-campo-panel{background:var(--accent-soft);border:1px solid var(--accent-2);border-radius:8px;padding:7px 10px;font-size:13px;margin:3px 0 6px;grid-column:1/-1;}
+  /* ---- v0.9.49 ---- */
+  .campo{position:relative;}
+  .ayuda-campo{width:13px;height:13px;border-radius:50%;border:1px solid var(--ink-soft);background:transparent;color:var(--ink-soft);font-size:8.5px;font-weight:700;line-height:1;cursor:pointer;vertical-align:middle;margin:0;padding:0;opacity:.7;display:inline-flex;align-items:center;justify-content:center;}
+  .ayuda-campo:hover{opacity:1;background:var(--accent);border-color:var(--accent);color:#fff;}
+  .ayuda-campo-panel{position:absolute;left:9px;z-index:60;width:max-content;max-width:min(340px,92%);background:var(--accent-soft);border:1px solid var(--accent-2);border-radius:8px;padding:7px 10px;font-size:13px;line-height:1.35;font-weight:400;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.22);}
   .imp-der-tabla{display:flex;flex-direction:column;gap:8px;height:min(88vh,800px);}
   .imp-mitad{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:4px;}
   .imp-der-tabla .imp-tabla-previa{max-height:none;flex:1;min-height:0;}
@@ -366,6 +367,18 @@
   .mv-fila>div{display:flex;flex-direction:column;gap:3px;min-width:240px;}
   .mv-fila select{font-size:14px;}
   @media (max-width:900px){ .imp-der-tabla{height:auto;} .imp-mitad{flex:none;} .imp-der-tabla .imp-tabla-previa{max-height:300px;} #imp-glosario{max-height:300px;} }
+  /* ---- v0.9.49 ---- */
+  .combo{position:relative;min-width:0;}
+  .combo-btn{width:100%;text-align:left;border:1px solid var(--line-fuerte);background:#fff;border-radius:6px;padding:6px 26px 6px 8px;font-size:13px;cursor:pointer;color:var(--ink);position:relative;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .combo-btn::after{content:"▾";position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--ink-soft);}
+  .combo-pop{position:fixed;z-index:3000;background:#fff;border:1px solid var(--accent);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.28);display:flex;flex-direction:column;padding:6px;gap:5px;}
+  .combo-q{font-size:13px;width:100%;box-sizing:border-box;}
+  .combo-lista{overflow:auto;flex:1;min-height:0;}
+  .combo-op{padding:4px 8px;font-size:13px;cursor:pointer;border-radius:4px;}
+  .combo-op:hover,.combo-op.sel{background:var(--accent-soft);}
+  .combo-g{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--ink-soft);padding:6px 8px 2px;}
+  .imp-gl-link{cursor:pointer;text-decoration:underline dotted;}
+  .imp-gl-link:hover{color:var(--accent);}
   @media (max-width:900px){ .imp-dos{grid-template-columns:1fr;} .imp-der-tabla{position:static;} }
   @media (max-width:760px){ .imp-par{grid-template-columns:1fr;} .imp-par-flecha{display:none;} .imp-par-acc{flex-direction:row;} }
   .full{grid-column:1/-1;}
@@ -613,7 +626,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.48</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.49</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -976,7 +989,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.48</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.49</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1006,7 +1019,7 @@
       <details class="subbloque-gest" id="sub-mover">
         <summary>Mover valores entre campos (corregir una importación)</summary>
         <p class="nota">Copia el contenido de un campo a otro en los registros que elijas. Sirve para corregir una columna que se emparejó con el campo equivocado. Por ejemplo, mover «Nombre de la colección» a «Ubicación en colección». Primero se muestra cuántos registros cambiarían y no se modifica nada hasta que lo confirmes. Las listas están en orden alfabético y tienen un buscador.</p>
-        <div class="imp-fila-opc mv-fila"><div><label>Mover desde</label><input type="search" id="mv-origen-q" class="nav" placeholder="Buscar un campo…"><select id="mv-origen"></select></div><div><label>hacia</label><input type="search" id="mv-destino-q" class="nav" placeholder="Buscar un campo…"><select id="mv-destino"></select></div></div>
+        <div class="imp-fila-opc mv-fila"><div><label>Mover desde</label><div class="combo" id="mv-origen" data-tipo="mv" data-id="mv-origen" data-valor=""><button type="button" class="combo-btn">Elige un campo…</button></div></div><div><label>hacia</label><div class="combo" id="mv-destino" data-tipo="mv" data-id="mv-destino" data-valor=""><button type="button" class="combo-btn">Elige un campo…</button></div></div></div>
         <div class="imp-fila-opc"><label>Registros <select id="mv-alcance"></select></label></div>
         <div class="imp-fila-opc"><label><input type="checkbox" id="mv-vaciar" checked> Vaciar el campo de origen después de mover</label><label><input type="checkbox" id="mv-reemplazar"> Reemplazar el destino si ya tiene un valor</label><label><input type="checkbox" id="mv-respaldo" checked> Descargar un zip de respaldo antes</label></div>
         <div class="barra-botones"><button type="button" class="btn secundario" id="mv-ver">Ver cuántos cambiarían</button><button type="button" class="btn" id="mv-aplicar" disabled>Aplicar</button></div>
@@ -1144,7 +1157,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.48";
+var APP_VERSION = "v0.9.49";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1393,7 +1406,7 @@ function claveAyudaLista(tipo,key){
 function ponerAyudaCampo(lbl,key){
   if(!lbl||!key||!DEF_CAMPOS[key]||lbl.querySelector(".ayuda-campo")) return;
   var b=document.createElement("button"); b.type="button"; b.className="ayuda-campo"; b.textContent="?"; b.setAttribute("data-def",key); b.setAttribute("aria-label","Qué es este campo");
-  var nm=lbl.querySelector(".name"); if(nm) nm.parentNode.insertBefore(b,nm.nextSibling); else lbl.appendChild(b);
+  var nm=lbl.querySelector(".name"); if(nm){ nm.appendChild(document.createTextNode(" ")); nm.appendChild(b); } else lbl.appendChild(b);
 }
 function instalarAyudasCampos(){
   document.querySelectorAll(".campo .lbl").forEach(function(lbl){
@@ -1401,16 +1414,21 @@ function instalarAyudasCampos(){
     var ctl=c.querySelector("[data-f]"); if(ctl) ponerAyudaCampo(lbl,ctl.getAttribute("data-f"));
   });
 }
+function cerrarAyudasCampo(salvo){ document.querySelectorAll(".ayuda-campo-panel").forEach(function(p){ if(p!==salvo) p.remove(); }); }
 document.addEventListener("click", function(e){
-  var b=e.target.closest&&e.target.closest(".ayuda-campo"); if(!b) return;
+  var b=e.target.closest&&e.target.closest(".ayuda-campo");
+  if(!b){ if(!(e.target.closest&&e.target.closest(".ayuda-campo-panel"))) cerrarAyudasCampo(null); return; }
   e.preventDefault(); e.stopPropagation();
   var campo=b.closest(".campo"), k=b.getAttribute("data-def"); if(!campo) return;
-  var p=campo.querySelector(":scope > .ayuda-campo-panel");
-  if(p){ p.remove(); return; }
-  p=document.createElement("div"); p.className="ayuda-campo-panel"; p.textContent=DEF_CAMPOS[k]||"";
-  var lbl=b.closest(".lbl"); lbl.parentNode.insertBefore(p,lbl.nextSibling);
+  var ex=campo.querySelector(":scope > .ayuda-campo-panel");
+  cerrarAyudasCampo(null);
+  if(ex) return;
+  var p=document.createElement("div"); p.className="ayuda-campo-panel"; p.textContent=DEF_CAMPOS[k]||"";
+  var lbl=b.closest(".lbl"); campo.appendChild(p);
+  p.style.top=(lbl.offsetTop+lbl.offsetHeight+2)+"px";
+  var r=p.getBoundingClientRect(); if(r.right>window.innerWidth-8){ p.style.left="auto"; p.style.right="0"; }
 });
-
+document.addEventListener("keydown", function(e){ if(e.key==="Escape") cerrarAyudasCampo(null); });
 // ---------- botones de ayuda (?) ----------
 document.addEventListener("click", function(e){
   var b=e.target.closest && e.target.closest(".ayuda-btn");
@@ -5164,6 +5182,59 @@ async function importarZipRespaldo(file){ if(modoAcceso!=="admin") return;
 // IMPORTAR DESDE PLANILLA (Excel, CSV): el archivo se lee tal como viene y las columnas se reparten
 // en los campos de la app con un emparejamiento de dos columnas (arrastrar, o elegir en el selector).
 // =====================================================================================
+// ---------- lista desplegable con buscador (combo) ----------
+var moverCamposFn=null, comboPop=null;
+function comboHtml(tipo,id,valor,etiqueta,extra){ return '<div class="combo" data-tipo="'+tipo+'" data-id="'+id+'" data-valor="'+escapeHtml(valor||"")+'"'+(extra||"")+'><button type="button" class="combo-btn">'+escapeHtml(etiqueta)+'</button></div>'; }
+function comboOpciones(el,filtro){
+  var f=normTxt(filtro||"").trim(), tipo=el.getAttribute("data-tipo"), out=[];
+  if(tipo==="mv"){ (moverCamposFn?moverCamposFn():[]).forEach(function(o){ if(!f||normTxt(o.l+" "+o.k).indexOf(f)>-1) out.push({v:o.k,l:o.l,g:""}); }); return out; }
+  var ci=parseInt(el.getAttribute("data-col"),10), c=imp&&imp.cols[ci], objs=impObjetivos();
+  if(f) objs=objs.filter(function(o){ return normTxt(o.l+" "+o.k+" "+o.g).indexOf(f)>-1; });
+  else if(c) impSugerencias(c,5).forEach(function(x){ out.push({v:x.o.k,l:x.o.l+" ("+Math.round(x.s*100)+" %)",g:"Más parecidos"}); });
+  objs.forEach(function(o){ out.push({v:o.k,l:o.l,g:o.g}); });
+  return out;
+}
+function comboCerrar(){ if(comboPop){ comboPop.remove(); comboPop=null; } }
+function comboPintarLista(){
+  if(!comboPop) return;
+  var el=comboPop.__combo, q=comboPop.querySelector(".combo-q").value, ops=comboOpciones(el,q), h="", g=null, act=el.getAttribute("data-valor");
+  ops.forEach(function(o){ if(o.g!==g){ g=o.g; if(g) h+='<div class="combo-g">'+escapeHtml(g)+'</div>'; } h+='<div class="combo-op'+(o.v===act?' sel':'')+'" data-v="'+escapeHtml(o.v)+'" data-l="'+escapeHtml(o.l)+'">'+escapeHtml(o.l)+'</div>'; });
+  comboPop.querySelector(".combo-lista").innerHTML=h||'<div class="combo-g">Sin resultados</div>';
+}
+function comboAbrir(el){
+  comboCerrar();
+  var btn=el.querySelector(".combo-btn"), r=btn.getBoundingClientRect(), pop=document.createElement("div");
+  pop.className="combo-pop"; pop.__combo=el;
+  pop.innerHTML='<input type="search" class="combo-q" placeholder="Buscar un campo…" autocomplete="off"><div class="combo-lista"></div>';
+  document.body.appendChild(pop); comboPop=pop;
+  var abajo=window.innerHeight-r.bottom-12, arriba=r.top-12, alto=Math.min(380,Math.max(abajo,arriba)), ancho=Math.max(r.width,300);
+  pop.style.width=Math.min(ancho,window.innerWidth-16)+"px"; pop.style.maxHeight=alto+"px";
+  pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-ancho-8))+"px";
+  if(abajo>=220||abajo>=arriba) pop.style.top=(r.bottom+2)+"px"; else pop.style.bottom=(window.innerHeight-r.top+2)+"px";
+  comboPintarLista(); pop.querySelector(".combo-q").focus();
+  var sel=pop.querySelector(".combo-op.sel"); if(sel) sel.scrollIntoView({block:"nearest"});
+}
+function comboElegir(el,v,l){
+  var tipo=el.getAttribute("data-tipo"); comboCerrar();
+  if(tipo==="mv"){ el.setAttribute("data-valor",v); el.querySelector(".combo-btn").textContent=l.replace(/ \(\d+ %\)$/,""); var ap=document.getElementById("mv-aplicar"); if(ap) ap.disabled=true; return; }
+  var ci=parseInt(el.getAttribute("data-col"),10); imp.tent[ci]=v; imp.foco=ci; impPintar();
+}
+document.addEventListener("click", function(e){
+  var b=e.target.closest&&e.target.closest(".combo-btn");
+  if(b){ e.preventDefault(); var el=b.closest(".combo"); if(comboPop&&comboPop.__combo===el) comboCerrar(); else comboAbrir(el); return; }
+  var op=e.target.closest&&e.target.closest(".combo-op");
+  if(op&&comboPop){ comboElegir(comboPop.__combo,op.getAttribute("data-v"),op.getAttribute("data-l")); return; }
+  if(comboPop && !(e.target.closest&&e.target.closest(".combo-pop"))) comboCerrar();
+}, true);
+document.addEventListener("input", function(e){ if(e.target.classList&&e.target.classList.contains("combo-q")) comboPintarLista(); });
+document.addEventListener("keydown", function(e){
+  if(!comboPop) return;
+  if(e.key==="Escape"){ comboCerrar(); }
+  else if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("combo-q")){ e.preventDefault(); var o=comboPop.querySelector(".combo-op"); if(o) comboElegir(comboPop.__combo,o.getAttribute("data-v"),o.getAttribute("data-l")); }
+});
+window.addEventListener("resize", comboCerrar);
+window.addEventListener("scroll", function(e){ if(comboPop && !(e.target.closest&&e.target.closest(".combo-pop"))) comboCerrar(); }, true);
+
 var imp = null, impObjCache = null, impAbiertos = {}, impDrag = null;
 var IMP_EXCLUIR = {catalogador:1, creadoEn:1, modificadoEn:1, modificadoPor:1, id:1};
 var IMP_ESPECIALES = [
@@ -5184,7 +5255,7 @@ function impObjetivos(){
     if(el.closest(".fila-repetible")) return;
     var k=el.getAttribute("data-f"); if(vistos[k]||IMP_EXCLUIR[k]) return; vistos[k]=1;
     var campo=el.closest(".campo"), ne=campo&&campo.querySelector(".lbl .name"), panel=el.closest(".tabpanel"), bl=el.closest(".bloque"), h2=bl&&bl.querySelector("h2");
-    var etiqueta=ne?ne.textContent.trim():k;
+    var etiqueta=k; if(ne){ var nc=ne.cloneNode(true); nc.querySelectorAll(".ayuda-campo").forEach(function(x){ x.remove(); }); etiqueta=nc.textContent.trim()||k; }
     var titulo=h2?h2.textContent.replace(/\s*\?\s*$/,"").trim():"";
     var o={k:k, l:etiqueta, g:(TABS[panel&&panel.id]||"Otros")+(titulo?" › "+titulo:""), tipo:"texto"};
     var sel=document.querySelector('select[data-f="'+k+'"]');
@@ -5639,6 +5710,19 @@ function impGlosarioHtml(){
     return '<div class="imp-gl-it" data-gk="'+escapeHtml(it.k)+'" data-q="'+escapeHtml(txt)+'"'+(q&&txt.indexOf(q)<0?' style="display:none"':'')+'><strong>'+escapeHtml(it.l)+'</strong> <span class="imp-tipo">'+escapeHtml(it.g)+'</span><div>'+escapeHtml(d)+'</div></div>';
   }).join("");
 }
+function impGlosarioAplicarFiltro(){
+  var q=normTxt(imp.glQ||"").trim();
+  document.querySelectorAll("#imp-glosario .imp-gl-it").forEach(function(x){ x.style.display=(!q||x.getAttribute("data-q").indexOf(q)>-1)?"":"none"; });
+}
+function impGlosarioFiltrar(k){
+  var o=impObjetivo(k)||GLOS_EXTRA.filter(function(x){ return x.k===k; })[0]; if(!o) return;
+  imp.glQ=o.l; var q=impElem("imp-gl-q"); if(q) q.value=o.l;
+  impGlosarioAplicarFiltro();
+  var cont=impElem("imp-glosario"); if(!cont) return;
+  cont.querySelectorAll(".imp-gl-it.destacado").forEach(function(x){ x.classList.remove("destacado"); });
+  var it=Array.prototype.filter.call(cont.querySelectorAll(".imp-gl-it"),function(x){ return x.getAttribute("data-gk")===k; })[0];
+  if(it){ it.classList.add("destacado"); cont.scrollTop=0; }
+}
 function impTargetFoco(){
   if(imp.foco==null) return null;
   if(imp.tent[imp.foco]) return imp.tent[imp.foco];
@@ -5672,7 +5756,7 @@ function impPanelAuto(){
   props.forEach(function(x){
     var m=x.m, c=imp.cols[m.col], o=impObjetivo(m.target)||{l:m.target,k:m.target,tipo:"texto"}, pct=Math.round((m.score||0)*100);
     h+='<div class="imp-prop-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'"'+impAttrColor(m)+'><div class="imp-sec-tit">Columna de tu planilla <span class="imp-sug">parecido '+pct+' %</span></div><div class="imp-col-nombre"><strong>'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos</span></div>'+impPintarEjemplos(impEjemplosCol(c.i,5))
-      +'<div class="imp-sec-tit">Se propone emparejar con</div><div class="imp-destino"><div><strong>'+escapeHtml(o.l)+'</strong> <span class="imp-tipo">'+escapeHtml(o.g||"")+'</span></div>'+impEjemplosCampoHtml(o,4)+'</div>'
+      +'<div class="imp-sec-tit">Se propone emparejar con</div><div class="imp-destino"><div><strong class="imp-gl-link" data-gl="'+escapeHtml(o.k)+'" title="Ver su definición en el glosario">'+escapeHtml(o.l)+'</strong> <span class="imp-tipo">'+escapeHtml(o.g||"")+'</span></div>'+impEjemplosCampoHtml(o,4)+'</div>'
       +'<div class="imp-prop">'+impOpcionesMapa(m,x.i,o)+'</div><div class="barra-botones"><button type="button" class="btn small" data-confirmar="'+x.i+'">✓ Aceptar</button><button type="button" class="btn tenue small" data-quitar="'+x.i+'" title="Descartar esta propuesta; la columna pasa al emparejado manual">Descartar</button></div></div>';
   });
   return h;
@@ -5691,15 +5775,14 @@ function impPanelManual(){
       +'<div class="imp-col-nombre"><strong>'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos</span></div>'
       +impPintarEjemplos(ej,mas,menos)
       +'<div class="imp-sec-tit">Emparejar con</div>'
-      +'<input type="search" class="imp-sel-q nav" data-col="'+c.i+'" placeholder="Buscar un campo…" value="'+escapeHtml((imp.selFil&&imp.selFil[c.i])||"")+'">'
-      +'<select class="imp-man-sel" data-col="'+c.i+'"'+((imp.selFil&&(imp.selFil[c.i]||"").trim())?' size="7"':'')+'>'+impOpcionesObjetivos(tent||"",c,imp.selFil&&imp.selFil[c.i])+'</select>';
+      +comboHtml('man','imp-man-'+c.i,tent||'',tent?((impObjetivo(tent)||{}).l||tent):'Elige un campo…',' data-col="'+c.i+'"');
     if(ot){
-      h+='<div class="imp-destino"><div><strong>'+escapeHtml(ot.l)+'</strong> <span class="imp-tipo">'+escapeHtml(ot.g||"")+'</span></div>'+impEjemplosCampoHtml(ot,6)
+      h+='<div class="imp-destino"><div><strong class="imp-gl-link" data-gl="'+escapeHtml(ot.k)+'" title="Ver su definición en el glosario">'+escapeHtml(ot.l)+'</strong> <span class="imp-tipo">'+escapeHtml(ot.g||"")+'</span></div>'+impEjemplosCampoHtml(ot,6)
         +'<div class="barra-botones"><button type="button" class="btn small" data-emparejar="'+c.i+'">✓ Emparejar</button><button type="button" class="btn tenue small" data-deselegir="'+c.i+'">↩ Elegir otro campo</button></div></div>';
     } else {
       var sg=impSugerencias(c,5);
       h+='<div class="imp-ej-etq">Campos que podrían corresponder:</div>';
-      if(sg.length) sg.forEach(function(x){ h+='<div class="imp-cand"><div class="imp-cand-cab"><span><strong>'+escapeHtml(x.o.l)+'</strong> <span class="imp-sug">'+Math.round(x.s*100)+' %</span></span><span class="imp-cand-bt"><button type="button" class="btn small" data-usar="'+c.i+'" data-k="'+escapeHtml(x.o.k)+'">Elegir</button><button type="button" class="btn tenue small" data-descand="'+c.i+'" data-k="'+escapeHtml(x.o.k)+'" title="Quitar este campo de las posibilidades de esta columna">Descartar</button></span></div>'+impEjemplosCampoHtml(x.o,4)+'</div>'; });
+      if(sg.length) sg.forEach(function(x){ h+='<div class="imp-cand"><div class="imp-cand-cab"><span><strong class="imp-gl-link" data-gl="'+escapeHtml(x.o.k)+'" title="Ver su definición en el glosario">'+escapeHtml(x.o.l)+'</strong> <span class="imp-sug">'+Math.round(x.s*100)+' %</span></span><span class="imp-cand-bt"><button type="button" class="btn small" data-usar="'+c.i+'" data-k="'+escapeHtml(x.o.k)+'">Elegir</button><button type="button" class="btn tenue small" data-descand="'+c.i+'" data-k="'+escapeHtml(x.o.k)+'" title="Quitar este campo de las posibilidades de esta columna">Descartar</button></span></div>'+impEjemplosCampoHtml(x.o,4)+'</div>'; });
       else h+='<p class="nota">No quedan campos sugeridos. Usa el selector para elegir uno.</p>';
       if(nd) h+='<button type="button" class="btn tenue small" data-restcand="'+c.i+'">Restaurar '+nd+' campo(s) descartado(s)</button>';
     }
@@ -6151,7 +6234,7 @@ function iniciarImportador(){
     var t=e.target;
     if(t.id==="imp-buscar"){ imp.filDer=t.value; impElem("imp-der").innerHTML=impPintarObjetivosLista(); }
     else if(t.id==="imp-buscar-izq"){ imp.filIzq=t.value; impElem("imp-izq").innerHTML=impPintarColumnasLista(); }
-    else if(t.id==="imp-gl-q"){ imp.glQ=t.value; var q=normTxt(t.value); document.querySelectorAll("#imp-glosario .imp-gl-it").forEach(function(x){ x.style.display=(!q||x.getAttribute("data-q").indexOf(q)>-1)?"":"none"; }); }
+    else if(t.id==="imp-gl-q"){ imp.glQ=t.value; impGlosarioAplicarFiltro(); }
     else if(t.classList.contains("imp-sel-q")){ var cq=parseInt(t.getAttribute("data-col"),10); imp.selFil=imp.selFil||{}; imp.selFil[cq]=t.value; var se=document.querySelector('.imp-man-sel[data-col="'+cq+'"]'); if(se){ se.innerHTML=impOpcionesObjetivos(imp.tent[cq]||"",imp.cols[cq],t.value); se.size=t.value.trim()?7:1; } }
     else if(t.hasAttribute("data-fijo-val")&&t.tagName==="INPUT"){ imp.fijos[parseInt(t.getAttribute("data-fijo-val"),10)].valor=t.value; }
     else if(t.hasAttribute("data-valtxt")){ var m=imp.mapas[parseInt(t.getAttribute("data-i"),10)]; m.opts.valores[t.getAttribute("data-valtxt")]={modo:"texto",val:t.value}; }
@@ -6160,6 +6243,8 @@ function iniciarImportador(){
   cont.addEventListener("click", function(e){
     var fc=e.target.closest("[data-foco]");
     if(fc && !e.target.closest("button,select,input,a,summary,label")){ impFoco(parseInt(fc.getAttribute("data-foco"),10)); }
+    var gl=e.target.closest("[data-gl]");
+    if(gl){ impGlosarioFiltrar(gl.getAttribute("data-gl")); return; }
     var sc=e.target.closest("[data-selcol]"), so=e.target.closest("[data-selobj]");
     if(sc){ var ci0=parseInt(sc.getAttribute("data-selcol"),10); imp.sel=(imp.sel&&imp.sel.lado==="col"&&imp.sel.id===ci0)?null:{lado:"col",id:ci0}; impPintar(); return; }
     if(so){ var k0=so.getAttribute("data-selobj"); imp.sel=(imp.sel&&imp.sel.lado==="obj"&&imp.sel.id===k0)?null:{lado:"obj",id:k0}; impPintar(); return; }
@@ -6244,22 +6329,17 @@ function iniciarMover(){
     else { if(!d.length) d.push(clonar(VACIA)); var u=d[d.length-1]; u[{"@nombre":"nombreCientifico","@calificador":"calificador","@determinador":"determinador","@fechaDet":"fechaDeterminacion"}[k]]=v; }
     r.determinaciones=d.filter(function(e){ return e.nombreCientifico||e.determinador||e.fechaDeterminacion||e.calificador; });
   }
-  function opciones(q,sel){
-    var f=normTxt(q||"").trim(), cs=campos().filter(function(o){ return !f || normTxt(o.l+" "+o.k).indexOf(f)>-1; });
-    return cs.length?cs.map(function(o){ return '<option value="'+escapeHtml(o.k)+'"'+(o.k===sel?' selected':'')+'>'+escapeHtml(o.l)+'</option>'; }).join(""):'<option value="">Sin resultados</option>';
-  }
+  moverCamposFn=campos;
+  function poner(id,k){ var el=document.getElementById(id), o=campos().filter(function(x){ return x.k===k; })[0]; if(!el||!o) return; el.setAttribute("data-valor",k); el.querySelector(".combo-btn").textContent=o.l; }
+  function valorCombo(id){ return document.getElementById(id).getAttribute("data-valor"); }
   function llenar(){
-    var o=document.getElementById("mv-origen"), d=document.getElementById("mv-destino");
-    o.innerHTML=opciones("","coleccionNombre"); d.innerHTML=opciones("","ubicacionColeccion");
+    poner("mv-origen","coleccionNombre"); poner("mv-destino","ubicacionColeccion");
     var arch={}; registros.forEach(function(r){ var a=r.origenImportacion&&r.origenImportacion.archivo; if(a) arch[a]=(arch[a]||0)+1; });
     document.getElementById("mv-alcance").innerHTML='<option value="">todos ('+registros.length+')</option>'+Object.keys(arch).map(function(a){ return '<option value="a:'+escapeHtml(a)+'">importados desde «'+escapeHtml(a)+'» ('+arch[a]+')</option>'; }).join("");
   }
-  function filtrar(idSel,q){ var se=document.getElementById(idSel), act=se.value; se.innerHTML=opciones(q,act); if(!se.value && se.options.length) se.selectedIndex=0; se.size=q.trim()?Math.min(7,se.options.length+1):1; if(se.size>1) se.size=Math.max(2,Math.min(7,se.options.length)); }
   det.addEventListener("toggle", function(){ if(det.open && !listo){ listo=true; llenar(); } });
-  document.getElementById("mv-origen-q").addEventListener("input", function(){ filtrar("mv-origen",this.value); });
-  document.getElementById("mv-destino-q").addEventListener("input", function(){ filtrar("mv-destino",this.value); });
   function calcular(){
-    var o=document.getElementById("mv-origen").value, d=document.getElementById("mv-destino").value, al=document.getElementById("mv-alcance").value, rem=document.getElementById("mv-reemplazar").checked;
+    var o=valorCombo("mv-origen"), d=valorCombo("mv-destino"), al=document.getElementById("mv-alcance").value, rem=document.getElementById("mv-reemplazar").checked;
     if(!o||!d) return {error:"Elige un campo de origen y uno de destino."};
     if(o===d) return {error:"El origen y el destino son el mismo campo."};
     var lista=registros.filter(function(r){ return !al || (r.origenImportacion&&"a:"+r.origenImportacion.archivo===al); });

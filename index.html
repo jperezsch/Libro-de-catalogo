@@ -430,6 +430,9 @@
   .std-aviso{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px;padding:6px 8px;background:#fff6dd;border:1px solid #e3cf8d;border-radius:6px;font-size:12.5px;} .std-aviso .btn{font-size:12.5px;padding:3px 9px;}
   .std-chk{display:flex;gap:8px;align-items:center;margin:4px 0;font-size:14px;} .std-chk input{width:18px;height:18px;margin:0;}
   .std-lista{margin:8px 0;max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fffdf8;} .std-fila{display:flex;gap:8px;align-items:center;padding:5px 8px;border-bottom:1px solid var(--line);flex-wrap:wrap;} .std-fila:last-child{border-bottom:0;} .std-nom{flex:1 1 220px;min-width:0;} .std-n{font-size:12.5px;color:var(--muted,#6b6257);white-space:nowrap;}
+  .std-badge{display:inline-block;font-family:var(--sans,inherit);font-size:12px;font-weight:600;background:#fff6dd;border:1px solid #e3cf8d;color:#7a5b00;border-radius:10px;padding:1px 8px;margin-left:6px;vertical-align:middle;}
+  .std-banner{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff6dd;border:1px solid #e3cf8d;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:14px;}
+  .std-vars{flex-basis:100%;font-size:12.5px;color:var(--muted,#6b6257);display:flex;gap:6px;align-items:center;flex-wrap:wrap;} .std-chip{background:#f1ebdd;border:1px solid var(--line);border-radius:10px;padding:1px 4px 1px 8px;} .std-chip-x{border:0;background:transparent;cursor:pointer;color:#8a3b2c;padding:0 4px;font-size:12px;} .std-vde{max-width:170px;font-size:13px;}
   .std-grupo{border:1px solid var(--line);border-radius:8px;background:#fffdf8;padding:8px 10px;margin:8px 0;} .std-grupo-tit{font-weight:700;margin-bottom:4px;} .std-var{display:flex;gap:8px;align-items:center;padding:3px 0;} .std-var input{width:18px;height:18px;margin:0;}
   button.btn.secundario{background:#fff;color:var(--accent);box-shadow:none;}
   button.btn.small{padding:6px 13px;font-size:13.5px;}
@@ -701,7 +704,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.54</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.55</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -1092,7 +1095,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.54</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.55</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1178,11 +1181,11 @@
 
 
     <details class="bloque bloque-desp oculto" id="det-estandares">
-      <summary>Estandarizaciones y sugerencias <button type="button" class="ayuda-btn" data-ayuda="ayuda-estandares" aria-label="Ayuda" title="Ayuda">?</button></summary>
-      <div class="ayuda-panel oculto" id="ayuda-estandares">Aquí se mantienen listas separadas de nombres (personas, localidades, taxones, etc.). Esas listas se ofrecen como sugerencias en los campos correspondientes del formulario, y si escribes un nombre que no está, la app lo avisa y propone el más parecido. «Reunir nombres desde los registros» llena la lista con todo lo que ya se usó; «Buscar variantes parecidas» agrupa nombres casi iguales (mayúsculas, tildes, errores de tipeo) para que elijas cuál conservar. Al cambiar o unificar un nombre se puede corregir también en todos los registros.</div>
+      <summary>Estandarizaciones y sugerencias <span class="std-badge oculto" id="std-badge"></span> <button type="button" class="ayuda-btn" data-ayuda="ayuda-estandares" aria-label="Ayuda" title="Ayuda">?</button></summary>
+      <div class="ayuda-panel oculto" id="ayuda-estandares">Cada lista reúne los nombres correctos que la app ofrece como sugerencia en los campos del formulario. Si escribes un nombre que no está, la app avisa y propone el más parecido. Un nombre puede tener variantes conocidas (por ejemplo «Jorge Perez» como variante de «Jorge Pérez-Schultheiss»): la variante deja de sugerirse y, si alguien la escribe, se propone el nombre correcto. «Reunir» llena la lista con lo que ya se usó en los registros y en el historial de cada campo; «Buscar variantes parecidas» agrupa nombres casi iguales para unificarlos. Las listas se guardan también en la Carpeta local (Catalogos/), de modo que los equipos que usan la misma carpeta comparten las correcciones; si un registro de otro equipo aún usa una variante, aparece el aviso para corregirlo.</div>
+      <div class="std-banner oculto" id="std-banner"><span id="std-banner-txt"></span> <button type="button" class="btn small" id="std-corregir">Corregir registros</button></div>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Lista</span></div><select class="nav" id="std-sel"></select></div>
-        <div class="campo opc"><div class="lbl"><span class="name">Filtrar la lista</span></div><input type="search" class="nav" id="std-filtro" autocomplete="off" placeholder="Escribe para filtrar"></div>
       </div>
       <p class="nota" id="std-desc"></p>
       <p class="nota" id="std-campos"></p>
@@ -1192,7 +1195,7 @@
         <button type="button" class="btn small" id="std-add">Agregar</button>
       </div>
       <div class="barra-botones">
-        <button type="button" class="btn secundario small" id="std-reunir" title="Agrega a la lista todos los valores que ya usan los registros">Reunir nombres desde los registros</button>
+        <button type="button" class="btn secundario small" id="std-reunir" title="Agrega a la lista los valores que ya usan los registros y el historial del campo">Reunir nombres desde los registros</button>
         <button type="button" class="btn secundario small" id="std-variantes" title="Agrupa nombres casi iguales para unificarlos">Buscar variantes parecidas</button>
       </div>
       <label class="std-chk"><input type="checkbox" id="std-aplicar" checked> Al cambiar o unificar un nombre, corregirlo también en los registros</label>
@@ -1202,7 +1205,7 @@
       <div class="std-lista" id="std-tabla"></div>
       <div class="barra-botones">
         <button type="button" class="btn secundario small" id="std-exportar" title="Guarda todas las listas en un archivo .json">Guardar listas (.json)</button>
-        <button type="button" class="btn secundario small" id="std-importar" title="Suma a las listas actuales los nombres de un archivo guardado">Cargar listas…</button>
+        <button type="button" class="btn secundario small" id="std-importar" title="Fusiona con las listas actuales las de un archivo guardado">Cargar listas…</button>
         <input type="file" id="std-archivo" accept=".json,application/json" class="oculto">
       </div>
     </details>
@@ -1305,7 +1308,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.54";
+var APP_VERSION = "v0.9.55";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1686,7 +1689,7 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   function adoptar(inp){ if(inp && inp.tagName==="INPUT" && inp.hasAttribute("list")){ inp.setAttribute("data-lista",inp.getAttribute("list")); inp.removeAttribute("list"); } }
   function conLista(t){ return !!t && t.tagName==="INPUT" && (t.hasAttribute("data-lista") || !!stdListaDe(t)); }
   function valores(inp){
-    var sid=stdListaDe(inp), std=sid ? stdLeer()[sid] : [];
+    var sid=stdListaDe(inp), std=sid ? stdNombres(sid) : [];
     if(std.length) return std.slice();   // con lista estándar solo se ofrece ella
     var dl=document.getElementById(inp.getAttribute("data-lista")||"");
     return dl ? Array.prototype.map.call(dl.options,function(o){ return o.value; }) : [];
@@ -1704,14 +1707,14 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   }
   function elegir(v){
     var inp=activo; cerrar(); if(!inp) return;
-    ignorar=true; inp.value=v;
+    ignorar=true; inp.value=stdParteFinal(inp).prefijo+v;
     inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true}));
     ignorar=false;
   }
   function abrir(inp){
     adoptar(inp);
     if((!inp.getAttribute("data-lista") && !stdListaDe(inp)) || inp.readOnly || inp.disabled){ cerrar(); return; }
-    var q=norm(inp.value), todos=valores(inp);
+    var q=norm(stdParteFinal(inp).parte), todos=valores(inp);
     var lista=todos.filter(function(v){ return !q || norm(v).indexOf(q)>-1; }).slice(0,200);
     if(!lista.length || (lista.length===1 && norm(lista[0])===q)){ cerrar(); return; }
     cerrar(); activo=inp; items=lista;
@@ -1746,8 +1749,10 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
 })();
 
 // ---------- Estandarizaciones y sugerencias: listas editables de nombres (personas, localidades, etc.) ----------
+// Cada lista guarda nombres correctos con sus variantes conocidas. Se conserva en el navegador y en la Carpeta local (Catalogos/<lista>.json),
+// y se fusiona con la de otros equipos que usen la misma carpeta (gana la entrada modificada más recientemente; los nombres quitados quedan anotados).
 var STD_DEF = [
-  {id:"personas", nombre:"Personas", desc:"Colectores, determinadores y demás personas que figuran en los registros.", campos:[["colector","Colector"],["destinatario","Destinatario"],["responsableBaja","Responsable de la baja"],["@determinaciones.determinador","Determinador"],["@fotos.fotografo","Fotógrafo"],["@prestamos.solicitante","Solicitante de préstamo"],["@usos.responsable","Responsable de uso"],["@monitoreos.responsable","Responsable de monitoreo"]]},
+  {id:"personas", nombre:"Personas", desc:"Colectores, determinadores y demás personas que figuran en los registros. Los nombres compuestos («A & B», «A y B», «A; B») se tratan como personas separadas.", campos:[["colector","Colector"],["destinatario","Destinatario"],["responsableBaja","Responsable de la baja"],["@determinaciones.determinador","Determinador"],["@fotos.fotografo","Fotógrafo"],["@prestamos.solicitante","Solicitante de préstamo"],["@usos.responsable","Responsable de uso"],["@monitoreos.responsable","Responsable de monitoreo"]]},
   {id:"instituciones", nombre:"Instituciones", desc:"Instituciones o personas que legan o depositan material.", campos:[["legatario","Legatario"]]},
   {id:"proyectos", nombre:"Proyectos", desc:"Proyectos o iniciativas de origen del material.", campos:[["proyectoOrigen","Proyecto / iniciativa de origen"]]},
   {id:"localidades", nombre:"Localidades y estaciones", desc:"Nombres de lugares de colecta, escritos de forma consistente.", campos:[["localidad","Localidad"],["estacion","Estación"]]},
@@ -1756,18 +1761,30 @@ var STD_DEF = [
   {id:"metodos", nombre:"Métodos y preparación", desc:"Métodos de recolección y de preparación del material.", campos:[["metodoColecta","Método de recolección"],["preparacion","Preparación"]]},
   {id:"ubicaciones", nombre:"Ubicaciones en la colección", desc:"Gabinetes, cajas y otras ubicaciones físicas.", campos:[["ubicacionColeccion","Ubicación en colección"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"]]}
 ];
-var STD_CLAVE = LS_PREFIX+"estandares", STD_MAPA = {}, stdDatos = null, stdSel = "personas", stdGrupos = [], stdOcultos = {};
+var STD_CLAVE = LS_PREFIX+"estandares", STD_MAPA = {}, stdDatos = null, stdSel = "personas", stdGrupos = [], stdOcultos = {}, stdOcupado = false, stdReintento = false, stdTimer = null, stdUltSync = 0;
+var STD_SEP = /(\s*[&;|]\s*|\s+(?:y|e|and)\s+)/i;
 STD_DEF.forEach(function(d){ d.campos.forEach(function(c){ STD_MAPA[c[0].replace(/^@/,"")]=d.id; }); });
 function stdEl(i){ return document.getElementById(i); }
 function stdDef(id){ return STD_DEF.filter(function(d){ return d.id===id; })[0]; }
 function stdCmp(a,b){ return a.localeCompare(b,"es"); }
+function stdAhora(){ return new Date().toISOString(); }
 function stdLeer(){
   if(stdDatos) return stdDatos;
-  try{ stdDatos=JSON.parse(localStorage.getItem(STD_CLAVE)||"{}")||{}; }catch(e){ stdDatos={}; }
-  STD_DEF.forEach(function(d){ if(!Array.isArray(stdDatos[d.id])) stdDatos[d.id]=[]; });
+  var raw={}; try{ raw=JSON.parse(localStorage.getItem(STD_CLAVE)||"{}")||{}; }catch(e){}
+  var L=raw.listas||{}, ahora=stdAhora();
+  STD_DEF.forEach(function(d){
+    var o=L[d.id] || (Array.isArray(raw[d.id]) ? {items:raw[d.id].filter(function(x){ return typeof x==="string"; }).map(function(n){ return {n:n,a:[],t:ahora}; }), borrados:[]} : null) || {items:[],borrados:[]};   // acepta el formato anterior (solo textos)
+    o.items=Array.isArray(o.items)?o.items:[]; o.borrados=Array.isArray(o.borrados)?o.borrados:[];
+    L[d.id]=o;
+  });
+  stdDatos={v:2, listas:L};
   return stdDatos;
 }
-function stdGuardar(){ try{ localStorage.setItem(STD_CLAVE, JSON.stringify(stdDatos)); }catch(e){} }
+function stdL(id){ return stdLeer().listas[id]; }
+function stdGuardarLocal(){ try{ localStorage.setItem(STD_CLAVE, JSON.stringify(stdDatos)); }catch(e){} }
+function stdGuardar(){ stdGuardarLocal(); stdProgramarEscritura(); }
+function stdNombres(id){ return stdL(id).items.map(function(it){ return it.n; }); }
+function stdEntrada(id, n){ return stdL(id).items.filter(function(it){ return it.n===n; })[0]; }
 function stdNorm(t){ return String(t||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim(); }
 function stdDist(a,b){
   var m=a.length, n=b.length, p=[], i, j; if(!m) return n; if(!n) return m;
@@ -1780,6 +1797,33 @@ function stdParecidos(na,nb){
   if(na===nb || stdTok(na)===stdTok(nb)) return true;
   var L=Math.min(na.length,nb.length); if(L<5 || Math.abs(na.length-nb.length)>3) return false;
   return stdDist(na,nb)<=Math.max(1,Math.floor(L*0.12));
+}
+// entrada cuya variante conocida es v (exacta, o igual sin tildes ni mayúsculas); no aplica si v ya es un nombre de la lista
+function stdPorVariante(id, v){
+  var L=stdL(id), nv=stdNorm(v), res=null;
+  if(L.items.some(function(it){ return it.n===v; })) return null;
+  L.items.forEach(function(it){ if(!res && it.a.some(function(x){ return x===v || stdNorm(x)===nv; })) res=it; });
+  return res;
+}
+// nombres compuestos (solo en Personas): se separan en partes
+function stdPartes(id, v){
+  var s=String(v||"");
+  if(id!=="personas") return s.trim()?[s.trim()]:[];
+  return s.split(STD_SEP).filter(function(x,i){ return i%2===0; }).map(function(x){ return x.trim(); }).filter(Boolean);
+}
+function stdMapValor(id, v, fn){
+  if(id!=="personas"){ var t=v.trim(), r=fn(t); return r===t ? v : r; }
+  var p=v.split(STD_SEP), ch=false;
+  for(var i=0;i<p.length;i+=2){ var t2=p[i].trim(); if(!t2) continue; var r2=fn(t2); if(r2!==t2){ p[i]=p[i].replace(t2,function(){ return r2; }); ch=true; } }
+  return ch ? p.join("") : v;
+}
+// último fragmento del campo (en Personas, lo que va después del último separador)
+function stdParteFinal(inp){
+  var id=stdListaDe(inp), v=inp.value;
+  if(id!=="personas") return {prefijo:"", parte:v};
+  var re=/\s*[&;|]\s*|\s+(?:y|e|and)\s+/gi, m, fin=0;
+  while((m=re.exec(v))){ fin=m.index+m[0].length; }
+  return {prefijo:v.slice(0,fin), parte:v.slice(fin)};
 }
 // lista que corresponde a un campo de texto del formulario (vacío si no tiene)
 function stdListaDe(inp){
@@ -1798,52 +1842,174 @@ function stdUsos(id){
   var d=stdDef(id), mp=Object.create(null);
   registros.forEach(function(r){
     var vistos=Object.create(null);
-    d.campos.forEach(function(c){ stdValoresReg(r,c[0]).forEach(function(v){
-      v=v.trim(); if(vistos[v]) return; vistos[v]=1;
+    d.campos.forEach(function(c){ stdValoresReg(r,c[0]).forEach(function(raw){ stdPartes(id,raw).forEach(function(v){
+      if(vistos[v]) return; vistos[v]=1;
       var o=mp[v]||(mp[v]={n:0,ej:0}); o.n++; o.ej+=(parseInt(r.individuos,10)||0);
-    }); });
+    }); }); });
   });
   return mp;
 }
-function stdReemplazar(id, de, a){
-  var d=stdDef(id), n=0, ahora=new Date().toISOString();
+// aplica fn(nombre)→nombre a todos los valores de la lista en los registros; devuelve cuántos registros cambiaron
+function stdAplicarEnRegistros(id, fn){
+  var d=stdDef(id), n=0, ahora=stdAhora();
   registros.forEach(function(r){
     var cambio=false;
     d.campos.forEach(function(c){
       var m=/^@(\w+)\.(\w+)$/.exec(c[0]);
-      if(m){ (Array.isArray(r[m[1]])?r[m[1]]:[]).forEach(function(x){ if(x && typeof x[m[2]]==="string" && x[m[2]].trim()===de){ x[m[2]]=a; cambio=true; } }); }
-      else if(typeof r[c[0]]==="string" && r[c[0]].trim()===de){ r[c[0]]=a; cambio=true; }
+      if(m){ (Array.isArray(r[m[1]])?r[m[1]]:[]).forEach(function(x){ if(x && typeof x[m[2]]==="string"){ var nv=stdMapValor(id,x[m[2]],fn); if(nv!==x[m[2]]){ x[m[2]]=nv; cambio=true; } } }); }
+      else if(typeof r[c[0]]==="string"){ var nv2=stdMapValor(id,r[c[0]],fn); if(nv2!==r[c[0]]){ r[c[0]]=nv2; cambio=true; } }
     });
     if(cambio){ r.modificadoEn=ahora; r.modificadoPor=operadorActual(); n++; }
   });
   return n;
 }
+function stdReemplazar(id, de, a){ return stdAplicarEnRegistros(id, function(t){ return t===de ? a : t; }); }
+function stdTumba(id, n){ var L=stdL(id); L.borrados=L.borrados.filter(function(b){ return b.n!==n; }); L.borrados.push({n:n,t:stdAhora()}); }
+function stdQuitarTumba(id, n){ var L=stdL(id); L.borrados=L.borrados.filter(function(b){ return b.n!==n; }); }
+// agrega un nombre correcto; false si ya estaba o es variante de otro
 function stdAgregar(id, v){
   v=String(v||"").trim(); if(!v) return false;
-  var D=stdLeer(); if(D[id].indexOf(v)>-1) return false;
-  D[id].push(v); D[id].sort(stdCmp); stdGuardar(); return true;
+  var L=stdL(id); if(L.items.some(function(it){ return it.n===v; }) || stdPorVariante(id,v)) return false;
+  stdQuitarTumba(id, v);
+  L.items.push({n:v,a:[],t:stdAhora()}); L.items.sort(function(x,y){ return stdCmp(x.n,y.n); }); stdGuardar(); return true;
 }
-// aviso bajo el campo cuando el valor escrito no está en la lista (con sugerencia de corrección)
+// convierte cada valor de 'origenes' en variante de 'destino' (que se agrega a la lista si no estaba)
+function stdHacerVariantes(id, destino, origenes){
+  var L=stdL(id), e=stdEntrada(id,destino), ahora=stdAhora();
+  if(!e){ stdQuitarTumba(id,destino); e={n:destino,a:[],t:ahora}; L.items.push(e); }
+  origenes.forEach(function(o){
+    if(o===destino) return;
+    var s=stdEntrada(id,o);
+    if(s){ s.a.forEach(function(x){ if(x!==destino && e.a.indexOf(x)<0) e.a.push(x); }); L.items=L.items.filter(function(it){ return it!==s; }); stdTumba(id,o); }
+    if(e.a.indexOf(o)<0) e.a.push(o);
+  });
+  e.t=ahora; L.items.sort(function(x,y){ return stdCmp(x.n,y.n); }); stdGuardar();
+}
+// ---- fusión con el archivo de la Carpeta local (otros equipos) ----
+function stdFusionar(id, ext){
+  var L=stdL(id), mapa={}, tomb={};
+  L.items.forEach(function(it){ mapa[it.n]=it; });
+  (ext.items||[]).forEach(function(it){
+    if(!it || typeof it.n!=="string") return;
+    var o=mapa[it.n], n={n:it.n,a:Array.isArray(it.a)?it.a.slice():[],t:it.t||""};
+    if(!o || (n.t>(o.t||""))) mapa[it.n]=n;
+  });
+  L.borrados.concat(Array.isArray(ext.borrados)?ext.borrados:[]).forEach(function(b){ if(b && typeof b.n==="string" && (!tomb[b.n] || (b.t||"")>tomb[b.n])) tomb[b.n]=b.t||""; });
+  Object.keys(tomb).forEach(function(n){ if(mapa[n] && tomb[n]>=(mapa[n].t||"")) delete mapa[n]; });
+  L.items=Object.keys(mapa).map(function(k){ return mapa[k]; }).sort(function(x,y){ return stdCmp(x.n,y.n); });
+  L.borrados=Object.keys(tomb).filter(function(n){ return !mapa[n]; }).map(function(n){ return {n:n,t:tomb[n]}; }).sort(function(x,y){ return stdCmp(x.n,y.n); });
+}
+function stdSerial(id){ var L=stdL(id); return {tipo:"libro-catalogo-lista", lista:id, nombre:stdDef(id).nombre, items:L.items, borrados:L.borrados}; }
+function stdProgramarEscritura(){ if(!carpetaHandle || modoAcceso!=="admin") return; clearTimeout(stdTimer); stdTimer=setTimeout(function(){ stdSincronizar(); }, 800); }
+async function stdSincronizar(){
+  if(modoAcceso!=="admin" || !carpetaHandle) return;
+  if(stdOcupado){ stdReintento=true; return; }
+  stdOcupado=true;
+  try{
+    if(!(await permisoCarpeta(false))) return;
+    var d=await dirAnidado("Catalogos"), cambio=false;
+    for(var k=0;k<STD_DEF.length;k++){
+      var id=STD_DEF[k].id, ext=null;
+      try{ var fh=await d.getFileHandle(id+".json"); ext=JSON.parse(await (await fh.getFile()).text()); }catch(e){}
+      var antes=JSON.stringify(stdL(id));
+      if(ext) stdFusionar(id, ext);
+      if(JSON.stringify(stdL(id))!==antes) cambio=true;
+      var L=stdL(id), vacio=!L.items.length && !L.borrados.length;
+      var igual=ext && JSON.stringify({i:ext.items||[],b:ext.borrados||[]})===JSON.stringify({i:L.items,b:L.borrados});
+      if(!igual && !(vacio && !ext)){
+        await escribirArchivo("Catalogos", id+".json", new Blob([JSON.stringify(stdSerial(id),null,1)],{type:"application/json"}));
+      }
+    }
+    if(cambio) stdGuardarLocal();
+    stdUltSync=Date.now();
+  }catch(e){}
+  finally{
+    stdOcupado=false;
+    if(stdReintento){ stdReintento=false; stdProgramarEscritura(); }
+    stdRender();
+  }
+}
+document.addEventListener("visibilitychange", function(){ if(!document.hidden && Date.now()-stdUltSync>45000) stdSincronizar(); });
+// ---- correcciones pendientes: registros que usan una variante que la lista ya corrigió ----
+function stdPendientes(){
+  var res={regs:0, pares:{}, lista:[]}, idx={};
+  STD_DEF.forEach(function(d){
+    var L=stdL(d.id); if(!L.items.some(function(it){ return it.a.length; })) return;
+    var ix={nombres:Object.create(null), ex:Object.create(null), nm:Object.create(null)};
+    L.items.forEach(function(it){ ix.nombres[it.n]=1; });
+    L.items.forEach(function(it){ it.a.forEach(function(a){ if(!ix.nombres[a]){ ix.ex[a]=it.n; ix.nm[stdNorm(a)]=it.n; } }); });
+    idx[d.id]=ix;
+  });
+  registros.forEach(function(r){
+    var toca=false;
+    STD_DEF.forEach(function(d){
+      var ix=idx[d.id]; if(!ix) return;
+      d.campos.forEach(function(c){ stdValoresReg(r,c[0]).forEach(function(raw){ stdPartes(d.id,raw).forEach(function(v){
+        if(ix.nombres[v]) return;
+        var a=ix.ex[v] || ix.nm[stdNorm(v)]; if(!a) return;
+        toca=true; var k=d.id+"\u0001"+v; if(!res.pares[k]){ res.pares[k]={id:d.id,de:v,a:a}; res.lista.push(res.pares[k]); }
+      }); }); });
+    });
+    if(toca) res.regs++;
+  });
+  return res;
+}
+function stdActualizarPend(){
+  var b=stdEl("std-banner"), bd=stdEl("std-badge"); if(!b) return;
+  if(modoAcceso!=="admin"){ b.classList.add("oculto"); return; }
+  var p=stdPendientes();
+  b.classList.toggle("oculto", !p.regs); if(bd){ bd.classList.toggle("oculto", !p.regs); bd.textContent=p.regs ? p.regs+" por corregir" : ""; }
+  if(p.regs){
+    var ej=p.lista.slice(0,3).map(function(x){ return "«"+x.de+"» → «"+x.a+"»"; }).join(", ");
+    stdEl("std-banner-txt").textContent=p.regs+" registro(s) usan variantes que las listas ya corrigieron (por ejemplo "+ej+").";
+  }
+  return p;
+}
+function stdCorregirRegistros(){
+  if(modoAcceso!=="admin") return;
+  var p=stdPendientes(); if(!p.regs) return;
+  if(!confirm("Se corregirán "+p.regs+" registro(s) según las variantes de las listas. ¿Continuar?")) return;
+  if(stdEl("std-respaldo").checked) stdRespaldo();
+  var tocados=0;
+  STD_DEF.forEach(function(d){
+    var mapa=Object.create(null); p.lista.filter(function(x){ return x.id===d.id; }).forEach(function(x){ mapa[x.de]=x.a; });
+    if(Object.keys(mapa).length) tocados+=stdAplicarEnRegistros(d.id, function(t){ return mapa[t]!==undefined ? mapa[t] : t; });
+  });
+  stdCerrarCambios(tocados, "corrección de variantes ("+tocados+" registro(s))");
+  stdEl("std-msg").textContent="Se corrigieron "+tocados+" registro(s).";
+  stdRender();
+}
+// ---- aviso bajo el campo ----
 function stdQuitarAviso(inp){ var s=inp.nextElementSibling; if(s && s.classList && s.classList.contains("std-aviso")) s.remove(); }
 function stdAviso(inp){
   var prev=inp.nextElementSibling;
   if(prev && prev.classList && prev.classList.contains("std-aviso") && prev.getAttribute("data-v")===inp.value.trim()) return;   // evita recrear el aviso entre el mousedown y el click
   stdQuitarAviso(inp);
   var id=stdListaDe(inp), v=inp.value.trim(); if(!id||!v) return;
-  var lista=stdLeer()[id]; if(!lista.length || lista.indexOf(v)>-1) return;
-  var n=stdNorm(v), cerca=lista.filter(function(x){ return stdNorm(x)===n; });
-  if(!cerca.length) cerca=lista.filter(function(x){ return stdParecidos(stdNorm(x),n); }).slice(0,3);
-  var av=document.createElement("div"); av.className="std-aviso"; av.setAttribute("data-v",v);
-  var t=document.createElement("span"); t.textContent=cerca.length ? "«"+v+"» no está en la lista de "+stdDef(id).nombre.toLowerCase()+". ¿Quisiste decir?" : "«"+v+"» no está en la lista de "+stdDef(id).nombre.toLowerCase()+".";
+  var L=stdL(id); if(!L.items.length) return;
+  var problema=null;
+  stdPartes(id,v).forEach(function(p){
+    if(problema || L.items.some(function(it){ return it.n===p; })) return;
+    var e=stdPorVariante(id,p);
+    if(e){ problema={p:p, tipo:"variante", cerca:[e.n]}; return; }
+    var np=stdNorm(p), cerca=L.items.filter(function(it){ return stdNorm(it.n)===np; }).map(function(it){ return it.n; });
+    if(!cerca.length) cerca=L.items.filter(function(it){ return stdParecidos(stdNorm(it.n),np); }).map(function(it){ return it.n; }).slice(0,3);
+    problema={p:p, tipo:"nuevo", cerca:cerca};
+  });
+  if(!problema) return;
+  var nom=stdDef(id).nombre.toLowerCase(), av=document.createElement("div"); av.className="std-aviso"; av.setAttribute("data-v",v);
+  var t=document.createElement("span");
+  t.textContent = problema.tipo==="variante" ? "«"+problema.p+"» es una variante de «"+problema.cerca[0]+"» en la lista de "+nom+"." : (problema.cerca.length ? "«"+problema.p+"» no está en la lista de "+nom+". ¿Quisiste decir?" : "«"+problema.p+"» no está en la lista de "+nom+".");
   av.appendChild(t);
-  cerca.forEach(function(c){
-    var b=document.createElement("button"); b.type="button"; b.className="btn small"; b.textContent=c;
-    b.onclick=function(){ inp.value=c; inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true})); stdQuitarAviso(inp); };
+  problema.cerca.forEach(function(c){
+    var b=document.createElement("button"); b.type="button"; b.className="btn small"; b.textContent=problema.tipo==="variante" ? "Usar «"+c+"»" : c;
+    b.onclick=function(){ inp.value=stdMapValor(id, inp.value, function(x){ return x===problema.p ? c : x; }); inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true})); stdQuitarAviso(inp); };
     av.appendChild(b);
   });
-  var ag=document.createElement("button"); ag.type="button"; ag.className="btn small tenue"; ag.textContent=cerca.length?"Es otro, agregarlo":"Agregar a la lista";
-  ag.onclick=function(){ stdAgregar(id, v); stdQuitarAviso(inp); stdRender(); };
-  av.appendChild(ag);
+  var sec=document.createElement("button"); sec.type="button"; sec.className="btn small tenue";
+  if(problema.tipo==="variante"){ sec.textContent="Dejar así"; sec.onclick=function(){ stdQuitarAviso(inp); }; }
+  else { sec.textContent=problema.cerca.length?"Es otro, agregarlo":"Agregar a la lista"; sec.onclick=function(){ stdAgregar(id, problema.p); stdQuitarAviso(inp); stdRender(); }; }
+  av.appendChild(sec);
   inp.parentNode.insertBefore(av, inp.nextSibling);
 }
 document.addEventListener("change", function(e){ var t=e.target; if(t && t.tagName==="INPUT"){ if(stdListaDe(t)) stdAviso(t); else stdQuitarAviso(t); } });
@@ -1857,44 +2023,76 @@ function stdCerrarCambios(n, detalle){
   if(n){ persistir(); refrescarPanelesRegistros(); if(carpetaHandle) sincronizarCarpeta(false); }
   registrarActividad("edicion","estandarización · "+detalle);
 }
+function stdAplicaRegistros(){ return stdEl("std-aplicar").checked; }
+function stdFilaHtml(it, usos){
+  var u=usos[it.n], h='<div class="std-fila" data-v="'+escapeHtml(it.n)+'"><input type="text" class="std-nom" value="'+escapeHtml(it.n)+'" autocomplete="off" spellcheck="false"><span class="std-n">'+(u ? u.n+' reg. · '+u.ej+' ej.' : 'sin uso')+'</span><button type="button" class="btn small tenue std-ren" disabled>Cambiar</button><select class="std-vde" title="Marca este nombre como una variante de otro de la lista"><option value="">Es variante de…</option></select><button type="button" class="btn small peligro std-del">Quitar</button>';
+  if(it.a.length) h+='<div class="std-vars">Variantes: '+it.a.map(function(x){ var uu=usos[x]; return '<span class="std-chip">'+escapeHtml(x)+(uu?' ('+uu.n+')':'')+' <button type="button" class="std-chip-x" data-a="'+escapeHtml(x)+'" title="Quitar esta variante">✕</button></span>'; }).join(" ")+'</div>';
+  return h+'</div>';
+}
 function stdRender(){
   var det=stdEl("det-estandares"); if(!det) return;
   det.classList.toggle("oculto", modoAcceso!=="admin"); if(modoAcceso!=="admin") return;
-  var D=stdLeer(), d=stdDef(stdSel), usos=stdUsos(stdSel), sel=stdEl("std-sel");
-  sel.innerHTML=STD_DEF.map(function(x){ return '<option value="'+x.id+'"'+(x.id===stdSel?' selected':'')+'>'+escapeHtml(x.nombre)+' ('+D[x.id].length+')</option>'; }).join("");
+  var d=stdDef(stdSel), usos=stdUsos(stdSel), sel=stdEl("std-sel"), L=stdL(stdSel);
+  sel.innerHTML=STD_DEF.map(function(x){ return '<option value="'+x.id+'"'+(x.id===stdSel?' selected':'')+'>'+escapeHtml(x.nombre)+' ('+stdL(x.id).items.length+')</option>'; }).join("");
   stdEl("std-desc").textContent=d.desc;
   stdEl("std-campos").textContent="Se ofrece como sugerencia en: "+d.campos.map(function(c){ return c[1]; }).join(", ")+".";
-  var pend=Object.keys(usos).filter(function(v){ return D[stdSel].indexOf(v)<0; }).length;
-  stdEl("std-pend").textContent=pend ? pend+" valor(es) usados en los registros todavía no están en esta lista. «Reunir» los agrega." : "Todos los valores usados en los registros están en esta lista.";
-  var filtro=stdNorm(stdEl("std-filtro").value), lista=D[stdSel].filter(function(v){ return !filtro || stdNorm(v).indexOf(filtro)>-1; }), h="";
-  lista.slice(0,300).forEach(function(v){
-    var u=usos[v];
-    h+='<div class="std-fila" data-v="'+escapeHtml(v)+'"><input type="text" class="std-nom" value="'+escapeHtml(v)+'" autocomplete="off" spellcheck="false"><span class="std-n">'+(u ? u.n+' reg. · '+u.ej+' ej.' : 'sin uso')+'</span><button type="button" class="btn small tenue std-ren" disabled>Cambiar</button><button type="button" class="btn small peligro std-del">Quitar</button></div>';
-  });
-  if(lista.length>300) h+='<p class="nota">Se muestran 300 de '+lista.length+'. Usa el filtro para encontrar el resto.</p>';
-  stdEl("std-tabla").innerHTML=h || '<p class="nota">'+(D[stdSel].length ? 'Ningún nombre coincide con el filtro.' : 'La lista está vacía. Usa «Reunir nombres desde los registros» o agrega nombres a mano.')+'</p>';
+  var nombres=Object.create(null); L.items.forEach(function(it){ nombres[it.n]=1; it.a.forEach(function(a){ nombres[a]=1; }); });
+  var pend=Object.keys(usos).filter(function(v){ return !nombres[v]; }).length;
+  stdEl("std-pend").textContent=pend ? pend+" valor(es) usados en los registros todavía no están en esta lista. «Reunir» los agrega." : (L.items.length ? "Todos los valores usados en los registros están en esta lista." : "");
+  var h=""; L.items.slice(0,400).forEach(function(it){ h+=stdFilaHtml(it, usos); });
+  if(L.items.length>400) h+='<p class="nota">Se muestran 400 de '+L.items.length+'.</p>';
+  stdEl("std-tabla").innerHTML=h || '<p class="nota">La lista está vacía. Usa «Reunir nombres desde los registros» o agrega nombres a mano.</p>';
+  stdActualizarPend();
 }
-function stdAplicaRegistros(){ return stdEl("std-aplicar").checked; }
 function stdRenombrar(de, a){
   a=String(a||"").trim(); if(!a || a===de) return;
-  var D=stdLeer(), id=stdSel, usos=stdUsos(id), n=usos[de]?usos[de].n:0, ap=stdAplicaRegistros();
-  var otro=D[id].filter(function(x){ return x!==de && stdNorm(x)===stdNorm(a) && x!==a; });
-  var otroExacto=D[id].indexOf(a)>-1 && a!==de;
-  if(!confirm("Cambiar «"+de+"» por «"+a+"» en la lista"+(ap&&n?" y en "+n+" registro(s)":"")+((otro.length||otroExacto)?". Ya existe una entrada igual o muy parecida: quedarán unificadas":"")+". ¿Continuar?")) return;
+  var id=stdSel, usos=stdUsos(id), n=usos[de]?usos[de].n:0, ap=stdAplicaRegistros(), existe=stdEntrada(id,a);
+  if(!confirm("Cambiar «"+de+"» por «"+a+"»"+(ap&&n?" en la lista y en "+n+" registro(s)":" en la lista")+". «"+de+"» quedará como variante"+(existe?" de «"+a+"», que ya existe (se unifican)":"")+". ¿Continuar?")) return;
   if(ap && n && stdEl("std-respaldo").checked) stdRespaldo();
-  var tocados=0;
-  [de].concat(otro).forEach(function(v){ if(ap) tocados+=stdReemplazar(id, v, a); });
-  D[id]=D[id].filter(function(x){ return x!==de && otro.indexOf(x)<0; });
-  if(D[id].indexOf(a)<0) D[id].push(a);
-  D[id].sort(stdCmp); stdGuardar();
+  var tocados=0, e=stdEntrada(id,de);
+  if(existe){ var vars=[de].concat(e?e.a:[]); if(ap) vars.forEach(function(v){ tocados+=stdReemplazar(id,v,a); }); stdHacerVariantes(id,a,[de]); }
+  else {
+    if(e){ stdTumba(id,de); e.n=a; if(e.a.indexOf(de)<0) e.a.push(de); e.t=stdAhora(); stdQuitarTumba(id,a); stdL(id).items.sort(function(x,y){ return stdCmp(x.n,y.n); }); stdGuardar(); }
+    else stdHacerVariantes(id,a,[de]);
+    if(ap) tocados+=stdReemplazar(id,de,a);
+  }
   stdCerrarCambios(tocados, stdDef(id).nombre+": «"+de+"» → «"+a+"» ("+tocados+" registro(s))");
   stdEl("std-msg").textContent="Listo: «"+de+"» ahora es «"+a+"»"+(tocados?" y se corrigieron "+tocados+" registro(s)":"")+".";
   stdRender();
 }
+function stdMarcarVariante(origen, destino){
+  var id=stdSel, usos=stdUsos(id), e=stdEntrada(id,origen), vars=[origen].concat(e?e.a:[]), n=0, ap=stdAplicaRegistros();
+  vars.forEach(function(v){ if(usos[v]) n+=usos[v].n; });
+  if(!confirm("«"+origen+"» pasará a ser variante de «"+destino+"»"+(ap&&n?" y se corregirán hasta "+n+" registro(s)":"")+". ¿Continuar?")) return;
+  if(ap && n && stdEl("std-respaldo").checked) stdRespaldo();
+  var tocados=0; if(ap) vars.forEach(function(v){ tocados+=stdReemplazar(id,v,destino); });
+  stdHacerVariantes(id,destino,[origen]);
+  stdCerrarCambios(tocados, stdDef(id).nombre+": «"+origen+"» variante de «"+destino+"» ("+tocados+" registro(s))");
+  stdEl("std-msg").textContent="«"+origen+"» quedó como variante de «"+destino+"»"+(tocados?"; se corrigieron "+tocados+" registro(s)":"")+".";
+  stdRender();
+}
+// valores candidatos: los usados en registros y los guardados en el historial antiguo de cada campo
+function stdCandidatos(id){
+  var usos=stdUsos(id), mp=Object.create(null);
+  Object.keys(usos).forEach(function(v){ mp[v]=usos[v].n; });
+  stdDef(id).campos.forEach(function(c){ if(c[0].charAt(0)==="@") return; cargarSug(c[0]).forEach(function(raw){ stdPartes(id,raw).forEach(function(v){ if(!(v in mp)) mp[v]=0; }); }); });
+  return mp;
+}
+function stdReunir(){
+  var id=stdSel, L=stdL(id), cand=stdCandidatos(id), conocidos=Object.create(null), tomb=Object.create(null), nuevos=[], omitidos=0;
+  L.items.forEach(function(it){ conocidos[it.n]=1; it.a.forEach(function(a){ conocidos[a]=1; }); });
+  L.borrados.forEach(function(b){ tomb[b.n]=1; });
+  Object.keys(cand).forEach(function(v){ if(conocidos[v]) return; if(tomb[v]){ omitidos++; return; } nuevos.push(v); });
+  var ahora=stdAhora(); nuevos.forEach(function(v){ L.items.push({n:v,a:[],t:ahora}); });
+  L.items.sort(function(x,y){ return stdCmp(x.n,y.n); }); stdGuardar();
+  stdEl("std-msg").textContent=(nuevos.length ? "Se agregaron "+nuevos.length+" nombre(s). Revisa las variantes parecidas para unificarlos." : "No había nombres nuevos.")+(omitidos?" "+omitidos+" omitido(s) por haber sido quitados de la lista (agrégalos a mano si los quieres de vuelta).":"");
+  stdRender();
+}
 function stdVariantes(){
-  var D=stdLeer(), id=stdSel, usos=stdUsos(id), todos=Object.create(null);
-  D[id].forEach(function(v){ todos[v]={v:v,enLista:true,n:(usos[v]?usos[v].n:0)}; });
-  Object.keys(usos).forEach(function(v){ if(!todos[v]) todos[v]={v:v,enLista:false,n:usos[v].n}; });
+  var id=stdSel, L=stdL(id), cand=stdCandidatos(id), todos=Object.create(null), alias=Object.create(null);
+  L.items.forEach(function(it){ it.a.forEach(function(a){ alias[a]=1; }); });
+  L.items.forEach(function(it){ todos[it.n]={v:it.n,enLista:true,n:cand[it.n]||0}; });
+  Object.keys(cand).forEach(function(v){ if(!todos[v] && !alias[v]) todos[v]={v:v,enLista:false,n:cand[v]}; });
   var its=Object.keys(todos).map(function(k){ var o=todos[k]; o.nn=stdNorm(o.v); return o; }).filter(function(o){ return o.nn; });
   var padre=its.map(function(_,i){ return i; });
   function raiz(i){ while(padre[i]!==i){ padre[i]=padre[padre[i]]; i=padre[i]; } return i; }
@@ -1910,8 +2108,7 @@ function stdVariantes(){
   its.forEach(function(o,i){ var r=raiz(i); (gr[r]=gr[r]||[]).push(o); });
   stdGrupos=Object.keys(gr).map(function(k){ return gr[k]; }).filter(function(g){
     if(g.length<2) return false;
-    var clave=g.map(function(o){ return o.nn; }).sort().join("|");
-    return !stdOcultos[id+"#"+clave];
+    return !stdOcultos[id+"#"+g.map(function(o){ return o.nn; }).sort().join("|")];
   }).sort(function(a,b){ return b.length-a.length; }).slice(0,40);
   function puntaje(v){ return v.split(" ").filter(function(w){ return /^[A-ZÁÉÍÓÚÑ]/.test(w); }).length*2 + (v.match(/[áéíóúñüÁÉÍÓÚÑ]/g)||[]).length; }
   stdGrupos.forEach(function(g){ g.sort(function(a,b){ return (b.enLista-a.enLista)||(b.n-a.n)||(puntaje(b.v)-puntaje(a.v)); }); });
@@ -1926,14 +2123,12 @@ function stdVariantes(){
 function stdUnificar(i){
   var g=stdGrupos[i]; if(!g) return;
   var el=stdEl("std-var").querySelector('[data-g="'+i+'"] input:checked'); var c=g[parseInt(el.value,10)];
-  var otros=g.filter(function(o){ return o!==c; }), ap=stdAplicaRegistros(), nReg=otros.reduce(function(s,o){ return s+o.n; },0);
-  if(!confirm("Se unificarán "+otros.length+" variante(s) en «"+c.v+"»"+(ap&&nReg?" y se corregirán hasta "+nReg+" registro(s)":"")+". ¿Continuar?")) return;
+  var otros=g.filter(function(o){ return o!==c; }), ap=stdAplicaRegistros(), nReg=otros.reduce(function(s,o){ return s+o.n; },0), id=stdSel;
+  if(!confirm("Se unificarán "+otros.length+" variante(s) en «"+c.v+"»"+(ap&&nReg?" y se corregirán hasta "+nReg+" registro(s)":"")+". Las variantes quedan anotadas para que no reaparezcan. ¿Continuar?")) return;
   if(ap && nReg && stdEl("std-respaldo").checked) stdRespaldo();
-  var D=stdLeer(), id=stdSel, tocados=0;
-  otros.forEach(function(o){ if(ap) tocados+=stdReemplazar(id, o.v, c.v); });
-  D[id]=D[id].filter(function(x){ return !otros.some(function(o){ return o.v===x; }); });
-  if(D[id].indexOf(c.v)<0) D[id].push(c.v);
-  D[id].sort(stdCmp); stdGuardar();
+  var tocados=0;
+  otros.forEach(function(o){ var e=stdEntrada(id,o.v); [o.v].concat(e?e.a:[]).forEach(function(v){ if(ap) tocados+=stdReemplazar(id,v,c.v); }); });
+  stdHacerVariantes(id, c.v, otros.map(function(o){ return o.v; }));
   stdCerrarCambios(tocados, stdDef(id).nombre+": unificación en «"+c.v+"» ("+tocados+" registro(s))");
   stdEl("std-msg").textContent="Unificado en «"+c.v+"»"+(tocados?"; se corrigieron "+tocados+" registro(s)":"")+".";
   stdRender(); stdVariantes();
@@ -1941,18 +2136,17 @@ function stdUnificar(i){
 function stdIniciar(){
   var det=stdEl("det-estandares"); if(!det||det._ini) return; det._ini=true;
   stdEl("std-sel").addEventListener("change", function(){ stdSel=this.value; stdEl("std-var").innerHTML=""; stdEl("std-msg").textContent=""; stdRender(); });
-  stdEl("std-filtro").addEventListener("input", stdRender);
-  function agregar(){ var i=stdEl("std-nuevo"), v=i.value.trim(); if(!v) return; var ok=stdAgregar(stdSel, v); stdEl("std-msg").textContent=ok?"«"+v+"» se agregó a la lista.":"«"+v+"» ya estaba en la lista."; i.value=""; stdRender(); }
+  function agregar(){
+    var i=stdEl("std-nuevo"), v=i.value.trim(); if(!v) return;
+    var ok=stdAgregar(stdSel, v), e=stdPorVariante(stdSel, v);
+    stdEl("std-msg").textContent = ok ? "«"+v+"» se agregó a la lista." : (e ? "«"+v+"» ya figura como variante de «"+e.n+"»." : "«"+v+"» ya estaba en la lista.");
+    i.value=""; stdRender();
+  }
   stdEl("std-add").addEventListener("click", agregar);
   stdEl("std-nuevo").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); agregar(); } });
-  stdEl("std-reunir").addEventListener("click", function(){
-    if(modoAcceso!=="admin") return;
-    var D=stdLeer(), usos=stdUsos(stdSel), nuevos=Object.keys(usos).filter(function(v){ return D[stdSel].indexOf(v)<0; });
-    D[stdSel]=D[stdSel].concat(nuevos).sort(stdCmp); stdGuardar();
-    stdEl("std-msg").textContent=nuevos.length ? "Se agregaron "+nuevos.length+" nombre(s) usados en los registros. Revisa las variantes parecidas para unificarlos." : "No había nombres nuevos en los registros.";
-    stdRender();
-  });
+  stdEl("std-reunir").addEventListener("click", function(){ if(modoAcceso==="admin") stdReunir(); });
   stdEl("std-variantes").addEventListener("click", function(){ if(modoAcceso==="admin") stdVariantes(); });
+  stdEl("std-corregir").addEventListener("click", stdCorregirRegistros);
   stdEl("std-var").addEventListener("click", function(e){
     var g=e.target.closest(".std-grupo"); if(!g) return; var i=parseInt(g.getAttribute("data-g"),10);
     if(e.target.closest(".std-unif")) stdUnificar(i);
@@ -1963,17 +2157,33 @@ function stdIniciar(){
     var f=e.target.closest(".std-fila"); if(!f||!e.target.classList.contains("std-nom")) return;
     var v=e.target.value.trim(); f.querySelector(".std-ren").disabled=!v || v===f.getAttribute("data-v");
   });
+  function llenarSelect(s){
+    if(s.getAttribute("data-lleno")) return; s.setAttribute("data-lleno","1");
+    var f=s.closest(".std-fila"), mio=f.getAttribute("data-v");
+    stdNombres(stdSel).filter(function(n){ return n!==mio; }).forEach(function(n){ var o=document.createElement("option"); o.value=n; o.textContent=n; s.appendChild(o); });
+  }
+  tabla.addEventListener("focusin", function(e){ if(e.target.classList.contains("std-vde")) llenarSelect(e.target); });
+  tabla.addEventListener("mousedown", function(e){ if(e.target.classList.contains("std-vde")) llenarSelect(e.target); });
+  tabla.addEventListener("change", function(e){
+    if(!e.target.classList.contains("std-vde") || !e.target.value) return;
+    var f=e.target.closest(".std-fila"); stdMarcarVariante(f.getAttribute("data-v"), e.target.value);
+  });
   tabla.addEventListener("click", function(e){
     var f=e.target.closest(".std-fila"); if(!f) return; var de=f.getAttribute("data-v");
     if(e.target.closest(".std-ren")) stdRenombrar(de, f.querySelector(".std-nom").value);
+    else if(e.target.closest(".std-chip-x")){
+      var ent=stdEntrada(stdSel,de), av=e.target.closest(".std-chip-x").getAttribute("data-a");
+      if(ent){ ent.a=ent.a.filter(function(x){ return x!==av; }); ent.t=stdAhora(); stdGuardar(); stdRender(); }
+    }
     else if(e.target.closest(".std-del")){
       var u=stdUsos(stdSel)[de];
-      if(!confirm("Quitar «"+de+"» de la lista"+(u?" (los "+u.n+" registro(s) que lo usan no cambian)":"")+"?")) return;
-      var D=stdLeer(); D[stdSel]=D[stdSel].filter(function(x){ return x!==de; }); stdGuardar(); stdRender();
+      if(!confirm("Quitar «"+de+"» de la lista"+(u?" (los "+u.n+" registro(s) que lo usan no cambian)":"")+"? Si es un duplicado, mejor usa «Es variante de…». Un nombre quitado no se vuelve a agregar con «Reunir».")) return;
+      var L=stdL(stdSel); L.items=L.items.filter(function(it){ return it.n!==de; }); stdTumba(stdSel,de); stdGuardar(); stdRender();
     }
   });
   stdEl("std-exportar").addEventListener("click", function(){
-    var blob=new Blob([JSON.stringify({tipo:"libro-catalogo-estandares",version:1,listas:stdLeer()},null,1)],{type:"application/json"});
+    var out={tipo:"libro-catalogo-estandares",version:2,listas:{}}; STD_DEF.forEach(function(d){ out.listas[d.id]=stdSerial(d.id); });
+    var blob=new Blob([JSON.stringify(out,null,1)],{type:"application/json"});
     var url=URL.createObjectURL(blob), a=document.createElement("a"), f=new Date();
     a.href=url; a.download="Estandarizaciones_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+".json";
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
@@ -1983,9 +2193,13 @@ function stdIniciar(){
     var fl=this.files&&this.files[0]; this.value=""; if(!fl) return;
     try{
       var j=JSON.parse(await fl.text()); if(!j||!j.listas) throw new Error("x");
-      var D=stdLeer(), nuevos=0;
-      STD_DEF.forEach(function(d){ (Array.isArray(j.listas[d.id])?j.listas[d.id]:[]).forEach(function(v){ if(typeof v==="string" && stdAgregar(d.id, v)) nuevos++; }); });
-      stdEl("std-msg").textContent="Se cargaron las listas: "+nuevos+" nombre(s) nuevos (se conservaron los que ya había).";
+      var antes=0, despues=0;
+      STD_DEF.forEach(function(d){
+        var ext=j.listas[d.id]; if(!ext) return;
+        if(Array.isArray(ext)) ext={items:ext.filter(function(x){ return typeof x==="string"; }).map(function(n){ return {n:n,a:[],t:stdAhora()}; }),borrados:[]};
+        antes+=stdL(d.id).items.length; stdFusionar(d.id, ext); despues+=stdL(d.id).items.length;
+      });
+      stdGuardar(); stdEl("std-msg").textContent="Listas cargadas y fusionadas con las actuales ("+(despues-antes>=0?"+":"")+(despues-antes)+" nombre(s) en total).";
       stdRender();
     }catch(err){ stdEl("std-msg").textContent="El archivo no es una exportación de listas válida."; }
   });
@@ -4392,6 +4606,7 @@ async function elegirCarpeta(){ if(modoAcceso!=="admin") return;
     for(var i=0;i<SUBCARPETAS.length;i++){ await h.getDirectoryHandle(SUBCARPETAS[i],{create:true}); }
     carpetaEstado="ok";
     await sincronizarCarpeta(false);
+    stdSincronizar();
   }catch(e){
     mensajeCarpeta("No se pudo conectar la carpeta: "+((e&&e.message)||e));
   }
@@ -4401,6 +4616,7 @@ async function reconectarCarpeta(){
   if(await permisoCarpeta(true)){
     carpetaEstado="ok";
     await sincronizarCarpeta(false);
+    stdSincronizar();
   } else {
     mensajeCarpeta("El navegador no dio permiso a la carpeta.");
   }
@@ -4484,7 +4700,7 @@ async function iniciarCarpeta(){
   var ok=await permisoCarpeta(false);
   carpetaEstado = ok ? "ok" : "permiso";
   actualizarUICarpeta();
-  if(ok){ try{ await revisarCarpeta(); }catch(e){} actualizarUICarpeta(); }
+  if(ok){ try{ await revisarCarpeta(); }catch(e){} actualizarUICarpeta(); if(typeof stdSincronizar==="function") stdSincronizar(); }
 }
 document.getElementById("btn-carpeta-elegir").addEventListener("click", elegirCarpeta);
 document.getElementById("btn-carpeta-reconectar").addEventListener("click", reconectarCarpeta);
@@ -6596,6 +6812,7 @@ function zipDeRespaldo(lista){
     var nom=nombreArchivoRegistro(r); if(usados[nom]) nom=r.id+".json"; usados[nom]=1;
     arch.push({nombre:"registros/"+nom, datos:enc.encode(JSON.stringify(r,null,2))});
   });
+  STD_DEF.forEach(function(d){ var L=stdL(d.id); if(L.items.length||L.borrados.length) arch.push({nombre:"catalogos/"+d.id+".json", datos:enc.encode(JSON.stringify(stdSerial(d.id),null,1))}); });
   return zipSinCompresion(arch,"application/zip");
 }
 async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
@@ -6632,6 +6849,11 @@ async function importarZipRespaldo(file){ if(modoAcceso!=="admin") return;
     for(var i=0;i<nombres.length;i++){
       try{ var o=JSON.parse(new TextDecoder("utf-8").decode(await datosZip(z,nombres[i]))); if(o && o.id) lista.push(o); }catch(e){}
     }
+    var cats=Object.keys(z.ents).filter(function(n){ return /^catalogos\/.+\.json$/i.test(n); });
+    for(var ci=0;ci<cats.length;ci++){
+      try{ var oc=JSON.parse(new TextDecoder("utf-8").decode(await datosZip(z,cats[ci]))); if(oc && oc.lista && stdDef(oc.lista)) stdFusionar(oc.lista, oc); }catch(e){}
+    }
+    if(cats.length) stdGuardar();
     if(!lista.length){ if(m) m.textContent="El zip no contiene registros."; return; }
     if(!confirm("El zip contiene "+lista.length+" registro(s). Se agregarán los nuevos y se actualizarán los que sean más recientes que los de este navegador. ¿Continuar?")) return;
     var r=fusionarRegistros(lista);
@@ -8363,7 +8585,7 @@ function iniciarAdmin(n, detalle){
   registrarActividad("ingreso", detalle+" · v"+APP_VERSION.replace(/^v/,""));
   pintarAdmins();
   guardarAdminsCarpeta();
-  esqIniciar(); esqRefrescar(); stdIniciar(); stdRender();
+  esqIniciar(); esqRefrescar(); stdIniciar(); stdRender(); stdSincronizar();
   activarTab("entrada");
   pintarConfigAlertas();
   programarAlertaPrestamos();

@@ -704,7 +704,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.55</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.57</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -768,6 +768,7 @@
           <label>Ordenar por <select id="cons-orden"><option value="catalogo">N.º de catálogo</option><option value="campo">N.º de campo</option><option value="nombre">Nombre científico</option><option value="localidad">Localidad</option><option value="fecha">Fecha de colecta</option></select></label>
           <button type="button" class="btn small secundario" id="cons-csv" title="Archivo de texto separado por comas, abre en Excel y sirve para GBIF">Descargar CSV</button>
           <button type="button" class="btn small secundario" id="cons-xlsx" title="Planilla de Excel">Descargar Excel</button>
+          <button type="button" class="btn small secundario" id="cons-fotos" title="Descarga un zip con las fotos de los registros seleccionados (o de todos los resultados), ordenadas en carpetas por Phylum, Clase, Orden, Familia y Género">🖼️ Exportar fotos por taxonomía</button>
           <button type="button" class="btn small secundario" id="cons-mapa" title="Abre un mapa con los registros seleccionados (o todos los resultados) para evaluar su distribución geográfica">🗺️ Evaluar patrón de distribución</button>
         </div>
       </div>
@@ -885,11 +886,11 @@
 
     <div class="bloque">
       <h2>Fotos <button type="button" class="ayuda-btn" data-ayuda="ayuda-fotos" aria-label="Ayuda" title="Ayuda">?</button></h2>
-      <div class="ayuda-panel oculto" id="ayuda-fotos">Pulsa «+ Nuevo»: la fila nueva trae las opciones «Agregar fotos desde el PC» (eliges imágenes de cualquier carpeta) y «Traer fotos de la cámara». La app guarda una copia idéntica en Fotos/Phylum/Clase/Orden/Familia/Género/ de la Carpeta local, según la clasificación del ejemplar (Sin_clasificar en los niveles que falten), con el número de catálogo al inicio del nombre. Las carpetas se crean solas si no existen. Si la imagen ya está dentro de Fotos/, solo se asocia. Indica en «Tipo de foto» si es del ejemplar o de terreno.</div>
+      <div class="ayuda-panel oculto" id="ayuda-fotos">Pulsa «+ Nuevo»: la fila nueva trae las opciones «Agregar fotos desde el PC» (eliges imágenes de cualquier carpeta) y «Traer fotos de la cámara». La app guarda una copia idéntica en la carpeta del ejemplar dentro de Fotos/ (Fotos/N.º de catálogo, o Fotos/campo_N.º de campo mientras no tenga catálogo), con ese número al inicio del nombre. No hace falta clasificar el ejemplar antes. Las carpetas se crean solas si no existen. Si la imagen ya está dentro de Fotos/, solo se asocia. Indica en «Tipo de foto» si es del ejemplar o de terreno.</div>
       <div id="lista-fotos"></div>
       <div class="barra-botones">
         <button class="btn small tenue" id="btn-add-foto">+ Nuevo</button>
-        <button class="btn small secundario" id="btn-reordenar-registro" title="Mueve las fotos, PDF y otros archivos de este ejemplar a la carpeta que corresponde a su clasificación actual">Reordenar archivos de este ejemplar</button>
+        <button class="btn small secundario" id="btn-reordenar-registro" title="Mueve las fotos antiguas (ordenadas por taxonomía) a la carpeta del ejemplar y deja los PDF y otros archivos en su carpeta">Reordenar archivos de este ejemplar</button>
       </div>
       <p class="nota oculto" id="aviso-clasif-fotos"></p>
     </div>
@@ -1095,7 +1096,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.55</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.57</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1196,6 +1197,7 @@
       </div>
       <div class="barra-botones">
         <button type="button" class="btn secundario small" id="std-reunir" title="Agrega a la lista los valores que ya usan los registros y el historial del campo">Reunir nombres desde los registros</button>
+        <button type="button" class="btn secundario small" id="std-reunir-todas" title="Hace lo mismo en todas las listas a la vez">Reunir en todas las listas</button>
         <button type="button" class="btn secundario small" id="std-variantes" title="Agrupa nombres casi iguales para unificarlos">Buscar variantes parecidas</button>
       </div>
       <label class="std-chk"><input type="checkbox" id="std-aplicar" checked> Al cambiar o unificar un nombre, corregirlo también en los registros</label>
@@ -1250,7 +1252,7 @@
         </div>
         <div class="accion-card oculto" id="ac-reordenar">
           <span class="rot">Ordenar archivos <button type="button" class="ayuda-btn" data-ayuda="ayuda-reordenar" aria-label="Ayuda" title="Ayuda">?</button></span>
-          <div class="ayuda-panel oculto" id="ayuda-reordenar">Úsalo después de cambiar Phylum, Clase, Orden, Familia o Género de un ejemplar, o de completar la clasificación de ejemplares traídos desde Libreta de Campo (sus fotos quedan en Sin_clasificar). Cada archivo se copia a su carpeta nueva, se verifica y recién entonces se retira el original, salvo que otro ejemplar lo use. Los ejemplares con clasificación incompleta se omiten.</div>
+          <div class="ayuda-panel oculto" id="ayuda-reordenar">Úsalo para pasar a la carpeta del ejemplar las fotos antiguas que estaban ordenadas por Phylum, Clase, Orden, Familia y Género, o las que importaste con la versión anterior (en carpetas Sin_clasificar anidadas). Cada archivo se copia a su carpeta nueva, se verifica y recién entonces se retira el original, salvo que otro ejemplar lo use.</div>
           <button class="btn secundario small" id="btn-carpeta-reordenar">Reordenar archivos</button>
           <span class="cap">Lleva cada archivo a la carpeta de su clasificación actual.</span>
         </div>
@@ -1271,7 +1273,7 @@
           <li><strong>Exportaciones/</strong> Aquí irán el zip para el Generador de Proyectos y el CSV para GBIF (aún no implementado).</li>
           <li><strong>Respaldos/</strong> Respaldos completos con fecha.</li>
           <li><strong>Publicaciones/</strong> PDF de publicaciones (Autor_etal_AÑO_Palabras_clave.pdf), todos en esta misma carpeta, ordenados por nombre.</li>
-          <li><strong>Fotos/</strong> Fotos, en carpetas por clasificación del ejemplar.</li>
+          <li><strong>Fotos/</strong> Fotos, en una carpeta propia por ejemplar (N.º de catálogo, o campo_N.º de campo mientras no lo tenga).</li>
           <li><strong>Manejo/</strong> Documentos de respaldo de Baja, Préstamos y Usos, en una carpeta propia por ejemplar (sin categorías).</li>
           <li><strong>Adjuntos/</strong> Otros archivos, en una carpeta propia por ejemplar (sin carpetas por clasificación).</li>
         </ul>
@@ -1308,7 +1310,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.55";
+var APP_VERSION = "v0.9.57";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1691,6 +1693,7 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   function valores(inp){
     var sid=stdListaDe(inp), std=sid ? stdNombres(sid) : [];
     if(std.length) return std.slice();   // con lista estándar solo se ofrece ella
+    if(sid){ var libres=stdSugerenciasLibres(sid); if(libres.length) return libres; }   // lista vacía: lo ya usado en los registros
     var dl=document.getElementById(inp.getAttribute("data-lista")||"");
     return dl ? Array.prototype.map.call(dl.options,function(o){ return o.value; }) : [];
   }
@@ -1752,14 +1755,24 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
 // Cada lista guarda nombres correctos con sus variantes conocidas. Se conserva en el navegador y en la Carpeta local (Catalogos/<lista>.json),
 // y se fusiona con la de otros equipos que usen la misma carpeta (gana la entrada modificada más recientemente; los nombres quitados quedan anotados).
 var STD_DEF = [
-  {id:"personas", nombre:"Personas", desc:"Colectores, determinadores y demás personas que figuran en los registros. Los nombres compuestos («A & B», «A y B», «A; B») se tratan como personas separadas.", campos:[["colector","Colector"],["destinatario","Destinatario"],["responsableBaja","Responsable de la baja"],["@determinaciones.determinador","Determinador"],["@fotos.fotografo","Fotógrafo"],["@prestamos.solicitante","Solicitante de préstamo"],["@usos.responsable","Responsable de uso"],["@monitoreos.responsable","Responsable de monitoreo"]]},
-  {id:"instituciones", nombre:"Instituciones", desc:"Instituciones o personas que legan o depositan material.", campos:[["legatario","Legatario"]]},
-  {id:"proyectos", nombre:"Proyectos", desc:"Proyectos o iniciativas de origen del material.", campos:[["proyectoOrigen","Proyecto / iniciativa de origen"]]},
-  {id:"localidades", nombre:"Localidades y estaciones", desc:"Nombres de lugares de colecta, escritos de forma consistente.", campos:[["localidad","Localidad"],["estacion","Estación"]]},
-  {id:"taxones", nombre:"Nombres taxonómicos", desc:"Nombres científicos y nombres de referencia de terreno.", campos:[["taxon","Taxón (referencia de terreno)"],["@determinaciones.nombreCientifico","Nombre científico de la determinación"]]},
-  {id:"habitats", nombre:"Hábitats", desc:"Hábitat y microhábitat de colecta.", campos:[["habitat","Hábitat"],["microhabitat","Microhábitat"]]},
-  {id:"metodos", nombre:"Métodos y preparación", desc:"Métodos de recolección y de preparación del material.", campos:[["metodoColecta","Método de recolección"],["preparacion","Preparación"]]},
-  {id:"ubicaciones", nombre:"Ubicaciones en la colección", desc:"Gabinetes, cajas y otras ubicaciones físicas.", campos:[["ubicacionColeccion","Ubicación en colección"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"]]}
+  {g:"Personas e instituciones", id:"personas", nombre:"Personas", desc:"Colectores, determinadores y demás personas que figuran en los registros. Los nombres compuestos («A & B», «A y B», «A; B») se tratan como personas separadas.", campos:[["colector","Colector"],["destinatario","Destinatario"],["responsableBaja","Responsable de la baja"],["@determinaciones.determinador","Determinador"],["@fotos.fotografo","Fotógrafo"],["@prestamos.solicitante","Solicitante de préstamo"],["@usos.responsable","Responsable de uso"],["@monitoreos.responsable","Responsable de monitoreo"]]},
+  {g:"Personas e instituciones", id:"instituciones", nombre:"Instituciones", desc:"Instituciones o personas que legan o depositan material.", campos:[["legatario","Legatario"]]},
+  {g:"Personas e instituciones", id:"proyectos", nombre:"Proyectos", desc:"Proyectos o iniciativas de origen del material.", campos:[["proyectoOrigen","Proyecto / iniciativa de origen"]]},
+  {g:"Personas e instituciones", id:"colecciones", nombre:"Colecciones", desc:"Nombres de las colecciones a las que pertenecen los ejemplares.", campos:[["coleccionNombre","Nombre de la colección"]]},
+  {g:"Lugares", id:"localidades", nombre:"Localidades y estaciones", desc:"Nombres de lugares de colecta, escritos de forma consistente.", campos:[["localidad","Localidad"],["estacion","Estación"]]},
+  {g:"Lugares", id:"divisiones", nombre:"Regiones, provincias y comunas", desc:"Divisiones administrativas escritas a mano (las de Chile se eligen de su lista propia; esta lista sirve para otros países o zonas).", campos:[["region","Región o zona"],["provincia","Provincia o zona"],["comuna","Comuna o zona"]]},
+  {g:"Lugares", id:"ubicaciones", nombre:"Ubicaciones en la colección", desc:"Gabinetes, cajas y otras ubicaciones físicas.", campos:[["ubicacionColeccion","Ubicación en colección"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"],["@submuestras.ubicacionAlmacenamiento","Ubicación de almacenamiento de submuestras"]]},
+  {g:"Taxonomía", id:"taxones", nombre:"Nombres científicos", desc:"Nombres científicos de las determinaciones y nombres de referencia de terreno.", campos:[["taxon","Taxón (referencia de terreno)"],["@determinaciones.nombreCientifico","Nombre científico de la determinación"]]},
+  {g:"Taxonomía", id:"phylum", nombre:"Phylum", desc:"Nombres de phylum usados en la clasificación.", campos:[["phylum","Phylum"]]},
+  {g:"Taxonomía", id:"clase", nombre:"Clase", desc:"Nombres de clase usados en la clasificación.", campos:[["clase","Clase"]]},
+  {g:"Taxonomía", id:"orden", nombre:"Orden", desc:"Nombres de orden usados en la clasificación.", campos:[["orden","Orden"]]},
+  {g:"Taxonomía", id:"familia", nombre:"Familia", desc:"Nombres de familia usados en la clasificación.", campos:[["familia","Familia"]]},
+  {g:"Taxonomía", id:"genero", nombre:"Género", desc:"Nombres de género usados en la clasificación.", campos:[["genero","Género"]]},
+  {g:"Taxonomía", id:"publicaciones", nombre:"Publicaciones originales", desc:"Citas de la publicación original de los nombres.", campos:[["publicacionOriginal","Publicación original"]]},
+  {g:"Procedimientos", id:"habitats", nombre:"Hábitats", desc:"Hábitat y microhábitat de colecta.", campos:[["habitat","Hábitat"],["microhabitat","Microhábitat"]]},
+  {g:"Procedimientos", id:"metodos", nombre:"Métodos y preparación", desc:"Métodos de recolección y de preparación del material.", campos:[["metodoColecta","Método de recolección"],["preparacion","Preparación"]]},
+  {g:"Procedimientos", id:"submuestras", nombre:"Submuestras", desc:"Tipos, métodos de conservación y destinos de uso de las submuestras.", campos:[["@submuestras.tipoSubmuestra","Tipo de submuestra"],["@submuestras.metodoConservacion","Método de conservación de la submuestra"],["@submuestras.destinoUso","Destino de uso de la submuestra"]]},
+  {g:"Procedimientos", id:"eventos", nombre:"Eventos de uso", desc:"Descripción de los eventos del historial de usos (exhibición, análisis, docencia, etc.).", campos:[["@usos.evento","Evento de uso"]]}
 ];
 var STD_CLAVE = LS_PREFIX+"estandares", STD_MAPA = {}, stdDatos = null, stdSel = "personas", stdGrupos = [], stdOcultos = {}, stdOcupado = false, stdReintento = false, stdTimer = null, stdUltSync = 0;
 var STD_SEP = /(\s*[&;|]\s*|\s+(?:y|e|and)\s+)/i;
@@ -2033,7 +2046,12 @@ function stdRender(){
   var det=stdEl("det-estandares"); if(!det) return;
   det.classList.toggle("oculto", modoAcceso!=="admin"); if(modoAcceso!=="admin") return;
   var d=stdDef(stdSel), usos=stdUsos(stdSel), sel=stdEl("std-sel"), L=stdL(stdSel);
-  sel.innerHTML=STD_DEF.map(function(x){ return '<option value="'+x.id+'"'+(x.id===stdSel?' selected':'')+'>'+escapeHtml(x.nombre)+' ('+stdL(x.id).items.length+')</option>'; }).join("");
+  var hs="", gAct="";
+  STD_DEF.forEach(function(x){
+    if(x.g!==gAct){ if(gAct) hs+='</optgroup>'; hs+='<optgroup label="'+escapeHtml(x.g)+'">'; gAct=x.g; }
+    hs+='<option value="'+x.id+'"'+(x.id===stdSel?' selected':'')+'>'+escapeHtml(x.nombre)+' ('+stdL(x.id).items.length+')</option>';
+  });
+  sel.innerHTML=hs+'</optgroup>';
   stdEl("std-desc").textContent=d.desc;
   stdEl("std-campos").textContent="Se ofrece como sugerencia en: "+d.campos.map(function(c){ return c[1]; }).join(", ")+".";
   var nombres=Object.create(null); L.items.forEach(function(it){ nombres[it.n]=1; it.a.forEach(function(a){ nombres[a]=1; }); });
@@ -2078,13 +2096,24 @@ function stdCandidatos(id){
   stdDef(id).campos.forEach(function(c){ if(c[0].charAt(0)==="@") return; cargarSug(c[0]).forEach(function(raw){ stdPartes(id,raw).forEach(function(v){ if(!(v in mp)) mp[v]=0; }); }); });
   return mp;
 }
-function stdReunir(){
-  var id=stdSel, L=stdL(id), cand=stdCandidatos(id), conocidos=Object.create(null), tomb=Object.create(null), nuevos=[], omitidos=0;
+var stdCache={};
+// con la lista vacía, las sugerencias salen de lo ya usado en los registros (más frecuentes primero)
+function stdSugerenciasLibres(id){
+  var c=stdCache[id], ahora=Date.now(); if(c && ahora-c.t<5000) return c.v;
+  var cand=stdCandidatos(id), v=Object.keys(cand).sort(function(a,b){ return (cand[b]-cand[a])||stdCmp(a,b); });
+  stdCache[id]={t:ahora, v:v}; return v;
+}
+function stdReunirLista(id){
+  var L=stdL(id), cand=stdCandidatos(id), conocidos=Object.create(null), tomb=Object.create(null), nuevos=[], omitidos=0;
   L.items.forEach(function(it){ conocidos[it.n]=1; it.a.forEach(function(a){ conocidos[a]=1; }); });
   L.borrados.forEach(function(b){ tomb[b.n]=1; });
   Object.keys(cand).forEach(function(v){ if(conocidos[v]) return; if(tomb[v]){ omitidos++; return; } nuevos.push(v); });
   var ahora=stdAhora(); nuevos.forEach(function(v){ L.items.push({n:v,a:[],t:ahora}); });
-  L.items.sort(function(x,y){ return stdCmp(x.n,y.n); }); stdGuardar();
+  L.items.sort(function(x,y){ return stdCmp(x.n,y.n); });
+  return {nuevos:nuevos, omitidos:omitidos};
+}
+function stdReunir(){
+  var r=stdReunirLista(stdSel), nuevos=r.nuevos, omitidos=r.omitidos; stdGuardar();
   stdEl("std-msg").textContent=(nuevos.length ? "Se agregaron "+nuevos.length+" nombre(s). Revisa las variantes parecidas para unificarlos." : "No había nombres nuevos.")+(omitidos?" "+omitidos+" omitido(s) por haber sido quitados de la lista (agrégalos a mano si los quieres de vuelta).":"");
   stdRender();
 }
@@ -2145,6 +2174,12 @@ function stdIniciar(){
   stdEl("std-add").addEventListener("click", agregar);
   stdEl("std-nuevo").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); agregar(); } });
   stdEl("std-reunir").addEventListener("click", function(){ if(modoAcceso==="admin") stdReunir(); });
+  stdEl("std-reunir-todas").addEventListener("click", function(){
+    if(modoAcceso!=="admin") return;
+    var tot=0, ls=0; STD_DEF.forEach(function(d){ var r=stdReunirLista(d.id); if(r.nuevos.length){ tot+=r.nuevos.length; ls++; } });
+    stdGuardar(); stdEl("std-msg").textContent=tot ? "Se agregaron "+tot+" nombre(s) en "+ls+" lista(s). Revisa cada una con «Buscar variantes parecidas»." : "No había nombres nuevos en ninguna lista.";
+    stdRender();
+  });
   stdEl("std-variantes").addEventListener("click", function(){ if(modoAcceso==="admin") stdVariantes(); });
   stdEl("std-corregir").addEventListener("click", stdCorregirRegistros);
   stdEl("std-var").addEventListener("click", function(e){
@@ -2751,11 +2786,13 @@ function bloqueMediaHtml(r, general, terreno, determinacion){
       +'<div class="media-pie"><span>Lat '+c.lat.toFixed(5)+', Lng '+c.lng.toFixed(5)+'</span><a href="'+grande+'" target="_blank" rel="noopener">Abrir en Google Maps (satélite) ↗</a></div>';
   } else mapa='<div class="media-vacio">Este ejemplar no tiene coordenadas (latitud y longitud) en Datos de terreno, por eso no se puede mostrar el mapa.</div>';
   var fotos=(r.fotos||[]).filter(function(f){ return /^Fotos\//.test(f.archivo||""); });
+  var sinArchivo=(r.fotos||[]).filter(function(f){ return !/^Fotos\//.test(f.archivo||"") && (f.archivo||""); }).length;
   var gal;
   if(fotos.length){
     var datos=fotos.map(function(f){ return {ruta:f.archivo, tipo:f.tipoFoto||"", fecha:f.fechaFoto||"", autor:f.fotografo||"", nota:f.notaCalidad||""}; });
     gal='<div class="ficha-galeria" data-fotos="'+escapeHtml(JSON.stringify(datos))+'"><figure class="gal-fig"><div class="gal-principal"><div class="msg-foto">Cargando fotos…</div></div><figcaption class="gal-pie"></figcaption></figure><div class="gal-minis"></div></div>';
   } else gal='<div class="media-vacio">Este ejemplar no tiene fotos asociadas desde la Carpeta local. Se agregan en Preparación, bloque Fotos.</div>';
+  if(sinArchivo) gal+='<div class="media-vacio">'+sinArchivo+' foto(s) quedaron registradas sin archivo en la Carpeta local (por ejemplo, porque faltaban en el zip de importación). Se corrigen en Preparación, bloque Fotos.</div>';
   var vacio='<p class="ficha-vacio">Sin datos cargados.</p>';
   var otros=archivosAsociadosHtml(r);
   return '<div class="ficha-media">'
@@ -3051,6 +3088,32 @@ function mapaNumInd(v){ var n=parseInt(String(v==null?"":v).replace(/[^\d]/g,"")
 function kmEntre(a,b,c,d){
   var R=6371, rad=Math.PI/180, dl=(c-a)*rad, dg=(d-b)*rad, x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(dg/2)*Math.sin(dg/2);
   return 2*R*Math.asin(Math.min(1,Math.sqrt(x)));
+}
+// Zip con las fotos de los registros elegidos, en carpetas Phylum/Clase/Orden/Familia/Género (los niveles vacíos se omiten).
+async function exportarFotosTaxonomia(){
+  var ids=marcadosConsulta(), lista=ids.length ? resultadosConsulta().filter(function(r){ return ids.indexOf(r.id)>-1; }) : resultadosConsulta();
+  var msg=document.getElementById("cons-msg"), items=[];
+  lista.forEach(function(r){
+    var niveles=["phylum","clase","orden","familia","genero"].map(function(k){ return sanitizarNombre(r[k]); }).filter(Boolean);
+    (r.fotos||[]).forEach(function(f){ if(/^Fotos\//.test(f.archivo||"")) items.push({ruta:f.archivo, dir:niveles.length?niveles.join("/"):"Sin_clasificar"}); });
+  });
+  if(!items.length){ if(msg) msg.textContent="Los registros elegidos no tienen fotos asociadas."; return; }
+  if(!confirm("Se descargará un zip con "+items.length+" foto(s) de "+lista.length+" registro(s), ordenadas en carpetas por su clasificación. Los niveles que falten en un registro se omiten. ¿Continuar?")) return;
+  var arch=[], usados={}, faltan=0, enc=0;
+  for(var i=0;i<items.length;i++){
+    if(msg) msg.textContent="Preparando fotos: "+(i+1)+" de "+items.length+"…";
+    try{
+      var file=await archivoDeRuta(items[i].ruta), nom=items[i].ruta.split("/").pop(), ruta=items[i].dir+"/"+nom, k=1;
+      while(usados[ruta]){ k++; ruta=items[i].dir+"/"+nom.replace(/(\.[^.]*)?$/, "_"+k+"$1"); }
+      usados[ruta]=1; arch.push({nombre:ruta, datos:new Uint8Array(await file.arrayBuffer())}); enc++;
+    }catch(e){ faltan++; }
+  }
+  if(!arch.length){ if(msg) msg.textContent="No se pudo leer ninguna foto. Revisa que la Carpeta local esté conectada y con acceso."; return; }
+  var blob=zipSinCompresion(arch,"application/zip"), f=new Date(), url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download="Fotos_por_taxonomia_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+  if(msg) msg.textContent=enc+" foto(s) en el zip"+(faltan?"; "+faltan+" no se pudieron leer.":".");
+  registrarActividad("descarga","fotos por taxonomía · "+enc+" foto(s)");
 }
 function abrirMapaDistribucion(){
   var dlg=document.getElementById("dialog-mapa-dist"); if(!dlg) return;
@@ -3622,7 +3685,7 @@ function pintarLista(tipo){
         });
       }
       if(prefijo.test(entrada.archivo||"")){
-        var destinoOk = (!esFoto || !clasificacionFaltante(borrador).length) && (entrada.archivo.split("/").slice(0,-1).join("/") !== (esFoto ? "Fotos/"+rutaTaxonomica(borrador) : carpetaAdjuntos(borrador)));
+        var destinoOk = (esFoto ? !fotoEnSuCarpeta(entrada.archivo) : (entrada.archivo.split("/").slice(0,-1).join("/") !== carpetaAdjuntos(borrador)));
         if(destinoOk){
           var mv=document.createElement("button"); mv.type="button"; mv.className="btn secundario small"; mv.textContent="Mover a su carpeta";
           mv.title="Copia este archivo a la carpeta que corresponde a la clasificación actual";
@@ -5085,6 +5148,12 @@ async function cargarDocsFicha(dlgEl, r){
 // ---------- Fotos (ordenadas por Phylum/Clase/Orden/Familia/Género dentro de Fotos/) ----------
 function carpetaTaxon(v){ return sanitizarNombre(v)||"Sin_clasificar"; }
 // Ruta de carpetas según la clasificación del ejemplar: Phylum/Clase/Orden/Familia/Género (nivel vacío = Sin_clasificar).
+// Las fotos se guardan en una carpeta por ejemplar: Fotos/<N.º de catálogo> (o campo_<N.º de campo> mientras no tenga catálogo).
+function claveEjemplar(reg){
+  return sanitizarNombre(construirCatalogoCompleto(reg)) || (reg.numeroCampo ? "campo_"+sanitizarNombre(reg.numeroCampo) : "") || ("reg_"+sanitizarNombre(reg.id||""));
+}
+function carpetaFotos(reg){ return "Fotos/"+claveEjemplar(reg); }
+function fotoEnSuCarpeta(ruta){ return /^Fotos\/[^\/]+\/[^\/]+$/.test(ruta||""); }   // ya está en una carpeta de un solo nivel
 function rutaTaxonomica(reg){
   return ["phylum","clase","orden","familia","genero"].map(function(k){ return carpetaTaxon(reg && reg[k]); }).join("/");
 }
@@ -5266,7 +5335,7 @@ function cfgValores(nombre){
 async function cfgCargarCompartida(){
   try{ var d=await docDirExistente(["Registros"]); var fh=await d.getFileHandle("_configuracion.json"); cfgCompartida=JSON.parse(await (await fh.getFile()).text())||{}; }catch(e){}
 }
-async function cfgGuardar(nombre, valores, ambito){
+async function cfgGuardarAlerta(nombre, valores, ambito){
   try{ localStorage.setItem(CFG_CLAVE+nombre, JSON.stringify({ambito:ambito, valores:valores})); }catch(e){}
   if(ambito!=="compartida") return true;
   cfgCompartida[nombre]=valores;
@@ -5310,7 +5379,7 @@ function pintarConfigAlerta(nombre, contId, titulo, conPeriodo){
   q("guardar").onclick=async function(){
     var nv={activa:q("activa").value, dias:parseDias(q("dias").value).join(",")};
     if(conPeriodo){ nv.n=String(Math.max(1,parseInt(q("n").value,10)||1)); nv.u=q("u").value; }
-    var amb2=q("ambito").value, ok=await cfgGuardar(nombre, nv, amb2);
+    var amb2=q("ambito").value, ok=await cfgGuardarAlerta(nombre, nv, amb2);
     q("dias").value=nv.dias;
     q("msg").textContent=(amb2==="compartida" && !ok) ? " Guardada en este equipo; no se pudo escribir en la Carpeta local." : " Guardada.";
     programarAlertaPrestamos();
@@ -5920,8 +5989,8 @@ async function leerExif(file){
   }catch(e){ return {fecha:"",autor:"",camara:""}; }
 }
 async function fotoEnCarpeta(fh){
-  var rutaTax="Fotos/"+rutaTaxonomica(borrador);
-  var cat=sanitizarNombre(construirCatalogoCompleto(borrador)) || "sin-catalogo";
+  var rutaTax=carpetaFotos(borrador);
+  var cat=claveEjemplar(borrador);
   var ruta=null, rel=null;
   try{ ruta=await carpetaHandle.resolve(fh); }catch(e){}
   var file=await fh.getFile();
@@ -5998,7 +6067,7 @@ async function asociarFotos(entrada){ if(modoAcceso!=="admin") return;
   var fhs;
   try{ fhs=await window.showOpenFilePicker({multiple:true, id:"libro-foto", startIn:fotosDir, types:[{description:"Imágenes", accept:{"image/*":[".jpg",".jpeg",".png",".tif",".tiff",".webp"]}}]}); }
   catch(e){ return; }
-  var rutaTax="Fotos/"+rutaTaxonomica(borrador);
+  var rutaTax=carpetaFotos(borrador);
   var agregadas=0;
   for(var i=0;i<fhs.length;i++){
     var r=await fotoEnCarpeta(fhs[i]), rel=r.rel;
@@ -6091,7 +6160,7 @@ async function capturaTraer(){
   try{ await cfgGuardar("capturaVistos", capturaVistos); }catch(e){}
   if(agregadas && capturaFilaOrigen){ quitarFilaVacia(borrador.fotos, capturaFilaOrigen); capturaFilaOrigen=null; }
   pintarLista("fotos"); refrescarPanelesRegistros();
-  mensajeCarpeta(agregadas+" foto(s) traídas de la cámara a Fotos/"+rutaTaxonomica(borrador)+"/."+(errores?" "+errores+" con error de copia.":"")+" Recuerda guardar el registro.");
+  mensajeCarpeta(agregadas+" foto(s) traídas de la cámara a "+carpetaFotos(borrador)+"/."+(errores?" "+errores+" con error de copia.":"")+" Recuerda guardar el registro.");
   capturaFirma=""; await capturaPintar(true);
 }
 var capturaFilaOrigen=null;
@@ -6108,7 +6177,7 @@ async function abrirCamara(entrada){ if(modoAcceso!=="admin") return;
   if(capturaHandle){ try{ if((await capturaHandle.queryPermission({mode:"read"}))!=="granted") await capturaHandle.requestPermission({mode:"read"}); }catch(e){} }
   var dlg=document.getElementById("dialog-camara");
   dlg.innerHTML='<div class="cam-in"><h3>Fotos desde la cámara</h3>'
-    +'<p class="nota" style="margin:0 0 6px;">Configura tu programa de disparo remoto (digiCamControl, Nikon NX Tether, Entangle, gPhoto2, darktable u otro) para guardar cada foto en una carpeta, y elígela aquí. La lista se actualiza sola; las fotos que lleguen mientras esta ventana está abierta quedan marcadas. Las elegidas se copian a <strong>Fotos/'+escapeHtml(rutaTaxonomica(borrador))+'/</strong> y se asocian a este ejemplar; los originales no se tocan.</p>'
+    +'<p class="nota" style="margin:0 0 6px;">Configura tu programa de disparo remoto (digiCamControl, Nikon NX Tether, Entangle, gPhoto2, darktable u otro) para guardar cada foto en una carpeta, y elígela aquí. La lista se actualiza sola; las fotos que lleguen mientras esta ventana está abierta quedan marcadas. Las elegidas se copian a <strong>'+escapeHtml(carpetaFotos(borrador))+'/</strong> y se asocian a este ejemplar; los originales no se tocan.</p>'
     +'<div class="cam-pie"><span>Carpeta de captura: <strong class="cam-carpeta"></strong></span><button type="button" class="btn small secundario" id="cam-elegir">Elegir carpeta…</button></div>'
     +'<div class="cam-lista"></div>'
     +'<div class="cam-pie"><label style="font-size:13.5px;"><input type="checkbox" id="cam-vistas"> Mostrar las ya traídas</label><span><button type="button" class="btn small tenue" id="cam-actualizar">Actualizar</button> <button type="button" class="btn small" id="cam-traer" disabled>Traer seleccionadas</button> <button type="button" class="btn small tenue" id="cam-cerrar">Cerrar</button></span></div></div>';
@@ -6130,13 +6199,14 @@ function clasificacionFaltante(reg){
 }
 // Los archivos se guardan según Phylum/Clase/Orden/Familia/Género: sin los cinco niveles no se puede asociar nada.
 function exigirClasificacion(reg){
+  return true;   // las fotos ya no dependen de la clasificación (carpeta por ejemplar)
   var f=clasificacionFaltante(reg);
   if(!f.length) return true;
   alert("Antes de asociar archivos completa la clasificación en la pestaña Depósito, bloque Determinación.\n\nFalta: "+f.join(", ")+".\n\nLos archivos se ordenan en carpetas según Phylum, Clase, Orden, Familia y Género.");
   return false;
 }
 function pintarAvisoClasif(){
-  var f=clasificacionFaltante(borrador);
+  var f=[];
   ["aviso-clasif-fotos"].forEach(function(id){
     var el=document.getElementById(id); if(!el) return;
     if(f.length){ el.textContent="Para asociar fotos falta completar en Depósito > Determinación: "+f.join(", ")+"."; el.classList.remove("oculto"); }
@@ -6156,15 +6226,14 @@ function rutaEnUso(ruta, salvo){
 }
 // Lista de referencias a archivos del registro con la carpeta destino que le corresponde hoy.
 function referenciasArchivos(reg){
-  var refs=[], tax=rutaTaxonomica(reg);
-  (reg.fotos||[]).forEach(function(f){ if(/^Fotos\//.test(f.archivo||"")) refs.push({ruta:f.archivo, destino:"Fotos/"+tax, set:function(v){ f.archivo=v; }}); });
+  var refs=[];
+  (reg.fotos||[]).forEach(function(f){ if(/^Fotos\//.test(f.archivo||"")) refs.push({ruta:f.archivo, destino:fotoEnSuCarpeta(f.archivo) ? f.archivo.split("/").slice(0,-1).join("/") : carpetaFotos(reg), set:function(v){ f.archivo=v; }}); });
   (reg.adjuntos||[]).forEach(function(a){ if(/^Adjuntos\//.test(a.archivo||"")) refs.push({pdf:true, ruta:a.archivo, destino:carpetaAdjuntos(reg), set:function(v){ a.archivo=v; }}); });
   (reg.publicacionesPdf||[]).forEach(function(n,i){ refs.push({pdf:true, ruta:rutaNormalPdf(n), destino:RUTA_BIBLIOTECA, set:function(v){ var viejo=reg.publicacionesPdf[i]; if(reg.publicacionesPdfInfo && reg.publicacionesPdfInfo[viejo]){ reg.publicacionesPdfInfo[v]=reg.publicacionesPdfInfo[viejo]; delete reg.publicacionesPdfInfo[viejo]; } reg.publicacionesPdf[i]=v; }}); });
   return refs;
 }
 function contarPorReordenar(reg){
-  var falta=clasificacionFaltante(reg).length;
-  return referenciasArchivos(reg).filter(function(x){ return !falta || x.pdf; }).filter(function(x){ return x.ruta.split("/").slice(0,-1).join("/")!==x.destino; }).length;
+  return referenciasArchivos(reg).filter(function(x){ return x.ruta.split("/").slice(0,-1).join("/")!==x.destino; }).length;
 }
 // Borra carpetas vacías hacia arriba, sin tocar la subcarpeta de primer nivel (Fotos, Adjuntos, Publicaciones).
 async function limpiarCarpetasVacias(rutaDir){
@@ -6183,10 +6252,6 @@ async function limpiarCarpetasVacias(rutaDir){
 async function reordenarRegistro(reg, solo){
   var res={movidos:0, faltan:0, errores:0, sinClasificar:false, origenes:[], mapa:{}};
   var refs=referenciasArchivos(reg);
-  if(clasificacionFaltante(reg).length){          // sin clasificación solo se pueden ordenar los PDF (carpeta única)
-    res.sinClasificar=refs.some(function(x){ return !x.pdf; });
-    refs=refs.filter(function(x){ return x.pdf; });
-  }
   for(var i=0;i<refs.length;i++){
     var x=refs[i], partes=x.ruta.split("/"), nombre=partes.pop(), dirActual=partes.join("/");
     if(solo && x.ruta!==solo) continue;
@@ -6232,7 +6297,6 @@ async function reordenarEjemplarActual(solo){ if(modoAcceso!=="admin") return;
   if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
   if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
   if(!borrador) return;
-  if(!exigirClasificacion(borrador)) return;
   var res=await reordenarRegistro(borrador, solo);
   var guardado = activoId ? registroPorId(activoId) : null;
   if(res.movidos && guardado){
@@ -6253,13 +6317,12 @@ async function reordenarTodos(){ if(modoAcceso!=="admin") return;
   if(!carpetaHandle){ alert("Primero conecta la Carpeta local."); return; }
   if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
   var pend=registros.filter(function(r){ return contarPorReordenar(r)>0; });
-  var incompletos=registros.filter(function(r){ return clasificacionFaltante(r).length && referenciasArchivos(r).length; });
   if(!pend.length){
-    alert("Todos los archivos ya están en la carpeta que les corresponde."+(incompletos.length ? "\n\n"+incompletos.length+" ejemplar(es) con archivos tienen la clasificación incompleta y no se pueden ordenar." : ""));
+    alert("Todos los archivos ya están en la carpeta que les corresponde.");
     return;
   }
-  if(!confirm("Se ordenarán los archivos de "+pend.length+" ejemplar(es) según su clasificación actual.\n\nCada archivo se copia a su carpeta nueva, se comprueba la copia y recién entonces se retira el original (si ningún otro ejemplar lo usa). Las carpetas que queden vacías se eliminan.\n\n¿Continuar?")) return;
-  var tot={movidos:0, faltan:0, errores:0, sinClasificar:incompletos.length};
+  if(!confirm("Se ordenarán los archivos de "+pend.length+" ejemplar(es) según corresponda (fotos en la carpeta de su ejemplar, PDF y otros archivos en la suya).\n\nCada archivo se copia a su carpeta nueva, se comprueba la copia y recién entonces se retira el original (si ningún otro ejemplar lo usa). Las carpetas que queden vacías se eliminan.\n\n¿Continuar?")) return;
+  var tot={movidos:0, faltan:0, errores:0, sinClasificar:0};
   var origenes=[];
   for(var i=0;i<pend.length;i++){
     var r=pend[i];
@@ -6503,6 +6566,7 @@ function construirConsultas(){
   document.getElementById("cons-csv").addEventListener("click", function(){ descargarConsulta("csv"); });
   document.getElementById("cons-xlsx").addEventListener("click", function(){ descargarConsulta("xlsx"); });
   document.getElementById("cons-mapa").addEventListener("click", abrirMapaDistribucion);
+  document.getElementById("cons-fotos").addEventListener("click", exportarFotosTaxonomia);
   document.getElementById("cons-chips").addEventListener("click", function(e){
     var b=e.target.closest("button[data-quitar]"); if(!b) return;
     var q=b.getAttribute("data-quitar");
@@ -6578,7 +6642,7 @@ function pintarConsultas(){
   });
   cont.innerHTML=h;
   document.getElementById("cons-mas-btn").classList.toggle("oculto", lista.length<=e.mostrar);
-  document.getElementById("cons-csv").disabled=document.getElementById("cons-xlsx").disabled=document.getElementById("cons-mapa").disabled=!lista.length;
+  document.getElementById("cons-csv").disabled=document.getElementById("cons-xlsx").disabled=document.getElementById("cons-mapa").disabled=document.getElementById("cons-fotos").disabled=!lista.length;
   document.getElementById("cons-marcar-todos").disabled=!lista.length;
   actualizarMarcasConsulta();
   document.querySelectorAll(".slot-panel-registros").forEach(montarPanelRegistros);
@@ -8402,7 +8466,7 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
 
     var copiadas=0, faltan=0, enNavegador=0, usadas={};
     for(var i=0;i<nuevos.length;i++){
-      var r=nuevos[i], base="Fotos/"+rutaTaxonomica(r);
+      var r=nuevos[i], base=carpetaFotos(r);
       for(var j=0;j<r.fotos.length;j++){
         var ft=r.fotos[j], datos=await datosZip(z,"fotos/"+ft.archivo);
         if(!datos){ faltan++; continue; }

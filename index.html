@@ -274,7 +274,7 @@
   details.subbloque-gest>summary::-webkit-details-marker{display:none;}
   details.subbloque-gest>summary::before{content:"▸ ";}
   details.subbloque-gest[open]>summary::before{content:"▾ ";}
-  #btn-marcar-datos[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
+  #btn-marcar-datos[aria-pressed="true"],#cons-marcar-todos[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
   /* ---- Importar desde planilla ---- */
   .imp-resumen-titulo{font-family:var(--serif);font-size:19px;font-weight:600;cursor:pointer;margin-bottom:8px;}
   .imp-fila-opc{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin:8px 0;font-size:14px;}
@@ -427,6 +427,10 @@
   button.btn:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(38,51,43,.18);}
   button.btn.btn-fuerte,button.btn.secundario.btn-fuerte{background:var(--accent);color:#fff;border:2px solid var(--accent);font-weight:700;font-size:16.5px;padding:13px 34px;border-radius:10px;box-shadow:0 4px 12px rgba(38,51,43,.38);letter-spacing:.2px;}
   button.btn.btn-fuerte:hover{transform:translateY(-2px);box-shadow:0 7px 16px rgba(38,51,43,.45);}
+  .std-aviso{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px;padding:6px 8px;background:#fff6dd;border:1px solid #e3cf8d;border-radius:6px;font-size:12.5px;} .std-aviso .btn{font-size:12.5px;padding:3px 9px;}
+  .std-chk{display:flex;gap:8px;align-items:center;margin:4px 0;font-size:14px;} .std-chk input{width:18px;height:18px;margin:0;}
+  .std-lista{margin:8px 0;max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fffdf8;} .std-fila{display:flex;gap:8px;align-items:center;padding:5px 8px;border-bottom:1px solid var(--line);flex-wrap:wrap;} .std-fila:last-child{border-bottom:0;} .std-nom{flex:1 1 220px;min-width:0;} .std-n{font-size:12.5px;color:var(--muted,#6b6257);white-space:nowrap;}
+  .std-grupo{border:1px solid var(--line);border-radius:8px;background:#fffdf8;padding:8px 10px;margin:8px 0;} .std-grupo-tit{font-weight:700;margin-bottom:4px;} .std-var{display:flex;gap:8px;align-items:center;padding:3px 0;} .std-var input{width:18px;height:18px;margin:0;}
   button.btn.secundario{background:#fff;color:var(--accent);box-shadow:none;}
   button.btn.small{padding:6px 13px;font-size:13.5px;}
   button.btn.tenue{background:none;border-color:var(--line-fuerte);color:var(--ink);box-shadow:none;}
@@ -697,7 +701,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.53</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.54</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -765,19 +769,7 @@
         </div>
       </div>
       <p class="nota" id="cons-msg"></p>
-      <details class="cons-esq oculto" id="cons-esq"><summary>Traducir a una planilla emparejada</summary>
-        <div class="cons-esq-cuerpo">
-          <p class="nota">Genera las filas de los registros marcados (o de todos los resultados) con las columnas en el orden de una planilla que ya emparejaste al importar, para pegarlas al final de ella.</p>
-          <div class="imp-fila-opc"><select id="esq-sel"></select><select id="esq-formato"><option value="xlsx">Excel</option><option value="csv">CSV</option></select><button type="button" class="btn small tenue" id="esq-quitar">Olvidar planilla</button></div>
-          <p class="nota" id="esq-info"></p>
-          <label><input type="checkbox" id="esq-nuevos"> Solo registros modificados o aún no exportados a esta planilla</label>
-          <label><input type="checkbox" id="esq-extra"> Agregar al final columnas para datos sin columna equivalente</label>
-          <label><input type="checkbox" id="esq-marcar" checked> Registrar estos registros como exportados a esta planilla</label>
-          <div class="barra-botones"><button type="button" class="btn small" id="esq-btn">Traducir a planilla</button></div>
-          <p class="nota" id="esq-msg"></p>
-        </div>
-      </details>
-      <div class="cons-marcas" id="cons-marcas"><button type="button" class="btn small tenue" id="cons-marcar-todos" title="Marca todos los registros de los resultados">Marcar todos los resultados</button><button type="button" class="btn small tenue" id="cons-quitar-marcas">Quitar marcas</button><span id="cons-marcas-txt"></span></div>
+      <div class="cons-marcas" id="cons-marcas"><button type="button" class="btn small tenue" id="cons-marcar-todos" aria-pressed="false" title="Marca todos los registros de los resultados; vuelve a pincharlo para quitar las marcas">Marcar todos</button><span id="cons-marcas-txt"></span></div>
       <div id="cons-lista"></div>
       <button type="button" class="btn small secundario oculto" id="cons-mas-btn">Mostrar más resultados</button>
     </div>
@@ -1100,7 +1092,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.53</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.54</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1168,10 +1160,52 @@
         <button class="btn secundario" id="btn-exportar-dwc" title="CSV con los nombres de columna de Darwin Core, listo para mapear en el IPT de GBIF">Descargar CSV Darwin Core</button>
       </div>
       <p class="nota" id="datos-msg">Se descargan o eliminan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados.</p>
+      <details class="cons-esq oculto" id="cons-esq"><summary>Traducir a una planilla emparejada</summary>
+        <div class="cons-esq-cuerpo">
+          <p class="nota">Genera las filas de los registros marcados en la lista de arriba (o, si no hay ninguno, de los mostrados) con las columnas en el orden de una planilla que ya emparejaste al importar, para pegarlas al final de ella.</p>
+          <div class="imp-fila-opc"><select id="esq-sel"></select><select id="esq-formato"><option value="xlsx">Excel</option><option value="csv">CSV</option></select><button type="button" class="btn small tenue" id="esq-quitar">Olvidar planilla</button></div>
+          <p class="nota" id="esq-info"></p>
+          <label><input type="checkbox" id="esq-nuevos"> Solo registros modificados o aún no exportados a esta planilla</label>
+          <label><input type="checkbox" id="esq-extra"> Agregar al final columnas para datos sin columna equivalente</label>
+          <label><input type="checkbox" id="esq-marcar" checked> Registrar estos registros como exportados a esta planilla</label>
+          <div class="barra-botones"><button type="button" class="btn small" id="esq-btn">Traducir a planilla</button></div>
+          <p class="nota" id="esq-msg"></p>
+        </div>
+      </details>
       <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
       </details>
     </details>
 
+
+    <details class="bloque bloque-desp oculto" id="det-estandares">
+      <summary>Estandarizaciones y sugerencias <button type="button" class="ayuda-btn" data-ayuda="ayuda-estandares" aria-label="Ayuda" title="Ayuda">?</button></summary>
+      <div class="ayuda-panel oculto" id="ayuda-estandares">Aquí se mantienen listas separadas de nombres (personas, localidades, taxones, etc.). Esas listas se ofrecen como sugerencias en los campos correspondientes del formulario, y si escribes un nombre que no está, la app lo avisa y propone el más parecido. «Reunir nombres desde los registros» llena la lista con todo lo que ya se usó; «Buscar variantes parecidas» agrupa nombres casi iguales (mayúsculas, tildes, errores de tipeo) para que elijas cuál conservar. Al cambiar o unificar un nombre se puede corregir también en todos los registros.</div>
+      <div class="grid">
+        <div class="campo opc"><div class="lbl"><span class="name">Lista</span></div><select class="nav" id="std-sel"></select></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Filtrar la lista</span></div><input type="search" class="nav" id="std-filtro" autocomplete="off" placeholder="Escribe para filtrar"></div>
+      </div>
+      <p class="nota" id="std-desc"></p>
+      <p class="nota" id="std-campos"></p>
+      <p class="nota" id="std-pend"></p>
+      <div class="fila-admin">
+        <div class="campo opc"><div class="lbl"><span class="name">Agregar un nombre a esta lista</span></div><input type="text" id="std-nuevo" autocomplete="off" spellcheck="false"></div>
+        <button type="button" class="btn small" id="std-add">Agregar</button>
+      </div>
+      <div class="barra-botones">
+        <button type="button" class="btn secundario small" id="std-reunir" title="Agrega a la lista todos los valores que ya usan los registros">Reunir nombres desde los registros</button>
+        <button type="button" class="btn secundario small" id="std-variantes" title="Agrupa nombres casi iguales para unificarlos">Buscar variantes parecidas</button>
+      </div>
+      <label class="std-chk"><input type="checkbox" id="std-aplicar" checked> Al cambiar o unificar un nombre, corregirlo también en los registros</label>
+      <label class="std-chk"><input type="checkbox" id="std-respaldo" checked> Descargar un respaldo antes de corregir registros</label>
+      <p class="nota" id="std-msg"></p>
+      <div id="std-var"></div>
+      <div class="std-lista" id="std-tabla"></div>
+      <div class="barra-botones">
+        <button type="button" class="btn secundario small" id="std-exportar" title="Guarda todas las listas en un archivo .json">Guardar listas (.json)</button>
+        <button type="button" class="btn secundario small" id="std-importar" title="Suma a las listas actuales los nombres de un archivo guardado">Cargar listas…</button>
+        <input type="file" id="std-archivo" accept=".json,application/json" class="oculto">
+      </div>
+    </details>
 
     <details class="bloque bloque-desp" id="det-admins">
       <summary>Administradores autorizados <button type="button" class="ayuda-btn" data-ayuda="ayuda-admins" aria-label="Ayuda" title="Ayuda">?</button></summary>
@@ -1271,7 +1305,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.53";
+var APP_VERSION = "v0.9.54";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1650,7 +1684,10 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   var panel=null, activo=null, items=[], sel=-1, ignorar=false;
   function norm(t){ return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
   function adoptar(inp){ if(inp && inp.tagName==="INPUT" && inp.hasAttribute("list")){ inp.setAttribute("data-lista",inp.getAttribute("list")); inp.removeAttribute("list"); } }
+  function conLista(t){ return !!t && t.tagName==="INPUT" && (t.hasAttribute("data-lista") || !!stdListaDe(t)); }
   function valores(inp){
+    var sid=stdListaDe(inp), std=sid ? stdLeer()[sid] : [];
+    if(std.length) return std.slice();   // con lista estándar solo se ofrece ella
     var dl=document.getElementById(inp.getAttribute("data-lista")||"");
     return dl ? Array.prototype.map.call(dl.options,function(o){ return o.value; }) : [];
   }
@@ -1673,7 +1710,7 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   }
   function abrir(inp){
     adoptar(inp);
-    if(!inp.getAttribute("data-lista") || inp.readOnly || inp.disabled){ cerrar(); return; }
+    if((!inp.getAttribute("data-lista") && !stdListaDe(inp)) || inp.readOnly || inp.disabled){ cerrar(); return; }
     var q=norm(inp.value), todos=valores(inp);
     var lista=todos.filter(function(v){ return !q || norm(v).indexOf(q)>-1; }).slice(0,200);
     if(!lista.length || (lista.length===1 && norm(lista[0])===q)){ cerrar(); return; }
@@ -1690,11 +1727,11 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   document.querySelectorAll("input[list]").forEach(adoptar);
   document.addEventListener("pointerdown",function(e){ adoptar(e.target); },true);
   document.addEventListener("focusin",function(e){ adoptar(e.target); },true);
-  document.addEventListener("click",function(e){ var t=e.target; if(t && t.tagName==="INPUT" && t.hasAttribute("data-lista")) abrir(t); else if(panel && !panel.contains(t)) cerrar(); });
-  document.addEventListener("input",function(e){ if(ignorar) return; var t=e.target; if(t && t.tagName==="INPUT" && t.hasAttribute("data-lista")) abrir(t); });
+  document.addEventListener("click",function(e){ var t=e.target; if(conLista(t)) abrir(t); else if(panel && !panel.contains(t)) cerrar(); });
+  document.addEventListener("input",function(e){ if(ignorar) return; var t=e.target; if(conLista(t)) abrir(t); });
   document.addEventListener("keydown",function(e){
     var t=e.target;
-    if(t && t.tagName==="INPUT" && t.hasAttribute("data-lista") && !panel && e.key==="ArrowDown"){ abrir(t); if(panel){ marcar(0); e.preventDefault(); } return; }
+    if(conLista(t) && !panel && e.key==="ArrowDown"){ abrir(t); if(panel){ marcar(0); e.preventDefault(); } return; }
     if(!panel || t!==activo) return;
     if(e.key==="ArrowDown"){ marcar(Math.min(items.length-1,sel+1)); e.preventDefault(); }
     else if(e.key==="ArrowUp"){ marcar(Math.max(0,sel-1)); e.preventDefault(); }
@@ -1707,6 +1744,252 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   // ayuda (?) dentro de un título desplegable: no debe plegar el bloque
   document.addEventListener("click",function(e){ var b=e.target.closest && e.target.closest("summary .ayuda-btn"); if(b) e.preventDefault(); },false);
 })();
+
+// ---------- Estandarizaciones y sugerencias: listas editables de nombres (personas, localidades, etc.) ----------
+var STD_DEF = [
+  {id:"personas", nombre:"Personas", desc:"Colectores, determinadores y demás personas que figuran en los registros.", campos:[["colector","Colector"],["destinatario","Destinatario"],["responsableBaja","Responsable de la baja"],["@determinaciones.determinador","Determinador"],["@fotos.fotografo","Fotógrafo"],["@prestamos.solicitante","Solicitante de préstamo"],["@usos.responsable","Responsable de uso"],["@monitoreos.responsable","Responsable de monitoreo"]]},
+  {id:"instituciones", nombre:"Instituciones", desc:"Instituciones o personas que legan o depositan material.", campos:[["legatario","Legatario"]]},
+  {id:"proyectos", nombre:"Proyectos", desc:"Proyectos o iniciativas de origen del material.", campos:[["proyectoOrigen","Proyecto / iniciativa de origen"]]},
+  {id:"localidades", nombre:"Localidades y estaciones", desc:"Nombres de lugares de colecta, escritos de forma consistente.", campos:[["localidad","Localidad"],["estacion","Estación"]]},
+  {id:"taxones", nombre:"Nombres taxonómicos", desc:"Nombres científicos y nombres de referencia de terreno.", campos:[["taxon","Taxón (referencia de terreno)"],["@determinaciones.nombreCientifico","Nombre científico de la determinación"]]},
+  {id:"habitats", nombre:"Hábitats", desc:"Hábitat y microhábitat de colecta.", campos:[["habitat","Hábitat"],["microhabitat","Microhábitat"]]},
+  {id:"metodos", nombre:"Métodos y preparación", desc:"Métodos de recolección y de preparación del material.", campos:[["metodoColecta","Método de recolección"],["preparacion","Preparación"]]},
+  {id:"ubicaciones", nombre:"Ubicaciones en la colección", desc:"Gabinetes, cajas y otras ubicaciones físicas.", campos:[["ubicacionColeccion","Ubicación en colección"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"]]}
+];
+var STD_CLAVE = LS_PREFIX+"estandares", STD_MAPA = {}, stdDatos = null, stdSel = "personas", stdGrupos = [], stdOcultos = {};
+STD_DEF.forEach(function(d){ d.campos.forEach(function(c){ STD_MAPA[c[0].replace(/^@/,"")]=d.id; }); });
+function stdEl(i){ return document.getElementById(i); }
+function stdDef(id){ return STD_DEF.filter(function(d){ return d.id===id; })[0]; }
+function stdCmp(a,b){ return a.localeCompare(b,"es"); }
+function stdLeer(){
+  if(stdDatos) return stdDatos;
+  try{ stdDatos=JSON.parse(localStorage.getItem(STD_CLAVE)||"{}")||{}; }catch(e){ stdDatos={}; }
+  STD_DEF.forEach(function(d){ if(!Array.isArray(stdDatos[d.id])) stdDatos[d.id]=[]; });
+  return stdDatos;
+}
+function stdGuardar(){ try{ localStorage.setItem(STD_CLAVE, JSON.stringify(stdDatos)); }catch(e){} }
+function stdNorm(t){ return String(t||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim(); }
+function stdDist(a,b){
+  var m=a.length, n=b.length, p=[], i, j; if(!m) return n; if(!n) return m;
+  for(j=0;j<=n;j++) p[j]=j;
+  for(i=1;i<=m;i++){ var prev=p[0]; p[0]=i; for(j=1;j<=n;j++){ var t=p[j]; p[j]=Math.min(p[j]+1,p[j-1]+1,prev+(a.charCodeAt(i-1)===b.charCodeAt(j-1)?0:1)); prev=t; } }
+  return p[n];
+}
+function stdTok(n){ return n.split(" ").sort().join(" "); }
+function stdParecidos(na,nb){
+  if(na===nb || stdTok(na)===stdTok(nb)) return true;
+  var L=Math.min(na.length,nb.length); if(L<5 || Math.abs(na.length-nb.length)>3) return false;
+  return stdDist(na,nb)<=Math.max(1,Math.floor(L*0.12));
+}
+// lista que corresponde a un campo de texto del formulario (vacío si no tiene)
+function stdListaDe(inp){
+  if(!inp || inp.tagName!=="INPUT" || (inp.type && inp.type!=="text") || inp.readOnly || inp.disabled) return "";
+  var k=inp.getAttribute("data-f"), dk=inp.getAttribute("data-key");
+  if(dk){ var c=inp.closest("[id^='lista-']"); return c ? (STD_MAPA[c.id.slice(6)+"."+dk]||"") : ""; }
+  if(k && !inp.closest(".fila-repetible")) return STD_MAPA[k]||"";
+  return "";
+}
+function stdValoresReg(r, campo){
+  var m=/^@(\w+)\.(\w+)$/.exec(campo);
+  if(m){ var arr=r[m[1]]; return Array.isArray(arr) ? arr.map(function(x){ return x && x[m[2]]; }).filter(function(v){ return typeof v==="string" && v.trim(); }) : []; }
+  var v=r[campo]; return (typeof v==="string" && v.trim()) ? [v] : [];
+}
+function stdUsos(id){
+  var d=stdDef(id), mp=Object.create(null);
+  registros.forEach(function(r){
+    var vistos=Object.create(null);
+    d.campos.forEach(function(c){ stdValoresReg(r,c[0]).forEach(function(v){
+      v=v.trim(); if(vistos[v]) return; vistos[v]=1;
+      var o=mp[v]||(mp[v]={n:0,ej:0}); o.n++; o.ej+=(parseInt(r.individuos,10)||0);
+    }); });
+  });
+  return mp;
+}
+function stdReemplazar(id, de, a){
+  var d=stdDef(id), n=0, ahora=new Date().toISOString();
+  registros.forEach(function(r){
+    var cambio=false;
+    d.campos.forEach(function(c){
+      var m=/^@(\w+)\.(\w+)$/.exec(c[0]);
+      if(m){ (Array.isArray(r[m[1]])?r[m[1]]:[]).forEach(function(x){ if(x && typeof x[m[2]]==="string" && x[m[2]].trim()===de){ x[m[2]]=a; cambio=true; } }); }
+      else if(typeof r[c[0]]==="string" && r[c[0]].trim()===de){ r[c[0]]=a; cambio=true; }
+    });
+    if(cambio){ r.modificadoEn=ahora; r.modificadoPor=operadorActual(); n++; }
+  });
+  return n;
+}
+function stdAgregar(id, v){
+  v=String(v||"").trim(); if(!v) return false;
+  var D=stdLeer(); if(D[id].indexOf(v)>-1) return false;
+  D[id].push(v); D[id].sort(stdCmp); stdGuardar(); return true;
+}
+// aviso bajo el campo cuando el valor escrito no está en la lista (con sugerencia de corrección)
+function stdQuitarAviso(inp){ var s=inp.nextElementSibling; if(s && s.classList && s.classList.contains("std-aviso")) s.remove(); }
+function stdAviso(inp){
+  var prev=inp.nextElementSibling;
+  if(prev && prev.classList && prev.classList.contains("std-aviso") && prev.getAttribute("data-v")===inp.value.trim()) return;   // evita recrear el aviso entre el mousedown y el click
+  stdQuitarAviso(inp);
+  var id=stdListaDe(inp), v=inp.value.trim(); if(!id||!v) return;
+  var lista=stdLeer()[id]; if(!lista.length || lista.indexOf(v)>-1) return;
+  var n=stdNorm(v), cerca=lista.filter(function(x){ return stdNorm(x)===n; });
+  if(!cerca.length) cerca=lista.filter(function(x){ return stdParecidos(stdNorm(x),n); }).slice(0,3);
+  var av=document.createElement("div"); av.className="std-aviso"; av.setAttribute("data-v",v);
+  var t=document.createElement("span"); t.textContent=cerca.length ? "«"+v+"» no está en la lista de "+stdDef(id).nombre.toLowerCase()+". ¿Quisiste decir?" : "«"+v+"» no está en la lista de "+stdDef(id).nombre.toLowerCase()+".";
+  av.appendChild(t);
+  cerca.forEach(function(c){
+    var b=document.createElement("button"); b.type="button"; b.className="btn small"; b.textContent=c;
+    b.onclick=function(){ inp.value=c; inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true})); stdQuitarAviso(inp); };
+    av.appendChild(b);
+  });
+  var ag=document.createElement("button"); ag.type="button"; ag.className="btn small tenue"; ag.textContent=cerca.length?"Es otro, agregarlo":"Agregar a la lista";
+  ag.onclick=function(){ stdAgregar(id, v); stdQuitarAviso(inp); stdRender(); };
+  av.appendChild(ag);
+  inp.parentNode.insertBefore(av, inp.nextSibling);
+}
+document.addEventListener("change", function(e){ var t=e.target; if(t && t.tagName==="INPUT"){ if(stdListaDe(t)) stdAviso(t); else stdQuitarAviso(t); } });
+
+function stdRespaldo(){
+  var f=new Date(), url=URL.createObjectURL(zipDeRespaldo(registros)), a=document.createElement("a");
+  a.href=url; a.download="Respaldo_antes_de_estandarizar_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+}
+function stdCerrarCambios(n, detalle){
+  if(n){ persistir(); refrescarPanelesRegistros(); if(carpetaHandle) sincronizarCarpeta(false); }
+  registrarActividad("edicion","estandarización · "+detalle);
+}
+function stdRender(){
+  var det=stdEl("det-estandares"); if(!det) return;
+  det.classList.toggle("oculto", modoAcceso!=="admin"); if(modoAcceso!=="admin") return;
+  var D=stdLeer(), d=stdDef(stdSel), usos=stdUsos(stdSel), sel=stdEl("std-sel");
+  sel.innerHTML=STD_DEF.map(function(x){ return '<option value="'+x.id+'"'+(x.id===stdSel?' selected':'')+'>'+escapeHtml(x.nombre)+' ('+D[x.id].length+')</option>'; }).join("");
+  stdEl("std-desc").textContent=d.desc;
+  stdEl("std-campos").textContent="Se ofrece como sugerencia en: "+d.campos.map(function(c){ return c[1]; }).join(", ")+".";
+  var pend=Object.keys(usos).filter(function(v){ return D[stdSel].indexOf(v)<0; }).length;
+  stdEl("std-pend").textContent=pend ? pend+" valor(es) usados en los registros todavía no están en esta lista. «Reunir» los agrega." : "Todos los valores usados en los registros están en esta lista.";
+  var filtro=stdNorm(stdEl("std-filtro").value), lista=D[stdSel].filter(function(v){ return !filtro || stdNorm(v).indexOf(filtro)>-1; }), h="";
+  lista.slice(0,300).forEach(function(v){
+    var u=usos[v];
+    h+='<div class="std-fila" data-v="'+escapeHtml(v)+'"><input type="text" class="std-nom" value="'+escapeHtml(v)+'" autocomplete="off" spellcheck="false"><span class="std-n">'+(u ? u.n+' reg. · '+u.ej+' ej.' : 'sin uso')+'</span><button type="button" class="btn small tenue std-ren" disabled>Cambiar</button><button type="button" class="btn small peligro std-del">Quitar</button></div>';
+  });
+  if(lista.length>300) h+='<p class="nota">Se muestran 300 de '+lista.length+'. Usa el filtro para encontrar el resto.</p>';
+  stdEl("std-tabla").innerHTML=h || '<p class="nota">'+(D[stdSel].length ? 'Ningún nombre coincide con el filtro.' : 'La lista está vacía. Usa «Reunir nombres desde los registros» o agrega nombres a mano.')+'</p>';
+}
+function stdAplicaRegistros(){ return stdEl("std-aplicar").checked; }
+function stdRenombrar(de, a){
+  a=String(a||"").trim(); if(!a || a===de) return;
+  var D=stdLeer(), id=stdSel, usos=stdUsos(id), n=usos[de]?usos[de].n:0, ap=stdAplicaRegistros();
+  var otro=D[id].filter(function(x){ return x!==de && stdNorm(x)===stdNorm(a) && x!==a; });
+  var otroExacto=D[id].indexOf(a)>-1 && a!==de;
+  if(!confirm("Cambiar «"+de+"» por «"+a+"» en la lista"+(ap&&n?" y en "+n+" registro(s)":"")+((otro.length||otroExacto)?". Ya existe una entrada igual o muy parecida: quedarán unificadas":"")+". ¿Continuar?")) return;
+  if(ap && n && stdEl("std-respaldo").checked) stdRespaldo();
+  var tocados=0;
+  [de].concat(otro).forEach(function(v){ if(ap) tocados+=stdReemplazar(id, v, a); });
+  D[id]=D[id].filter(function(x){ return x!==de && otro.indexOf(x)<0; });
+  if(D[id].indexOf(a)<0) D[id].push(a);
+  D[id].sort(stdCmp); stdGuardar();
+  stdCerrarCambios(tocados, stdDef(id).nombre+": «"+de+"» → «"+a+"» ("+tocados+" registro(s))");
+  stdEl("std-msg").textContent="Listo: «"+de+"» ahora es «"+a+"»"+(tocados?" y se corrigieron "+tocados+" registro(s)":"")+".";
+  stdRender();
+}
+function stdVariantes(){
+  var D=stdLeer(), id=stdSel, usos=stdUsos(id), todos=Object.create(null);
+  D[id].forEach(function(v){ todos[v]={v:v,enLista:true,n:(usos[v]?usos[v].n:0)}; });
+  Object.keys(usos).forEach(function(v){ if(!todos[v]) todos[v]={v:v,enLista:false,n:usos[v].n}; });
+  var its=Object.keys(todos).map(function(k){ var o=todos[k]; o.nn=stdNorm(o.v); return o; }).filter(function(o){ return o.nn; });
+  var padre=its.map(function(_,i){ return i; });
+  function raiz(i){ while(padre[i]!==i){ padre[i]=padre[padre[i]]; i=padre[i]; } return i; }
+  var porLetra={};
+  its.forEach(function(o,i){ var c=o.nn.charAt(0); (porLetra[c]=porLetra[c]||[]).push(i); });
+  Object.keys(porLetra).forEach(function(c){
+    var ix=porLetra[c];
+    for(var a=0;a<ix.length;a++) for(var b=a+1;b<ix.length;b++){
+      if(stdParecidos(its[ix[a]].nn, its[ix[b]].nn)){ var ra=raiz(ix[a]), rb=raiz(ix[b]); if(ra!==rb) padre[rb]=ra; }
+    }
+  });
+  var gr={};
+  its.forEach(function(o,i){ var r=raiz(i); (gr[r]=gr[r]||[]).push(o); });
+  stdGrupos=Object.keys(gr).map(function(k){ return gr[k]; }).filter(function(g){
+    if(g.length<2) return false;
+    var clave=g.map(function(o){ return o.nn; }).sort().join("|");
+    return !stdOcultos[id+"#"+clave];
+  }).sort(function(a,b){ return b.length-a.length; }).slice(0,40);
+  function puntaje(v){ return v.split(" ").filter(function(w){ return /^[A-ZÁÉÍÓÚÑ]/.test(w); }).length*2 + (v.match(/[áéíóúñüÁÉÍÓÚÑ]/g)||[]).length; }
+  stdGrupos.forEach(function(g){ g.sort(function(a,b){ return (b.enLista-a.enLista)||(b.n-a.n)||(puntaje(b.v)-puntaje(a.v)); }); });
+  var h="";
+  stdGrupos.forEach(function(g,i){
+    h+='<div class="std-grupo" data-g="'+i+'"><div class="std-grupo-tit">Posibles variantes de un mismo nombre</div>';
+    g.forEach(function(o,k){ h+='<label class="std-var"><input type="radio" name="sg'+i+'" value="'+k+'"'+(k===0?' checked':'')+'> <span>'+escapeHtml(o.v)+'</span> <span class="std-n">'+o.n+' reg.'+(o.enLista?' · en la lista':'')+'</span></label>'; });
+    h+='<div class="barra-botones"><button type="button" class="btn small std-unif">Unificar en el nombre elegido</button><button type="button" class="btn small tenue std-dist">Son distintos</button></div></div>';
+  });
+  stdEl("std-var").innerHTML=h || '<p class="nota">No se encontraron nombres parecidos en esta lista.</p>';
+}
+function stdUnificar(i){
+  var g=stdGrupos[i]; if(!g) return;
+  var el=stdEl("std-var").querySelector('[data-g="'+i+'"] input:checked'); var c=g[parseInt(el.value,10)];
+  var otros=g.filter(function(o){ return o!==c; }), ap=stdAplicaRegistros(), nReg=otros.reduce(function(s,o){ return s+o.n; },0);
+  if(!confirm("Se unificarán "+otros.length+" variante(s) en «"+c.v+"»"+(ap&&nReg?" y se corregirán hasta "+nReg+" registro(s)":"")+". ¿Continuar?")) return;
+  if(ap && nReg && stdEl("std-respaldo").checked) stdRespaldo();
+  var D=stdLeer(), id=stdSel, tocados=0;
+  otros.forEach(function(o){ if(ap) tocados+=stdReemplazar(id, o.v, c.v); });
+  D[id]=D[id].filter(function(x){ return !otros.some(function(o){ return o.v===x; }); });
+  if(D[id].indexOf(c.v)<0) D[id].push(c.v);
+  D[id].sort(stdCmp); stdGuardar();
+  stdCerrarCambios(tocados, stdDef(id).nombre+": unificación en «"+c.v+"» ("+tocados+" registro(s))");
+  stdEl("std-msg").textContent="Unificado en «"+c.v+"»"+(tocados?"; se corrigieron "+tocados+" registro(s)":"")+".";
+  stdRender(); stdVariantes();
+}
+function stdIniciar(){
+  var det=stdEl("det-estandares"); if(!det||det._ini) return; det._ini=true;
+  stdEl("std-sel").addEventListener("change", function(){ stdSel=this.value; stdEl("std-var").innerHTML=""; stdEl("std-msg").textContent=""; stdRender(); });
+  stdEl("std-filtro").addEventListener("input", stdRender);
+  function agregar(){ var i=stdEl("std-nuevo"), v=i.value.trim(); if(!v) return; var ok=stdAgregar(stdSel, v); stdEl("std-msg").textContent=ok?"«"+v+"» se agregó a la lista.":"«"+v+"» ya estaba en la lista."; i.value=""; stdRender(); }
+  stdEl("std-add").addEventListener("click", agregar);
+  stdEl("std-nuevo").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); agregar(); } });
+  stdEl("std-reunir").addEventListener("click", function(){
+    if(modoAcceso!=="admin") return;
+    var D=stdLeer(), usos=stdUsos(stdSel), nuevos=Object.keys(usos).filter(function(v){ return D[stdSel].indexOf(v)<0; });
+    D[stdSel]=D[stdSel].concat(nuevos).sort(stdCmp); stdGuardar();
+    stdEl("std-msg").textContent=nuevos.length ? "Se agregaron "+nuevos.length+" nombre(s) usados en los registros. Revisa las variantes parecidas para unificarlos." : "No había nombres nuevos en los registros.";
+    stdRender();
+  });
+  stdEl("std-variantes").addEventListener("click", function(){ if(modoAcceso==="admin") stdVariantes(); });
+  stdEl("std-var").addEventListener("click", function(e){
+    var g=e.target.closest(".std-grupo"); if(!g) return; var i=parseInt(g.getAttribute("data-g"),10);
+    if(e.target.closest(".std-unif")) stdUnificar(i);
+    else if(e.target.closest(".std-dist")){ var gg=stdGrupos[i]; if(gg){ stdOcultos[stdSel+"#"+gg.map(function(o){ return o.nn; }).sort().join("|")]=1; } stdVariantes(); }
+  });
+  var tabla=stdEl("std-tabla");
+  tabla.addEventListener("input", function(e){
+    var f=e.target.closest(".std-fila"); if(!f||!e.target.classList.contains("std-nom")) return;
+    var v=e.target.value.trim(); f.querySelector(".std-ren").disabled=!v || v===f.getAttribute("data-v");
+  });
+  tabla.addEventListener("click", function(e){
+    var f=e.target.closest(".std-fila"); if(!f) return; var de=f.getAttribute("data-v");
+    if(e.target.closest(".std-ren")) stdRenombrar(de, f.querySelector(".std-nom").value);
+    else if(e.target.closest(".std-del")){
+      var u=stdUsos(stdSel)[de];
+      if(!confirm("Quitar «"+de+"» de la lista"+(u?" (los "+u.n+" registro(s) que lo usan no cambian)":"")+"?")) return;
+      var D=stdLeer(); D[stdSel]=D[stdSel].filter(function(x){ return x!==de; }); stdGuardar(); stdRender();
+    }
+  });
+  stdEl("std-exportar").addEventListener("click", function(){
+    var blob=new Blob([JSON.stringify({tipo:"libro-catalogo-estandares",version:1,listas:stdLeer()},null,1)],{type:"application/json"});
+    var url=URL.createObjectURL(blob), a=document.createElement("a"), f=new Date();
+    a.href=url; a.download="Estandarizaciones_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+".json";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+  });
+  stdEl("std-importar").addEventListener("click", function(){ stdEl("std-archivo").click(); });
+  stdEl("std-archivo").addEventListener("change", async function(){
+    var fl=this.files&&this.files[0]; this.value=""; if(!fl) return;
+    try{
+      var j=JSON.parse(await fl.text()); if(!j||!j.listas) throw new Error("x");
+      var D=stdLeer(), nuevos=0;
+      STD_DEF.forEach(function(d){ (Array.isArray(j.listas[d.id])?j.listas[d.id]:[]).forEach(function(v){ if(typeof v==="string" && stdAgregar(d.id, v)) nuevos++; }); });
+      stdEl("std-msg").textContent="Se cargaron las listas: "+nuevos+" nombre(s) nuevos (se conservaron los que ya había).";
+      stdRender();
+    }catch(err){ stdEl("std-msg").textContent="El archivo no es una exportación de listas válida."; }
+  });
+}
 
 // ---------- estado/ubicación → panel Baja ----------
 var selEstado=document.getElementById("sel-estado-ubicacion");
@@ -6022,8 +6305,11 @@ function construirConsultas(){
     }
     mostrarFichaConsulta(id, resultadosConsulta().map(function(r){ return r.id; }));
   });
-  document.getElementById("cons-marcar-todos").addEventListener("click", function(){ resultadosConsulta().forEach(function(r){ consSel.add(r.id); }); pintarConsultas(); });
-  document.getElementById("cons-quitar-marcas").addEventListener("click", function(){ consSel.clear(); pintarConsultas(); });
+  document.getElementById("cons-marcar-todos").addEventListener("click", function(){
+    var lista=resultadosConsulta(), todos=lista.length>0 && lista.every(function(r){ return consSel.has(r.id); });
+    lista.forEach(function(r){ if(todos) consSel.delete(r.id); else consSel.add(r.id); });
+    pintarConsultas();
+  });
 }
 function sincronizarCamposConsulta(){
   var tab=document.getElementById("tab-consultas");
@@ -6088,7 +6374,8 @@ function actualizarMarcasConsulta(){
   var csv=document.getElementById("cons-csv"), xl=document.getElementById("cons-xlsx");
   if(csv) csv.textContent=n?"Descargar CSV ("+n+")":"Descargar CSV";
   if(xl) xl.textContent=n?"Descargar Excel ("+n+")":"Descargar Excel";
-  var q=document.getElementById("cons-quitar-marcas"); if(q) q.disabled=!n;
+  var bm=document.getElementById("cons-marcar-todos");
+  if(bm){ var lr=resultadosConsulta(), act=lr.length>0 && lr.every(function(r){ return consSel.has(r.id); }); bm.setAttribute("aria-pressed", act?"true":"false"); bm.textContent=act?"✓ Marcar todos":"Marcar todos"; }
 }
 function refrescarConsultasSiVisible(){
   var b=document.querySelector("#tabs button.active");
@@ -7730,8 +8017,8 @@ async function esqTraducir(){
   if(modoAcceso!=="admin") return;
   var g=esqLeer(), es=g[document.getElementById("esq-sel").value], msg=document.getElementById("esq-msg");
   if(!es){ msg.textContent="Elige una planilla."; return; }
-  var m=new Set(marcadosConsulta()), lista=resultadosConsulta();
-  if(m.size) lista=lista.filter(function(r){ return m.has(r.id); });
+  var lista=registros.filter(function(r){ return seleccionDescarga.has(r.id); });
+  if(!lista.length) lista=registrosMostradosDatos();
   if(document.getElementById("esq-nuevos").checked){
     lista=lista.filter(function(r){ var x=r.exportadoA&&r.exportadoA[es.nombre]; return !x||(r.modificadoEn&&r.modificadoEn>x); });
   }
@@ -8076,7 +8363,7 @@ function iniciarAdmin(n, detalle){
   registrarActividad("ingreso", detalle+" · v"+APP_VERSION.replace(/^v/,""));
   pintarAdmins();
   guardarAdminsCarpeta();
-  esqIniciar(); esqRefrescar();
+  esqIniciar(); esqRefrescar(); stdIniciar(); stdRender();
   activarTab("entrada");
   pintarConfigAlertas();
   programarAlertaPrestamos();

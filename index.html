@@ -122,14 +122,14 @@
   .alerta-prestamos .al-dias.venc{color:#b02a1e;} .alerta-prestamos .al-dias.pronto{color:#b4650a;}
   .alerta-prestamos .al-conf{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:13px;}
   .alerta-prestamos .al-conf input{width:110px;font-size:13px;padding:3px 6px;}
-  .cons-sup{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;align-items:start;}
+  .cons-sup{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;align-items:stretch;} .cons-sup>.bloque{margin-bottom:0;}
   body:not(.modo-admin) .cons-sup{display:block;} body:not(.modo-admin) .bloque-doc{display:none;} .cons-esq{margin:6px 0 10px;} .cons-esq summary{cursor:pointer;font-weight:600;} .cons-esq-cuerpo{display:flex;flex-direction:column;gap:6px;padding:8px 0;} .cons-esq-cuerpo label{display:block;}
   @media (max-width:900px){ .cons-sup{display:block;} }
   .bloque-doc h2{font-size:18px;} .doc-buscador{position:relative;}
   .doc-lista{position:absolute;left:0;right:0;top:100%;z-index:60;max-height:340px;overflow-y:auto;background:#fffdf8;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.18);}
   .doc-item{display:flex;gap:8px;align-items:center;padding:6px 10px;border-bottom:1px dashed var(--line);cursor:pointer;font-size:13.5px;} .doc-item:hover{background:#eef3ec;}
   .doc-cuerpo{display:flex;flex-direction:column;flex:1;min-width:0;} .doc-nom{font-weight:600;overflow-wrap:anywhere;} .doc-meta{font-size:12px;color:#666;}
-  .doc-checks{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:13px;} .doc-checks label{display:flex;gap:5px;align-items:center;} .doc-checks input{width:auto;}
+  .alerta-fila-cfg{margin-top:8px;} .alerta-fila-cfg .cfg-cuerpo{margin-top:6px;} .doc-solo{font-weight:600;font-size:13px;} .doc-checks{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:13px;} .doc-checks label{display:flex;gap:5px;align-items:center;} .doc-checks input{width:auto;}
   .alertas-fila{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;margin-bottom:14px;align-items:start;}
   .alertas-fila .alerta-prestamos{margin-bottom:0;}
   .cfg-alerta{margin:0 0 8px;font-size:13.5px;} .cfg-alerta>summary{cursor:pointer;color:#4a5a50;font-size:13px;}
@@ -405,6 +405,7 @@
   .imp-aviso-comp{background:var(--warn-soft);border-radius:6px;padding:4px 8px;margin:4px 0;font-size:12.5px;}
   .mv-fila>div{display:flex;flex-direction:column;gap:3px;min-width:240px;}
   .mv-fila select{font-size:14px;}
+  .imp-gl-caja{flex:0 0 auto;} #imp-glosario{flex:none;max-height:132px;} .imp-tab-caja{flex:1 1 0;} .imp-gl-caja .imp-sec-tit,.imp-tab-caja .imp-sec-tit{margin:0;}
   @media (max-width:900px){ .imp-der-tabla{height:auto;} .imp-mitad{flex:none;} .imp-der-tabla .imp-tabla-previa{max-height:300px;} #imp-glosario{max-height:300px;} }
   /* ---- v0.9.49 ---- */
   .combo{position:relative;min-width:0;}
@@ -670,7 +671,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.51</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.52</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -1029,7 +1030,6 @@
 
     <div class="bloque">
       <h2>Préstamos</h2>
-      <div id="cfg-prestamos"></div>
       <div id="lista-prestamos"></div>
       <button class="btn small secundario" id="btn-add-prestamo">+ Agregar préstamo</button>
     </div>
@@ -1042,13 +1042,13 @@
 
     <details class="bloque bloque-desp" id="bloque-monitoreo">
       <summary>Monitoreo</summary>
-      <div id="cfg-monitoreo"></div>
+      <div id="mon-plan" class="oculto"><p class="subtitulo-mini">Periodicidad de este ejemplar</p>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Monitorear este ejemplar</span><span class="key">monitoreoActivo</span></div><select class="nav" data-f="monitoreoActivo"><option value="">—</option><option>Sí</option><option>No</option></select></div>
-        <div class="campo opc"><div class="lbl"><span class="name">Revisar cada</span><span class="key">monitoreoCadaN</span></div><input type="number" min="1" class="nav" data-f="monitoreoCadaN" placeholder="usa la general"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Revisar cada</span><span class="key">monitoreoCadaN</span></div><input type="number" min="1" class="nav" data-f="monitoreoCadaN" placeholder="12 meses si se deja vacío"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Unidad</span><span class="key">monitoreoCadaU</span></div><select class="nav" data-f="monitoreoCadaU"><option value="">—</option><option>días</option><option>semanas</option><option>meses</option><option>años</option></select></div>
         <div class="campo opc"><div class="lbl"><span class="name">Próximo monitoreo</span><span class="key">monitoreoProxima</span></div><input type="date" class="nav" data-f="monitoreoProxima"></div>
-      </div>
+      </div></div>
       <p class="subtitulo-mini" style="margin-top:12px;">Eventos de monitoreo</p>
       <div id="lista-monitoreos"></div>
       <button class="btn small secundario" id="btn-add-monitoreo">+ Agregar monitoreo</button>
@@ -1073,7 +1073,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.51</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.52</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1243,7 +1243,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.51";
+var APP_VERSION = "v0.9.52";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2865,6 +2865,7 @@ function pintarLista(tipo){
       grid.appendChild(campoDiv);
     });
     fila.appendChild(grid);
+    if(tipo==="prestamos" || tipo==="monitoreos") fila.appendChild(alertaFilaUI(tipo, entrada));
     if(tipo==="prestamos" || tipo==="usos") fila.appendChild(bloqueExtrasLista(tipo, entrada));
     if(tipo==="determinaciones"){ fila.appendChild(prevNc); fila.appendChild(crearLineaGbif(entrada, esUltimo)); fila.appendChild(crearLineaWorms(entrada, esUltimo)); }
     if(tipo==="fotos" || tipo==="adjuntos"){
@@ -2906,6 +2907,7 @@ function pintarLista(tipo){
     }
     cont.appendChild(fila);
   });
+  if(tipo==="monitoreos"){ var mp=document.getElementById("mon-plan"); if(mp) mp.classList.toggle("oculto", !datos.length); }
 }
 function agregarEntrada(tipo){
   if(!borrador){ borrador=registroVacioBase(); activoId=null; }
@@ -4569,29 +4571,53 @@ function pintarConfigAlertas(){
   pintarConfigAlerta("prestamos","cfg-prestamos","Alerta de préstamos",false);
   pintarConfigAlerta("monitoreo","cfg-monitoreo","Alerta de monitoreo",true);
 }
+// Alerta propia de cada préstamo y de cada monitoreo (se guarda en la fila: alertaActiva, alertaDias)
+function alertaFila(e){ return {activa:(e&&e.alertaActiva)||"Sí", dias:(e&&e.alertaDias)||"30,7,0"}; }
+function alertaFilaResumen(e){ var c=alertaFila(e); return c.activa==="Sí" ? "⏰ Alerta: Sí, avisa con "+parseDias(c.dias).join(", ")+" días" : "⏰ Alerta: desactivada"; }
+function alertaFilaUI(tipo, entrada){
+  var wrap=document.createElement("div"); wrap.className="alerta-fila-cfg";
+  var btn=document.createElement("button"); btn.type="button"; btn.className="btn tenue small"; btn.textContent=alertaFilaResumen(entrada);
+  var cuerpo=document.createElement("div"); cuerpo.className="cfg-cuerpo oculto";
+  var c=alertaFila(entrada);
+  cuerpo.innerHTML='<label>Alerta <select data-a="activa"><option>Sí</option><option>No</option></select></label>'
+    +'<label>Avisar con (días de anticipación) <input type="text" data-a="dias" style="width:110px" title="Separados por coma, por ejemplo 30, 7, 0"></label>'
+    +'<span class="nota">Se aplica solo a este '+(tipo==="prestamos"?"préstamo":"monitoreo")+'.</span>';
+  var sa=cuerpo.querySelector('[data-a="activa"]'), id=cuerpo.querySelector('[data-a="dias"]');
+  sa.value=c.activa; id.value=c.dias; sa.disabled=id.readOnly=!editando;
+  function guardar(){ entrada.alertaActiva=sa.value; entrada.alertaDias=parseDias(id.value).join(","); btn.textContent=alertaFilaResumen(entrada); refrescarPanelesRegistros(); }
+  sa.addEventListener("change", guardar); id.addEventListener("change", function(){ guardar(); id.value=entrada.alertaDias; });
+  btn.onclick=function(){ cuerpo.classList.toggle("oculto"); };
+  wrap.appendChild(btn); wrap.appendChild(cuerpo); return wrap;
+}
+function monitoreoVigente(r){
+  var ev=(r.monitoreos||[]).filter(function(e){ return e.fecha && e.proximaFecha; }).sort(function(a,b){ return a.fecha<b.fecha?-1:(a.fecha>b.fecha?1:0); });
+  return ev.length ? ev[ev.length-1] : null;
+}
 function fechaHoy(){ var h=new Date(); return new Date(h.getFullYear(), h.getMonth(), h.getDate()); }
 function prestamosPendientes(){
-  var c=cfgValores("prestamos"); if(c.activa!=="Sí") return [];
-  var hoy=fechaHoy(), ventana=parseDias(c.dias)[0], out=[];
+  var hoy=fechaHoy(), out=[];
   registros.forEach(function(r){
     (r.prestamos||[]).forEach(function(p){
+      var c=alertaFila(p); if(c.activa!=="Sí") return;
+      var ventana=parseDias(c.dias)[0];
       if(!p.fechaDevolucionEsperada || p.fechaDevolucionReal) return;
       var f=fechaDeIso(p.fechaDevolucionEsperada); if(!f) return;
       var dias=Math.round((f-hoy)/864e5);
-      if(dias<=ventana) out.push({reg:r, p:p, dias:dias});
+      if(dias<=ventana) out.push({reg:r, p:p, dias:dias, aviso:parseDias(c.dias)});
     });
   });
   out.sort(function(a,b){ return a.dias-b.dias; });
   return out;
 }
 function monitoreosPendientes(){
-  var c=cfgValores("monitoreo"); if(c.activa!=="Sí") return [];
-  var hoy=fechaHoy(), ventana=parseDias(c.dias)[0], out=[];
+  var hoy=fechaHoy(), out=[];
   registros.forEach(function(r){
     if(r.monitoreoActivo!=="Sí" || !r.monitoreoProxima) return;
+    var c=alertaFila(monitoreoVigente(r)); if(c.activa!=="Sí") return;
+    var ventana=parseDias(c.dias)[0];
     var f=fechaDeIso(r.monitoreoProxima); if(!f) return;
     var dias=Math.round((f-hoy)/864e5);
-    if(dias<=ventana) out.push({reg:r, dias:dias});
+    if(dias<=ventana) out.push({reg:r, dias:dias, aviso:parseDias(c.dias)});
   });
   out.sort(function(a,b){ return a.dias-b.dias || normTxt(a.reg.ubicacionColeccion||"").localeCompare(normTxt(b.reg.ubicacionColeccion||"")); });
   return out;
@@ -4609,7 +4635,7 @@ function icsDeEventos(eventos, dias){
     var sig=new Date(f); sig.setDate(sig.getDate()+1);
     L.push("BEGIN:VEVENT","UID:"+ev.uid+"@wikitaxa","DTSTAMP:"+ahora,"DTSTART;VALUE=DATE:"+ev.fecha.replace(/-/g,""),"DTEND;VALUE=DATE:"+fechaIsoLocal(sig).replace(/-/g,""));
     L.push("SUMMARY:"+icsEscapar(ev.resumen),"DESCRIPTION:"+icsEscapar(ev.descripcion));
-    dias.forEach(function(n){
+    (ev.dias||dias).forEach(function(n){
       L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEscapar(ev.resumen));
       L.push("TRIGGER:"+(n>0 ? "-P"+(n-1)+"DT15H" : "PT9H"),"END:VALARM");
     });
@@ -4625,20 +4651,20 @@ function construirIcs(items){
     var cat=construirCatalogoCompleto(it.reg) || it.reg.numeroCampo || "sin catálogo";
     ev.push({uid:"prestamo-"+sanitizarNombre(String(it.reg.id||""))+"-"+k+"-"+it.p.fechaDevolucionEsperada, fecha:it.p.fechaDevolucionEsperada,
       resumen:"Devolución de préstamo: "+cat+(it.p.solicitante?" ("+it.p.solicitante+")":""),
-      descripcion:"Préstamo"+(it.p.numeroPrestamo?" N.º "+it.p.numeroPrestamo:"")+" a "+(it.p.solicitante||"(sin solicitante)")+". Fecha de préstamo: "+(it.p.fechaPrestamo||"—")+"."});
+      descripcion:"Préstamo"+(it.p.numeroPrestamo?" N.º "+it.p.numeroPrestamo:"")+" a "+(it.p.solicitante||"(sin solicitante)")+". Fecha de préstamo: "+(it.p.fechaPrestamo||"—")+".", dias:it.aviso});
   });
-  return icsDeEventos(ev, diasAlerta("prestamos"));
+  return icsDeEventos(ev, [30,7,0]);
 }
 function construirIcsMonitoreo(lista){
   var por={}, ev=[];
-  lista.forEach(function(x){ var f=x.reg.monitoreoProxima; (por[f]=por[f]||[]).push(x.reg); });
+  var diasPor={}; lista.forEach(function(x){ var f=x.reg.monitoreoProxima; (por[f]=por[f]||[]).push(x.reg); diasPor[f]=(diasPor[f]||[]).concat(x.aviso||[]); });
   Object.keys(por).sort().forEach(function(f){
     var rs=por[f], ubic={}; rs.forEach(function(r){ ubic[r.ubicacionColeccion||"(sin ubicación)"]=1; });
     var cats=rs.slice(0,15).map(function(r){ return construirCatalogoCompleto(r)||r.numeroCampo||"s/n"; }).join(", ")+(rs.length>15?" y "+(rs.length-15)+" más":"");
     ev.push({uid:"monitoreo-"+f, fecha:f, resumen:"Monitoreo de colección: "+rs.length+" ejemplar"+(rs.length===1?"":"es"),
-      descripcion:"Ubicaciones: "+Object.keys(ubic).slice(0,12).join("; ")+". Ejemplares: "+cats+"."});
+      descripcion:"Ubicaciones: "+Object.keys(ubic).slice(0,12).join("; ")+". Ejemplares: "+cats+".", dias:parseDias(diasPor[f].join(","))});
   });
-  return icsDeEventos(ev, diasAlerta("monitoreo"));
+  return icsDeEventos(ev, [30,7,0]);
 }
 function descargarTextoIcs(texto, nombre){
   var blob=new Blob([texto], {type:"text/calendar;charset=utf-8"});
@@ -4926,9 +4952,9 @@ function docBuscar(todos){
   if(!lista||!inp||!docIndice||modoAcceso!=="admin") return;
   var q=normTxt(inp.value).split(/\s+/).filter(Boolean);
   if(!q.length && !todos){ docCerrarLista(); return; }
-  var gr=docGruposActivos(), du=docDuenos(), res=[], total=0;
+  var gr=docGruposActivos(), hayGr=Object.keys(gr).length>0, du=docDuenos(), res=[], total=0;
   for(var i=0;i<docIndice.length;i++){
-    var e=docIndice[i]; if(!gr[e.g]) continue;
+    var e=docIndice[i]; if(hayGr && !gr[e.g]) continue;
     var d=du[e.ruta];
     if(q.length){
       var t=normTxt(e.ruta+" "+(d?d.desc.join(" ")+" "+d.cats.join(" "):""));
@@ -4959,7 +4985,7 @@ function docBuscar(todos){
 }
 function docIniciar(){
   var chk=document.getElementById("doc-checks"), inp=document.getElementById("doc-texto"); if(!chk||!inp) return;
-  chk.innerHTML=GRUPOS_DOC.map(function(g){ return '<label><input type="checkbox" value="'+g[0]+'" checked> '+g[1]+'</label>'; }).join("");
+  chk.innerHTML='<span class="doc-solo">Solo registros con:</span>'+GRUPOS_DOC.map(function(g){ return '<label><input type="checkbox" value="'+g[0]+'"> '+g[1]+'</label>'; }).join("");
   var tm=null;
   chk.addEventListener("change", function(){ if(document.getElementById("doc-lista").classList.contains("oculto") && !inp.value.trim()) return; docBuscar(true); });
   inp.addEventListener("input", function(){ clearTimeout(tm); tm=setTimeout(async function(){ if(await docAsegurar(false)) docBuscar(false); }, 160); });
@@ -6745,8 +6771,8 @@ function impPintarInterno(cont){
     h+='<div class="imp-estado"><span><strong>'+est.conf+'</strong> aceptados</span><span><strong>'+nProp+'</strong> propuestas por revisar</span><span><strong>'+pend+'</strong> columnas por emparejar a mano</span>'+(nIgn?'<span><strong>'+nIgn+'</strong> no se importan</span>':'')+'</div>';
     h+='<div class="imp-subtabs"><button type="button" class="imp-sub-btn'+(imp.sub==="auto"?' activo':'')+'" data-sub="auto">A. Emparejado automático ('+nProp+')</button><button type="button" class="imp-sub-btn'+(imp.sub==="man"?' activo':'')+'" data-sub="man">B. Emparejado manual ('+pend+')</button></div>';
     h+='<div class="imp-dos"><div id="imp-izq">'+(imp.sub==="auto"?impPanelAuto():impPanelManual())+'</div>'
-      +'<div class="imp-der-tabla"><div class="imp-mitad"><div class="imp-ej-etq" id="imp-foco-nombre">'+(imp.cols[imp.foco]?'Columna resaltada: «'+escapeHtml(imp.cols[imp.foco].nombre)+'»':'Pulsa un bloque de la izquierda para resaltar su columna')+'</div><div id="imp-tabla-der" class="imp-tabla-caja imp-tabla-previa">'+impTablaColumnas()+'</div></div>'
-      +'<div class="imp-mitad"><div class="imp-sec-tit">Definiciones de los campos de la app</div><input type="search" id="imp-gl-q" class="nav" placeholder="Buscar un campo o una definición…" value="'+escapeHtml(imp.glQ||"")+'"><div id="imp-glosario">'+impGlosarioHtml()+'</div></div></div></div>';
+      +'<div class="imp-der-tabla"><div class="imp-mitad imp-gl-caja"><div class="imp-sec-tit">Definiciones de los campos de la app</div><input type="search" id="imp-gl-q" class="nav" placeholder="Buscar un campo o una definición…" value="'+escapeHtml(imp.glQ||"")+'"><div id="imp-glosario">'+impGlosarioHtml()+'</div></div>'
+      +'<div class="imp-mitad imp-tab-caja"><div class="imp-sec-tit">Tabla de la planilla original: «'+escapeHtml(imp.nombreArchivo||"")+'»'+(imp.hojaNombre?' · hoja «'+escapeHtml(imp.hojaNombre)+'»':'')+'</div><div class="imp-ej-etq" id="imp-foco-nombre">'+(imp.cols[imp.foco]?'Columna resaltada: «'+escapeHtml(imp.cols[imp.foco].nombre)+'»':'Pulsa un bloque de la izquierda para resaltar su columna')+'</div><div id="imp-tabla-der" class="imp-tabla-caja imp-tabla-previa">'+impTablaColumnas()+'</div></div></div></div>';
     h+=impPintarConfirmados();
     h+=impPintarFijos();
     h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="1">← Volver a la previsualización</button><button type="button" class="btn tenue" id="imp-limpiar">Deshacer todos los emparejamientos</button><button type="button" class="btn" data-paso="3">Siguiente: revisar →</button></div>';

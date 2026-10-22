@@ -704,7 +704,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.57</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.59</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -1096,7 +1096,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.57</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.59</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -1310,7 +1310,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.57";
+var APP_VERSION = "v0.9.59";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2792,7 +2792,7 @@ function bloqueMediaHtml(r, general, terreno, determinacion){
     var datos=fotos.map(function(f){ return {ruta:f.archivo, tipo:f.tipoFoto||"", fecha:f.fechaFoto||"", autor:f.fotografo||"", nota:f.notaCalidad||""}; });
     gal='<div class="ficha-galeria" data-fotos="'+escapeHtml(JSON.stringify(datos))+'"><figure class="gal-fig"><div class="gal-principal"><div class="msg-foto">Cargando fotos…</div></div><figcaption class="gal-pie"></figcaption></figure><div class="gal-minis"></div></div>';
   } else gal='<div class="media-vacio">Este ejemplar no tiene fotos asociadas desde la Carpeta local. Se agregan en Preparación, bloque Fotos.</div>';
-  if(sinArchivo) gal+='<div class="media-vacio">'+sinArchivo+' foto(s) quedaron registradas sin archivo en la Carpeta local (por ejemplo, porque faltaban en el zip de importación). Se corrigen en Preparación, bloque Fotos.</div>';
+  if(sinArchivo) gal+='<div class="media-vacio">'+sinArchivo+' foto(s) quedaron registradas sin archivo en la Carpeta local (por ejemplo, porque faltaban en el zip de importación). Se completan volviendo a importar el zip de Libreta de Campo (Sistema, Gestión de datos) o en Preparación, bloque Fotos.</div>';
   var vacio='<p class="ficha-vacio">Sin datos cargados.</p>';
   var otros=archivosAsociadosHtml(r);
   return '<div class="ficha-media">'
@@ -4676,12 +4676,22 @@ async function elegirCarpeta(){ if(modoAcceso!=="admin") return;
   actualizarUICarpeta();
 }
 async function reconectarCarpeta(){
-  if(await permisoCarpeta(true)){
-    carpetaEstado="ok";
-    await sincronizarCarpeta(false);
-    stdSincronizar();
+  // requestPermission va primero, sin esperas previas, para conservar el gesto del clic.
+  var ok=false, motivo="";
+  if(!carpetaHandle){ motivo="no hay una carpeta recordada"; }
+  else{
+    try{
+      var p=await carpetaHandle.requestPermission({mode:"readwrite"});
+      ok=(p==="granted"); if(!ok) motivo="el navegador respondió «"+p+"»";
+    }catch(e){ motivo=(e&&e.message)||String(e); }
+  }
+  if(ok){
+    carpetaEstado="ok"; mensajeCarpeta("");
+    try{ await sincronizarCarpeta(false); stdSincronizar(); }catch(e){ mensajeCarpeta("Carpeta reconectada, pero no se pudo sincronizar: "+((e&&e.message)||e)); }
   } else {
-    mensajeCarpeta("El navegador no dio permiso a la carpeta.");
+    var nom=carpetaHandle ? "«"+carpetaHandle.name+"»" : "la carpeta";
+    var txt="No se pudo reconectar "+nom+" ("+motivo+"). Ve a Sistema, bloque Carpeta local, pulsa \"Cambiar carpeta\" y elige de nuevo la misma carpeta: los archivos y registros que contiene se conservan.";
+    mensajeCarpeta(txt); alert(txt);
   }
   actualizarUICarpeta();
 }
@@ -8452,6 +8462,20 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
       var existe=num && registros.some(function(x){ return String(x.numeroCampo||"").trim().toLowerCase()===num; });
       (existe ? repetidos : nuevos).push(r);
     });
+    var porReparar=[];
+    for(var q=0;q<repetidos.length;q++){
+      var numR=String(repetidos[q].numeroCampo||"").trim().toLowerCase();
+      var exR=registros.filter(function(x){ return String(x.numeroCampo||"").trim().toLowerCase()===numR; })[0];
+      if(!exR) continue;
+      for(var w=0;w<(exR.fotos||[]).length;w++){
+        var fR=exR.fotos[w], rutaR=String(fR.archivo||""); if(!rutaR) continue;
+        var legible=false;
+        if(/^Fotos\//.test(rutaR) && /^Fotos\/[^\/]+\/[^\/]+$/.test(rutaR)){ try{ await archivoDeRuta(rutaR); legible=true; }catch(e){} }
+        if(legible) continue;
+        var nomR=rutaR.split("/").pop();
+        if(await datosZip(z,"fotos/"+nomR)) porReparar.push({r:exR, f:fR, nom:nomR});
+      }
+    }
     var nFotos=nuevos.reduce(function(a,r){ return a+r.fotos.length; },0);
     var sesiones=unicos(nuevos.map(function(r){ return r.origenLibreta.sesion; }));
     var conCarpeta=!!(carpetaHandle && await permisoCarpeta(false));
@@ -8460,11 +8484,26 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
       "Ejemplares a importar: "+nuevos.length+"\n"+
       (repetidos.length ? "Omitidos por tener ya un registro con el mismo número de campo: "+repetidos.length+"\n" : "")+
       (otros.length ? "No se importan (Libro de Catálogo registra ejemplares): "+otros.join(", ")+"\n" : "")+
+      (porReparar.length ? "Fotos de ejemplares ya registrados que se completarán o moverán a su carpeta (están sin archivo o fuera de Fotos/<ejemplar>/): "+porReparar.length+"\n" : "")+
       "Fotos: "+nFotos+(nFotos ? (conCarpeta ? " (se copiarán a Fotos/ de la Carpeta local)" : " (la Carpeta local no está conectada: se guardarán en este navegador y podrás verlas; al conectar la Carpeta local, «Reordenar archivos de este ejemplar» las copia a Fotos/)") : "")+"\n\n¿Importar?";
-    if(!nuevos.length){ alert(msg.replace("\n\n¿Importar?","\n\nNo hay nada nuevo que importar.")); return; }
+    if(!nuevos.length && !porReparar.length){ alert(msg.replace("\n\n¿Importar?","\n\nNo hay nada nuevo que importar ni fotos por completar.")); return; }
     if(!confirm(msg)) return;
 
-    var copiadas=0, faltan=0, enNavegador=0, usadas={};
+    var copiadas=0, faltan=0, enNavegador=0, usadas={}, reparadas=0;
+    for(var pr=0;pr<porReparar.length;pr++){
+      var it=porReparar[pr], datosR=await datosZip(z,"fotos/"+it.nom), baseR=carpetaFotos(it.r);
+      if(!datosR) continue;
+      if(conCarpeta){
+        var dirR=await dirAnidado(baseR), dispR=await nombreDisponible(dirR, it.nom, datosR.length);
+        if(!dispR.existe) await escribirArchivo(baseR, dispR.nombre, new Blob([datosR]));
+        it.f.archivo=baseR+"/"+dispR.nombre; copiadas++;
+      } else {
+        var rutaN=baseR+"/"+it.nom;
+        await cfgGuardar("foto:"+rutaN, new Blob([datosR], {type:mimePorNombre(it.nom)}));
+        it.f.archivo=rutaN; enNavegador++;
+      }
+      it.r.modificadoEn=new Date().toISOString(); reparadas++;
+    }
     for(var i=0;i<nuevos.length;i++){
       var r=nuevos[i], base=carpetaFotos(r);
       for(var j=0;j<r.fotos.length;j++){
@@ -8496,8 +8535,9 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
     nuevos.forEach(function(r){ registros.push(r); });
     persistir();
     nuevos.forEach(function(r){ espejarRegistro(r); });
+    unicos(porReparar.map(function(x){ return x.r; })).forEach(function(r){ espejarRegistro(r); });
     refrescarPanelesRegistros();
-    alert("Importación lista: "+nuevos.length+" ejemplar(es) agregados"+(copiadas?", "+copiadas+" foto(s) copiadas a Fotos/":"")+(enNavegador?", "+enNavegador+" foto(s) guardadas en este navegador":"")+
+    alert("Importación lista: "+nuevos.length+" ejemplar(es) agregados"+(reparadas?", "+reparadas+" foto(s) de ejemplares ya registrados completadas":"")+(copiadas?", "+copiadas+" foto(s) copiadas a Fotos/":"")+(enNavegador?", "+enNavegador+" foto(s) guardadas en este navegador":"")+
       (faltan?". No se encontraron "+faltan+" foto(s) dentro del zip":"")+
       ".\n\nCompleta ahora los datos de ingreso, preparación y catalogado de cada registro.");
   }catch(e){

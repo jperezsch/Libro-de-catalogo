@@ -283,7 +283,7 @@
   .imp-tabla-caja{overflow:auto;margin:8px 0;}
   .imp-resp{display:block;margin:8px 0;font-size:14px;}
   @media (max-width:760px){ .imp-cols{grid-template-columns:1fr;} }
-  /* ---- v0.9.47: emparejado ---- */
+  /* ---- v0.9.48: emparejado ---- */
   .imp-estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;margin:8px 0;color:var(--ink-soft);}
   .imp-filtro{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0;}
   .imp-filtro input{flex:1 1 150px;min-width:0;}
@@ -313,7 +313,7 @@
   .imp-ayuda p{margin:6px 0;}
   .imp-alerta{color:var(--danger);}
   .imp-no{margin-top:8px;}
-  /* ---- v0.9.47: asistente ---- */
+  /* ---- v0.9.48: asistente ---- */
   .imp-pasos{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
   .imp-paso-btn{flex:1 1 150px;border:1px solid var(--line-fuerte);background:var(--paper-2);border-radius:8px;padding:7px 10px;font-size:14px;cursor:pointer;color:var(--ink);}
   .imp-paso-btn.activo{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
@@ -322,7 +322,7 @@
   .imp-fila-enc th{background:var(--accent-soft);}
   .imp-plantilla-sug{background:var(--warn-soft);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:14px;}
   .imp-sin{border-bottom:1px solid var(--line);padding:6px 0;font-size:13.5px;}
-  /* ---- v0.9.47: previsualización y emparejado con tabla ---- */
+  /* ---- v0.9.48: previsualización y emparejado con tabla ---- */
   .imp-paso-btn:disabled{opacity:.45;cursor:not-allowed;}
   .imp-nombre-in{width:100%;min-width:110px;font-size:12px;padding:2px 4px;font-weight:600;border:1px solid var(--line-fuerte);border-radius:4px;background:#fff;}
   .imp-fila-otra td,.imp-fila-otra th{background:var(--paper-2);color:var(--ink-soft);}
@@ -341,12 +341,31 @@
   .imp-man-sel{width:100%;font-size:13px;}
   .imp-man-acc{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
   .imp-sug-fila{margin:4px 0;font-size:13px;}
-  /* ---- v0.9.47: bloques de emparejado ---- */
+  /* ---- v0.9.48: bloques de emparejado ---- */
   .imp-sec-tit{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-soft);margin:8px 0 3px;}
   .imp-destino{border-left:3px solid var(--accent);background:var(--paper-2);border-radius:6px;padding:6px 10px;margin:6px 0;}
   .imp-cand{border:1px solid var(--line);border-radius:6px;padding:5px 8px;margin:5px 0;background:#fff;}
   .imp-cand-cab{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;font-size:13.5px;}
   .imp-cand-bt{display:flex;gap:6px;}
+  /* ---- v0.9.48 ---- */
+  .ayuda-campo{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--accent);background:#fff;color:var(--accent);font-size:11px;font-weight:800;line-height:1;cursor:pointer;vertical-align:middle;margin-left:6px;padding:0;}
+  .ayuda-campo:hover{background:var(--accent);color:#fff;}
+  .ayuda-campo-panel{background:var(--accent-soft);border:1px solid var(--accent-2);border-radius:8px;padding:7px 10px;font-size:13px;margin:3px 0 6px;grid-column:1/-1;}
+  .imp-der-tabla{display:flex;flex-direction:column;gap:8px;height:min(88vh,800px);}
+  .imp-mitad{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:4px;}
+  .imp-der-tabla .imp-tabla-previa{max-height:none;flex:1;min-height:0;}
+  #imp-glosario{flex:1;min-height:0;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:4px 10px;background:#fff;position:relative;}
+  .imp-gl-it{padding:6px 4px;border-bottom:1px solid var(--line);font-size:13px;}
+  .imp-gl-it.destacado{background:var(--warn-soft);border-radius:6px;}
+  .imp-card-num{font-size:12px;font-weight:700;color:#fff;background:var(--pc-bd,var(--accent));display:inline-block;border-radius:999px;padding:1px 10px;margin-bottom:4px;}
+  .imp-man-card{border:2px solid var(--pc-bd,var(--line-fuerte));border-left-width:9px;background:var(--pc-bg,#fff);margin:0 0 22px;padding:10px 12px;box-shadow:0 2px 7px rgba(0,0,0,.14);border-radius:10px;}
+  .imp-man-card .imp-cand{background:#fff;border:1px dashed var(--pc-bd,var(--line-fuerte));}
+  .imp-man-card.elegida{outline:3px solid var(--accent);outline-offset:1px;}
+  .imp-sel-q{width:100%;font-size:13px;margin-bottom:3px;}
+  .imp-aviso-comp{background:var(--warn-soft);border-radius:6px;padding:4px 8px;margin:4px 0;font-size:12.5px;}
+  .mv-fila>div{display:flex;flex-direction:column;gap:3px;min-width:240px;}
+  .mv-fila select{font-size:14px;}
+  @media (max-width:900px){ .imp-der-tabla{height:auto;} .imp-mitad{flex:none;} .imp-der-tabla .imp-tabla-previa{max-height:300px;} #imp-glosario{max-height:300px;} }
   @media (max-width:900px){ .imp-dos{grid-template-columns:1fr;} .imp-der-tabla{position:static;} }
   @media (max-width:760px){ .imp-par{grid-template-columns:1fr;} .imp-par-flecha{display:none;} .imp-par-acc{flex-direction:row;} }
   .full{grid-column:1/-1;}
@@ -594,7 +613,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.47</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.48</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -957,7 +976,7 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.47</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.48</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
@@ -986,12 +1005,14 @@
       </details>
       <details class="subbloque-gest" id="sub-mover">
         <summary>Mover valores entre campos (corregir una importación)</summary>
-        <p class="nota">Copia el contenido de un campo a otro en los registros que elijas. Sirve para corregir una columna que se emparejó con el campo equivocado. Por ejemplo, mover «Nombre de la colección» a «Ubicación en colección». Primero se muestra cuántos registros cambiarían y no se modifica nada hasta que lo confirmes.</p>
-        <div class="imp-fila-opc"><label>Mover desde <select id="mv-origen"></select></label><label>hacia <select id="mv-destino"></select></label></div>
+        <p class="nota">Copia el contenido de un campo a otro en los registros que elijas. Sirve para corregir una columna que se emparejó con el campo equivocado. Por ejemplo, mover «Nombre de la colección» a «Ubicación en colección». Primero se muestra cuántos registros cambiarían y no se modifica nada hasta que lo confirmes. Las listas están en orden alfabético y tienen un buscador.</p>
+        <div class="imp-fila-opc mv-fila"><div><label>Mover desde</label><input type="search" id="mv-origen-q" class="nav" placeholder="Buscar un campo…"><select id="mv-origen"></select></div><div><label>hacia</label><input type="search" id="mv-destino-q" class="nav" placeholder="Buscar un campo…"><select id="mv-destino"></select></div></div>
         <div class="imp-fila-opc"><label>Registros <select id="mv-alcance"></select></label></div>
         <div class="imp-fila-opc"><label><input type="checkbox" id="mv-vaciar" checked> Vaciar el campo de origen después de mover</label><label><input type="checkbox" id="mv-reemplazar"> Reemplazar el destino si ya tiene un valor</label><label><input type="checkbox" id="mv-respaldo" checked> Descargar un zip de respaldo antes</label></div>
         <div class="barra-botones"><button type="button" class="btn secundario" id="mv-ver">Ver cuántos cambiarían</button><button type="button" class="btn" id="mv-aplicar" disabled>Aplicar</button></div>
         <p class="nota" id="mv-msg"></p>
+        <div class="imp-ayuda"><p><strong>Determinación que quedó como secundaria.</strong> Si importaste una planilla con el nombre en «Determinación anterior» y también un determinador o una fecha, el nombre pudo quedar en una determinación anterior y la vigente quedó sin nombre. Este botón busca esos registros y pasa el nombre a la determinación vigente. Solo toca registros cuya determinación anterior tiene únicamente el nombre.</p>
+        <div class="barra-botones"><button type="button" class="btn secundario" id="mv-det-ver">Buscar registros afectados</button><button type="button" class="btn" id="mv-det-aplicar" disabled>Reparar determinaciones</button></div><p class="nota" id="mv-det-msg"></p></div>
       </details>
       <details class="subbloque-gest" id="sub-exportar" open>
         <summary>Exportar datos</summary>
@@ -1123,7 +1144,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.47";
+var APP_VERSION = "v0.9.48";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1256,6 +1277,139 @@ function cargarDesdeIndexedDB(cb){
 function persistir(){ if(modoAcceso!=="admin") return;
   guardarEnIndexedDB();
 }
+
+// ---------- definiciones de los campos (glosario y botones ? junto a cada título) ----------
+var DEF_CAMPOS = {
+  numeroCampo:"Código que el colector asignó al ejemplar o lote en terreno, el mismo que anotó en su libreta de campo. Permite volver a la anotación original. DwC: recordNumber.",
+  taxon:"Nombre o grupo con que el colector identificó el material en terreno, antes de la determinación formal. Es una referencia y no reemplaza a la determinación.",
+  localidadVerbatim:"Localidad escrita tal como figura en la etiqueta o libreta, sin corregir ni normalizar. DwC: verbatimLocality.",
+  localidad:"Lugar específico de la colecta, escrito de forma limpia y consistente (sin región ni país). DwC: locality.",
+  region:"Región administrativa de Chile donde se colectó. DwC: stateProvince.",
+  provincia:"Provincia donde se colectó. DwC: county.",
+  comuna:"Comuna donde se colectó. DwC: municipality.",
+  fechaColecta:"Fecha en que se colectó el material, en formato AAAA-MM-DD. DwC: eventDate.",
+  colector:"Persona o personas que colectaron el material. DwC: recordedBy.",
+  coordenadasOriginales:"Coordenadas tal como figuran en la etiqueta o fuente (grados, minutos, segundos u otro formato), sin convertir. DwC: verbatimCoordinates.",
+  lat:"Latitud en grados decimales; es negativa en el hemisferio sur, por ejemplo -33.4569. DwC: decimalLatitude.",
+  lng:"Longitud en grados decimales; es negativa al oeste de Greenwich, por ejemplo -70.6483. DwC: decimalLongitude.",
+  altitud_m:"Altitud en metros sobre el nivel del mar. Las profundidades (colectas submarinas o de agua dulce) se anotan como números negativos, por ejemplo -35. DwC: minimumElevationInMeters.",
+  horaColecta:"Hora de la colecta, en formato HH:MM. DwC: eventTime.",
+  habitat:"Ambiente donde se encontró el organismo, por ejemplo bosque esclerófilo o intermareal rocoso. DwC: habitat.",
+  microhabitat:"Lugar preciso dentro del hábitat: bajo piedras, entre hojarasca, sobre algas, etc.",
+  metodoColecta:"Técnica usada para obtener el material: colecta manual, trampa de caída, rastra, red, buceo, etc. DwC: samplingProtocol.",
+  estacion:"Código o nombre de la estación de muestreo, por ejemplo de un crucero o de un proyecto.",
+  numeroAccesion:"Número que identifica el ingreso (el lote recibido) a la institución. Varios ejemplares pueden compartir el mismo número de entrada. Con él se agrupan los documentos del ingreso.",
+  fechaRecepcion:"Fecha en que la institución recibió el material.",
+  procedencia:"Modo en que el material llegó a la colección: colecta, donación, depósito, canje, etc.",
+  destino:"Colección o uso al que se destina el material recibido.",
+  condicionAccesion:"Estado general en que llegó el material al ingresar a la institución.",
+  legatario:"Persona o institución que entregó o cedió el material a la colección.",
+  proyectoOrigen:"Proyecto, expedición o iniciativa que originó la colecta o el ingreso del material.",
+  tipoAccesion:"Modalidad de ingreso: colecta propia, donación, compra, intercambio o depósito.",
+  tipoColeccion:"Indica si el material se conserva en húmedo (en líquido) o en seco.",
+  medioFijado:"Sustancia usada para fijar los tejidos al preservar el material por primera vez, por ejemplo etanol o formolina.",
+  conservacion:"Medio en que se conserva hoy el ejemplar, por ejemplo etanol 70 %. Puede ser distinto del medio de fijado. DwC: preparations.",
+  preparacion:"Tipo de preparación hecha al ejemplar: montaje, disección, lámina microscópica, etc.",
+  condicionEjemplar:"Estado físico del ejemplar: excelente, bueno, regular, dañado, fragmentario, etc.",
+  individuos:"Número de individuos del registro. Un lote puede contener varios. DwC: individualCount.",
+  institucionNombreCompleto:"Nombre completo de la institución que custodia la colección.",
+  coleccionNombre:"Nombre de la colección a la que pertenece el registro, por ejemplo Colección de Opiliones.",
+  institucionAcronimo:"Sigla de la institución, por ejemplo MNHNCL. Forma parte del código de catálogo. DwC: institutionCode.",
+  coleccionAcronimo:"Sigla de la colección. Forma parte del código de catálogo y agrupa los registros en Gestión de Datos. DwC: collectionCode.",
+  catalogo:"Número de catálogo: identificador único del ejemplar o lote dentro de la colección. DwC: catalogNumber.",
+  fechaCatalogacion:"Fecha en que se catalogó el registro.",
+  catalogador:"Persona que catalogó el registro. Se anota automáticamente con el nombre del operador de la sesión.",
+  tipoNomenclatural:"Condición de tipo del ejemplar: holotipo, paratipo, sintipo, neotipo, etc. DwC: typeStatus.",
+  publicacionOriginal:"Cita de la publicación en que se describió el taxón o se mencionó el ejemplar.",
+  publicacionesPdf:"PDF de publicaciones asociados al ejemplar, guardados en la carpeta Publicaciones de la Carpeta local. DwC: associatedReferences.",
+  phylum:"Phylum del taxón determinado. DwC: phylum.",
+  clase:"Clase del taxón determinado. DwC: class.",
+  orden:"Orden del taxón determinado. DwC: order.",
+  familia:"Familia del taxón determinado. DwC: family.",
+  genero:"Género del taxón determinado. DwC: genus.",
+  cantidadMachos:"Cantidad de machos del registro.",
+  cantidadHembras:"Cantidad de hembras del registro.",
+  cantidadJuveniles:"Cantidad de juveniles del registro.",
+  cantidadNoSexados:"Cantidad de individuos sin sexo determinado, por ejemplo ninfas o ejemplares dañados.",
+  asociacionesBiologicas:"Relación del organismo con otros: hospedador, parásito, comensal, etc. DwC: associatedTaxa.",
+  observacionesBiologicas:"Notas sobre el organismo: comportamiento, coloración, estado reproductivo, etc. DwC: organismRemarks.",
+  estadoUbicacion:"Situación actual del ejemplar: en colección, en préstamo, en laboratorio, en campo o baja. DwC: disposition.",
+  ubicacionColeccion:"Lugar físico del ejemplar dentro de la colección: gabinete, estante o caja.",
+  numeroBaja:"Número del documento o acta con que se dio de baja el ejemplar.",
+  fechaBaja:"Fecha en que el ejemplar salió de la colección.",
+  tipoBaja:"Motivo de la baja: donación, descarte, pérdida o intercambio.",
+  destinatario:"Persona o institución que recibió el ejemplar dado de baja.",
+  responsableBaja:"Persona que autorizó o realizó la baja.",
+  observacionesBaja:"Notas sobre el estado o la ubicación actual del ejemplar, y sobre la baja si la hubo.",
+  observaciones:"Notas generales del registro. DwC: occurrenceRemarks.",
+  "@nombre":"Nombre científico de la determinación vigente, que es la más reciente de la lista de determinaciones. Con este nombre se muestra el ejemplar en las consultas.",
+  "@calificador":"Marca de incertidumbre del nombre: cf. (comparar con), aff. (afín a), ? (dudoso), sp. (especie sin identificar) o sp. nov. (especie nueva).",
+  "@determinador":"Persona que identificó el ejemplar en esa determinación.",
+  "@fechaDet":"Fecha en que se hizo la determinación.",
+  "@prevDet":"Nombre de una determinación anterior, que queda en el historial detrás de la vigente.",
+  "@sexo":"Del importador: texto como «2 ♂ 1 ♀ 1 ninfa» que se reparte en los conteos de machos, hembras, juveniles y no sexados.",
+  "@coord":"Del importador: latitud y longitud escritas juntas en una sola columna, que se separan en Latitud y Longitud.",
+  "@operador":"Persona que registra el ejemplar. Se guarda como «modificado por» y, si el registro tiene catálogo, como catalogador. Si no se indica, se usa el operador de la sesión.",
+  "@obs":"Del importador: el contenido se agrega al final de Observaciones, precedido por el nombre de la columna.",
+  "L:submuestras.tipoSubmuestra":"Clase de submuestra tomada del ejemplar: tejido para ADN, patas, preparación microscópica, etc.",
+  "L:submuestras.fechaExtraccion":"Fecha en que se extrajo la submuestra.",
+  "L:submuestras.metodoConservacion":"Cómo se conserva la submuestra: etanol absoluto, congelada, seca, etc.",
+  "L:submuestras.ubicacionAlmacenamiento":"Lugar donde se guarda la submuestra: congelador, caja o estante.",
+  "L:submuestras.numeroVial":"Número del vial o tubo que contiene la submuestra.",
+  "L:submuestras.destinoUso":"Para qué se tomó o se usará la submuestra: secuenciación, microscopía, etc.",
+  "L:prestamos.numeroPrestamo":"Número que identifica el préstamo.",
+  "L:prestamos.fechaPrestamo":"Fecha en que el ejemplar salió en préstamo.",
+  "L:prestamos.solicitante":"Persona o institución que pidió el ejemplar en préstamo.",
+  "L:prestamos.periodo":"Duración acordada del préstamo.",
+  "L:prestamos.fechaDevolucionEsperada":"Fecha en que debería volver el ejemplar.",
+  "L:prestamos.fechaDevolucionReal":"Fecha en que el ejemplar volvió efectivamente a la colección.",
+  "L:prestamos.observaciones":"Notas sobre el préstamo.",
+  "L:usos.evento":"Descripción del uso del ejemplar: estudio, exhibición, actividad educativa, etc.",
+  "L:usos.responsable":"Persona responsable de ese uso.",
+  "L:usos.fecha":"Fecha del uso.",
+  "fotos.fechaFoto":"Fecha en que se tomó la fotografía.",
+  "fotos.tipoFoto":"Qué muestra la foto: ejemplar en su hábitat, vista dorsal, detalle morfológico, etc.",
+  "fotos.archivo":"Nombre del archivo de imagen, guardado en la Carpeta local.",
+  "fotos.fotografo":"Persona que tomó la fotografía.",
+  "fotos.notaCalidad":"Comentarios sobre la foto: calidad, aumento, escala, etc.",
+  "adjuntos.descripcion":"Descripción del archivo adjunto.",
+  "adjuntos.motivo":"Por qué se asocia el archivo al ejemplar: descripción original, redescripción o mención.",
+  "adjuntos.comentario":"Aclaración sobre el archivo, por ejemplo las páginas donde aparece el ejemplar.",
+  "adjuntos.archivo":"Nombre del archivo adjunto, guardado en la Carpeta local."
+};
+var GLOS_EXTRA = [
+  {k:"catalogador", l:"Catalogador", g:"Depósito › Catalogado"},
+  {k:"publicacionesPdf", l:"PDF de publicaciones asociadas", g:"Depósito › Catalogado"},
+  {k:"fotos.fechaFoto", l:"Foto: Fecha", g:"Fotos"}, {k:"fotos.tipoFoto", l:"Foto: Tipo de foto", g:"Fotos"}, {k:"fotos.archivo", l:"Foto: Archivo", g:"Fotos"},
+  {k:"fotos.fotografo", l:"Foto: Fotógrafo", g:"Fotos"}, {k:"fotos.notaCalidad", l:"Foto: Comentarios", g:"Fotos"},
+  {k:"adjuntos.descripcion", l:"Otro archivo: Descripción", g:"Otros archivos"}, {k:"adjuntos.motivo", l:"Otro archivo: Motivo de la asociación", g:"Otros archivos"},
+  {k:"adjuntos.comentario", l:"Otro archivo: Aclaración", g:"Otros archivos"}, {k:"adjuntos.archivo", l:"Otro archivo: Archivo", g:"Otros archivos"}
+];
+function claveAyudaLista(tipo,key){
+  if(tipo==="determinaciones") return {nombreCientifico:"@nombre",determinador:"@determinador",fechaDeterminacion:"@fechaDet",calificador:"@calificador"}[key]||"";
+  if(tipo==="submuestras"||tipo==="prestamos"||tipo==="usos") return "L:"+tipo+"."+key;
+  return tipo+"."+key;
+}
+function ponerAyudaCampo(lbl,key){
+  if(!lbl||!key||!DEF_CAMPOS[key]||lbl.querySelector(".ayuda-campo")) return;
+  var b=document.createElement("button"); b.type="button"; b.className="ayuda-campo"; b.textContent="?"; b.setAttribute("data-def",key); b.setAttribute("aria-label","Qué es este campo");
+  var nm=lbl.querySelector(".name"); if(nm) nm.parentNode.insertBefore(b,nm.nextSibling); else lbl.appendChild(b);
+}
+function instalarAyudasCampos(){
+  document.querySelectorAll(".campo .lbl").forEach(function(lbl){
+    var c=lbl.closest(".campo"); if(!c||c.closest(".fila-repetible")) return;
+    var ctl=c.querySelector("[data-f]"); if(ctl) ponerAyudaCampo(lbl,ctl.getAttribute("data-f"));
+  });
+}
+document.addEventListener("click", function(e){
+  var b=e.target.closest&&e.target.closest(".ayuda-campo"); if(!b) return;
+  e.preventDefault(); e.stopPropagation();
+  var campo=b.closest(".campo"), k=b.getAttribute("data-def"); if(!campo) return;
+  var p=campo.querySelector(":scope > .ayuda-campo-panel");
+  if(p){ p.remove(); return; }
+  p=document.createElement("div"); p.className="ayuda-campo-panel"; p.textContent=DEF_CAMPOS[k]||"";
+  var lbl=b.closest(".lbl"); lbl.parentNode.insertBefore(p,lbl.nextSibling);
+});
 
 // ---------- botones de ayuda (?) ----------
 document.addEventListener("click", function(e){
@@ -2464,6 +2618,7 @@ function pintarLista(tipo){
       var lbl=document.createElement("div"); lbl.className="lbl";
       lbl.innerHTML='<span class="name">'+escapeHtml(c.label)+'</span><span class="key">'+escapeHtml(c.key)+'</span>';
       lbl.querySelector(".key").title=c.key;
+      ponerAyudaCampo(lbl, claveAyudaLista(tipo,c.key));
       campoDiv.appendChild(lbl);
       var input;
       if(c.type==="select"){
@@ -5333,6 +5488,7 @@ function impConstruir(){
     imp.fijos.forEach(function(f){ if(f.target&&f.valor!==""){ if(f.target==="@nombre"){ if(!det.nombreCientifico){ det.nombreCientifico=f.valor; hayDet=true; } } else poner(f.target,f.valor); } });
     if(anexos.length) r.observaciones=(r.observaciones?r.observaciones+"\n":"")+anexos.join("\n");
     Object.keys(listasFila).forEach(function(ln){ var it={}; listasCfg[ln].campos.forEach(function(c){ it[c.key]=""; }); Object.keys(listasFila[ln]).forEach(function(kk){ it[kk]=listasFila[ln][kk]; }); r[ln]=[it]; });
+    if(prev && !det.nombreCientifico){ det.nombreCientifico=prev; prev=null; hayDet=true; }
     if(prev){ r.determinaciones.push({nombreCientifico:prev,determinador:"",fechaDeterminacion:"",calificador:""}); }
     if(hayDet){ r.determinaciones.push(det); }
     // coherencia de conteos
@@ -5401,10 +5557,12 @@ async function impCambiarHoja(i){
   imp.hojaIdx=i; imp.filas=await imp.hojas[i].leer(); imp.hojaNombre=imp.hojas[i].nombre;
   imp.nombres={}; impReiniciarEmparejado(); impPreparar(); imp.resultado=null; impPintar();
 }
-function impOpcionesObjetivos(sel,c){
-  var objs=impObjetivos(), grupos={}, orden=[], pre="";
-  if(c){ var sg=impSugerencias(c); if(sg.length) pre='<optgroup label="Más parecidos">'+sg.map(function(x){ return '<option value="'+escapeHtml(x.o.k)+'"'+(sel===x.o.k?' selected':'')+'>'+escapeHtml(x.o.l)+' ('+Math.round(x.s*100)+' %)</option>'; }).join("")+'</optgroup>'; }
+function impOpcionesObjetivos(sel,c,fil){
+  var objs=impObjetivos(), grupos={}, orden=[], pre="", fq=normTxt(fil||"").trim();
+  if(fq) objs=objs.filter(function(o){ return normTxt(o.l+" "+o.k+" "+o.g).indexOf(fq)>-1; });
+  if(c && !fq){ var sg=impSugerencias(c); if(sg.length) pre='<optgroup label="Más parecidos">'+sg.map(function(x){ return '<option value="'+escapeHtml(x.o.k)+'"'+(sel===x.o.k?' selected':'')+'>'+escapeHtml(x.o.l)+' ('+Math.round(x.s*100)+' %)</option>'; }).join("")+'</optgroup>'; }
   objs.forEach(function(o){ if(!grupos[o.g]){ grupos[o.g]=[]; orden.push(o.g); } grupos[o.g].push(o); });
+  if(fq && !objs.length) return '<option value="">Sin resultados</option>';
   return '<option value="">'+(c?'Elige un campo…':'No importar')+'</option>'+pre+orden.map(function(g){ return '<optgroup label="'+escapeHtml(g)+'">'+grupos[g].map(function(o){ return '<option value="'+escapeHtml(o.k)+'"'+(sel===o.k?' selected':'')+'>'+escapeHtml(o.l)+'</option>'; }).join("")+'</optgroup>'; }).join("");
 }
 function impPintar(){
@@ -5422,7 +5580,7 @@ function impPintar(){
 function impReiniciarEmparejado(){ imp.mapas=[]; imp.clave=[]; imp.prevOk=false; imp.autoHecho=false; imp.tent={}; imp.ign={}; imp.desc={}; imp.foco=null; imp.resultado=null; }
 function impTablaPrevia(){
   var filas=imp.filas, enc=Math.max(1,imp.filaEnc), dat=imp.filaDatos, ancho=imp.cols.length;
-  var n=Math.min(filas.length, Math.min(40, Math.max(dat+8, enc+3)));
+  var n=Math.min(filas.length, Math.max(dat-1+50, enc+3));
   var h='<div class="imp-tabla-caja imp-tabla-previa"><table class="ficha-tabla"><tbody>';
   for(var i=1;i<=n;i++){
     var f=filas[i-1]||[], esNombre=(i===enc), esDato=(i>=dat), clase=esNombre?'imp-fila-enc':(esDato?'':'imp-fila-otra');
@@ -5439,7 +5597,7 @@ function impTablaColumnas(){
   var ancho=imp.cols.length, foco=imp.foco, h='<table class="ficha-tabla"><thead><tr>';
   for(var j=0;j<ancho;j++) h+='<th'+(j===foco?' class="foco" data-colt="'+j+'"':'')+' title="'+escapeHtml(imp.cols[j].nombre)+'">'+escapeHtml(impCorto(imp.cols[j].nombre,24))+'</th>';
   h+='</tr></thead><tbody>';
-  var n=Math.min(imp.datos.length,14);
+  var n=Math.min(imp.datos.length,25);
   for(var i=0;i<n;i++){ h+='<tr>'; for(j=0;j<ancho;j++) h+='<td'+(j===foco?' class="foco"':'')+'>'+escapeHtml(impCorto(imp.datos[i].v[j],40))+'</td>'; h+='</tr>'; }
   return h+'</tbody></table>';
 }
@@ -5452,6 +5610,7 @@ function impFoco(ci){
   imp.foco=ci;
   document.querySelectorAll("#imp-izq [data-foco]").forEach(function(el){ el.classList.toggle("elegida", parseInt(el.getAttribute("data-foco"),10)===ci); });
   var caja=impElem("imp-tabla-der"); if(caja){ caja.innerHTML=impTablaColumnas(); impScrollTabla(); }
+  impGlosarioIr();
   var t=impElem("imp-foco-nombre"); if(t&&imp.cols[ci]) t.textContent="Columna resaltada: «"+imp.cols[ci].nombre+"»";
 }
 function impPintarPasos(){
@@ -5470,6 +5629,37 @@ function impSugerencias(c,n){
   if(!imp.sugCache[c.i]) imp.sugCache[c.i]=impObjetivos().map(function(o){ return {o:o,s:impPuntaje(c.nombre,o,c)}; }).filter(function(x){ return x.s>=0.3; }).sort(function(a,b){ return b.s-a.s; }).slice(0,12);
   var d=imp.desc[c.i]||{};
   return imp.sugCache[c.i].filter(function(x){ return !d[x.o.k]; }).slice(0,n||5);
+}
+function impGlosarioHtml(){
+  var items=impObjetivos().map(function(o){ return {k:o.k,l:o.l,g:o.g}; }).concat(GLOS_EXTRA);
+  items.sort(function(a,b){ return a.l.localeCompare(b.l,"es"); });
+  var q=normTxt(imp.glQ||"");
+  return items.map(function(it){
+    var d=DEF_CAMPOS[it.k]||"Sin definición todavía.", txt=normTxt(it.l+" "+it.k+" "+d+" "+it.g);
+    return '<div class="imp-gl-it" data-gk="'+escapeHtml(it.k)+'" data-q="'+escapeHtml(txt)+'"'+(q&&txt.indexOf(q)<0?' style="display:none"':'')+'><strong>'+escapeHtml(it.l)+'</strong> <span class="imp-tipo">'+escapeHtml(it.g)+'</span><div>'+escapeHtml(d)+'</div></div>';
+  }).join("");
+}
+function impTargetFoco(){
+  if(imp.foco==null) return null;
+  if(imp.tent[imp.foco]) return imp.tent[imp.foco];
+  var m=imp.mapas.filter(function(x){ return x.col===imp.foco && !x.conf; })[0];
+  return m?m.target:null;
+}
+function impGlosarioIr(){
+  var cont=impElem("imp-glosario"); if(!cont) return;
+  cont.querySelectorAll(".imp-gl-it.destacado").forEach(function(x){ x.classList.remove("destacado"); });
+  var k=impTargetFoco(); if(!k) return;
+  var it=Array.prototype.filter.call(cont.querySelectorAll(".imp-gl-it"),function(x){ return x.getAttribute("data-gk")===k; })[0];
+  if(!it) return;
+  it.style.display=""; it.classList.add("destacado");
+  cont.scrollTop=Math.max(0,it.offsetTop-cont.offsetTop-6);
+}
+function impAdvertirDuplicado(ci,k){
+  if(k==="@obs") return true;
+  var otros=imp.mapas.filter(function(m){ return m.target===k && m.col!==ci && m.conf; });
+  if(!otros.length) return true;
+  var o=impObjetivo(k)||{l:k}, a=imp.cols[otros[0].col].nombre, b=imp.cols[ci].nombre;
+  return confirm("El campo «"+o.l+"» ya está emparejado con la columna «"+a+"».\n\nSi lo emparejas también con «"+b+"»:\n• En cada fila se usa el valor de «"+a+"».\n• El valor de «"+b+"» solo se usa en las filas donde «"+a+"» esté vacía; en las demás no se importa.\n• No se reemplaza nada que ya esté guardado en la app.\n\n¿Emparejar de todos modos?");
 }
 function impPendientesManual(){
   return imp.cols.filter(function(c){ return !imp.mapas.some(function(m){ return m.col===c.i; }) && !imp.ign[c.i] && (imp.verVacias||c.llenos>0); });
@@ -5492,16 +5682,17 @@ function impPanelManual(){
   var h='<div class="imp-fila-opc"><label><input type="checkbox" id="imp-ver-vacias"'+(imp.verVacias?' checked':'')+'> Mostrar también columnas sin datos</label>'+(nIgn?'<button type="button" class="btn tenue small" id="imp-restaurar-ign">Restaurar '+nIgn+' columna(s) que no se importan</button>':'')+'</div>';
   h+='<p class="nota">Cada bloque tiene tres partes: la columna de tu planilla, el campo de la app con el que la quieres emparejar y los datos de ese campo. Pulsa un bloque para ver su columna resaltada en la tabla de la derecha.</p>';
   if(!pend.length) return h+'<p class="nota"><strong>No quedan columnas por emparejar.</strong> Puedes seguir al paso 3.</p>';
-  pend.forEach(function(c){
-    var n=imp.ejem[c.i]||8, ej=impEjemplosCol(c.i,n);
+  pend.forEach(function(c,ix){
+    var n=imp.ejem[c.i]||8, ej=impEjemplosCol(c.i,n), hue=(ix*67+25)%360;
     var mas=(c.distintos>ej.length)?'<button type="button" class="imp-mas" data-mascol="'+c.i+'">+8 más</button>':"", menos=n>8?'<button type="button" class="imp-mas" data-menoscol="'+c.i+'">menos</button>':"";
     var tent=imp.tent[c.i], ot=tent?impObjetivo(tent):null, nd=Object.keys(imp.desc[c.i]||{}).length;
-    h+='<div class="imp-man-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'">'
+    h+='<div class="imp-man-card'+(imp.foco===c.i?' elegida':'')+'" data-foco="'+c.i+'" style="--pc-bd:hsl('+hue+',45%,42%);--pc-bg:hsl('+hue+',45%,95%)"><div class="imp-card-num">Columna '+(ix+1)+' de '+pend.length+' por emparejar</div>'
       +'<div class="imp-sec-tit">Columna de tu planilla</div>'
       +'<div class="imp-col-nombre"><strong>'+escapeHtml(c.nombre)+'</strong><span class="imp-col-info">'+c.llenos+'/'+imp.datos.length+' llenos · '+c.distintos+' distintos</span></div>'
       +impPintarEjemplos(ej,mas,menos)
       +'<div class="imp-sec-tit">Emparejar con</div>'
-      +'<select class="imp-man-sel" data-col="'+c.i+'">'+impOpcionesObjetivos(tent||"",c)+'</select>';
+      +'<input type="search" class="imp-sel-q nav" data-col="'+c.i+'" placeholder="Buscar un campo…" value="'+escapeHtml((imp.selFil&&imp.selFil[c.i])||"")+'">'
+      +'<select class="imp-man-sel" data-col="'+c.i+'"'+((imp.selFil&&(imp.selFil[c.i]||"").trim())?' size="7"':'')+'>'+impOpcionesObjetivos(tent||"",c,imp.selFil&&imp.selFil[c.i])+'</select>';
     if(ot){
       h+='<div class="imp-destino"><div><strong>'+escapeHtml(ot.l)+'</strong> <span class="imp-tipo">'+escapeHtml(ot.g||"")+'</span></div>'+impEjemplosCampoHtml(ot,6)
         +'<div class="barra-botones"><button type="button" class="btn small" data-emparejar="'+c.i+'">✓ Emparejar</button><button type="button" class="btn tenue small" data-deselegir="'+c.i+'">↩ Elegir otro campo</button></div></div>';
@@ -5534,6 +5725,11 @@ function impPintarSinDestino(){
   sin.forEach(function(c){ h+='<div class="imp-sin"><strong>'+escapeHtml(c.nombre)+'</strong> <small>'+c.llenos+'/'+imp.datos.length+' llenos</small>'+impPintarEjemplos(impEjemplosCol(c.i,4))+'<button type="button" class="btn tenue small" data-anexar="'+c.i+'">Anexar a Observaciones</button></div>'; });
   return h+'</details>';
 }
+function impAvisosCompartidos(){
+  var vistos={}, out=[];
+  imp.mapas.forEach(function(m){ if(m.target==="@obs"||vistos[m.target]) return; var g=imp.mapas.filter(function(x){ return x.target===m.target; }); if(g.length>1){ vistos[m.target]=1; out.push('El campo «'+((impObjetivo(m.target)||{}).l||m.target)+'» recibe '+g.length+' columnas ('+g.map(function(x){ return '«'+imp.cols[x.col].nombre+'»'; }).join(", ")+'). Se usa la primera de la lista en cada fila, y las siguientes solo completan filas donde esté vacía.'); } });
+  return out.length?'<div class="imp-plantilla-sug">'+out.map(escapeHtml).join('<br>')+'</div>':'';
+}
 function impAvisosMapeo(){
   var CLAVE={coleccionNombre:"Nombre de la colección",coleccionAcronimo:"Acrónimo de la colección",institucionAcronimo:"Institución",phylum:"Phylum",clase:"Clase",orden:"Orden"}, out=[];
   imp.mapas.forEach(function(m){
@@ -5564,19 +5760,20 @@ function impPintarInterno(cont){
     h+='<div class="imp-estado"><span><strong>'+est.conf+'</strong> aceptados</span><span><strong>'+nProp+'</strong> propuestas por revisar</span><span><strong>'+pend+'</strong> columnas por emparejar a mano</span>'+(nIgn?'<span><strong>'+nIgn+'</strong> no se importan</span>':'')+'</div>';
     h+='<div class="imp-subtabs"><button type="button" class="imp-sub-btn'+(imp.sub==="auto"?' activo':'')+'" data-sub="auto">A. Emparejado automático ('+nProp+')</button><button type="button" class="imp-sub-btn'+(imp.sub==="man"?' activo':'')+'" data-sub="man">B. Emparejado manual ('+pend+')</button></div>';
     h+='<div class="imp-dos"><div id="imp-izq">'+(imp.sub==="auto"?impPanelAuto():impPanelManual())+'</div>'
-      +'<div class="imp-der-tabla"><div class="imp-ej-etq" id="imp-foco-nombre">'+(imp.cols[imp.foco]?'Columna resaltada: «'+escapeHtml(imp.cols[imp.foco].nombre)+'»':'Pulsa un bloque de la izquierda para resaltar su columna')+'</div><div id="imp-tabla-der" class="imp-tabla-caja imp-tabla-previa">'+impTablaColumnas()+'</div></div></div>';
+      +'<div class="imp-der-tabla"><div class="imp-mitad"><div class="imp-ej-etq" id="imp-foco-nombre">'+(imp.cols[imp.foco]?'Columna resaltada: «'+escapeHtml(imp.cols[imp.foco].nombre)+'»':'Pulsa un bloque de la izquierda para resaltar su columna')+'</div><div id="imp-tabla-der" class="imp-tabla-caja imp-tabla-previa">'+impTablaColumnas()+'</div></div>'
+      +'<div class="imp-mitad"><div class="imp-sec-tit">Definiciones de los campos de la app</div><input type="search" id="imp-gl-q" class="nav" placeholder="Buscar un campo o una definición…" value="'+escapeHtml(imp.glQ||"")+'"><div id="imp-glosario">'+impGlosarioHtml()+'</div></div></div></div>';
     h+=impPintarConfirmados();
     h+=impPintarFijos();
     h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="1">← Volver a la previsualización</button><button type="button" class="btn tenue" id="imp-limpiar">Deshacer todos los emparejamientos</button><button type="button" class="btn" data-paso="3">Siguiente: revisar →</button></div>';
   } else {
-    h+=impAvisosMapeo();
+    h+=impAvisosMapeo()+impAvisosCompartidos();
     h+=impPintarSinDestino();
     h+=impPintarOpciones();
     h+='<div class="barra-botones"><button type="button" class="btn tenue" data-paso="2">← Volver al emparejado</button><button type="button" class="btn" id="imp-revisar">Revisar importación</button></div>';
     h+='<div id="imp-resultado">'+(imp.resultado?impPintarResultado():"")+'</div>';
   }
   cont.innerHTML=h;
-  if(imp.paso===2) impScrollTabla();
+  if(imp.paso===2){ impScrollTabla(); impGlosarioIr(); }
 }
 function impEstado(){ var c=imp.mapas.filter(function(m){ return m.conf; }).length; return {conf:c, prop:imp.mapas.length-c}; }
 function impAttrColor(m){ var h=(m.cid*47+12)%360; return ' style="--pc-bg:hsl('+h+',62%,92%);--pc-bd:hsl('+h+',45%,44%)"'; }
@@ -5629,6 +5826,14 @@ function impOpcionesMapa(m,i,o){
   if(o.k==="altitud_m") ex+='<label><input type="checkbox" data-optchk="neg" data-i="'+i+'"'+(m.opts.neg?' checked':'')+'> Son profundidades (se guardan como números negativos)</label>';
   return ex?'<div class="imp-opts"><span class="imp-opt-col">'+escapeHtml(imp.cols[m.col].nombre)+'</span>'+ex+'</div>':'';
 }
+function impAvisoCompartido(m,i){
+  if(m.target==="@obs") return "";
+  var otros=imp.mapas.map(function(x,j){ return {x:x,j:j}; }).filter(function(y){ return y.x.target===m.target && y.j!==i; });
+  if(!otros.length) return "";
+  var gana=otros.every(function(y){ return y.j>i; });
+  var nombres=otros.map(function(y){ return "«"+imp.cols[y.x.col].nombre+"»"; }).join(", ");
+  return '<div class="imp-aviso-comp">⚠ Este campo también recibe '+escapeHtml(nombres)+'. '+(gana?'Gana esta columna; la otra solo completa filas donde esta esté vacía.':'Esta columna solo completa las filas donde la otra esté vacía.')+'</div>';
+}
 function impPintarConfirmados(){
   var lista=imp.mapas.map(function(m,i){ return {m:m,i:i}; }).filter(function(x){ return x.m.conf; });
   var h='<details class="imp-conf"'+(impAbiertos.conf===false?'':' open')+'><summary>Emparejados confirmados ('+lista.length+')</summary>';
@@ -5639,7 +5844,7 @@ function impPintarConfirmados(){
     var prev=ej.map(function(v){ var p=impPrevia(m,o,v); return p===null?'<span class="imp-ej" title="'+escapeHtml(v)+'">'+escapeHtml(impCorto(v,34))+'</span>':'<span class="imp-ej" title="'+escapeHtml(v)+'">'+escapeHtml(impCorto(v,24))+' → <b>'+escapeHtml(impCorto(p,24))+'</b></span>'; }).join("");
     h+='<div class="imp-par"'+impAttrColor(m)+'><div class="imp-par-izq"><strong>'+escapeHtml(c.nombre)+'</strong> <small>'+c.llenos+'/'+imp.datos.length+' llenos</small><div class="imp-ejemplos">'+prev+'</div></div>'
       +'<div class="imp-par-flecha">⇄</div>'
-      +'<div class="imp-par-der"><strong>'+escapeHtml(o.l)+'</strong> <span class="imp-tipo">'+escapeHtml(o.g||"")+'</span>'+impOpcionesMapa(m,i,o)+'</div>'
+      +'<div class="imp-par-der"><strong>'+escapeHtml(o.l)+'</strong> <span class="imp-tipo">'+escapeHtml(o.g||"")+'</span>'+impAvisoCompartido(m,i)+impOpcionesMapa(m,i,o)+'</div>'
       +'<div class="imp-par-acc"><button type="button" class="btn tenue small" data-deshacer="'+i+'" title="Vuelve a la lista de pendientes">↩ Deshacer</button><button type="button" class="btn tenue small" data-quitar="'+i+'" title="Quitar este emparejamiento">✕</button></div></div>';
   });
   return h+'</details>';
@@ -5946,6 +6151,8 @@ function iniciarImportador(){
     var t=e.target;
     if(t.id==="imp-buscar"){ imp.filDer=t.value; impElem("imp-der").innerHTML=impPintarObjetivosLista(); }
     else if(t.id==="imp-buscar-izq"){ imp.filIzq=t.value; impElem("imp-izq").innerHTML=impPintarColumnasLista(); }
+    else if(t.id==="imp-gl-q"){ imp.glQ=t.value; var q=normTxt(t.value); document.querySelectorAll("#imp-glosario .imp-gl-it").forEach(function(x){ x.style.display=(!q||x.getAttribute("data-q").indexOf(q)>-1)?"":"none"; }); }
+    else if(t.classList.contains("imp-sel-q")){ var cq=parseInt(t.getAttribute("data-col"),10); imp.selFil=imp.selFil||{}; imp.selFil[cq]=t.value; var se=document.querySelector('.imp-man-sel[data-col="'+cq+'"]'); if(se){ se.innerHTML=impOpcionesObjetivos(imp.tent[cq]||"",imp.cols[cq],t.value); se.size=t.value.trim()?7:1; } }
     else if(t.hasAttribute("data-fijo-val")&&t.tagName==="INPUT"){ imp.fijos[parseInt(t.getAttribute("data-fijo-val"),10)].valor=t.value; }
     else if(t.hasAttribute("data-valtxt")){ var m=imp.mapas[parseInt(t.getAttribute("data-i"),10)]; m.opts.valores[t.getAttribute("data-valtxt")]={modo:"texto",val:t.value}; }
   });
@@ -5970,13 +6177,16 @@ function iniciarImportador(){
     else if(t.hasAttribute("data-deselegir")){ var cd=parseInt(t.getAttribute("data-deselegir"),10); delete imp.tent[cd]; imp.foco=cd; impPintar(); }
     else if(t.hasAttribute("data-descand")){ var cx=parseInt(t.getAttribute("data-descand"),10); imp.desc[cx]=imp.desc[cx]||{}; imp.desc[cx][t.getAttribute("data-k")]=true; imp.foco=cx; impPintar(); }
     else if(t.hasAttribute("data-restcand")){ imp.desc[parseInt(t.getAttribute("data-restcand"),10)]={}; impPintar(); }
-    else if(t.hasAttribute("data-emparejar")){ var ce=parseInt(t.getAttribute("data-emparejar"),10); impAsignar(ce,imp.tent[ce]); delete imp.tent[ce]; var sig=impPendientesManual()[0]; imp.foco=sig?sig.i:null; impPintar(); }
+    else if(t.hasAttribute("data-emparejar")){ var ce=parseInt(t.getAttribute("data-emparejar"),10); if(!impAdvertirDuplicado(ce,imp.tent[ce])) return; impAsignar(ce,imp.tent[ce]); delete imp.tent[ce]; var sig=impPendientesManual()[0]; imp.foco=sig?sig.i:null; impPintar(); }
     else if(t.hasAttribute("data-ignorar")){ imp.ign[parseInt(t.getAttribute("data-ignorar"),10)]=true; var sg2=impPendientesManual()[0]; imp.foco=sg2?sg2.i:null; impPintar(); }
     else if(t.id==="imp-restaurar-ign"){ imp.ign={}; impPintar(); }
     else if(t.id==="imp-auto"){ var nA=impAutoSimilar(); impMensaje(nA?nA+" par(es) propuesto(s) por parecido de encabezados. Revisa los ejemplos y confirma.":"No se encontraron más pares con suficiente parecido."); impPintar(); }
-    else if(t.id==="imp-confirmar-todo"){ imp.mapas.forEach(function(m){ m.conf=true; }); imp.resultado=null; impPintar(); }
+    else if(t.id==="imp-confirmar-todo"){
+      var rep0=[]; imp.mapas.forEach(function(m){ if(m.target==="@obs") return; var igual=imp.mapas.filter(function(x){ return x.target===m.target && x!==m && (x.conf||!m.conf); }); if(igual.length && rep0.indexOf(m.target)<0) rep0.push(m.target); });
+      if(rep0.length && !confirm("Hay campos que recibirían más de una columna: "+rep0.map(function(k){ return "«"+((impObjetivo(k)||{}).l||k)+"»"; }).join(", ")+".\n\nEn cada fila se usa el valor de la columna emparejada primero; la otra solo completa las filas donde la primera esté vacía y en las demás no se importa.\n\n¿Aceptar de todos modos?")) return;
+      imp.mapas.forEach(function(m){ m.conf=true; }); imp.resultado=null; impPintar(); }
     else if(t.id==="imp-limpiar-prop"){ imp.mapas=imp.mapas.filter(function(m){ return m.conf; }); imp.resultado=null; impPintar(); }
-    else if(t.hasAttribute("data-confirmar")){ var mc=imp.mapas[parseInt(t.getAttribute("data-confirmar"),10)]; if(mc) mc.conf=true; imp.resultado=null; impPintar(); }
+    else if(t.hasAttribute("data-confirmar")){ var mc=imp.mapas[parseInt(t.getAttribute("data-confirmar"),10)]; if(mc){ if(!impAdvertirDuplicado(mc.col,mc.target)) return; mc.conf=true; } imp.resultado=null; impPintar(); }
     else if(t.hasAttribute("data-deshacer")){ var md=imp.mapas[parseInt(t.getAttribute("data-deshacer"),10)]; if(md) md.conf=false; imp.resultado=null; impPintar(); }
     else if(t.hasAttribute("data-pc")){ var cp=parseInt(t.getAttribute("data-pc"),10), kp=t.getAttribute("data-pk"); impAsignar(cp,kp); imp.sel=null; impPintar(); }
     else if(t.hasAttribute("data-mascol")){ var cm=parseInt(t.getAttribute("data-mascol"),10); imp.ejem[cm]=(imp.ejem[cm]||8)+8; impPintar(); }
@@ -6013,53 +6223,103 @@ function iniciarImportador(){
 iniciarImportador();
 function iniciarMover(){
   var det=document.getElementById("sub-mover"); if(!det) return;
-  var listo=false, plan=null;
-  function campos(){ return impObjetivos().filter(function(o){ return o.k.charAt(0)!=="@" && o.k.indexOf("L:")!==0 && (o.tipo==="texto"||o.tipo==="lista"||o.tipo==="numero"||o.tipo==="fecha"); }); }
+  var listo=false, plan=null, planDet=null;
+  var ESP=["@nombre","@calificador","@determinador","@fechaDet","@prevDet"];
+  var VACIA={nombreCientifico:"",determinador:"",fechaDeterminacion:"",calificador:""};
+  function campos(){
+    return impObjetivos().filter(function(o){ return (o.k.charAt(0)!=="@" && o.k.indexOf("L:")!==0 && ["texto","lista","numero","fecha","lat","lng","hora"].indexOf(o.tipo)>-1) || ESP.indexOf(o.k)>-1; })
+      .sort(function(a,b){ return a.l.localeCompare(b.l,"es"); });
+  }
+  function getV(r,k){
+    if(k.charAt(0)!=="@") return r[k];
+    var d=r.determinaciones||[], u=d[d.length-1];
+    if(k==="@prevDet") return d.length>1?d[d.length-2].nombreCientifico:"";
+    if(!u) return "";
+    return {"@nombre":u.nombreCientifico,"@calificador":u.calificador,"@determinador":u.determinador,"@fechaDet":u.fechaDeterminacion}[k];
+  }
+  function setV(r,k,v){
+    if(k.charAt(0)!=="@"){ r[k]=v; return; }
+    r.determinaciones=r.determinaciones||[]; var d=r.determinaciones;
+    if(k==="@prevDet"){ if(d.length<2) d.unshift(clonar(VACIA)); d[d.length-2].nombreCientifico=v; }
+    else { if(!d.length) d.push(clonar(VACIA)); var u=d[d.length-1]; u[{"@nombre":"nombreCientifico","@calificador":"calificador","@determinador":"determinador","@fechaDet":"fechaDeterminacion"}[k]]=v; }
+    r.determinaciones=d.filter(function(e){ return e.nombreCientifico||e.determinador||e.fechaDeterminacion||e.calificador; });
+  }
+  function opciones(q,sel){
+    var f=normTxt(q||"").trim(), cs=campos().filter(function(o){ return !f || normTxt(o.l+" "+o.k).indexOf(f)>-1; });
+    return cs.length?cs.map(function(o){ return '<option value="'+escapeHtml(o.k)+'"'+(o.k===sel?' selected':'')+'>'+escapeHtml(o.l)+'</option>'; }).join(""):'<option value="">Sin resultados</option>';
+  }
   function llenar(){
-    var cs=campos(), op=cs.map(function(o){ return '<option value="'+escapeHtml(o.k)+'">'+escapeHtml(o.l)+'</option>'; }).join("");
-    document.getElementById("mv-origen").innerHTML=op; document.getElementById("mv-destino").innerHTML=op;
-    document.getElementById("mv-origen").value="coleccionNombre"; document.getElementById("mv-destino").value="ubicacionColeccion";
+    var o=document.getElementById("mv-origen"), d=document.getElementById("mv-destino");
+    o.innerHTML=opciones("","coleccionNombre"); d.innerHTML=opciones("","ubicacionColeccion");
     var arch={}; registros.forEach(function(r){ var a=r.origenImportacion&&r.origenImportacion.archivo; if(a) arch[a]=(arch[a]||0)+1; });
     document.getElementById("mv-alcance").innerHTML='<option value="">todos ('+registros.length+')</option>'+Object.keys(arch).map(function(a){ return '<option value="a:'+escapeHtml(a)+'">importados desde «'+escapeHtml(a)+'» ('+arch[a]+')</option>'; }).join("");
   }
+  function filtrar(idSel,q){ var se=document.getElementById(idSel), act=se.value; se.innerHTML=opciones(q,act); if(!se.value && se.options.length) se.selectedIndex=0; se.size=q.trim()?Math.min(7,se.options.length+1):1; if(se.size>1) se.size=Math.max(2,Math.min(7,se.options.length)); }
   det.addEventListener("toggle", function(){ if(det.open && !listo){ listo=true; llenar(); } });
+  document.getElementById("mv-origen-q").addEventListener("input", function(){ filtrar("mv-origen",this.value); });
+  document.getElementById("mv-destino-q").addEventListener("input", function(){ filtrar("mv-destino",this.value); });
   function calcular(){
     var o=document.getElementById("mv-origen").value, d=document.getElementById("mv-destino").value, al=document.getElementById("mv-alcance").value, rem=document.getElementById("mv-reemplazar").checked;
+    if(!o||!d) return {error:"Elige un campo de origen y uno de destino."};
     if(o===d) return {error:"El origen y el destino son el mismo campo."};
     var lista=registros.filter(function(r){ return !al || (r.origenImportacion&&"a:"+r.origenImportacion.archivo===al); });
     var mover=[], conflicto=0, sinValor=0;
     lista.forEach(function(r){
-      var v=r[o]; if(v==null||String(v).trim()===""){ sinValor++; return; }
-      if(r[d]!=null && String(r[d]).trim()!=="" && !rem){ conflicto++; return; }
+      var v=getV(r,o); if(v==null||String(v).trim()===""){ sinValor++; return; }
+      var w=getV(r,d); if(w!=null && String(w).trim()!=="" && !rem){ conflicto++; return; }
       mover.push(r);
     });
     return {o:o,d:d,mover:mover,conflicto:conflicto,sinValor:sinValor,total:lista.length};
+  }
+  function respaldo(pref){
+    var f=new Date(), url=URL.createObjectURL(zipDeRespaldo(registros)), a=document.createElement("a");
+    a.href=url; a.download=pref+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
   }
   document.getElementById("mv-ver").addEventListener("click", function(){
     if(modoAcceso!=="admin") return;
     plan=calcular(); var m=document.getElementById("mv-msg");
     if(plan.error){ m.textContent=plan.error; document.getElementById("mv-aplicar").disabled=true; return; }
-    var ej=plan.mover.slice(0,3).map(function(r){ return "«"+r[plan.o]+"»"; }).join(", ");
+    var ej=plan.mover.slice(0,3).map(function(r){ return "«"+getV(r,plan.o)+"»"; }).join(", ");
     m.textContent=plan.mover.length+" de "+plan.total+" registro(s) cambiarían"+(ej?" (por ejemplo "+ej+")":"")+". "+plan.sinValor+" no tienen valor en el origen"+(plan.conflicto?" y "+plan.conflicto+" ya tienen valor en el destino (se dejan igual)":"")+".";
     document.getElementById("mv-aplicar").disabled=!plan.mover.length;
   });
   document.getElementById("mv-aplicar").addEventListener("click", function(){
     if(modoAcceso!=="admin"||!plan||!plan.mover.length) return;
     if(!confirm("Se modificarán "+plan.mover.length+" registro(s). ¿Continuar?")) return;
-    if(document.getElementById("mv-respaldo").checked && registros.length){
-      var f=new Date(), url=URL.createObjectURL(zipDeRespaldo(registros)), a=document.createElement("a");
-      a.href=url; a.download="Respaldo_antes_de_mover_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
-      document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
-    }
+    if(document.getElementById("mv-respaldo").checked && registros.length) respaldo("Respaldo_antes_de_mover_");
     var ahora=new Date().toISOString(), vaciar=document.getElementById("mv-vaciar").checked;
-    plan.mover.forEach(function(r){ r[plan.d]=r[plan.o]; if(vaciar) r[plan.o]=""; r.modificadoEn=ahora; r.modificadoPor=operadorActual(); });
+    plan.mover.forEach(function(r){ var v=getV(r,plan.o); setV(r,plan.d,v); if(vaciar) setV(r,plan.o,""); r.modificadoEn=ahora; r.modificadoPor=operadorActual(); });
     persistir(); refrescarPanelesRegistros();
     registrarActividad("edicion","mover "+plan.o+" → "+plan.d+" en "+plan.mover.length+" registros");
     if(carpetaHandle) sincronizarCarpeta(false);
     document.getElementById("mv-msg").textContent="Listo: "+plan.mover.length+" registro(s) modificados."; document.getElementById("mv-aplicar").disabled=true; plan=null;
   });
+  // reparación de determinaciones: la vigente quedó sin nombre y la anterior solo tiene el nombre
+  function afectados(){
+    return registros.filter(function(r){ var d=r.determinaciones||[]; if(d.length<2) return false; var u=d[d.length-1], p=d[d.length-2];
+      return !String(u.nombreCientifico||"").trim() && String(p.nombreCientifico||"").trim() && !String(p.determinador||"").trim() && !String(p.fechaDeterminacion||"").trim(); });
+  }
+  document.getElementById("mv-det-ver").addEventListener("click", function(){
+    if(modoAcceso!=="admin") return;
+    planDet=afectados(); var ej=planDet.slice(0,3).map(function(r){ var d=r.determinaciones; return "«"+d[d.length-2].nombreCientifico+"»"; }).join(", ");
+    document.getElementById("mv-det-msg").textContent=planDet.length+" registro(s) tienen la determinación vigente sin nombre y un nombre en la anterior"+(ej?" (por ejemplo "+ej+")":"")+".";
+    document.getElementById("mv-det-aplicar").disabled=!planDet.length;
+  });
+  document.getElementById("mv-det-aplicar").addEventListener("click", function(){
+    if(modoAcceso!=="admin"||!planDet||!planDet.length) return;
+    if(!confirm("Se repararán "+planDet.length+" registro(s). Se descargará antes un respaldo. ¿Continuar?")) return;
+    respaldo("Respaldo_antes_de_reparar_determinaciones_");
+    var ahora=new Date().toISOString();
+    planDet.forEach(function(r){ var d=r.determinaciones, u=d[d.length-1], p=d[d.length-2]; u.nombreCientifico=p.nombreCientifico; if(!u.calificador) u.calificador=p.calificador||""; d.splice(d.length-2,1); r.modificadoEn=ahora; r.modificadoPor=operadorActual(); });
+    persistir(); refrescarPanelesRegistros();
+    registrarActividad("edicion","reparar determinaciones sin nombre vigente en "+planDet.length+" registros");
+    if(carpetaHandle) sincronizarCarpeta(false);
+    document.getElementById("mv-det-msg").textContent="Listo: "+planDet.length+" registro(s) reparados."; document.getElementById("mv-det-aplicar").disabled=true; planDet=null;
+  });
 }
 iniciarMover();
+instalarAyudasCampos();
 
 iniciarSelectsOtro();
 

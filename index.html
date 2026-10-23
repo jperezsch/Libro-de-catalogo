@@ -442,6 +442,7 @@
   .fila-repetible .tag-vigente{position:absolute;top:-9px;left:12px;background:var(--accent);color:#fff;font-size:10px;padding:1px 9px;border-radius:999px;font-family:var(--mono);letter-spacing:.3px;}
   .fila-repetible .quitar{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--danger);cursor:pointer;font-size:17px;line-height:1;}
   .oculto{display:none !important;}
+  html,body{overflow-anchor:none;}
   footer.acciones{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
   .nota{font-size:13.5px;color:var(--ink-soft);margin-top:6px;}
   .banda-borrador{background:var(--warn-soft);border:1px solid var(--warn);color:var(--warn);padding:8px 12px;border-radius:8px;font-size:12px;margin-bottom:12px;}
@@ -648,8 +649,9 @@
   .aviso-dup{grid-column:1/-1;margin:2px 0 0;font-size:13px;color:#a3261c;font-weight:600;}
   .aviso-dup button{margin-left:8px;font-weight:400;}
   #aviso-cat-dup{border:1px solid #a3261c;background:#fbeceb;color:#7d1a12;border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:13.5px;}
-  #pend-tabla table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
-  #pend-tabla th,#pend-tabla td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;}
+  #pend-tabla table,#cb-tabla table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+  #cb-tabla{max-height:340px;overflow:auto;}
+  #pend-tabla th,#pend-tabla td,#cb-tabla th,#cb-tabla td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;}
   #pend-tabla .pend-rep{color:#a3261c;font-weight:600;}
   .aviso-limitado .aviso-texto{font-weight:400;}
   .aviso-guardado{background:#f6dcd6;border-bottom-color:#b3402a;}
@@ -1170,6 +1172,32 @@
         <div class="imp-ayuda"><p><strong>Determinación que quedó como secundaria.</strong> Si importaste una planilla con el nombre en «Determinación anterior» y también un determinador o una fecha, el nombre pudo quedar en una determinación anterior y la vigente quedó sin nombre. Este botón busca esos registros y pasa el nombre a la determinación vigente. Solo toca registros cuya determinación anterior tiene únicamente el nombre.</p>
         <div class="barra-botones"><button type="button" class="btn secundario" id="mv-det-ver">Buscar registros afectados</button><button type="button" class="btn" id="mv-det-aplicar" disabled>Reparar determinaciones</button></div><p class="nota" id="mv-det-msg"></p></div>
       </details>
+      <details class="subbloque-gest" id="sub-bloque">
+        <summary>Correcciones en bloque</summary>
+        <p class="nota">Cambia un mismo campo en muchos registros a la vez, por ejemplo para fijar la ubicación en la colección de todo un lote. Sigue tres pasos: elige los registros, elige el campo y el dato nuevo, y revisa el resumen antes de aplicar.</p>
+        <h4>1. Elegir los registros</h4>
+        <div class="grid">
+          <div class="campo opc"><div class="lbl"><span class="name">Buscar</span></div><input class="nav" id="cb-buscar" autocomplete="off" placeholder="Campo, entrada, catálogo, taxón, localidad, colector…"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Colección</span></div><select class="nav" id="cb-coleccion"></select></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Sesión de ingreso</span></div><select class="nav" id="cb-sesion"></select></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Sesión de edición</span></div><select class="nav" id="cb-sesion-ed"></select></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Importados desde</span></div><select class="nav" id="cb-origen"></select></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Según el campo que cambiarás</span></div><select class="nav" id="cb-solo"><option value="">Cualquier valor actual</option><option value="vacio">Solo los que lo tienen vacío</option><option value="conValor">Solo los que ya tienen algún valor</option></select></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Solo si el valor actual del campo es</span></div><input class="nav" id="cb-actual" autocomplete="off" placeholder="Texto exacto (sin distinguir mayúsculas ni tildes)"></div>
+        </div>
+        <div class="barra-botones">
+          <button type="button" class="btn secundario small" id="cb-marcar">Marcar todos los que coinciden</button>
+          <button type="button" class="btn tenue small" id="cb-quitar">Quitar todas las marcas</button>
+        </div>
+        <p class="nota" id="cb-cuenta"></p>
+        <div id="cb-tabla"></div>
+        <h4>2. Campo y dato nuevo</h4>
+        <div class="imp-fila-opc mv-fila"><div><label>Campo que se cambia</label><div class="combo" id="cb-campo" data-tipo="cb" data-id="cb-campo" data-valor=""><button type="button" class="combo-btn">Elige un campo…</button></div></div><div><label>Dato nuevo</label><span id="cb-valor-cont"></span></div></div>
+        <div class="imp-fila-opc"><label><input type="checkbox" id="cb-vaciar"> Dejar el campo vacío (borrar el dato)</label><label><input type="checkbox" id="cb-respaldo" checked> Descargar un zip de respaldo antes de aplicar</label></div>
+        <h4>3. Revisar y aplicar</h4>
+        <div class="barra-botones"><button type="button" class="btn secundario" id="cb-ver">Ver cuántos cambiarían</button><button type="button" class="btn" id="cb-aplicar" disabled>Aplicar</button></div>
+        <p class="nota" id="cb-msg"></p>
+      </details>
       <details class="subbloque-gest" id="sub-exportar" open>
         <summary>Exportar datos</summary>
       <div class="grid">
@@ -1277,7 +1305,7 @@
 
     <details class="bloque bloque-desp" id="det-carpeta">
       <summary>Carpeta local <button type="button" class="ayuda-btn" data-ayuda="ayuda-carpeta" aria-label="Ayuda" title="Ayuda">?</button></summary>
-      <div class="ayuda-panel oculto" id="ayuda-carpeta">Es la carpeta de este equipo donde la app guarda una copia de cada registro, las fotos y los archivos asociados. Los datos siguen guardándose también en el navegador. Funciona en Chrome y Edge.<br><strong>Ubicación recomendada:</strong> créala directamente en la unidad C: (por ejemplo C:\Libro_de_Catalogo), no dentro de Documentos, Escritorio ni OneDrive. Así todos los equipos usan la misma ruta corta y se evitan bloqueos del navegador.</div>
+      <div class="ayuda-panel oculto" id="ayuda-carpeta">Es la carpeta de este equipo donde la app guarda una copia de cada registro, las fotos y los archivos asociados. Los datos siguen guardándose también en el navegador. Funciona en Chrome y Edge. «Ver carpeta local» abre el selector de archivos del sistema ya ubicado en esa carpeta, porque el navegador no puede abrir el Explorador de archivos; si eliges un archivo, se abre en una pestaña nueva.<br><strong>Ubicación recomendada:</strong> créala directamente en la unidad C: (por ejemplo C:\Libro_de_Catalogo), no dentro de Documentos, Escritorio ni OneDrive. Así todos los equipos usan la misma ruta corta y se evitan bloqueos del navegador.</div>
 
       <div class="carpeta-estado" id="carpeta-estado-caja">
         <span class="punto"></span>
@@ -1285,6 +1313,7 @@
         <span class="btns">
           <button class="btn small" id="btn-carpeta-elegir">Elegir carpeta local</button>
           <button class="btn small oculto" id="btn-carpeta-reconectar">Reconectar</button>
+          <button class="btn small secundario oculto" id="btn-carpeta-ver" title="Abre el selector de archivos del sistema ya ubicado en la Carpeta local">Ver carpeta local</button>
           <button class="btn small tenue oculto" id="btn-carpeta-desconectar">Desconectar</button>
         </span>
       </div>
@@ -1361,7 +1390,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.62";
+var APP_VERSION = "v0.9.63";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1493,6 +1522,10 @@ function errorGuardado(e){
   mostrarAvisoGuardado((q?"El navegador no tiene espacio para guardar los registros. ":"No se pudo guardar en este navegador. ")+"Los cambios siguen en pantalla: descarga un respaldo ahora para no perderlos.");
 }
 function selloFecha(){ var f=new Date(); return f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes()); }
+// Zip solo con los datos, descargado antes de un cambio masivo. La copia de los registros se toma de inmediato.
+function respaldoPrevio(prefijo){
+  return zipDeRespaldo(registros,false).then(function(z){ descargarBlob(z.blob, prefijo+selloFecha()+".zip"); }).catch(function(e){ registrarError("respaldo previo a un cambio masivo", e); });
+}
 function descargarBlob(blob, nombre){
   var url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
@@ -1759,7 +1792,19 @@ tabButtons.forEach(function(btn){ btn.addEventListener("click", function(){ acti
   },{passive:true});
 })();
 
-// ---------- navegación con Enter ----------
+// ---------- navegación con Enter y con las flechas izquierda y derecha ----------
+function camposNavegables(){
+  var p=document.querySelector(".tabpanel.active"); if(!p) return [];
+  return Array.prototype.slice.call(p.querySelectorAll(".nav")).filter(function(el){ return !el.disabled && el.type!=="hidden" && el.offsetParent!==null; });
+}
+function irACampo(t, dir){
+  var c=camposNavegables(), i=c.indexOf(t); if(i<0) return false;
+  var n=c[i+dir]; if(!n) return false;
+  n.focus();
+  try{ if(n.tagName==="INPUT" && /^(text|search|email|url|tel|password)$/.test(n.type||"text")) n.select(); }catch(err){}
+  try{ n.scrollIntoView({block:"nearest"}); }catch(err){}
+  return true;
+}
 document.addEventListener("keydown", function(e){
   if(e.key!=="Enter") return;
   var t=e.target;
@@ -1767,10 +1812,24 @@ document.addEventListener("keydown", function(e){
   if(!t.classList || !t.classList.contains("nav")) return;
   e.preventDefault();
   if(t.tagName==="BUTTON"){ t.click(); return; }
-  var activePanel=document.querySelector(".tabpanel.active");
-  var campos=Array.prototype.slice.call(activePanel.querySelectorAll(".nav"));
-  var idx=campos.indexOf(t);
-  if(idx>-1 && idx<campos.length-1){ campos[idx+1].focus(); try{campos[idx+1].select();}catch(err){} }
+  irACampo(t, 1);
+});
+// Flechas: en un campo de texto solo pasan al campo vecino cuando el cursor está en el borde (o todo el texto está seleccionado), para no estorbar la edición.
+// Las fechas y horas conservan las flechas para moverse entre día, mes y año.
+document.addEventListener("keydown", function(e){
+  if((e.key!=="ArrowLeft" && e.key!=="ArrowRight") || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.defaultPrevented) return;
+  var t=e.target; if(!t || !t.classList || !t.classList.contains("nav")) return;
+  var tipo=(t.type||"").toLowerCase();
+  if(t.tagName==="INPUT" || t.tagName==="TEXTAREA"){
+    if(["date","time","datetime-local","month","week","number","range"].indexOf(tipo)>-1) return;
+    if(tipo!=="checkbox" && tipo!=="radio"){
+      var a=t.selectionStart, b=t.selectionEnd, n=t.value.length;
+      if(a==null) return;
+      var todo=(a===0 && b===n);
+      if(!todo && (a!==b || (e.key==="ArrowLeft" ? a!==0 : a!==n))) return;
+    }
+  }
+  if(irACampo(t, e.key==="ArrowLeft" ? -1 : 1)) e.preventDefault();
 });
 
 // ---------- autocompletado ----------
@@ -1870,7 +1929,9 @@ var STD_DEF = [
   {g:"Personas e instituciones", id:"instituciones", nombre:"Instituciones", desc:"Instituciones o personas que legan o depositan material.", campos:[["legatario","Legatario"]]},
   {g:"Personas e instituciones", id:"proyectos", nombre:"Proyectos", desc:"Proyectos o iniciativas de origen del material.", campos:[["proyectoOrigen","Proyecto / iniciativa de origen"]]},
   {g:"Personas e instituciones", id:"colecciones", nombre:"Colecciones", desc:"Nombres de las colecciones a las que pertenecen los ejemplares.", campos:[["coleccionNombre","Nombre de la colección"]]},
-  {g:"Lugares", id:"localidades", nombre:"Localidades y estaciones", desc:"Nombres de lugares de colecta, escritos de forma consistente.", campos:[["localidad","Localidad"],["estacion","Estación"]]},
+  {g:"Lugares", id:"localidades", nombre:"Localidades", desc:"Nombres de lugares de colecta, escritos de forma consistente.", campos:[["localidad","Localidad"]]},
+  {g:"Lugares", id:"localidadesVerbatim", nombre:"Localidades (verbatim)", desc:"Localidades tal como figuran en la etiqueta o la libreta, sin corregir. Se ofrecen para escribir más rápido las ya usadas.", campos:[["localidadVerbatim","Localidad (verbatim)"]]},
+  {g:"Lugares", id:"estaciones", nombre:"Estaciones", desc:"Estaciones o puntos de muestreo. Sus sugerencias son distintas de las de las localidades.", campos:[["estacion","Estación"]]},
   {g:"Lugares", id:"divisiones", nombre:"Regiones, provincias y comunas", desc:"Divisiones administrativas escritas a mano (las de Chile se eligen de su lista propia; esta lista sirve para otros países o zonas).", campos:[["region","Región o zona"],["provincia","Provincia o zona"],["comuna","Comuna o zona"]]},
   {g:"Lugares", id:"ubicaciones", nombre:"Ubicaciones en la colección", desc:"Gabinetes, cajas y otras ubicaciones físicas.", campos:[["ubicacionColeccion","Ubicación en colección"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"],["@submuestras.ubicacionAlmacenamiento","Ubicación de almacenamiento de submuestras"]]},
   {g:"Taxonomía", id:"taxones", nombre:"Nombres científicos", desc:"Nombres científicos de las determinaciones y nombres de referencia de terreno.", campos:[["taxon","Taxón (referencia de terreno)"],["@determinaciones.nombreCientifico","Nombre científico de la determinación"]]},
@@ -2138,11 +2199,7 @@ function stdAviso(inp){
 }
 document.addEventListener("change", function(e){ var t=e.target; if(t && t.tagName==="INPUT"){ if(stdListaDe(t)) stdAviso(t); else stdQuitarAviso(t); } });
 
-function stdRespaldo(){
-  var f=new Date(), url=URL.createObjectURL(zipDeRespaldo(registros)), a=document.createElement("a");
-  a.href=url; a.download="Respaldo_antes_de_estandarizar_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
-  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
-}
+function stdRespaldo(){ return respaldoPrevio("Respaldo_antes_de_estandarizar_"); }
 function stdCerrarCambios(n, detalle){
   if(n){ persistir(); refrescarPanelesRegistros(); if(carpetaHandle) sincronizarCarpeta(false); }
   registrarActividad("edicion","estandarización · "+detalle);
@@ -4066,7 +4123,13 @@ function actualizarAvisoConteo(){
 var FOOTERS_CFG = [
   {tab:"entrada"}, {tab:"preparacion"}, {tab:"deposito"}, {tab:"manejo", ultimo:true}
 ];
-function irAlInicioFormulario(){ try{ window.scrollTo({top:0,left:0,behavior:"auto"}); }catch(e){ window.scrollTo(0,0); } var d=document.documentElement; d.scrollTop=0; document.body.scrollTop=0; }
+// Lleva la vista al inicio de la pestaña. Se repite tras pintar para que el cambio de alto del contenido no la desplace.
+function irAlInicioFormulario(){
+  var ir=function(){ try{ window.scrollTo({top:0,left:0,behavior:"auto"}); }catch(e){ window.scrollTo(0,0); } var d=document.documentElement; d.scrollTop=0; document.body.scrollTop=0; };
+  ir();
+  if(window.requestAnimationFrame) requestAnimationFrame(function(){ ir(); requestAnimationFrame(ir); });
+  setTimeout(ir,150);
+}
 function actualizarFooterAcciones(){
   var modo = activoId===null ? "nuevo" : (editando ? "edicion" : "consulta");
   FOOTERS_CFG.forEach(function(cfg){
@@ -4156,7 +4219,7 @@ function cargarRegistroEnBorrador(id, modoEdicion){ if(modoAcceso!=="admin") mod
   cargarRegistroEnFormulario();
   refrescarPanelesRegistros();
 }
-function nuevoRegistro(){ if(modoAcceso!=="admin") return; iniciarNuevoBorrador(); }
+function nuevoRegistro(){ if(modoAcceso!=="admin") return; iniciarNuevoBorrador(); activarTab("entrada"); irAlInicioFormulario(); }
 function consultarRegistro(id){ cargarRegistroEnBorrador(id, false); }
 function editarRegistro(id){ if(modoAcceso!=="admin") return;
   if(carpetaHandle){ bloqueoConfirmarEdicion(id).then(function(ok){ if(ok) editarRegistroYa(id); }); return; }
@@ -5081,7 +5144,7 @@ function actualizarUICarpeta(){
   bElegir.textContent = carpetaHandle ? "Cambiar carpeta" : "Elegir carpeta local";
   bElegir.classList.toggle("oculto", !soportaCarpeta());
   document.getElementById("btn-carpeta-reconectar").classList.toggle("oculto", !(carpetaHandle && carpetaEstado==="permiso"));
-  ["btn-carpeta-desconectar","ac-sincronizar","ac-respaldo","ac-reordenar"].forEach(function(id){
+  ["btn-carpeta-desconectar","btn-carpeta-ver","ac-sincronizar","ac-respaldo","ac-reordenar"].forEach(function(id){
     document.getElementById(id).classList.toggle("oculto", !carpetaHandle);
   });
   var aviso=document.getElementById("aviso-carpeta"), tx=document.getElementById("aviso-carpeta-texto");
@@ -5121,6 +5184,24 @@ async function iniciarCarpeta(){
 }
 document.getElementById("btn-carpeta-elegir").addEventListener("click", elegirCarpeta);
 document.getElementById("btn-carpeta-reconectar").addEventListener("click", reconectarCarpeta);
+// Un sitio web no puede abrir el Explorador de archivos: lo más cercano es el selector del sistema, ubicado en la Carpeta local.
+async function verCarpetaLocal(){
+  if(!carpetaHandle) return;
+  if(typeof window.showOpenFilePicker!=="function"){ mensajeCarpeta("Este navegador no permite abrir el selector de archivos."); return; }
+  if(!(await permisoCarpeta(true))){ carpetaEstado="permiso"; actualizarUICarpeta(); return; }
+  mensajeCarpeta("Se abrió el selector de archivos en la carpeta «"+(carpetaHandle.name||"Carpeta local")+"». Para cerrarlo sin elegir nada, pulsa Cancelar.");
+  try{
+    var hs=await window.showOpenFilePicker({startIn:carpetaHandle, multiple:false});
+    if(hs && hs[0]){
+      var f=await hs[0].getFile(), ruta="";
+      try{ var rr=await carpetaHandle.resolve(hs[0]); ruta=rr ? rr.join("/") : ""; }catch(e){}
+      var url=URL.createObjectURL(f), w=window.open(url,"_blank");
+      setTimeout(function(){ URL.revokeObjectURL(url); },120000);
+      mensajeCarpeta(w ? "Abierto en una pestaña nueva: "+(ruta||f.name) : "Elegiste "+(ruta||f.name)+". El navegador bloqueó abrirlo en una pestaña nueva.");
+    } else mensajeCarpeta("");
+  }catch(e){ if(e && e.name==="AbortError") mensajeCarpeta(""); else mensajeCarpeta("No se pudo abrir la carpeta: "+((e&&e.message)||e)); }
+}
+document.getElementById("btn-carpeta-ver").addEventListener("click", verCarpetaLocal);
 document.getElementById("btn-carpeta-sincronizar").addEventListener("click", function(){ sincronizarCarpeta(true); });
 document.getElementById("btn-carpeta-actualizar").addEventListener("click", function(){ actualizarDesdeCarpeta(true); });
 document.getElementById("btn-carpeta-respaldo").addEventListener("click", respaldoCompleto);
@@ -7327,11 +7408,11 @@ async function importarZipRespaldo(file){ if(modoAcceso!=="admin") return;
 // en los campos de la app con un emparejamiento de dos columnas (arrastrar, o elegir en el selector).
 // =====================================================================================
 // ---------- lista desplegable con buscador (combo) ----------
-var moverCamposFn=null, comboPop=null;
+var moverCamposFn=null, moverApi=null, cbCampoCambio=null, comboPop=null;
 function comboHtml(tipo,id,valor,etiqueta,extra){ return '<div class="combo" data-tipo="'+tipo+'" data-id="'+id+'" data-valor="'+escapeHtml(valor||"")+'"'+(extra||"")+'><button type="button" class="combo-btn">'+escapeHtml(etiqueta)+'</button></div>'; }
 function comboOpciones(el,filtro){
   var f=normTxt(filtro||"").trim(), tipo=el.getAttribute("data-tipo"), out=[];
-  if(tipo==="mv"){ (moverCamposFn?moverCamposFn():[]).forEach(function(o){ if(!f||normTxt(o.l+" "+o.k).indexOf(f)>-1) out.push({v:o.k,l:o.l,g:""}); }); return out; }
+  if(tipo==="mv"||tipo==="cb"){ (moverCamposFn?moverCamposFn():[]).forEach(function(o){ if(!f||normTxt(o.l+" "+o.k).indexOf(f)>-1) out.push({v:o.k,l:o.l,g:""}); }); return out; }
   var ci=parseInt(el.getAttribute("data-col"),10), c=imp&&imp.cols[ci], objs=impObjetivos();
   if(f) objs=objs.filter(function(o){ return normTxt(o.l+" "+o.k+" "+o.g).indexOf(f)>-1; });
   else if(c) impSugerencias(c,5).forEach(function(x){ out.push({v:x.o.k,l:x.o.l+" ("+Math.round(x.s*100)+" %)",g:"Más parecidos"}); });
@@ -7360,6 +7441,7 @@ function comboAbrir(el){
 }
 function comboElegir(el,v,l){
   var tipo=el.getAttribute("data-tipo"); comboCerrar();
+  if(tipo==="cb"){ el.setAttribute("data-valor",v); el.querySelector(".combo-btn").textContent=l; if(cbCampoCambio) cbCampoCambio(); return; }
   if(tipo==="mv"){ el.setAttribute("data-valor",v); el.querySelector(".combo-btn").textContent=l.replace(/ \(\d+ %\)$/,""); var ap=document.getElementById("mv-aplicar"); if(ap) ap.disabled=true; return; }
   var ci=parseInt(el.getAttribute("data-col"),10); imp.tent[ci]=v; imp.foco=ci; impPintar();
 }
@@ -8318,9 +8400,7 @@ async function impImportar(){
   if(!confirm("Se importarán "+rs.nuevos.length+" registro(s) nuevo(s)"+(rs.actualizados.length?" y se actualizarán "+rs.actualizados.length:"")+". ¿Continuar?")) return;
   var resp=impElem("imp-respaldo");
   if(resp&&resp.checked&&registros.length){
-    var f=new Date(), blob=zipDeRespaldo(registros), url=URL.createObjectURL(blob), a=document.createElement("a");
-    a.href=url; a.download="Respaldo_antes_de_importar_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
-    document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+    respaldoPrevio("Respaldo_antes_de_importar_");
   }
   var lista=rs.nuevos.map(function(r){ var o=clonar(r); delete o.__clave; delete o.__fila; o.id=nuevoId(); return o; }).concat(rs.actualizados);
   var esqNom=(impElem("imp-esq-chk")&&impElem("imp-esq-chk").checked)?(impElem("imp-esq-nombre").value||"").trim():"";
@@ -8481,7 +8561,7 @@ function iniciarMover(){
     else { if(!d.length) d.push(clonar(VACIA)); var u=d[d.length-1]; u[{"@nombre":"nombreCientifico","@calificador":"calificador","@determinador":"determinador","@fechaDet":"fechaDeterminacion"}[k]]=v; }
     r.determinaciones=d.filter(function(e){ return e.nombreCientifico||e.determinador||e.fechaDeterminacion||e.calificador; });
   }
-  moverCamposFn=campos;
+  moverCamposFn=campos; moverApi={campos:campos, getV:getV, setV:setV};
   function poner(id,k){ var el=document.getElementById(id), o=campos().filter(function(x){ return x.k===k; })[0]; if(!el||!o) return; el.setAttribute("data-valor",k); el.querySelector(".combo-btn").textContent=o.l; }
   function valorCombo(id){ return document.getElementById(id).getAttribute("data-valor"); }
   function llenar(){
@@ -8503,11 +8583,7 @@ function iniciarMover(){
     });
     return {o:o,d:d,mover:mover,conflicto:conflicto,sinValor:sinValor,total:lista.length};
   }
-  function respaldo(pref){
-    var f=new Date(), url=URL.createObjectURL(zipDeRespaldo(registros)), a=document.createElement("a");
-    a.href=url; a.download=pref+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
-    document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
-  }
+  function respaldo(pref){ return respaldoPrevio(pref); }
   document.getElementById("mv-ver").addEventListener("click", function(){
     if(modoAcceso!=="admin") return;
     plan=calcular(); var m=document.getElementById("mv-msg");
@@ -8551,6 +8627,128 @@ function iniciarMover(){
   });
 }
 iniciarMover();
+function iniciarBloque(){
+  var det=document.getElementById("sub-bloque"); if(!det) return;
+  var sel=new Set(), tCuenta=null, plan=null;
+  var $=function(i){ return document.getElementById(i); };
+  var campoK=function(){ return $("cb-campo").getAttribute("data-valor"); };
+  function campoActual(){ var k=campoK(); return k ? moverApi.campos().filter(function(o){ return o.k===k; })[0] : null; }
+  function llenarSelect(id, vals, todas){
+    var el=$(id), previo=el.value;
+    el.innerHTML='<option value="">'+todas+'</option>'+vals.map(function(v){ return '<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>'; }).join("");
+    if(vals.indexOf(previo)>-1) el.value=previo;
+  }
+  function llenar(){
+    llenarSelect("cb-coleccion", valoresUnicos(coleccionDeRegistro), "Todas");
+    llenarSelect("cb-sesion", valoresUnicos(sesionDeRegistro), "Todas");
+    llenarSelect("cb-sesion-ed", valoresUnicos(sesionEdicionDeRegistro), "Todas");
+    var arch={}; registros.forEach(function(r){ var a=r.origenImportacion && r.origenImportacion.archivo; if(a) arch[a]=1; });
+    llenarSelect("cb-origen", Object.keys(arch).sort(), "Cualquiera");
+  }
+  function filtrados(){
+    var q=$("cb-buscar").value.trim(), col=$("cb-coleccion").value, se=$("cb-sesion").value, sed=$("cb-sesion-ed").value, org=$("cb-origen").value, solo=$("cb-solo").value, act=normTxt($("cb-actual").value), k=campoK();
+    return registros.filter(function(r){
+      if(q && !registroCoincideFiltro(r,q)) return false;
+      if(col && coleccionDeRegistro(r)!==col) return false;
+      if(se && sesionDeRegistro(r)!==se) return false;
+      if(sed && sesionEdicionDeRegistro(r)!==sed) return false;
+      if(org && !(r.origenImportacion && r.origenImportacion.archivo===org)) return false;
+      if(k){
+        var v=String(moverApi.getV(r,k)==null?"":moverApi.getV(r,k)).trim();
+        if(solo==="vacio" && v!=="") return false;
+        if(solo==="conValor" && v==="") return false;
+        if(act && normTxt(v)!==act) return false;
+      }
+      return true;
+    });
+  }
+  function pintar(){
+    plan=null; $("cb-aplicar").disabled=true;
+    var lista=filtrados(), k=campoK(), o=campoActual(), marc=0;
+    lista.forEach(function(r){ if(sel.has(r.id)) marc++; });
+    $("cb-cuenta").textContent=lista.length+" registro(s) coinciden con los filtros; "+marc+" marcado(s) entre ellos"+(sel.size>marc?" ("+sel.size+" en total, incluidos algunos que ahora no coinciden)":"")+(!k && ($("cb-actual").value.trim()||$("cb-solo").value) ? ". Elige el campo (paso 2) para que se apliquen los filtros según el campo":"")+".";
+    var h='<table><thead><tr><th></th><th>N.º de catálogo o de campo</th><th>Nombre</th><th>Localidad</th>'+(o?'<th>'+escapeHtml(o.l)+' (actual)</th>':'')+'</tr></thead><tbody>';
+    lista.slice(0,200).forEach(function(r){
+      var et=etiquetaRegistro(r);
+      h+='<tr><td><input type="checkbox" class="cb-chk" data-id="'+r.id+'"'+(sel.has(r.id)?' checked':'')+'></td><td>'+escapeHtml(construirCatalogoCompleto(r)||(r.numeroCampo?"campo "+r.numeroCampo:"sin número"))+'</td><td>'+escapeHtml(et.nombreVigente||"")+'</td><td>'+escapeHtml(r.localidad||r.localidadVerbatim||"")+'</td>'+(o?'<td>'+escapeHtml(String(moverApi.getV(r,k)==null?"":moverApi.getV(r,k)))+'</td>':'')+'</tr>';
+    });
+    h+='</tbody></table>'+(lista.length>200?'<p class="nota">Se muestran 200 de '+lista.length+'. «Marcar todos los que coinciden» marca los '+lista.length+'.</p>':'');
+    $("cb-tabla").innerHTML=lista.length?h:'<p class="nota">Ningún registro coincide con los filtros.</p>';
+    $("cb-msg").textContent="";
+  }
+  function programar(){ clearTimeout(tCuenta); tCuenta=setTimeout(pintar,200); }
+  function ponerControlValor(){
+    var o=campoActual(), cont=$("cb-valor-cont"), h;
+    if(!o){ cont.innerHTML='<input class="nav" id="cb-valor" disabled placeholder="Primero elige el campo">'; return; }
+    if(o.tipo==="lista" && o.opciones && o.opciones.length) h='<select class="nav" id="cb-valor"><option value=""></option>'+o.opciones.map(function(v){ return '<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>'; }).join("")+'</select>';
+    else if(o.tipo==="fecha") h='<input class="nav" id="cb-valor" type="date">';
+    else if(o.tipo==="hora") h='<input class="nav" id="cb-valor" type="time">';
+    else h='<input class="nav" id="cb-valor" autocomplete="off" placeholder="Dato que se aplicará">';
+    cont.innerHTML=h;
+    var inp=$("cb-valor"), cambio=function(){ plan=null; $("cb-aplicar").disabled=true; $("cb-msg").textContent=""; };
+    inp.addEventListener("input",cambio); inp.addEventListener("change",cambio);
+  }
+  cbCampoCambio=function(){ ponerControlValor(); pintar(); };
+  function validar(o,v){
+    if(v==="") return "";
+    if(o.tipo==="fecha"){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v); if(!m) return "La fecha debe ser AAAA-MM-DD."; var d=new Date(Date.UTC(+m[1],+m[2]-1,+m[3])); if(d.getUTCMonth()!==+m[2]-1) return "Esa fecha no existe."; }
+    else if(o.tipo==="hora"){ if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) return "La hora debe ser HH:MM."; }
+    else if(o.tipo==="numero"){ if(!/^-?\d+([.,]\d+)?$/.test(v)) return "El dato debe ser un número."; }
+    else if(o.tipo==="lat"||o.tipo==="lng"){ var n=parseFloat(v.replace(",",".")); if(!/^-?\d+([.,]\d+)?$/.test(v) || Math.abs(n)>(o.tipo==="lat"?90:180)) return "Escribe grados decimales dentro del rango ("+(o.tipo==="lat"?"-90 a 90":"-180 a 180")+")."; }
+    return "";
+  }
+  function calcular(){
+    var o=campoActual(); if(!o) return {error:"Elige el campo que quieres cambiar."};
+    var vac=$("cb-vaciar").checked, v=vac ? "" : String($("cb-valor").value||"").trim();
+    if(!vac && v==="") return {error:"Escribe el dato nuevo, o marca «Dejar el campo vacío»."};
+    var inval=validar(o,v); if(inval) return {error:inval};
+    var objetivo=filtrados().filter(function(r){ return sel.has(r.id); });
+    if(!objetivo.length) return {error:"Marca al menos un registro entre los que coinciden con los filtros."};
+    var cambian=objetivo.filter(function(r){ var a=moverApi.getV(r,o.k); return String(a==null?"":a).trim()!==v; });
+    if(["catalogo","institucionAcronimo","coleccionAcronimo"].indexOf(o.k)>-1){
+      var ids={}; cambian.forEach(function(r){ ids[r.id]=1; });
+      var claves={}; registros.concat(pendientesCarpeta||[]).forEach(function(r){ if(ids[r.id]) return; var c=claveCatalogo(r); if(c) claves[c]=1; });
+      var dup=0; cambian.forEach(function(r){ var c=clonar(r); moverApi.setV(c,o.k,v); var cl=claveCatalogo(c); if(cl){ if(claves[cl]) dup++; else claves[cl]=1; } });
+      if(dup) return {error:"No se puede aplicar: "+dup+" registro(s) quedarían con un N.º de catálogo repetido. Los dos acrónimos y el número, en conjunto, deben ser únicos."};
+    }
+    return {o:o, v:v, vac:vac, cambian:cambian, iguales:objetivo.length-cambian.length, total:objetivo.length};
+  }
+  det.addEventListener("toggle", function(){ if(det.open){ llenar(); ponerControlValor(); pintar(); } });
+  ["cb-coleccion","cb-sesion","cb-sesion-ed","cb-origen","cb-solo"].forEach(function(id){ $(id).addEventListener("change", pintar); });
+  ["cb-buscar","cb-actual"].forEach(function(id){ $(id).addEventListener("input", programar); });
+  $("cb-tabla").addEventListener("change", function(e){
+    var t=e.target; if(!t.classList.contains("cb-chk")) return;
+    if(t.checked) sel.add(t.getAttribute("data-id")); else sel.delete(t.getAttribute("data-id"));
+    plan=null; $("cb-aplicar").disabled=true;
+    var lista=filtrados(), marc=0; lista.forEach(function(r){ if(sel.has(r.id)) marc++; });
+    $("cb-cuenta").textContent=lista.length+" registro(s) coinciden con los filtros; "+marc+" marcado(s) entre ellos.";
+  });
+  $("cb-marcar").addEventListener("click", function(){ filtrados().forEach(function(r){ sel.add(r.id); }); pintar(); });
+  $("cb-quitar").addEventListener("click", function(){ sel.clear(); pintar(); });
+  $("cb-vaciar").addEventListener("change", function(){ var v=$("cb-valor"); if(v) v.disabled=this.checked; plan=null; $("cb-aplicar").disabled=true; });
+  $("cb-ver").addEventListener("click", function(){
+    if(modoAcceso!=="admin") return;
+    plan=calcular(); var m=$("cb-msg");
+    if(plan.error){ m.textContent=plan.error; $("cb-aplicar").disabled=true; plan=null; return; }
+    var ej=plan.cambian.slice(0,3).map(function(r){ var a=moverApi.getV(r,plan.o.k); return "«"+(a==null||String(a)===""?"vacío":a)+"» → «"+(plan.v||"vacío")+"»"; }).join(", ");
+    m.textContent=plan.cambian.length+" de "+plan.total+" registro(s) marcados cambiarían el campo «"+plan.o.l+"»"+(ej?" (por ejemplo "+ej+")":"")+(plan.iguales?"; "+plan.iguales+" ya tienen ese valor":"")+".";
+    $("cb-aplicar").disabled=!plan.cambian.length;
+  });
+  $("cb-aplicar").addEventListener("click", function(){
+    if(modoAcceso!=="admin" || !plan || !plan.cambian.length) return;
+    var p=plan;
+    if(!confirm("Se cambiará el campo «"+p.o.l+"» a «"+(p.v||"vacío")+"» en "+p.cambian.length+" registro(s). ¿Continuar?")) return;
+    if($("cb-respaldo").checked && registros.length) respaldoPrevio("Respaldo_antes_de_correccion_en_bloque_");
+    var ahora=new Date().toISOString(), quien=operadorActual();
+    p.cambian.forEach(function(r){ moverApi.setV(r,p.o.k,p.v); r.modificadoEn=ahora; r.modificadoPor=quien; });
+    persistir(); refrescarPanelesRegistros();
+    registrarActividad("edicion","corrección en bloque · "+p.o.k+" en "+p.cambian.length+" registros");
+    if(carpetaHandle) sincronizarCarpeta(false);
+    pintar();
+    $("cb-msg").textContent="Listo: "+p.cambian.length+" registro(s) modificados en el campo «"+p.o.l+"».";
+  });
+}
+iniciarBloque();
 instalarAyudasCampos();
 
 iniciarSelectsOtro();

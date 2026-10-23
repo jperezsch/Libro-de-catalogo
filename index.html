@@ -643,6 +643,12 @@
   .btn-ver-compacto:hover{opacity:1;background:var(--accent-soft);}
   .aviso-carpeta{background:var(--warn-soft);border-bottom:2px solid var(--warn);color:var(--ink);padding:10px var(--gutter);display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14.5px;}
   .aviso-carpeta .aviso-texto{flex:1;min-width:220px;font-weight:600;}
+  .aviso-limitado .aviso-texto{font-weight:400;}
+  .aviso-guardado{background:#f6dcd6;border-bottom-color:#b3402a;}
+  .det-errores{margin-top:8px;} .det-errores summary{cursor:pointer;font-size:14px;}
+  .txt-errores{max-height:220px;overflow:auto;white-space:pre-wrap;font-size:12px;background:var(--panel-soft,#f3f1ea);padding:8px;border-radius:8px;}
+  .espacio-alerta{color:#a1402a;font-weight:600;}
+  .inicio-limitado{color:#2b2b24;margin:14px auto;max-width:460px;font-size:13.5px;line-height:1.45;text-align:left;background:var(--warn-soft);border:1px solid var(--warn);border-radius:10px;padding:10px 12px;}
   .barra-botones{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
   .ayuda-btn{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--accent);background:#fff;color:var(--accent);font-size:13px;font-weight:800;line-height:1;cursor:pointer;vertical-align:middle;margin-left:6px;padding:0;}
   .ayuda-btn:hover{background:var(--accent);color:#fff;}
@@ -685,6 +691,7 @@
       <datalist id="inicio-sugerencias"></datalist>
       <p class="inicio-aviso" id="inicio-aviso"></p>
     </div>
+    <p class="inicio-limitado oculto" id="inicio-limitado"><strong>Uso con limitaciones.</strong> Este navegador (por ejemplo, Chrome del teléfono) no permite carpetas ni asociar archivos. Aquí puedes ingresar los datos de los registros y descargar archivos de respaldo (Sistema, Gestión de datos, Exportar datos) para enviarlos. Fotos, PDF, adjuntos y la Carpeta local requieren Chrome o Edge en un computador.</p>
     <button type="button" id="btn-modo-consulta" class="inicio-btn-grande" disabled>Consultar la colección<small>Buscar y revisar los ejemplares</small></button>
     <div class="inicio-admin">
       <button type="button" id="btn-modo-admin" class="btn small" disabled>Administrador</button>
@@ -704,7 +711,7 @@
 <header>
   <div class="header-titulo">
     <h1><span aria-hidden="true">🏛️</span> Libro de Catálogo</h1>
-    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.59</span></div>
+    <div class="header-sub-fila"><span class="header-subtitulo">Proyecto WikiTaxa</span><span class="ver" id="ver-chip">v0.9.61</span></div>
   </div>
   <div class="operador-actual-wrap">
     <label for="input-operador-actual">Operador actual</label>
@@ -713,6 +720,17 @@
     <button type="button" class="btn small tenue" id="btn-cerrar-sesion" title="Volver a la pantalla de inicio">Salir</button>
   </div>
 </header>
+
+<div class="aviso-carpeta aviso-limitado oculto" id="aviso-limitado">
+  <span class="aviso-texto" id="aviso-limitado-texto"><strong>Uso con limitaciones.</strong> Este navegador (por ejemplo, Chrome del teléfono) no permite carpetas ni asociar archivos. Aquí puedes ingresar los datos de los registros y descargar archivos de respaldo (Sistema, Gestión de datos, Exportar datos) para enviarlos. Fotos, PDF, adjuntos y la Carpeta local requieren Chrome o Edge en un computador.</span>
+  <button class="btn small tenue" id="btn-limitado-ok">Entendido</button>
+</div>
+
+<div class="aviso-carpeta aviso-guardado oculto" id="aviso-guardado">
+  <span class="aviso-texto" id="aviso-guardado-texto"></span>
+  <button class="btn small" id="btn-guardado-respaldo">Descargar respaldo</button>
+  <button class="btn small tenue" id="btn-guardado-cerrar">Cerrar</button>
+</div>
 
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
   <span class="aviso-texto" id="aviso-carpeta-texto"></span>
@@ -1096,13 +1114,19 @@
   <section class="tabpanel" id="tab-sistema">
     <div class="bloque">
       <h2>Versión</h2>
-      <p>Libro de Catálogo <strong id="ver-texto">v0.9.59</strong> · borrador de trabajo</p>
+      <p>Libro de Catálogo <strong id="ver-texto">v0.9.61</strong> · borrador de trabajo</p>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
       </div>
       <p class="nota" id="estado-actualizacion"></p>
       <p class="nota" id="estado-almacenamiento"></p>
+      <p class="nota" id="estado-espacio"></p>
+      <details class="det-errores" id="det-errores"><summary>Registro de errores (<span id="n-errores">0</span>)</summary>
+        <pre id="txt-errores" class="txt-errores">Sin errores registrados.</pre>
+        <div class="barra-botones"><button class="btn secundario small" id="btn-errores-descargar">Descargar registro</button><button class="btn tenue small" id="btn-errores-vaciar">Vaciar</button></div>
+        <p class="nota">Aquí quedan los fallos que la app no pudo mostrar en pantalla. Si algo no funciona, descarga este registro y envíalo.</p>
+      </details>
     </div>
 
     <details class="bloque bloque-desp" id="det-gestion">
@@ -1157,8 +1181,9 @@
         <button class="btn secundario small" id="btn-marcar-datos" aria-pressed="false" title="Marca todos los registros mostrados; vuelve a pincharlo para quitar las marcas">Marcar todo</button>
         <button class="btn peligro small" id="btn-eliminar-datos" disabled title="Elimina los registros marcados (o usa el 🗑️ de cada fila para uno solo)">Eliminar marcados</button>
       </div>
+      <label class="nota chk-zip"><input type="checkbox" id="chk-zip-archivos" checked> Incluir fotos, PDF y adjuntos en el zip de respaldo (puede pesar mucho)</label>
       <div class="barra-botones">
-        <button class="btn secundario" id="btn-exportar-zip" title="Respaldo y traspaso rápido: un archivo por registro, que esta misma app puede volver a importar">Descargar zip (respaldo)</button>
+        <button class="btn secundario" id="btn-exportar-zip" title="Respaldo y traspaso rápido: un archivo por registro y, si está marcada la casilla, sus fotos, PDF y adjuntos. Esta misma app puede volver a importarlo">Descargar zip (respaldo)</button>
         <button class="btn secundario" id="btn-exportar-xlsx" title="Planilla de Excel para consulta y uso rápido">Descargar Excel</button>
         <button class="btn secundario" id="btn-exportar-csv" title="Archivo de texto separado por comas, para grandes cantidades de registros">Descargar CSV</button>
         <button class="btn secundario" id="btn-exportar-dwc" title="CSV con los nombres de columna de Darwin Core, listo para mapear en el IPT de GBIF">Descargar CSV Darwin Core</button>
@@ -1310,7 +1335,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.59";
+var APP_VERSION = "v0.9.61";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1412,7 +1437,59 @@ function abrirDB(){
   });
   return dbPromise;
 }
+// ---------- registro de errores y avisos de guardado ----------
+var CLAVE_ERRORES="libroCatalogo_errores", logErrores=[];
+try{ logErrores=JSON.parse(localStorage.getItem(CLAVE_ERRORES)||"[]")||[]; }catch(e){ logErrores=[]; }
+function registrarError(ctx, e){
+  var msg=(e&&e.message)||String(e==null?"":e);
+  logErrores.push({t:new Date().toISOString(), v:(typeof APP_VERSION!=="undefined"?APP_VERSION:""), ctx:ctx, msg:msg});
+  if(logErrores.length>200) logErrores=logErrores.slice(-200);
+  try{ localStorage.setItem(CLAVE_ERRORES, JSON.stringify(logErrores.slice(-60))); }catch(x){}
+  try{ pintarRegistroErrores(); }catch(x){}
+}
+function textoRegistroErrores(){
+  return logErrores.map(function(o){ return o.t.replace("T"," ").slice(0,19)+"  "+(o.v||"")+"  ["+o.ctx+"]  "+o.msg; }).join("\n");
+}
+function pintarRegistroErrores(){
+  var n=document.getElementById("n-errores"), pre=document.getElementById("txt-errores");
+  if(n) n.textContent=String(logErrores.length);
+  if(pre) pre.textContent=logErrores.length ? textoRegistroErrores() : "Sin errores registrados.";
+}
+window.addEventListener("error", function(ev){ if(ev && (ev.error||ev.message)) registrarError("error no controlado", ev.error||ev.message); });
+window.addEventListener("unhandledrejection", function(ev){ registrarError("promesa rechazada", ev && ev.reason); });
+function mostrarAvisoGuardado(txt){
+  var b=document.getElementById("aviso-guardado"), t=document.getElementById("aviso-guardado-texto"); if(!b||!t) return;
+  t.textContent=txt||""; b.classList.toggle("oculto", !txt);
+}
+function errorGuardado(e){
+  registrarError("guardado en el navegador", e);
+  var q=e && (e.name==="QuotaExceededError" || /quota/i.test(e.message||""));
+  mostrarAvisoGuardado((q?"El navegador no tiene espacio para guardar los registros. ":"No se pudo guardar en este navegador. ")+"Los cambios siguen en pantalla: descarga un respaldo ahora para no perderlos.");
+}
+function selloFecha(){ var f=new Date(); return f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes()); }
+function descargarBlob(blob, nombre){
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+}
+async function respaldoUrgente(){
+  try{ var r=await zipDeRespaldo(registros,false); descargarBlob(r.blob, "Respaldo_urgente_Libro_de_Catalogo_"+selloFecha()+".zip"); }
+  catch(e){ registrarError("respaldo urgente", e); alert("No se pudo preparar el respaldo: "+((e&&e.message)||e)); }
+}
+function fmtBytes(n){ if(n<1024) return n+" B"; var u=["KB","MB","GB","TB"], i=-1; do{ n/=1024; i++; }while(n>=1024 && i<u.length-1); return (n>=100?Math.round(n):n.toFixed(1)).toString().replace(".",",")+" "+u[i]; }
+function actualizarEspacio(){
+  var el=document.getElementById("estado-espacio");
+  if(!el || !navigator.storage || !navigator.storage.estimate) return;
+  navigator.storage.estimate().then(function(e){
+    if(!e || !e.quota) return;
+    var pct=e.usage/e.quota*100;
+    el.textContent="Espacio del navegador: "+fmtBytes(e.usage)+" de "+fmtBytes(e.quota)+" ("+(pct<1?"menos de 1":Math.round(pct))+" %)."+(pct>=80?" Queda poco espacio: descarga un respaldo y libera archivos.":"");
+    el.classList.toggle("espacio-alerta", pct>=80);
+    if(pct>=90) mostrarAvisoGuardado("Queda muy poco espacio en el navegador ("+Math.round(pct)+" % usado). Descarga un respaldo ahora.");
+  }).catch(function(e){ registrarError("estimación de espacio", e); });
+}
 var idbCache = {}, idbOcupado = false, idbPendiente = false;
+var registrosVersion = 0, persistirTimer = null;
 function guardarEnIndexedDB(){ if(modoAcceso!=="admin") return;
   // escribe solo los registros que cambiaron desde el último guardado (con miles de registros, reescribir todo hacía lenta la app)
   if(idbOcupado){ idbPendiente=true; return; }
@@ -1429,9 +1506,9 @@ function guardarEnIndexedDB(){ if(modoAcceso!=="admin") return;
     var store = tx.objectStore(DB_STORE);
     cambiados.forEach(function(r){ store.put(r); });
     borrados.forEach(function(id){ store.delete(id); });
-    tx.oncomplete = function(){ idbCache = nuevoCache; idbOcupado = false; if(idbPendiente){ idbPendiente=false; guardarEnIndexedDB(); } };
-    tx.onerror = tx.onabort = function(){ idbOcupado = false; idbPendiente = false; };
-  }).catch(function(){ idbOcupado = false; });
+    tx.oncomplete = function(){ idbCache = nuevoCache; idbOcupado = false; mostrarAvisoGuardado(""); if(idbPendiente){ idbPendiente=false; guardarEnIndexedDB(); } };
+    tx.onerror = tx.onabort = function(){ idbOcupado = false; idbPendiente = false; errorGuardado(tx.error || new Error("El guardado fue cancelado por el navegador.")); };
+  }).catch(function(e){ idbOcupado = false; errorGuardado(e); });
 }
 function cargarDesdeIndexedDB(cb){
   abrirDB().then(function(db){
@@ -1440,9 +1517,16 @@ function cargarDesdeIndexedDB(cb){
   }).catch(function(){ cb([]); });
 }
 
-function persistir(){ if(modoAcceso!=="admin") return;
-  guardarEnIndexedDB();
+// Agrupa los guardados seguidos (una importación llama a persistir muchas veces) y fuerza el guardado al ocultar o cerrar la página.
+function persistir(){
+  registrosVersion++;
+  if(modoAcceso!=="admin") return;
+  clearTimeout(persistirTimer);
+  persistirTimer=setTimeout(function(){ persistirTimer=null; guardarEnIndexedDB(); }, 250);
 }
+function persistirYa(){ if(persistirTimer){ clearTimeout(persistirTimer); persistirTimer=null; guardarEnIndexedDB(); } }
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState==="hidden") persistirYa(); });
+window.addEventListener("pagehide", persistirYa);
 
 // ---------- definiciones de los campos (glosario y botones ? junto a cada título) ----------
 var DEF_CAMPOS = {
@@ -1624,6 +1708,7 @@ function activarTab(nombre){
   if(contReg) montarPanelRegistros(contReg);
   if(typeof pintarAvisoClasif==="function" && borrador) pintarAvisoClasif();
   if(nombre==="consultas") pintarConsultas();
+  if(nombre==="sistema") actualizarEspacio();
 }
 tabButtons.forEach(function(btn){ btn.addEventListener("click", function(){ activarTab(btn.getAttribute("data-tab")); }); });
 
@@ -1794,7 +1879,7 @@ function stdLeer(){
   return stdDatos;
 }
 function stdL(id){ return stdLeer().listas[id]; }
-function stdGuardarLocal(){ try{ localStorage.setItem(STD_CLAVE, JSON.stringify(stdDatos)); }catch(e){} }
+function stdGuardarLocal(){ try{ localStorage.setItem(STD_CLAVE, JSON.stringify(stdDatos)); }catch(e){ registrarError("guardar listas de estandarización", e); } }
 function stdGuardar(){ stdGuardarLocal(); stdProgramarEscritura(); }
 function stdNombres(id){ return stdL(id).items.map(function(it){ return it.n; }); }
 function stdEntrada(id, n){ return stdL(id).items.filter(function(it){ return it.n===n; })[0]; }
@@ -1935,7 +2020,7 @@ async function stdSincronizar(){
     }
     if(cambio) stdGuardarLocal();
     stdUltSync=Date.now();
-  }catch(e){}
+  }catch(e){ registrarError("sincronizar listas de estandarización", e); }
   finally{
     stdOcupado=false;
     if(stdReintento){ stdReintento=false; stdProgramarEscritura(); }
@@ -2668,7 +2753,6 @@ function construirFicha(r){
   var vigente = (r.determinaciones && r.determinaciones.length) ? r.determinaciones[r.determinaciones.length-1] : null;
   var nombreVigente = vigente ? unirCalificador(vigente.calificador, vigente.nombreCientifico) : (r.taxon || "");
 
-  var coleccionCompleta = nombreColeccionCompleto(r);
   var institucionTexto = r.institucionNombreCompleto || (r.institucionAcronimo==="MNHNCL" ? NOMBRE_MNHNCL : r.institucionAcronimo) || "";
   var clasificacionTexto = construirClasificacionTexto(r);
 
@@ -2921,17 +3005,6 @@ function abrirVisor(items, idx, liberar){
   window.onresize=function(){ if(dlg.open && Math.abs(esc-ajuste)<0.001) ajustar(); };
   dlg.showModal(); mostrar(k);
 }
-function botonesAdjuntos(r){
-  var l=(r.adjuntos||[]).filter(function(a){ return /^Adjuntos\//.test(a.archivo||""); });
-  if(!l.length) return "";
-  return '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">'+l.map(function(a){ return '<button class="btn tenue small btn-abrir-adjunto" data-ruta="'+escapeHtml(a.archivo)+'">📎 '+escapeHtml(a.archivo.split("/").pop())+'</button>'; }).join("")+'</div>';
-}
-function fichaPdfs(r){
-  var lista = r.publicacionesPdf || [];
-  if(!lista.length) return "";
-  var botones = lista.map(function(n){ return '<button class="btn tenue small btn-abrir-pdf" data-pdf="'+escapeHtml(n)+'">📄 '+escapeHtml(n.split("/").pop())+'</button>'; }).join(" ");
-  return '<div class="ficha-campo"><span class="ficha-label">PDF de publicaciones</span><span class="ficha-valor">'+botones+'</span></div>';
-}
 var fichaSeq=[], fichaActual=null;
 function fichaIr(delta){
   var i=fichaSeq.indexOf(fichaActual), n=i+delta;
@@ -3129,7 +3202,7 @@ function abrirMapaDistribucion(){
   var $=function(s){ return dlg.querySelector(s); };
   var mapa=$(".md-mapa"), lienzo=$(".md-lienzo"), cv=$(".md-canvas"), aviso=$(".md-aviso"), tip=$(".md-tip"), pop=$(".md-pop"), ctx=cv.getContext("2d");
   var z=4, ZMIN=3, ZMAX=18, centro=mercatorPx(-35,-71,4), teselas={}, cargadas=0, fallos=0;
-  var ocultas={}, catIdx=0, colores={}, catDe=null, leyenda=[];
+  var ocultas={}, catIdx=0, colores={}, leyenda=[];
   $(".md-sub").textContent=lista.length+" registro(s) seleccionado(s)"+(ids.size?"":" (todos los resultados)");
   // ----- resumen
   function distintos(f){ var s={}; lista.forEach(function(r){ var v=f(r); if(v) s[v]=1; }); return Object.keys(s).length; }
@@ -3912,20 +3985,6 @@ function editarRegistroYa(id){
   if(cur==="consultas") activarTab("entrada");   // el formulario de edición vive en Entrada
   try{ window.scrollTo(0,0); }catch(e){}
 }
-function eliminarRegistro(id){ if(modoAcceso!=="admin") return;
-  if(!confirm("¿Eliminar este registro? No se puede deshacer.")) return;
-  var idx=indicePorId(id);
-  var regEliminado = idx>-1 ? registros[idx] : null;
-  if(idx>-1) registros.splice(idx,1);
-  if(activoId===id){
-    if(registros.length) consultarRegistro(registros[0].id);
-    else iniciarNuevoBorrador();
-  }
-  persistir();
-  if(regEliminado) archivarEliminado(regEliminado);
-  refrescarPanelesRegistros();
-}
-
 // Elimina uno o varios registros (con una sola confirmación). Cada uno se archiva en Registros/_eliminados.
 function eliminarRegistros(ids){ if(modoAcceso!=="admin") return;
   ids=ids.filter(function(id){ return indicePorId(id)>-1; });
@@ -4077,13 +4136,6 @@ function resumenLinea2Html(et){
 function nombreDestacadoHtml(et){
   return '<span class="nombre-destacado'+(et.tieneNombre?'':' sin')+'">'+(et.tieneNombre ? nombreCientificoHtml(et.nombreVigente) : 'sin determinar')+'</span>';
 }
-function resumenLinea2(et){
-  var partes=[et.nombreCientifico];
-  if(et.localidad) partes.push(et.localidad);
-  if(et.fecha) partes.push(et.fecha);
-  if(et.colector) partes.push(et.colector);
-  return partes.join(" · ");
-}
 var filtroRegistros = "";
 function registroCoincideFiltro(reg, filtro){
   if(!filtro) return true;
@@ -4106,7 +4158,6 @@ function montarPanelRegistros(cont){
   var etAct = borrador ? etiquetaRegistro(borrador) : null;
   var modoTexto = activoId===null ? (origenDuplicado ? "Duplicando" : "Nuevo") : (editando ? "Editando" : "Consulta");
   var btnTabActivo = document.querySelector("#tabs button.active");
-  var esTabEntrada = !!btnTabActivo && btnTabActivo.getAttribute("data-tab")==="entrada";
   if(btnTabActivo && btnTabActivo.getAttribute("data-tab")==="consultas"){
     var abiertoC = false;   // en Consultas la lista vive en el bloque Resultados
     var listaC = resultadosConsulta();
@@ -4369,6 +4420,7 @@ function renderResumenDatos(){
   }
 }
 function refrescarPanelesRegistros(){
+  registrosVersion++;
   programarAlertaPrestamos();
   var bAct=document.querySelector("#tabs button.active");
   if(bAct && bAct.getAttribute("data-tab")==="consultas" && consConstruida){ pintarConsultas(); return; }
@@ -4419,6 +4471,11 @@ window.addEventListener("appinstalled", function(){ document.getElementById("btn
   }).catch(function(){});
 })();
 document.getElementById("btn-exportar-zip").addEventListener("click", function(){ descargarDatos("zip"); });
+document.getElementById("btn-guardado-respaldo").addEventListener("click", respaldoUrgente);
+document.getElementById("btn-guardado-cerrar").addEventListener("click", function(){ mostrarAvisoGuardado(""); });
+document.getElementById("btn-errores-descargar").addEventListener("click", function(){ descargarBlob(new Blob([textoRegistroErrores()||"Sin errores registrados."],{type:"text/plain;charset=utf-8"}), "Errores_Libro_de_Catalogo_"+selloFecha()+".txt"); });
+document.getElementById("btn-errores-vaciar").addEventListener("click", function(){ logErrores=[]; try{ localStorage.removeItem(CLAVE_ERRORES); }catch(e){} pintarRegistroErrores(); });
+pintarRegistroErrores(); actualizarEspacio();
 document.getElementById("btn-exportar-xlsx").addEventListener("click", function(){ descargarDatos("xlsx"); });
 document.getElementById("btn-exportar-csv").addEventListener("click", function(){ descargarDatos("csv"); });
 document.getElementById("btn-exportar-dwc").addEventListener("click", function(){ descargarDatos("dwc"); });
@@ -4542,7 +4599,7 @@ async function escanearCarpeta(){
       if(!obj || !obj.id) continue;
       idx[obj.id]=h.name; mods[obj.id]=obj.modificadoEn||"";
       objs.push(obj);
-    }catch(e){}
+    }catch(e){ registrarError("leer registro de la Carpeta local", e); }
   }
   indiceArchivos=idx; modArchivo=mods;
   return objs;
@@ -4655,7 +4712,7 @@ async function sincronizarCarpeta(interactivo){ if(modoAcceso!=="admin") return;
 }
 
 async function elegirCarpeta(){ if(modoAcceso!=="admin") return;
-  if(!soportaCarpeta()){ mensajeCarpeta("Este navegador no permite elegir una carpeta. Usa Chrome o Edge."); return; }
+  if(!soportaCarpeta()){ mensajeCarpeta("Este navegador no permite elegir una carpeta. Esta función requiere Chrome o Edge en un computador."); return; }
   var h;
   try{ h=await window.showDirectoryPicker({mode:"readwrite", id:"libro-catalogo"}); }
   catch(e){ return; }
@@ -4737,7 +4794,7 @@ function actualizarUICarpeta(){
   if(!est) return;
   var nombre=carpetaHandle ? carpetaHandle.name : "";
   var txt;
-  if(!soportaCarpeta()) txt="Este navegador no permite usar una Carpeta local. Usa Chrome o Edge.";
+  if(!soportaCarpeta()) txt="Este navegador no permite usar una Carpeta local (requiere Chrome o Edge en un computador).";
   else if(!carpetaHandle) txt="Sin carpeta conectada: los registros se guardan solo en este navegador.";
   else if(carpetaEstado==="permiso") txt="«"+nombre+"»: falta tu permiso para seguir guardando.";
   else txt="Conectada: «"+nombre+"»"+(ultimaEscritura ? " · última escritura "+ultimaEscritura : "");
@@ -4765,7 +4822,16 @@ function actualizarUICarpeta(){
     aviso.classList.add("oculto");
   }
 }
+function avisoLimitado(){
+  var limitado=!soportaCarpeta(), ok=false;
+  try{ ok=sessionStorage.getItem("libroLimitadoVisto")==="1"; }catch(e){}
+  var a=document.getElementById("inicio-limitado"), b=document.getElementById("aviso-limitado");
+  if(a) a.classList.toggle("oculto", !limitado);
+  if(b) b.classList.toggle("oculto", !limitado || ok || document.body.classList.contains("sin-sesion"));
+}
+document.getElementById("btn-limitado-ok").addEventListener("click", function(){ try{ sessionStorage.setItem("libroLimitadoVisto","1"); }catch(e){} avisoLimitado(); });
 async function iniciarCarpeta(){
+  avisoLimitado();
   actualizarUICarpeta();
   if(!soportaCarpeta()) return;
   try{ carpetaHandle=await cfgLeer("carpetaLocal"); }catch(e){ carpetaHandle=null; }
@@ -4898,7 +4964,7 @@ async function subirPdfsDesdePC(agregar){
 }
 async function asociarPdf(ctx){ if(modoAcceso!=="admin") return;
   var cx=(ctx && ctx.agregar) ? ctx : {usados:function(){ return (borrador.publicacionesPdf||[]).map(rutaNormalPdf); }, agregar:agregarPdfARegistro, repintar:function(){ pintarPdfs(); refrescarPanelesRegistros(); }};
-  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar PDF. Usa Chrome o Edge."); return; }
+  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar PDF. Esta función requiere Chrome o Edge en un computador."); return; }
   if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
   if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
   var lista=await listarPdfsBiblioteca();
@@ -5009,7 +5075,7 @@ async function docCargar(n){
 async function docAgregar(n, categoria, descripcion){
   if(modoAcceso!=="admin") return 0;
   var carpetaE=docCarpetaEntrada(n);
-  if(typeof window.showOpenFilePicker!=="function"){ alert("Este navegador no permite elegir archivos. Usa Chrome o Edge."); return 0; }
+  if(typeof window.showOpenFilePicker!=="function"){ alert("Este navegador no permite elegir archivos. Esta función requiere Chrome o Edge en un computador."); return 0; }
   var enCarpeta=!!carpetaHandle && await permisoCarpeta(true);
   if(!enCarpeta && !confirm("La Carpeta local no está conectada.\n\nLos documentos se guardarán solo de forma temporal en este navegador (respaldo de emergencia) y habrá que pasarlos a la Carpeta local cuando la conectes. Los archivos grandes pueden no caber.\n\n¿Continuar?")) return 0;
   var fhs;
@@ -5156,7 +5222,6 @@ async function cargarDocsFicha(dlgEl, r){
 })();
 
 // ---------- Fotos (ordenadas por Phylum/Clase/Orden/Familia/Género dentro de Fotos/) ----------
-function carpetaTaxon(v){ return sanitizarNombre(v)||"Sin_clasificar"; }
 // Ruta de carpetas según la clasificación del ejemplar: Phylum/Clase/Orden/Familia/Género (nivel vacío = Sin_clasificar).
 // Las fotos se guardan en una carpeta por ejemplar: Fotos/<N.º de catálogo> (o campo_<N.º de campo> mientras no tenga catálogo).
 function claveEjemplar(reg){
@@ -5164,9 +5229,6 @@ function claveEjemplar(reg){
 }
 function carpetaFotos(reg){ return "Fotos/"+claveEjemplar(reg); }
 function fotoEnSuCarpeta(ruta){ return /^Fotos\/[^\/]+\/[^\/]+$/.test(ruta||""); }   // ya está en una carpeta de un solo nivel
-function rutaTaxonomica(reg){
-  return ["phylum","clase","orden","familia","genero"].map(function(k){ return carpetaTaxon(reg && reg[k]); }).join("/");
-}
 // Fotos que vinieron en un zip sin Carpeta local conectada: se guardan como archivos en el navegador (clave «foto:ruta»).
 function mimePorNombre(n){ var m=(String(n).toLowerCase().match(/\.([a-z0-9]+)$/)||[])[1]; return {jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",gif:"image/gif",webp:"image/webp",bmp:"image/bmp",avif:"image/avif"}[m]||""; }
 async function fotoLocalLeer(ruta){
@@ -5199,7 +5261,7 @@ function carpetaManejo(reg, sub){
   return "Manejo/"+(sanitizarNombre(construirCatalogoCompleto(reg)) || (reg.numeroCampo ? "campo_"+sanitizarNombre(reg.numeroCampo) : "") || "sin-catalogo")+"/"+sub;
 }
 async function manejoDocsAsociar(obj, key, sub, repintar){ if(modoAcceso!=="admin") return;
-  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite adjuntar documentos. Usa Chrome o Edge."); return; }
+  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite adjuntar documentos. Esta función requiere Chrome o Edge en un computador."); return; }
   if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
   if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
   var fhs;
@@ -5361,7 +5423,6 @@ function parseDias(v){
   l=l.filter(function(n,i){ return l.indexOf(n)===i; }).sort(function(a,b){ return b-a; });
   return l.length ? l : [30,7,0];
 }
-function diasAlerta(nombre){ return parseDias(cfgValores(nombre||"prestamos").dias); }
 var UNIDADES_PERIODO=["días","semanas","meses","años"];
 function sumarPeriodo(iso, n, u){
   var d=fechaDeIso(iso); n=+n; if(!d || !(n>0)) return "";
@@ -5503,7 +5564,6 @@ function descargarTextoIcs(texto, nombre){
 function descargarIcs(items, nombre){ descargarTextoIcs(construirIcs(items), nombre); }
 var alertaTimer=null, ALERTA_MAX_FILAS=10;
 function programarAlertaPrestamos(){ clearTimeout(alertaTimer); alertaTimer=setTimeout(pintarAlertas, 250); }
-function pintarAlertaPrestamos(){ pintarAlertas(); }
 function pintarAlertas(){
   var fila=document.getElementById("alertas-fila"), ins=document.getElementById("insignia-prestamos");
   var bp=document.getElementById("alerta-prestamos"), bm=document.getElementById("alerta-monitoreo");
@@ -5915,7 +5975,7 @@ async function adjuntoEnCarpeta(fh){
   return {rel:rel, nombre:file.name};
 }
 async function asociarAdjuntos(entrada){ if(modoAcceso!=="admin") return;
-  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar archivos. Usa Chrome o Edge."); return; }
+  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar archivos. Esta función requiere Chrome o Edge en un computador."); return; }
   if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
   if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
   if(!borrador){ borrador=registroVacioBase(); activoId=null; }
@@ -6016,21 +6076,6 @@ async function fotoEnCarpeta(fh){
   var f=new Date(file.lastModified), ex=await leerExif(file);
   return {rel:rel, fechaExif:!!ex.fecha, fecha:ex.fecha||(f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())), autor:ex.autor, camara:ex.camara, rutaTax:rutaTax};
 }
-async function elegirArchivoFoto(entrada){ if(modoAcceso!=="admin") return;
-  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite asociar archivos. Usa Chrome o Edge."); return; }
-  if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
-  if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
-  if(!exigirClasificacion(borrador)) return;
-  var fotosDir=await dirAnidado("Fotos"), fh;
-  try{ fh=await window.showOpenFilePicker({multiple:false, id:"libro-foto", startIn:fotosDir, types:[{description:"Imágenes", accept:{"image/*":[".jpg",".jpeg",".png",".tif",".tiff",".webp"]}}]}); }
-  catch(e){ return; }
-  var r=await fotoEnCarpeta(fh[0]);
-  entrada.archivo=r.rel;
-  if(!entrada.fechaFoto || r.fechaExif) entrada.fechaFoto=r.fecha;   // la fecha de los metadatos manda
-  if(!entrada.fotografo && r.autor) entrada.fotografo=r.autor;
-  if(!entrada.notaCalidad && r.camara) entrada.notaCalidad="Cámara: "+r.camara;
-  pintarLista("fotos"); refrescarPanelesRegistros();
-}
 // Muestra un archivo en una ventana de la propia app (PDF, texto, audio y video se ven dentro; otros tipos ofrecen descarga).
 function abrirEnVentana(file, nombre, url){
   var dlg=document.getElementById("dialog-archivo");
@@ -6067,7 +6112,7 @@ function quitarFilaVacia(lista, entrada){
   var i=(lista||[]).indexOf(entrada); if(i>-1) lista.splice(i,1);
 }
 async function asociarFotos(entrada){ if(modoAcceso!=="admin") return;
-  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite agregar fotos desde archivo. Usa Chrome o Edge."); return; }
+  if(typeof window.showOpenFilePicker!=="function" || !soportaCarpeta()){ alert("Este navegador no permite agregar fotos desde archivo. Esta función requiere Chrome o Edge en un computador."); return; }
   if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
   if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
   if(!borrador){ borrador=registroVacioBase(); activoId=null; }
@@ -6167,7 +6212,7 @@ async function capturaTraer(){
     }catch(e){ errores++; }
   }
   if(capturaVistos.length>3000) capturaVistos=capturaVistos.slice(-3000);
-  try{ await cfgGuardar("capturaVistos", capturaVistos); }catch(e){}
+  try{ await cfgGuardar("capturaVistos", capturaVistos); }catch(e){ registrarError("guardar fotos vistas de la cámara", e); }
   if(agregadas && capturaFilaOrigen){ quitarFilaVacia(borrador.fotos, capturaFilaOrigen); capturaFilaOrigen=null; }
   pintarLista("fotos"); refrescarPanelesRegistros();
   mensajeCarpeta(agregadas+" foto(s) traídas de la cámara a "+carpetaFotos(borrador)+"/."+(errores?" "+errores+" con error de copia.":"")+" Recuerda guardar el registro.");
@@ -6176,7 +6221,7 @@ async function capturaTraer(){
 var capturaFilaOrigen=null;
 async function abrirCamara(entrada){ if(modoAcceso!=="admin") return;
   capturaFilaOrigen=entrada||null;
-  if(!soportaCarpeta()){ alert("Este navegador no permite leer carpetas. Usa Chrome o Edge en el computador."); return; }
+  if(!soportaCarpeta()){ alert("Este navegador no permite leer carpetas. Esta función requiere Chrome o Edge en un computador."); return; }
   if(!carpetaHandle){ alert("Primero conecta la Carpeta local en la pestaña Sistema."); return; }
   if(!(await permisoCarpeta(true))){ alert("El navegador no dio permiso a la Carpeta local."); return; }
   if(!borrador){ borrador=registroVacioBase(); activoId=null; }
@@ -6203,17 +6248,9 @@ async function abrirCamara(entrada){ if(modoAcceso!=="admin") return;
 }
 
 // ---------- Clasificación obligatoria y reordenamiento de archivos ----------
-var NIVELES_TAX = [["phylum","Phylum"],["clase","Clase"],["orden","Orden"],["familia","Familia"],["genero","Género"]];
-function clasificacionFaltante(reg){
-  return NIVELES_TAX.filter(function(n){ return !String((reg && reg[n[0]])||"").trim(); }).map(function(n){ return n[1]; });
-}
 // Los archivos se guardan según Phylum/Clase/Orden/Familia/Género: sin los cinco niveles no se puede asociar nada.
 function exigirClasificacion(reg){
   return true;   // las fotos ya no dependen de la clasificación (carpeta por ejemplar)
-  var f=clasificacionFaltante(reg);
-  if(!f.length) return true;
-  alert("Antes de asociar archivos completa la clasificación en la pestaña Depósito, bloque Determinación.\n\nFalta: "+f.join(", ")+".\n\nLos archivos se ordenan en carpetas según Phylum, Clase, Orden, Familia y Género.");
-  return false;
 }
 function pintarAvisoClasif(){
   var f=[];
@@ -6455,7 +6492,11 @@ function cumpleConsulta(r, omitir){
   return true;
 }
 var consTimer=null;
+var resCache=null, resClave="";
 function resultadosConsulta(){
+  // El mismo filtro se pedía varias veces en cada repintado; se recuerda mientras no cambien los filtros ni los registros.
+  var ce=consEstado, ckey=registrosVersion+"|"+registros.length+"|"+JSON.stringify([ce.texto,ce.f,ce.r,ce.tiene,ce.orden]);
+  if(resCache && resClave===ckey) return resCache.slice();
   var lista=registros.filter(function(r){ return cumpleConsulta(r); });
   var o=consEstado.orden, kc=new Map();
   function clave(r){ var v=kc.get(r); if(v===undefined){ v=clave0(r); kc.set(r,v); } return v; }
@@ -6467,7 +6508,8 @@ function resultadosConsulta(){
     return normTxt(construirCatalogoCompleto(r)||r.catalogo||"~"+(r.numeroCampo||""));
   }
   var cmp = o==="campo"||o==="catalogo" ? function(a,b){ return clave(a).localeCompare(clave(b),"es",{numeric:true}); } : function(a,b){ return clave(a)<clave(b)?-1:clave(a)>clave(b)?1:0; };
-  return lista.sort(cmp);
+  lista.sort(cmp); resCache=lista; resClave=ckey;
+  return lista.slice();
 }
 function resumenConsulta(lista){
   var res={n:lista.length, total:registros.length, coord:0, fotos:0, taxones:{}, familias:{}, locs:{}, colectores:{}, fmin:"", fmax:""};
@@ -6608,7 +6650,7 @@ function sincronizarCamposConsulta(){
   tab.querySelectorAll(".cons-fecha").forEach(function(i){ var g=consEstado.r[i.getAttribute("data-r")]; i.value=(g&&g[i.getAttribute("data-lado")])||""; });
   tab.querySelectorAll("[data-t]").forEach(function(i){ i.checked=!!consEstado.tiene[i.getAttribute("data-t")]; });
 }
-var consTimer=null, consUltimaBusqueda="";
+var consUltimaBusqueda="";
 function descripcionFiltros(){
   var e=consEstado, d=[];
   if(e.texto.trim()) d.push("texto: "+e.texto.trim());
@@ -6630,7 +6672,6 @@ function limpiarConsulta(){
   sincronizarCamposConsulta(); pintarConsultas();
 }
 function pintarConsultas(){
-  var tabAct=document.querySelector("#tabs button.active");
   construirConsultas();
   var e=consEstado, chips=[];
   if(e.texto.trim()) chips.push(["texto","Texto: "+e.texto.trim()]);
@@ -6666,10 +6707,6 @@ function actualizarMarcasConsulta(){
   if(xl) xl.textContent=n?"Descargar Excel ("+n+")":"Descargar Excel";
   var bm=document.getElementById("cons-marcar-todos");
   if(bm){ var lr=resultadosConsulta(), act=lr.length>0 && lr.every(function(r){ return consSel.has(r.id); }); bm.setAttribute("aria-pressed", act?"true":"false"); bm.textContent=act?"✓ Marcar todos":"Marcar todos"; }
-}
-function refrescarConsultasSiVisible(){
-  var b=document.querySelector("#tabs button.active");
-  if(b && b.getAttribute("data-tab")==="consultas") pintarConsultas();
 }
 // ---- descarga de resultados ----
 var CONS_COLUMNAS = [
@@ -6878,36 +6915,93 @@ function listaParaDescarga(){
   if(!confirm("No hay registros marcados. ¿Descargar los "+mostrados.length+" registro(s) mostrados?")) return null;
   return mostrados;
 }
-function zipDeRespaldo(lista){
-  var enc=new TextEncoder(), usados={};
-  var manifiesto={app:"Libro de Catálogo", formato:"libro-catalogo-zip", version:APP_VERSION, generado:new Date().toISOString(), generadoPor:operadorActual(), total:lista.length};
-  var arch=[{nombre:"manifest.json", datos:enc.encode(JSON.stringify(manifiesto,null,2))}];
+// Rutas de los archivos (fotos, adjuntos y PDF de publicaciones) que usan estos registros, sin repetir.
+function rutasDeArchivos(lista){
+  var vistas={}, rutas=[];
+  lista.forEach(function(r){ referenciasArchivos(r).forEach(function(x){ if(!vistas[x.ruta]){ vistas[x.ruta]=1; rutas.push(x.ruta); } }); });
+  return rutas;
+}
+var LIMITE_ZIP_ARCHIVOS = 1.5*1024*1024*1024;
+// Devuelve {blob, incluidos, bytes, faltantes, sinArchivos}. `progreso(i,n)` informa el avance.
+async function zipDeRespaldo(lista, conArchivos, progreso){
+  var enc=new TextEncoder(), usados={}, incluidos=0, bytes=0, faltantes=[], omitidos=false;
+  var arch=[{nombre:"manifest.json", datos:new Uint8Array(0)}];
   lista.forEach(function(r){
     var nom=nombreArchivoRegistro(r); if(usados[nom]) nom=r.id+".json"; usados[nom]=1;
     arch.push({nombre:"registros/"+nom, datos:enc.encode(JSON.stringify(r,null,2))});
   });
   STD_DEF.forEach(function(d){ var L=stdL(d.id); if(L.items.length||L.borrados.length) arch.push({nombre:"catalogos/"+d.id+".json", datos:enc.encode(JSON.stringify(stdSerial(d.id),null,1))}); });
-  return zipSinCompresion(arch,"application/zip");
+  if(conArchivos){
+    var rutas=rutasDeArchivos(lista), hallados=[], total=0;
+    for(var i=0;i<rutas.length;i++){
+      if(progreso) progreso(i+1, rutas.length, "Buscando");
+      try{ var f=await archivoDeRuta(rutas[i]); hallados.push({ruta:rutas[i], file:f}); total+=f.size; }
+      catch(e){ faltantes.push(rutas[i]); }
+    }
+    if(total>LIMITE_ZIP_ARCHIVOS && !confirm("Los archivos asociados pesan "+fmtBytes(total)+" y el zip se arma en la memoria del navegador, por lo que podría fallar.\n\nAceptar: incluirlos de todos modos.\nCancelar: descargar solo los registros (las fotos y archivos quedan en la Carpeta local).")){ omitidos=true; hallados=[]; }
+    for(var j=0;j<hallados.length;j++){
+      if(progreso) progreso(j+1, hallados.length, "Empaquetando");
+      var dat=new Uint8Array(await hallados[j].file.arrayBuffer());
+      arch.push({nombre:"archivos/"+hallados[j].ruta, datos:dat}); incluidos++; bytes+=dat.length;
+    }
+  }
+  var manifiesto={app:"Libro de Catálogo", formato:"libro-catalogo-zip", version:APP_VERSION, generado:new Date().toISOString(), generadoPor:operadorActual(), total:lista.length, incluyeArchivos:incluidos>0, archivos:incluidos, bytesArchivos:bytes, archivosNoEncontrados:faltantes};
+  arch[0].datos=enc.encode(JSON.stringify(manifiesto,null,2));
+  return {blob:zipSinCompresion(arch,"application/zip"), incluidos:incluidos, bytes:bytes, faltantes:faltantes, omitidos:omitidos};
 }
 async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
   var lista=listaParaDescarga(); if(!lista) return;
   var f=new Date(), sello=f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes());
-  var nombre=(formato==="zip"?"Respaldo_":formato==="dwc"?"DarwinCore_":"Registros_")+"Libro_de_Catalogo_"+sello+"."+(formato==="dwc"?"csv":formato), blob;
-  if(formato==="zip") blob=zipDeRespaldo(lista);
+  var nombre=(formato==="zip"?"Respaldo_":formato==="dwc"?"DarwinCore_":"Registros_")+"Libro_de_Catalogo_"+sello+"."+(formato==="dwc"?"csv":formato), blob, infoZip=null;
+  var msgPrev=document.getElementById("datos-msg");
+  if(formato==="zip"){
+    var conA=!!(document.getElementById("chk-zip-archivos")||{}).checked;
+    try{ infoZip=await zipDeRespaldo(lista, conA, function(i,n,fase){ if(msgPrev) msgPrev.textContent=fase+" archivos: "+i+" de "+n+"…"; }); blob=infoZip.blob; }
+    catch(e){ registrarError("zip de respaldo", e); var tz="No se pudo preparar el zip: "+((e&&e.message)||e)+". Prueba desmarcando la inclusión de fotos y archivos."; if(msgPrev) msgPrev.textContent=tz; alert(tz); return; }
+  }
   else if(formato==="dwc") blob=new Blob([csvDeFilas(filasDwc(lista),true)],{type:"text/csv;charset=utf-8"});
   else { var filas=filasDeLista(lista); blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas); }
-  var url=URL.createObjectURL(blob), a=document.createElement("a");
-  a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+  descargarBlob(blob, nombre);
   var extra="";
   if(carpetaHandle && await permisoCarpeta(false)){
-    try{ await escribirArchivo(formato==="zip"?"Respaldos":"Exportaciones", nombre, blob); extra=" Copia guardada en "+(formato==="zip"?"Respaldos/":"Exportaciones/")+" de la Carpeta local."; }catch(e){}
+    try{
+      // los archivos ya viven en la Carpeta local; la copia de respaldo guarda solo los registros
+      var blobCopia=(infoZip && infoZip.incluidos) ? (await zipDeRespaldo(lista,false)).blob : blob;
+      var nomCopia=(infoZip && infoZip.incluidos) ? nombre.replace(/\.zip$/,"_registros.zip") : nombre;
+      await escribirArchivo(formato==="zip"?"Respaldos":"Exportaciones", nomCopia, blobCopia); extra=" Copia guardada en "+(formato==="zip"?"Respaldos/":"Exportaciones/")+" de la Carpeta local.";
+    }catch(e){ registrarError("copia en la Carpeta local", e); extra=" No se pudo guardar la copia en la Carpeta local ("+((e&&e.message)||e)+")."; }
   }
   var msg=lista.length+" registro(s) descargados en "+nombre+"."+extra;
+  if(infoZip && infoZip.incluidos) msg+=" Incluye "+infoZip.incluidos+" archivo(s) ("+fmtBytes(infoZip.bytes)+").";
+  if(infoZip && infoZip.omitidos) msg+=" Los archivos no se incluyeron por su tamaño.";
+  if(infoZip && infoZip.faltantes.length) msg+=" No se encontraron "+infoZip.faltantes.length+" archivo(s) asociado(s): quedan anotados en el manifiesto del zip.";
   if(formato==="dwc"){ var av=avisosDwc(lista); if(av.length) msg+=" Revisa antes de publicar: "+av.join("; ")+"."; }
   var m=document.getElementById("datos-msg"); if(m) m.textContent=msg;
   mensajeCarpeta(msg);
   registrarActividad("descarga", formato.toUpperCase()+" (Gestión de Datos) · "+lista.length+" registro(s)");
+}
+// Devuelve los archivos del zip (carpeta archivos/) a su ruta: en la Carpeta local si está conectada y con permiso; si no, en este navegador.
+async function restaurarArchivosZip(z, m){
+  var nombres=Object.keys(z.ents).filter(function(n){ return /^archivos\/.+[^\/]$/.test(n); });
+  var res={total:nombres.length, escritos:0, ya:0, errores:0, enNavegador:false};
+  if(!nombres.length) return res;
+  var enCarpeta=!!(carpetaHandle && await permisoCarpeta(false));
+  res.enNavegador=!enCarpeta;
+  for(var i=0;i<nombres.length;i++){
+    var ruta=nombres[i].slice("archivos/".length);
+    if(/(^|\/)\.\.(\/|$)|^\/|\\/.test(ruta)){ res.errores++; registrarError("restaurar archivo", "Ruta no válida en el zip: "+ruta); continue; }
+    if(m) m.textContent="Restaurando archivos: "+(i+1)+" de "+nombres.length+"…";
+    try{
+      var existe=false; try{ await archivoDeRuta(ruta); existe=true; }catch(e){}
+      if(existe){ res.ya++; continue; }
+      var datos=await datosZip(z,nombres[i]); if(!datos) throw new Error("No se pudo leer «"+ruta+"» dentro del zip.");
+      var blob=new Blob([datos], {type:mimePorNombre(ruta)});
+      if(enCarpeta){ var partes=ruta.split("/"), nom=partes.pop(); await escribirArchivo(partes.join("/"), nom, blob); }
+      else await cfgGuardar("foto:"+ruta, blob);
+      res.escritos++;
+    }catch(e){ res.errores++; registrarError("restaurar archivo "+ruta, e); }
+  }
+  return res;
 }
 async function importarZipRespaldo(file){ if(modoAcceso!=="admin") return;
   var m=document.getElementById("datos-msg");
@@ -6921,17 +7015,18 @@ async function importarZipRespaldo(file){ if(modoAcceso!=="admin") return;
     }
     var lista=[], nombres=Object.keys(z.ents).filter(function(n){ return /^registros\/.+\.json$/i.test(n); });
     for(var i=0;i<nombres.length;i++){
-      try{ var o=JSON.parse(new TextDecoder("utf-8").decode(await datosZip(z,nombres[i]))); if(o && o.id) lista.push(o); }catch(e){}
+      try{ var o=JSON.parse(new TextDecoder("utf-8").decode(await datosZip(z,nombres[i]))); if(o && o.id) lista.push(o); }catch(e){ registrarError("leer registro del zip "+nombres[i], e); }
     }
     var cats=Object.keys(z.ents).filter(function(n){ return /^catalogos\/.+\.json$/i.test(n); });
     for(var ci=0;ci<cats.length;ci++){
-      try{ var oc=JSON.parse(new TextDecoder("utf-8").decode(await datosZip(z,cats[ci]))); if(oc && oc.lista && stdDef(oc.lista)) stdFusionar(oc.lista, oc); }catch(e){}
+      try{ var oc=JSON.parse(new TextDecoder("utf-8").decode(await datosZip(z,cats[ci]))); if(oc && oc.lista && stdDef(oc.lista)) stdFusionar(oc.lista, oc); }catch(e){ registrarError("leer lista del zip "+cats[ci], e); }
     }
     if(cats.length) stdGuardar();
     if(!lista.length){ if(m) m.textContent="El zip no contiene registros."; return; }
     if(!confirm("El zip contiene "+lista.length+" registro(s). Se agregarán los nuevos y se actualizarán los que sean más recientes que los de este navegador. ¿Continuar?")) return;
     var r=fusionarRegistros(lista);
-    var txt="Importados desde el zip: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados.";
+    var rest=await restaurarArchivosZip(z, m);
+    var txt="Importados desde el zip: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados."+(rest.total?" Archivos: "+rest.escritos+" restaurados"+(rest.ya?", "+rest.ya+" ya estaban":"")+(rest.errores?", "+rest.errores+" con error (ver Registro de errores)":"")+(rest.enNavegador&&rest.escritos?" (guardados en este navegador)":"")+".":"");
     if(m) m.textContent=txt; mensajeCarpeta(txt);
     registrarActividad("importacion","zip de respaldo · "+lista.length+" registro(s)");
     if(carpetaHandle) sincronizarCarpeta(false);
@@ -7189,7 +7284,7 @@ function impNuevoMapa(ci,k,conf,score){
 }
 function impNorm(s){ return normTxt(s).replace(/[^a-z0-9]/g,""); }
 function impAutoValores(m){
-  var o=impObjetivo(m.target), c=imp.cols[m.col]; if(!o||o.tipo!=="lista") return;
+  var o=impObjetivo(m.target); if(!o||o.tipo!=="lista") return;
   var vistos={}; m.opts.valores=m.opts.valores||{};
   imp.datos.forEach(function(r){
     var v=r.v[m.col]; if(!v||vistos[v]) return; vistos[v]=1;
@@ -7274,7 +7369,7 @@ function impValorLista(m,o,raw){
   if(d.modo==="opt") return d.val; if(d.modo==="vacio") return ""; if(d.modo==="texto") return d.val||""; return raw;
 }
 function impConstruir(){
-  var objs=impObjetivos(), avisos={}, filasOmitidas=[], registros_=[], ahora=new Date().toISOString();
+  var avisos={}, filasOmitidas=[], registros_=[], ahora=new Date().toISOString();
   function aviso(tipo,fila,detalle){ (avisos[tipo]=avisos[tipo]||[]).push({fila:fila,detalle:detalle}); }
   var detFmt={};
   imp.mapas.forEach(function(m,i){ var o=impObjetivo(m.target); if(o&&(o.tipo==="fecha")) detFmt[i]=(m.opts.fmt==="auto")?impDetectarFmtFecha(m.col):{fmt:m.opts.fmt,seguro:true}; });
@@ -7899,7 +7994,7 @@ function impPintarOpciones(){
     +(nombres.length?'<div class="imp-fila-opc"><select id="imp-guardados">'+nombres.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'</select><button type="button" class="btn tenue small" id="imp-aplicar">Aplicar</button><button type="button" class="btn tenue small" id="imp-borrar-guardado">Borrar</button></div>':'<p class="nota">Aún no hay plantillas guardadas en este navegador.</p>')+'</details>';
 }
 function impLeerGuardados(){ try{ return JSON.parse(localStorage.getItem("libroCatalogo_mapeosImport")||"{}"); }catch(e){ return {}; } }
-function impEscribirGuardados(o){ try{ localStorage.setItem("libroCatalogo_mapeosImport",JSON.stringify(o)); }catch(e){} }
+function impEscribirGuardados(o){ try{ localStorage.setItem("libroCatalogo_mapeosImport",JSON.stringify(o)); }catch(e){ registrarError("guardar emparejados de importación", e); } }
 function impPintarResultado(){
   var res=imp.resultado, rs=res.resolucion, tipos=Object.keys(res.avisos), sinConf=imp.mapas.filter(function(m){ return !m.conf; }).length;
   var h=(sinConf?'<p class="nota imp-alerta">Atención: '+sinConf+' emparejamiento(s) propuesto(s) todavía sin confirmar se están usando en esta importación. Confírmalos o quítalos antes de importar.</p>':'')+'<div class="imp-resumen"><strong>Vista previa</strong><ul><li>'+rs.nuevos.length+' registro(s) nuevo(s)</li>'
@@ -8180,7 +8275,7 @@ async function descargarConsulta(formato){
   setTimeout(function(){ URL.revokeObjectURL(url); },30000);
   var extra="";
   if(carpetaHandle && await permisoCarpeta(false)){
-    try{ await escribirArchivo("Exportaciones", nombre, blob); extra=" Copia guardada en Exportaciones/ de la Carpeta local."; }catch(e){}
+    try{ await escribirArchivo("Exportaciones", nombre, blob); extra=" Copia guardada en Exportaciones/ de la Carpeta local."; }catch(e){ registrarError("copia en Exportaciones/", e); extra=" No se pudo guardar la copia en la Carpeta local."; }
   }
   mensajeCarpeta((filas.length-1)+" registro(s) descargados en "+nombre+"."+extra);
   registrarActividad("descarga", formato.toUpperCase()+" · "+(filas.length-1)+" registro(s)"+(marcadosConsulta().length?" · solo marcados":"")+(descripcionFiltros()?" · filtros: "+descripcionFiltros():" · sin filtros"));
@@ -8190,7 +8285,7 @@ async function descargarConsulta(formato){
 // ---------- Planillas emparejadas: esquemas guardados y traducción de registros a su formato ----------
 var ESQ_CLAVE="libroCatalogo_esquemasPlanilla";
 function esqLeer(){ try{ return JSON.parse(localStorage.getItem(ESQ_CLAVE)||"{}"); }catch(e){ return {}; } }
-function esqEscribir(o){ try{ localStorage.setItem(ESQ_CLAVE,JSON.stringify(o)); }catch(e){} }
+function esqEscribir(o){ try{ localStorage.setItem(ESQ_CLAVE,JSON.stringify(o)); }catch(e){ registrarError("guardar esquemas de planilla", e); } }
 function esqConstruir(nombre){
   var cols=imp.cols.map(function(c){
     var ms=imp.mapas.filter(function(m){ return m.col===c.i; });
@@ -8325,7 +8420,7 @@ async function esqTraducir(){
   var url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
   var extra="";
-  if(carpetaHandle && await permisoCarpeta(false)){ try{ await escribirArchivo("Exportaciones", nombre, blob); extra=" Copia en Exportaciones/ de la Carpeta local."; }catch(e){} }
+  if(carpetaHandle && await permisoCarpeta(false)){ try{ await escribirArchivo("Exportaciones", nombre, blob); extra=" Copia en Exportaciones/ de la Carpeta local."; }catch(e){ registrarError("copia en Exportaciones/", e); extra=" No se pudo guardar la copia en la Carpeta local."; } }
   if(document.getElementById("esq-marcar").checked){
     var ahora=new Date().toISOString(); lista.forEach(function(r){ r.exportadoA=r.exportadoA||{}; r.exportadoA[es.nombre]=ahora; });
     persistir();
@@ -8529,7 +8624,7 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
         try{
           var ent=await dirAnidado("Entradas"), dz=await nombreDisponible(ent, file.name, file.size);
           if(!dz.existe) await escribirArchivo("Entradas", dz.nombre, file);
-        }catch(e){}
+        }catch(e){ registrarError("copiar el zip a Entradas/", e); }
       }
     }
     nuevos.forEach(function(r){ registros.push(r); });
@@ -8579,7 +8674,7 @@ function revisarNombreInicio(){
   document.getElementById("btn-modo-consulta").disabled=!ok;
   document.getElementById("inicio-aviso").textContent = ok ? "Ingresarás como «"+nombreLimpio(n)+"»." : (nombreLimpio(n) ? "Falta el apellido: escribe nombre y apellido." : "");
 }
-function cerrarInicio(){ document.body.classList.remove("sin-sesion"); try{ window.scrollTo(0,0); }catch(e){} }
+function cerrarInicio(){ document.body.classList.remove("sin-sesion"); if(typeof avisoLimitado==="function") avisoLimitado(); try{ window.scrollTo(0,0); }catch(e){} }
 function guardarNombreOperador(n){
   var lista=leerJson(CLAVE_OPERADORES).filter(function(x){ return x!==n; }); lista.unshift(n);
   try{ localStorage.setItem(CLAVE_OPERADORES, JSON.stringify(lista.slice(0,40))); }catch(e){}
@@ -8627,7 +8722,7 @@ function listaAdmins(){ return leerJson(CLAVE_ADMINS).map(nombreLimpio).filter(B
 function guardarListaAdmins(l){
   var u=[]; l.forEach(function(n){ n=nombreLimpio(n); if(n && u.indexOf(n)<0) u.push(n); });
   u.sort(function(a,b){ return a.localeCompare(b,"es"); });
-  try{ localStorage.setItem(CLAVE_ADMINS, JSON.stringify(u)); }catch(e){}
+  try{ localStorage.setItem(CLAVE_ADMINS, JSON.stringify(u)); }catch(e){ registrarError("guardar administradores", e); }
 }
 async function leerAdminsCarpeta(){
   if(!carpetaHandle || !(await permisoCarpeta(false))) return null;
@@ -8726,7 +8821,7 @@ function registrarActividad(evento, detalle, nombreSinSesion){
   if(!modoAcceso && !nombreSinSesion) return;
   var linea=[new Date().toISOString(), modoAcceso ? (modoAcceso==="admin"?"administrador":"consulta") : "sin sesión", modoAcceso ? nombreSesion : nombreSinSesion, evento, String(detalle==null?"":detalle).replace(/[\t\r\n]+/g," ").slice(0,400)].join("\t");
   var l=leerJson(CLAVE_ACTIVIDAD); l.push(linea);
-  try{ localStorage.setItem(CLAVE_ACTIVIDAD, JSON.stringify(l.slice(-2000))); }catch(e){}
+  try{ localStorage.setItem(CLAVE_ACTIVIDAD, JSON.stringify(l.slice(-2000))); }catch(e){ registrarError("guardar registro de actividad", e); }
   volcarActividad();
 }
 var colaActividad=Promise.resolve();

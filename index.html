@@ -651,6 +651,9 @@
   #aviso-cat-dup{border:1px solid #a3261c;background:#fbeceb;color:#7d1a12;border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:13.5px;}
   #pend-tabla table,#cb-tabla table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
   #cb-tabla{max-height:340px;overflow:auto;}
+  #cb-tabla .cb-dest{background:#fff3c4;font-weight:600;border-left:2px solid #e0a800;border-right:2px solid #e0a800;}
+  #cb-tabla th.cb-dest{background:#ffe27a;}
+  #cb-marcar.activo{background:var(--accent,#2f6f4f);color:#fff;}
   #pend-tabla th,#pend-tabla td,#cb-tabla th,#cb-tabla td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;}
   #pend-tabla .pend-rep{color:#a3261c;font-weight:600;}
   .aviso-limitado .aviso-texto{font-weight:400;}
@@ -1181,13 +1184,12 @@
           <div class="campo opc"><div class="lbl"><span class="name">Colección</span></div><select class="nav" id="cb-coleccion"></select></div>
           <div class="campo opc"><div class="lbl"><span class="name">Sesión de ingreso</span></div><select class="nav" id="cb-sesion"></select></div>
           <div class="campo opc"><div class="lbl"><span class="name">Sesión de edición</span></div><select class="nav" id="cb-sesion-ed"></select></div>
-          <div class="campo opc"><div class="lbl"><span class="name">Importados desde</span></div><select class="nav" id="cb-origen"></select></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Archivo de origen (importados desde)</span></div><select class="nav" id="cb-origen"></select><div class="nota">Nombre del archivo (zip, planilla o carpeta) con el que entró el registro. «Cualquiera» incluye también los ingresados a mano.</div></div>
           <div class="campo opc"><div class="lbl"><span class="name">Según el campo que cambiarás</span></div><select class="nav" id="cb-solo"><option value="">Cualquier valor actual</option><option value="vacio">Solo los que lo tienen vacío</option><option value="conValor">Solo los que ya tienen algún valor</option></select></div>
           <div class="campo opc"><div class="lbl"><span class="name">Solo si el valor actual del campo es</span></div><input class="nav" id="cb-actual" autocomplete="off" placeholder="Texto exacto (sin distinguir mayúsculas ni tildes)"></div>
         </div>
         <div class="barra-botones">
-          <button type="button" class="btn secundario small" id="cb-marcar">Marcar todos los que coinciden</button>
-          <button type="button" class="btn tenue small" id="cb-quitar">Quitar todas las marcas</button>
+          <button type="button" class="btn secundario small" id="cb-marcar">Marcar todos</button>
         </div>
         <p class="nota" id="cb-cuenta"></p>
         <div id="cb-tabla"></div>
@@ -1390,7 +1392,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.63";
+var APP_VERSION = "v0.9.64";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -8667,12 +8669,13 @@ function iniciarBloque(){
     var lista=filtrados(), k=campoK(), o=campoActual(), marc=0;
     lista.forEach(function(r){ if(sel.has(r.id)) marc++; });
     $("cb-cuenta").textContent=lista.length+" registro(s) coinciden con los filtros; "+marc+" marcado(s) entre ellos"+(sel.size>marc?" ("+sel.size+" en total, incluidos algunos que ahora no coinciden)":"")+(!k && ($("cb-actual").value.trim()||$("cb-solo").value) ? ". Elige el campo (paso 2) para que se apliquen los filtros según el campo":"")+".";
-    var h='<table><thead><tr><th></th><th>N.º de catálogo o de campo</th><th>Nombre</th><th>Localidad</th>'+(o?'<th>'+escapeHtml(o.l)+' (actual)</th>':'')+'</tr></thead><tbody>';
+    var h='<table><thead><tr><th></th><th>N.º de catálogo o de campo</th><th>Nombre</th><th>Localidad</th>'+(o?'<th class="cb-dest">'+escapeHtml(o.l)+' (actual)</th>':'')+'</tr></thead><tbody>';
     lista.slice(0,200).forEach(function(r){
       var et=etiquetaRegistro(r);
-      h+='<tr><td><input type="checkbox" class="cb-chk" data-id="'+r.id+'"'+(sel.has(r.id)?' checked':'')+'></td><td>'+escapeHtml(construirCatalogoCompleto(r)||(r.numeroCampo?"campo "+r.numeroCampo:"sin número"))+'</td><td>'+escapeHtml(et.nombreVigente||"")+'</td><td>'+escapeHtml(r.localidad||r.localidadVerbatim||"")+'</td>'+(o?'<td>'+escapeHtml(String(moverApi.getV(r,k)==null?"":moverApi.getV(r,k)))+'</td>':'')+'</tr>';
+      h+='<tr><td><input type="checkbox" class="cb-chk" data-id="'+r.id+'"'+(sel.has(r.id)?' checked':'')+'></td><td>'+escapeHtml(construirCatalogoCompleto(r)||(r.numeroCampo?"campo "+r.numeroCampo:"sin número"))+'</td><td>'+escapeHtml(et.nombreVigente||"")+'</td><td>'+escapeHtml(r.localidad||r.localidadVerbatim||"")+'</td>'+(o?'<td class="cb-dest">'+escapeHtml(String(moverApi.getV(r,k)==null?"":moverApi.getV(r,k)))+'</td>':'')+'</tr>';
     });
-    h+='</tbody></table>'+(lista.length>200?'<p class="nota">Se muestran 200 de '+lista.length+'. «Marcar todos los que coinciden» marca los '+lista.length+'.</p>':'');
+    h+='</tbody></table>'+(lista.length>200?'<p class="nota">Se muestran 200 de '+lista.length+'. «Marcar todos» marca los '+lista.length+'.</p>':'');
+    var btnM=$("cb-marcar"); btnM.classList.toggle("activo", lista.length>0 && marc===lista.length);
     $("cb-tabla").innerHTML=lista.length?h:'<p class="nota">Ningún registro coincide con los filtros.</p>';
     $("cb-msg").textContent="";
   }
@@ -8723,9 +8726,8 @@ function iniciarBloque(){
     var lista=filtrados(), marc=0; lista.forEach(function(r){ if(sel.has(r.id)) marc++; });
     $("cb-cuenta").textContent=lista.length+" registro(s) coinciden con los filtros; "+marc+" marcado(s) entre ellos.";
   });
-  $("cb-marcar").addEventListener("click", function(){ filtrados().forEach(function(r){ sel.add(r.id); }); pintar(); });
-  $("cb-quitar").addEventListener("click", function(){ sel.clear(); pintar(); });
-  $("cb-vaciar").addEventListener("change", function(){ var v=$("cb-valor"); if(v) v.disabled=this.checked; plan=null; $("cb-aplicar").disabled=true; });
+  $("cb-marcar").addEventListener("click", function(){ var l=filtrados(), todos=l.length>0 && l.every(function(r){ return sel.has(r.id); }); l.forEach(function(r){ if(todos) sel.delete(r.id); else sel.add(r.id); }); pintar(); });
+    $("cb-vaciar").addEventListener("change", function(){ var v=$("cb-valor"); if(v) v.disabled=this.checked; plan=null; $("cb-aplicar").disabled=true; });
   $("cb-ver").addEventListener("click", function(){
     if(modoAcceso!=="admin") return;
     plan=calcular(); var m=$("cb-msg");

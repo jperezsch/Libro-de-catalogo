@@ -1149,7 +1149,7 @@
     <details class="bloque bloque-desp" id="det-gestion">
       <summary>Gestión de Datos <button type="button" class="ayuda-btn" data-ayuda="ayuda-gestion" aria-label="Ayuda" title="Ayuda">?</button></summary>
       <div class="ayuda-panel oculto" id="ayuda-gestion">Aquí se administran los registros guardados: puedes agrupar y filtrar por colección o por sesión de ingreso o edición, marcar registros (todos los mostrados con «Marcar todo», que se desactiva pinchándolo otra vez, o uno a uno), descargar un respaldo en zip, una planilla Excel, un CSV o un CSV con nombres Darwin Core, importar datos (zip de Libreta de Campo, zip de respaldo de esta app o planilla Excel/CSV) y, solo en este bloque, eliminar los registros marcados. Si no hay ninguno marcado, las descargas ofrecen los registros mostrados.</div>
-      <details class="subbloque-gest" id="sub-importar" open>
+      <details class="subbloque-gest" id="sub-importar">
         <summary>Importar datos</summary>
         <div class="barra-botones">
           <button class="btn secundario" id="btn-importar-zip-libreta" title="Trae los ejemplares de un zip descargado desde Libreta de Campo">Importar datos de terreno (.zip Libreta de Campo)</button>
@@ -1200,7 +1200,7 @@
         <div class="barra-botones"><button type="button" class="btn secundario" id="cb-ver">Ver cuántos cambiarían</button><button type="button" class="btn" id="cb-aplicar" disabled>Aplicar</button></div>
         <p class="nota" id="cb-msg"></p>
       </details>
-      <details class="subbloque-gest" id="sub-exportar" open>
+      <details class="subbloque-gest" id="sub-exportar">
         <summary>Exportar datos</summary>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
@@ -1264,7 +1264,7 @@
 
     <details class="bloque bloque-desp oculto" id="det-estandares">
       <summary>Estandarizaciones y sugerencias <span class="std-badge oculto" id="std-badge"></span> <button type="button" class="ayuda-btn" data-ayuda="ayuda-estandares" aria-label="Ayuda" title="Ayuda">?</button></summary>
-      <div class="ayuda-panel oculto" id="ayuda-estandares">Cada lista reúne los nombres correctos que la app ofrece como sugerencia en los campos del formulario. Si escribes un nombre que no está, la app avisa y propone el más parecido. Un nombre puede tener variantes conocidas (por ejemplo «Jorge Perez» como variante de «Jorge Pérez-Schultheiss»): la variante deja de sugerirse y, si alguien la escribe, se propone el nombre correcto. «Reunir» llena la lista con lo que ya se usó en los registros y en el historial de cada campo; «Buscar variantes parecidas» agrupa nombres casi iguales para unificarlos. Las listas se guardan también en la Carpeta local (Catalogos/), de modo que los equipos que usan la misma carpeta comparten las correcciones; si un registro de otro equipo aún usa una variante, aparece el aviso para corregirlo.</div>
+      <div class="ayuda-panel oculto" id="ayuda-estandares">Cada lista reúne los nombres correctos que la app ofrece como sugerencia en los campos del formulario. Si escribes un nombre que no está, la app avisa y propone el más parecido. Un nombre puede tener variantes conocidas (por ejemplo «Jorge Perez» como variante de «Jorge Pérez-Schultheiss»): la variante deja de sugerirse y, si alguien la escribe, se propone el nombre correcto. Las listas se llenan solas con lo que ya se usó en los registros y en el historial de cada campo (los nombres que quitas no vuelven a entrar); «Reunir» repite esa recolección a pedido; «Buscar variantes parecidas» agrupa nombres casi iguales para unificarlos. Las listas se guardan también en la Carpeta local (Catalogos/), de modo que los equipos que usan la misma carpeta comparten las correcciones; si un registro de otro equipo aún usa una variante, aparece el aviso para corregirlo.</div>
       <div class="std-banner oculto" id="std-banner"><span id="std-banner-txt"></span> <button type="button" class="btn small" id="std-corregir">Corregir registros</button></div>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Lista</span></div><select class="nav" id="std-sel"></select></div>
@@ -1392,7 +1392,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.64";
+var APP_VERSION = "v0.9.65";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1580,7 +1580,7 @@ function cargarDesdeIndexedDB(cb){
 
 // Agrupa los guardados seguidos (una importación llama a persistir muchas veces) y fuerza el guardado al ocultar o cerrar la página.
 function persistir(){
-  registrosVersion++;
+  registrosVersion++; stdAutoProg();
   if(modoAcceso!=="admin") return;
   clearTimeout(persistirTimer);
   persistirTimer=setTimeout(function(){ persistirTimer=null; guardarEnIndexedDB(); }, 250);
@@ -2212,9 +2212,19 @@ function stdFilaHtml(it, usos){
   if(it.a.length) h+='<div class="std-vars">Variantes: '+it.a.map(function(x){ var uu=usos[x]; return '<span class="std-chip">'+escapeHtml(x)+(uu?' ('+uu.n+')':'')+' <button type="button" class="std-chip-x" data-a="'+escapeHtml(x)+'" title="Quitar esta variante">✕</button></span>'; }).join(" ")+'</div>';
   return h+'</div>';
 }
+// las listas incorporan solas todo valor usado en los registros o en el historial de sugerencias (salvo los quitados a propósito)
+var stdAutoVer=-1, stdAutoTimer=null;
+function stdAutoReunir(){
+  if(stdAutoVer===registrosVersion) return;
+  stdAutoVer=registrosVersion; var tot=0;
+  STD_DEF.forEach(function(d){ tot+=stdReunirLista(d.id).nuevos.length; });
+  if(tot){ stdCache={}; stdGuardar(); }
+}
+function stdAutoProg(){ clearTimeout(stdAutoTimer); stdAutoTimer=setTimeout(function(){ stdAutoReunir(); if(modoAcceso==="admin" && stdEl("std-tabla")) stdRender(); }, 1500); }
 function stdRender(){
   var det=stdEl("det-estandares"); if(!det) return;
   det.classList.toggle("oculto", modoAcceso!=="admin"); if(modoAcceso!=="admin") return;
+  stdAutoReunir();
   var d=stdDef(stdSel), usos=stdUsos(stdSel), sel=stdEl("std-sel"), L=stdL(stdSel);
   var hs="", gAct="";
   STD_DEF.forEach(function(x){
@@ -2226,7 +2236,7 @@ function stdRender(){
   stdEl("std-campos").textContent="Se ofrece como sugerencia en: "+d.campos.map(function(c){ return c[1]; }).join(", ")+".";
   var nombres=Object.create(null); L.items.forEach(function(it){ nombres[it.n]=1; it.a.forEach(function(a){ nombres[a]=1; }); });
   var pend=Object.keys(usos).filter(function(v){ return !nombres[v]; }).length;
-  stdEl("std-pend").textContent=pend ? pend+" valor(es) usados en los registros todavía no están en esta lista. «Reunir» los agrega." : (L.items.length ? "Todos los valores usados en los registros están en esta lista." : "");
+  stdEl("std-pend").textContent=pend ? pend+" valor(es) usados en los registros todavía no están en esta lista. «Reunir» los agrega (también se agregan solos al guardar registros)." : (L.items.length ? "Todos los valores usados en los registros están en esta lista." : "");
   var h=""; L.items.slice(0,400).forEach(function(it){ h+=stdFilaHtml(it, usos); });
   if(L.items.length>400) h+='<p class="nota">Se muestran 400 de '+L.items.length+'.</p>';
   stdEl("std-tabla").innerHTML=h || '<p class="nota">La lista está vacía. Usa «Reunir nombres desde los registros» o agrega nombres a mano.</p>';
@@ -4683,7 +4693,7 @@ function renderResumenDatos(){
   }
 }
 function refrescarPanelesRegistros(){
-  registrosVersion++;
+  registrosVersion++; stdAutoProg();
   revisarCatalogoForm(); pintarAvisoCatalogosRepetidos();
   programarAlertaPrestamos();
   var bAct=document.querySelector("#tabs button.active");

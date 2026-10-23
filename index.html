@@ -650,6 +650,13 @@
   .aviso-dup button{margin-left:8px;font-weight:400;}
   #aviso-cat-dup{border:1px solid #a3261c;background:#fbeceb;color:#7d1a12;border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:13.5px;}
   #pend-tabla table,#cb-tabla table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+  .fecha-ctl{display:flex;flex-wrap:wrap;gap:4px;align-items:stretch;position:relative;width:100%;}
+  .fecha-ctl>input[data-tf]{flex:1 1 110px;min-width:0;}
+  .fecha-ctl>.btn{flex:none;padding:0 8px;}
+  .fecha-ctl .fecha-nativo{position:absolute;left:0;bottom:0;width:100%;height:1px;opacity:0;pointer-events:none;border:0;padding:0;}
+  .fecha-ctl .fecha-err{flex:1 0 100%;color:#8a2a1e;font-size:12px;}
+  .fecha-ctl .fecha-err:empty{display:none;}
+  input.fecha-mala{border-color:#8a2a1e !important;background:#fbebeb !important;}
   #cb-tabla{max-height:340px;overflow:auto;}
   #cb-tabla .cb-dest{background:#fff3c4;font-weight:600;border-left:2px solid #e0a800;border-right:2px solid #e0a800;}
   #cb-tabla th.cb-dest{background:#ffe27a;}
@@ -1392,7 +1399,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.65";
+var APP_VERSION = "v0.9.66";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1449,7 +1456,7 @@ function unirCalificador(cal, nombre){
   cal=String(cal==null?"":cal).trim(); nombre=String(nombre==null?"":nombre).trim();
   if(!cal) return nombre; if(!nombre) return cal;
   if((" "+nombre.toLowerCase()+" ").indexOf(" "+cal.toLowerCase()+" ")>-1) return nombre;
-  if(cal==="?" || /^sp\.?\s*nov\.?$/i.test(cal)) return nombre+" "+cal;
+  if(cal==="?" || /^sp\.?\s*nov\.?$/i.test(cal) || /^(indet\.?|s\.\s?l\.?|s\.\s?str\.?|incertae sedis)$/i.test(cal)) return nombre+" "+cal;
   var toks=nombre.split(/\s+/), i=(toks[1] && /^\(.*\)$/.test(toks[1])) ? 2 : 1;
   var tieneEpiteto=!!(toks[i] && NC_EPITETO.test(toks[i]) && !NC_PARTICULA[toks[i]] && !NC_CALIFICADOR.test(toks[i]));
   if(/^sp\.?$/i.test(cal)){
@@ -1654,7 +1661,7 @@ var DEF_CAMPOS = {
   observacionesBaja:"Notas sobre el estado o la ubicación actual del ejemplar, y sobre la baja si la hubo.",
   observaciones:"Notas generales del registro. DwC: occurrenceRemarks.",
   "@nombre":"Nombre científico de la determinación vigente, que es la más reciente de la lista de determinaciones. Con este nombre se muestra el ejemplar en las consultas.",
-  "@calificador":"Marca de incertidumbre del nombre: cf. (comparar con), aff. (afín a), ? (dudoso), sp. (especie sin identificar) o sp. nov. (especie nueva).",
+  "@calificador":"Marca de incertidumbre del nombre: cf. (comparar con), aff. (afín a), ? (dudoso), sp. (especie sin identificar), sp. nov. (especie nueva), indet. (indeterminado), s.l. (sensu lato), s.str. (sensu stricto) o incertae sedis (posición incierta).",
   "@determinador":"Persona que identificó el ejemplar en esa determinación.",
   "@fechaDet":"Fecha en que se hizo la determinación.",
   "@prevDet":"Nombre de una determinación anterior, que queda en el historial detrás de la vigente.",
@@ -1799,12 +1806,19 @@ function camposNavegables(){
   var p=document.querySelector(".tabpanel.active"); if(!p) return [];
   return Array.prototype.slice.call(p.querySelectorAll(".nav")).filter(function(el){ return !el.disabled && el.type!=="hidden" && el.offsetParent!==null; });
 }
+// Un solo desplazamiento, determinista: solo si el campo queda muy cerca de un borde (o bajo la cabecera fija), lo deja a un tercio de la pantalla.
+function verCampo(n){
+  try{
+    var cab=document.getElementById("cabecera-fija"), arriba=(cab?cab.offsetHeight:0)+50, vh=window.innerHeight, r=n.getBoundingClientRect();
+    if(r.top<arriba || r.bottom>vh-90) window.scrollBy(0, r.top-(arriba+(vh-arriba)*0.3));
+  }catch(err){}
+}
 function irACampo(t, dir){
   var c=camposNavegables(), i=c.indexOf(t); if(i<0) return false;
   var n=c[i+dir]; if(!n) return false;
-  n.focus();
+  try{ n.focus({preventScroll:true}); }catch(err){ n.focus(); }
   try{ if(n.tagName==="INPUT" && /^(text|search|email|url|tel|password)$/.test(n.type||"text")) n.select(); }catch(err){}
-  try{ n.scrollIntoView({block:"nearest"}); }catch(err){}
+  verCampo(n);
   return true;
 }
 document.addEventListener("keydown", function(e){
@@ -1814,18 +1828,19 @@ document.addEventListener("keydown", function(e){
   if(!t.classList || !t.classList.contains("nav")) return;
   e.preventDefault();
   if(t.tagName==="BUTTON"){ t.click(); return; }
+  if(t.getAttribute("data-tf") && !fechaConfirmar(t,true)) return;   // reconoce la fecha u hora escrita antes de pasar al campo siguiente
   irACampo(t, 1);
 });
 // Flechas: en un campo de texto solo pasan al campo vecino cuando el cursor está en el borde (o todo el texto está seleccionado), para no estorbar la edición.
-// Las fechas y horas conservan las flechas para moverse entre día, mes y año.
+// Las fechas y horas son campos de texto (ver más abajo), así que siguen la misma regla.
 document.addEventListener("keydown", function(e){
   if((e.key!=="ArrowLeft" && e.key!=="ArrowRight") || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.defaultPrevented) return;
   var t=e.target; if(!t || !t.classList || !t.classList.contains("nav")) return;
   var tipo=(t.type||"").toLowerCase();
   if(t.tagName==="INPUT" || t.tagName==="TEXTAREA"){
-    if(["date","time","datetime-local","month","week","number","range"].indexOf(tipo)>-1) return;
+    if(["datetime-local","month","week","number","range"].indexOf(tipo)>-1) return;
     if(tipo!=="checkbox" && tipo!=="radio"){
-      var a=t.selectionStart, b=t.selectionEnd, n=t.value.length;
+      var a=t.selectionStart, b=t.selectionEnd, n=(t.getAttribute("data-tf") ? FH_VALOR.get.call(t) : t.value).length;
       if(a==null) return;
       var todo=(a===0 && b===n);
       if(!todo && (a!==b || (e.key==="ArrowLeft" ? a!==0 : a!==n))) return;
@@ -1833,6 +1848,93 @@ document.addEventListener("keydown", function(e){
   }
   if(irACampo(t, e.key==="ArrowLeft" ? -1 : 1)) e.preventDefault();
 });
+
+// ---------- fechas y horas escribibles ----------
+// Los campos de fecha y hora son de texto: se escribe de corrido (15102024, 15-10-2024, 15/10/24; 0930, 9:30) y se pueden corregir como cualquier texto.
+// El valor que leen el resto de la app sigue siendo AAAA-MM-DD y HH:MM. El botón «Hoy» pone la fecha de hoy y el 📅 abre el calendario.
+var FH_VALOR=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value");
+function fhAnio(s){ if(s.length===4) return +s; var n=+s; return n<=((new Date().getFullYear()+1)%100) ? 2000+n : 1900+n; }
+function fechaDesdeTexto(txt){
+  var t=String(txt==null?"":txt).trim(); if(!t) return "";
+  var r, d, m, y;
+  if((r=/^(\d{4})[-\/.\s](\d{1,2})[-\/.\s](\d{1,2})$/.exec(t))){ y=+r[1]; m=+r[2]; d=+r[3]; }
+  else if((r=/^(\d{1,2})[-\/.\s](\d{1,2})[-\/.\s](\d{4}|\d{2})$/.exec(t))){ d=+r[1]; m=+r[2]; y=fhAnio(r[3]); }
+  else if(/^\d{8}$/.test(t)){ d=+t.slice(0,2); m=+t.slice(2,4); y=+t.slice(4); if(y<1500){ y=+t.slice(0,4); m=+t.slice(4,6); d=+t.slice(6); } }
+  else if(/^\d{6}$/.test(t)){ d=+t.slice(0,2); m=+t.slice(2,4); y=fhAnio(t.slice(4)); }
+  else return null;
+  if(y<1500 || y>2200 || m<1 || m>12 || d<1 || d>new Date(Date.UTC(y,m,0)).getUTCDate()) return null;
+  return y+"-"+pad2(m)+"-"+pad2(d);
+}
+function horaDesdeTexto(txt){
+  var t=String(txt==null?"":txt).trim(), r, h, m; if(!t) return "";
+  if(/^\d{3,4}$/.test(t)){ h=+t.slice(0,-2); m=+t.slice(-2); }
+  else if((r=/^(\d{1,2})(?:\s*[:.hH]\s*(\d{1,2}))?(?:[:.]\d{1,2})?$/.exec(t))){ h=+r[1]; m=r[2]==null ? 0 : +r[2]; }
+  else return null;
+  if(h>23 || m>59) return null;
+  return pad2(h)+":"+pad2(m);
+}
+function fhMostrar(tipo, iso){
+  if(!iso) return "";
+  if(tipo==="date"){ var p=iso.split("-"); return p[2]+"-"+p[1]+"-"+p[0]; }
+  return iso;
+}
+function fhLeer(inp){ var f=inp.getAttribute("data-tf")==="date" ? fechaDesdeTexto : horaDesdeTexto; return f(FH_VALOR.get.call(inp)); }
+function fhMarcar(inp, msg){
+  var w=inp.closest(".fecha-ctl"), e=w && w.querySelector(".fecha-err");
+  inp.classList.toggle("fecha-mala", !!msg);
+  if(e) e.textContent=msg||"";
+}
+// reconoce el texto escrito; devuelve false si no es válido (y lo marca). Si cambió el valor, avisa a la app con input y change.
+function fechaConfirmar(inp){
+  var tipo=inp.getAttribute("data-tf"), iso=fhLeer(inp);
+  if(iso===null){
+    fhMarcar(inp, tipo==="date" ? "No reconozco esa fecha. Escribe día, mes y año, por ejemplo 15-10-2024." : "No reconozco esa hora. Escríbela así: 09:30.");
+    return false;
+  }
+  fhMarcar(inp, "");
+  var vis=fhMostrar(tipo, iso); if(FH_VALOR.get.call(inp)!==vis) FH_VALOR.set.call(inp, vis);
+  if(iso!==inp._ult){ inp._ult=iso; inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true})); }
+  return true;
+}
+function fhHoyISO(){ var d=new Date(); return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+function mejorarFechaHora(inp){
+  if(inp._fh || inp.classList.contains("fecha-nativo")) return;
+  var tipo=inp.type; if(tipo!=="date" && tipo!=="time") return;
+  inp._fh=true;
+  var inicial=FH_VALOR.get.call(inp);
+  inp.type="text"; inp.setAttribute("data-tf",tipo); inp.setAttribute("autocomplete","off"); inp.setAttribute("inputmode","numeric");
+  inp.setAttribute("placeholder", tipo==="date" ? "DD-MM-AAAA" : "HH:MM"); inp.setAttribute("maxlength","12");
+  inp._ult=inicial||"";
+  FH_VALOR.set.call(inp, fhMostrar(tipo, inicial));
+  Object.defineProperty(inp,"value",{configurable:true,
+    get:function(){ var v=fhLeer(inp); return v===null ? "" : v; },
+    set:function(v){ var iso=(tipo==="date" ? fechaDesdeTexto : horaDesdeTexto)(v); inp._ult=iso||""; FH_VALOR.set.call(inp, iso===null ? String(v==null?"":v) : fhMostrar(tipo, iso)); fhMarcar(inp,""); }});
+  var w=document.createElement("span"); w.className="fecha-ctl";
+  inp.parentNode.insertBefore(w, inp); w.appendChild(inp);
+  if(tipo==="date"){
+    w.insertAdjacentHTML("beforeend",'<button type="button" class="btn tenue small fecha-hoy" tabindex="-1" title="Poner la fecha de hoy">Hoy</button><button type="button" class="btn tenue small fecha-cal" tabindex="-1" title="Elegir en el calendario" aria-label="Abrir el calendario">📅</button><input type="date" class="fecha-nativo" tabindex="-1" aria-hidden="true">');
+    w.querySelector(".fecha-nativo").addEventListener("change", function(){ if(this.value){ FH_VALOR.set.call(inp, fhMostrar("date", this.value)); fechaConfirmar(inp); } });
+  }
+  w.insertAdjacentHTML("beforeend",'<small class="fecha-err" role="alert"></small>');
+  inp.addEventListener("blur", function(){ if(FH_VALOR.get.call(inp).trim()!=="" || inp._ult) fechaConfirmar(inp); });
+  inp.addEventListener("input", function(){ if(inp.classList.contains("fecha-mala")) fhMarcar(inp,""); });
+}
+document.addEventListener("click", function(e){
+  var b=e.target.closest && e.target.closest(".fecha-hoy, .fecha-cal"); if(!b) return;
+  var w=b.closest(".fecha-ctl"), inp=w && w.querySelector("input[data-tf]"); if(!inp) return;
+  e.preventDefault();
+  if(b.classList.contains("fecha-hoy")){ FH_VALOR.set.call(inp, fhMostrar("date", fhHoyISO())); fechaConfirmar(inp); inp.focus(); }
+  else { var nat=w.querySelector(".fecha-nativo"); nat.value=inp.value||""; try{ nat.showPicker(); }catch(err){ nat.focus(); nat.click(); } }
+});
+(function(){
+  function recorrer(raiz){
+    if(raiz.nodeType!==1) return;
+    if(raiz.matches && raiz.matches("input[type=date],input[type=time]")) mejorarFechaHora(raiz);
+    if(raiz.querySelectorAll) raiz.querySelectorAll("input[type=date],input[type=time]").forEach(mejorarFechaHora);
+  }
+  recorrer(document.body);
+  new MutationObserver(function(muts){ muts.forEach(function(m){ m.addedNodes.forEach(recorrer); }); }).observe(document.body,{childList:true,subtree:true});
+})();
 
 // ---------- autocompletado ----------
 function claveSug(campo){ return LS_PREFIX+"sug_"+campo; }
@@ -1914,6 +2016,7 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
     if(e.key==="ArrowDown"){ marcar(Math.min(items.length-1,sel+1)); e.preventDefault(); }
     else if(e.key==="ArrowUp"){ marcar(Math.max(0,sel-1)); e.preventDefault(); }
     else if(e.key==="Enter" && sel>-1){ e.preventDefault(); e.stopPropagation(); elegir(items[sel]); }
+    else if(e.key==="Enter"){ cerrar(); }
     else if(e.key==="Escape"){ cerrar(); }
     else if(e.key==="Tab"){ cerrar(); }
   },true);
@@ -1927,8 +2030,7 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
 // Cada lista guarda nombres correctos con sus variantes conocidas. Se conserva en el navegador y en la Carpeta local (Catalogos/<lista>.json),
 // y se fusiona con la de otros equipos que usen la misma carpeta (gana la entrada modificada más recientemente; los nombres quitados quedan anotados).
 var STD_DEF = [
-  {g:"Personas e instituciones", id:"personas", nombre:"Personas", desc:"Colectores, determinadores y demás personas que figuran en los registros. Los nombres compuestos («A & B», «A y B», «A; B») se tratan como personas separadas.", campos:[["colector","Colector"],["destinatario","Destinatario"],["responsableBaja","Responsable de la baja"],["@determinaciones.determinador","Determinador"],["@fotos.fotografo","Fotógrafo"],["@prestamos.solicitante","Solicitante de préstamo"],["@usos.responsable","Responsable de uso"],["@monitoreos.responsable","Responsable de monitoreo"]]},
-  {g:"Personas e instituciones", id:"instituciones", nombre:"Instituciones", desc:"Instituciones o personas que legan o depositan material.", campos:[["legatario","Legatario"]]},
+  {g:"Personas e instituciones", id:"personas", nombre:"Personas e instituciones", desc:"Colectores, determinadores, legatarios y demás personas o instituciones que figuran en los registros. Los nombres compuestos («A & B», «A y B», «A; B») se tratan como personas separadas.", campos:[["colector","Colector"],["legatario","Legatario"],["destinatario","Destinatario"],["responsableBaja","Responsable de la baja"],["@determinaciones.determinador","Determinador"],["@fotos.fotografo","Fotógrafo"],["@prestamos.solicitante","Solicitante de préstamo"],["@usos.responsable","Responsable de uso"],["@monitoreos.responsable","Responsable de monitoreo"]]},
   {g:"Personas e instituciones", id:"proyectos", nombre:"Proyectos", desc:"Proyectos o iniciativas de origen del material.", campos:[["proyectoOrigen","Proyecto / iniciativa de origen"]]},
   {g:"Personas e instituciones", id:"colecciones", nombre:"Colecciones", desc:"Nombres de las colecciones a las que pertenecen los ejemplares.", campos:[["coleccionNombre","Nombre de la colección"]]},
   {g:"Lugares", id:"localidades", nombre:"Localidades", desc:"Nombres de lugares de colecta, escritos de forma consistente.", campos:[["localidad","Localidad"]]},
@@ -1965,6 +2067,10 @@ function stdLeer(){
     L[d.id]=o;
   });
   stdDatos={v:2, listas:L};
+  if(L.instituciones){   // la antigua lista «Instituciones» (Legatario) pasó a «Personas e instituciones»
+    var inst=L.instituciones; delete L.instituciones;
+    stdFusionar("personas", {items:inst.items, borrados:inst.borrados});
+  }
   return stdDatos;
 }
 function stdL(id){ return stdLeer().listas[id]; }
@@ -2713,7 +2819,7 @@ var listasCfg = {
     {key:"nombreCientifico",label:"Nombre científico",req:true},
     {key:"determinador",label:"Determinador",req:true},
     {key:"fechaDeterminacion",label:"Fecha",type:"date",req:true},
-    {key:"calificador",label:"Calificador",type:"select",options:["cf.","aff.","?","sp.","sp. nov."]}
+    {key:"calificador",label:"Calificador",type:"select",options:["cf.","aff.","?","sp.","sp. nov.","indet.","s.l.","s.str.","incertae sedis"]}
   ]},
   submuestras: {contenedorId:"lista-submuestras", campos:[
     {key:"tipoSubmuestra",label:"Tipo de submuestra"},
@@ -7498,7 +7604,7 @@ function impObjetivos(){
     var o={k:k, l:etiqueta, g:(TABS[panel&&panel.id]||"Otros")+(titulo?" › "+titulo:""), tipo:"texto"};
     var sel=document.querySelector('select[data-f="'+k+'"]');
     if(sel){ o.tipo="lista"; o.opciones=Array.prototype.map.call(sel.options,function(x){ return x.value; }).filter(function(v){ return v && v!=="__otro"; }); o.estricto=(k==="estadoUbicacion"); }
-    else if(el.type==="date") o.tipo="fecha";
+    else if(el.type==="date" || el.getAttribute("data-tf")==="date") o.tipo="fecha";
     else if(el.type==="number" || k==="altitud_m" || k==="individuos") o.tipo="numero";
     else if(k==="lat") o.tipo="lat"; else if(k==="lng") o.tipo="lng";
     else if(k==="horaColecta") o.tipo="hora";

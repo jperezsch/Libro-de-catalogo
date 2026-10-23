@@ -643,6 +643,14 @@
   .btn-ver-compacto:hover{opacity:1;background:var(--accent-soft);}
   .aviso-carpeta{background:var(--warn-soft);border-bottom:2px solid var(--warn);color:var(--ink);padding:10px var(--gutter);display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14.5px;}
   .aviso-carpeta .aviso-texto{flex:1;min-width:220px;font-weight:600;}
+  .coord-aviso{grid-column:1/-1;margin:0;font-size:13px;}
+  .coord-aviso.ok{color:#1d5a2c;} .coord-aviso.aviso{color:#6b4b00;}
+  .aviso-dup{grid-column:1/-1;margin:2px 0 0;font-size:13px;color:#a3261c;font-weight:600;}
+  .aviso-dup button{margin-left:8px;font-weight:400;}
+  #aviso-cat-dup{border:1px solid #a3261c;background:#fbeceb;color:#7d1a12;border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:13.5px;}
+  #pend-tabla table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+  #pend-tabla th,#pend-tabla td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;}
+  #pend-tabla .pend-rep{color:#a3261c;font-weight:600;}
   .aviso-limitado .aviso-texto{font-weight:400;}
   .aviso-guardado{background:#f6dcd6;border-bottom-color:#b3402a;}
   .det-errores{margin-top:8px;} .det-errores summary{cursor:pointer;font-size:14px;}
@@ -735,7 +743,9 @@
 <div class="aviso-carpeta oculto" id="aviso-carpeta">
   <span class="aviso-texto" id="aviso-carpeta-texto"></span>
   <button class="btn small" id="btn-aviso-accion">Aceptar</button>
-  <button class="btn small tenue oculto" id="btn-aviso-ignorar">Ahora no</button>
+  <button class="btn small tenue oculto" id="btn-aviso-ignorar">Ignorar</button>
+  <button class="btn small peligro oculto" id="btn-aviso-eliminar" title="Mueve estos registros de la Carpeta local a Registros/_eliminados">Eliminar registros</button>
+  <button class="btn small tenue oculto" id="btn-aviso-detalles">Ver detalles</button>
 </div>
 
 <div id="cabecera-fija">
@@ -831,6 +841,7 @@
         <div class="campo opc"><div class="lbl"><span class="name">Coordenadas originales</span><span class="key">coordenadasOriginales → dwc:verbatimCoordinates</span></div><input class="nav" data-f="coordenadasOriginales"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Latitud</span><span class="key">lat</span></div><input class="nav" data-f="lat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Longitud</span><span class="key">lng</span></div><input class="nav" data-f="lng"></div>
+        <p class="nota coord-aviso oculto" id="coord-aviso"></p>
         <div class="campo opc"><div class="lbl"><span class="name">Altitud/profundidad (m)</span><span class="key">altitud_m</span></div><input class="nav" data-f="altitud_m" placeholder="profundidad en negativo, ej. -35"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hora de colecta</span><span class="key">horaColecta → dwc:eventTime</span></div><input type="time" class="nav" data-f="horaColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hábitat</span><span class="key">habitat → dwc:habitat</span></div><input class="nav sugerido" data-f="habitat"></div>
@@ -976,6 +987,7 @@
         <div class="campo opc"><div class="lbl"><span class="name">Acrónimo de institución</span><span class="key">institucionAcronimo</span></div><input class="nav" id="campo-institucion-acronimo" data-f="institucionAcronimo" readonly></div>
         <div class="campo opc"><div class="lbl"><span class="name">Acrónimo de colección</span><span class="key">coleccionAcronimo</span></div><input class="nav" id="campo-coleccion-acronimo" data-f="coleccionAcronimo" readonly></div>
         <div class="campo opc"><div class="lbl"><span class="name">Catálogo</span><span class="key">catalogo</span></div><input class="nav" data-f="catalogo"></div>
+        <p class="nota aviso-dup oculto" id="catalogo-dup"></p>
         <div class="campo opc"><div class="lbl"><span class="name">Fecha de catalogación</span><span class="key">fechaCatalogacion</span></div><input type="date" class="nav" data-f="fechaCatalogacion"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Catalogador</span><span class="key">catalogador</span></div><input class="nav" id="campo-catalogador" data-f="catalogador" readonly placeholder="Se completa solo al guardar con N.º de catálogo"></div>
         <div class="campo req"><div class="lbl"><span class="name">Tipo nomenclatural</span><span class="key">tipoNomenclatural</span></div>
@@ -1175,6 +1187,7 @@
         </div>
       </div>
 
+      <div id="aviso-cat-dup" class="oculto"></div>
       <div id="resumen-datos"></div>
 
       <div class="barra-botones">
@@ -1202,6 +1215,19 @@
         </div>
       </details>
       <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
+      </details>
+      <details class="subbloque-gest" id="sub-pendientes">
+        <summary>Registros no respaldados de Carpeta local<span id="pend-badge"></span></summary>
+        <p class="nota">Son los registros guardados en la Carpeta local (Registros/) que este navegador no tiene, o cuya versión en la carpeta es más reciente que la del navegador. Puedes traerlos al navegador o eliminarlos de la carpeta: «Eliminar» los mueve a Registros/_eliminados, de donde se pueden recuperar a mano.</p>
+        <p class="nota" id="pend-resumen"></p>
+        <div class="imp-fila-opc"><label>Mostrar <select id="pend-filtro"><option value="">Todos</option><option value="nuevo">Solo los que este navegador no tiene</option><option value="reciente">Solo versiones más recientes</option></select></label></div>
+        <div class="barra-botones">
+          <button type="button" class="btn secundario small" id="pend-revisar">Revisar la carpeta de nuevo</button>
+          <button type="button" class="btn small" id="pend-importar">Importar los mostrados</button>
+          <button type="button" class="btn peligro small" id="pend-eliminar">Eliminar de la Carpeta local los mostrados</button>
+        </div>
+        <p class="nota" id="pend-msg"></p>
+        <div id="pend-tabla"></div>
       </details>
     </details>
 
@@ -1239,7 +1265,7 @@
 
     <details class="bloque bloque-desp" id="det-admins">
       <summary>Administradores autorizados <button type="button" class="ayuda-btn" data-ayuda="ayuda-admins" aria-label="Ayuda" title="Ayuda">?</button></summary>
-      <div class="ayuda-panel oculto" id="ayuda-admins">Solo los nombres registrados aquí pueden ingresar como Administrador, y deben escribirse exactamente igual (mayúsculas, tildes y guiones). Estos nombres no se ofrecen como sugerencias en la pantalla de inicio. La lista se guarda en este navegador y en Registros/_administradores.json de la Carpeta local, de modo que otro equipo con la misma carpeta la recupera. Si el nombre no figura, o la lista está vacía, se puede ingresar con la clave de seguridad (primer ingreso o pérdida de acceso); en el primer ingreso el nombre queda registrado.</div>
+      <div class="ayuda-panel oculto" id="ayuda-admins">Solo los nombres registrados aquí pueden ingresar como Administrador, y deben escribirse exactamente igual (mayúsculas, tildes y guiones). Estos nombres no se ofrecen como sugerencias en la pantalla de inicio, salvo en el equipo donde ese administrador ya ingresó antes (así puede entrar más rápido). La lista se guarda en este navegador y en Registros/_administradores.json de la Carpeta local, de modo que otro equipo con la misma carpeta la recupera. Si el nombre no figura, o la lista está vacía, se puede ingresar con la clave de seguridad (primer ingreso o pérdida de acceso); en el primer ingreso el nombre queda registrado.</div>
       <div class="fila-admin">
         <div class="campo opc"><div class="lbl"><span class="name">Nombre y apellido</span></div>
           <input type="text" id="admin-nuevo" autocomplete="off" spellcheck="false" placeholder="Tal como deberá escribirse al ingresar"></div>
@@ -1335,7 +1361,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.61";
+var APP_VERSION = "v0.9.62";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2857,6 +2883,161 @@ function construirFicha(r){
     + '<div class="ficha-footer"><span class="ficha-pos"></span><div class="ficha-nav"><button type="button" class="btn tenue ficha-ant" title="Registro anterior (flecha izquierda)" aria-label="Registro anterior">◀</button><button type="button" class="btn tenue ficha-sig" title="Registro siguiente (flecha derecha)" aria-label="Registro siguiente">▶</button></div><div class="ficha-ed">'+(modoAcceso==="admin" ? '<button class="btn small btn-editar-desde-ficha">Editar este registro</button>' : '')+'</div></div>'
     + '</div>';
 }
+// ---------- número de catálogo único: acrónimo de institución + acrónimo de colección + número, en conjunto ----------
+function claveCatalogo(r){
+  var n=String(r && r.catalogo!=null ? r.catalogo : "").replace(/\s+/g," ").trim().toUpperCase();
+  if(!n) return "";
+  if(/^\d+$/.test(n)) n=n.replace(/^0+(?=\d)/,"");
+  var a=function(x){ return String(x||"").replace(/\s+/g,"").toUpperCase(); };
+  return a(r.institucionAcronimo)+"|"+a(r.coleccionAcronimo)+"|"+n;
+}
+var catIdx=null, catIdxClave="";
+function indiceCatalogos(){
+  var k=registrosVersion+"|"+registros.length;
+  if(catIdx && catIdxClave===k) return catIdx;
+  var m={}; registros.forEach(function(r){ var c=claveCatalogo(r); if(c) (m[c]=m[c]||[]).push(r.id); });
+  catIdx=m; catIdxClave=k; return m;
+}
+// Devuelve el otro registro (de este navegador o aún pendiente en la Carpeta local) que ya usa ese número, o null.
+function catalogoRepetido(r){
+  var c=claveCatalogo(r); if(!c) return null;
+  var ids=indiceCatalogos()[c]||[], i, o;
+  for(i=0;i<ids.length;i++){ if(ids[i]!==r.id){ o=registroPorId(ids[i]); if(o) return {registro:o, lugar:"navegador"}; } }
+  var pend=pendientesCarpeta||[];
+  for(i=0;i<pend.length;i++){ o=pend[i]; if(o.id!==r.id && claveCatalogo(o)===c) return {registro:o, lugar:"carpeta"}; }
+  return null;
+}
+function siguienteCatalogoLibre(r){
+  var pre=claveCatalogo({institucionAcronimo:r.institucionAcronimo, coleccionAcronimo:r.coleccionAcronimo, catalogo:"1"}).slice(0,-1), max=0, ancho=0;
+  registros.concat(pendientesCarpeta||[]).forEach(function(o){
+    var c=claveCatalogo(o); if(!c || c.indexOf(pre)!==0) return;
+    var n=c.slice(pre.length); if(/^\d+$/.test(n) && +n>max) max=+n;
+  });
+  if(!max) return "";
+  var orig=String(r.catalogo||"").trim(); if(/^0\d+$/.test(orig)) ancho=orig.length;
+  var sig=String(max+1); while(sig.length<ancho) sig="0"+sig;
+  return sig;
+}
+function textoCatalogoRepetido(r, rep){
+  var cc=construirCatalogoCompleto(r), et=etiquetaRegistro(rep.registro);
+  var quien=resumenLinea1(et)||"otro registro", donde=rep.lugar==="carpeta" ? " (está en la Carpeta local y aún no se importa a este navegador)" : "";
+  var sig=siguienteCatalogoLibre(r);
+  return "El N.º de catálogo «"+cc+"» ya lo usa otro registro: "+quien+donde+"."+(sig?" Siguiente número libre en esa colección: "+sig+".":"");
+}
+function revisarCatalogoForm(){
+  var el=document.getElementById("catalogo-dup"); if(!el) return;
+  var rep=(borrador && borrador.catalogo) ? catalogoRepetido(borrador) : null;
+  el.innerHTML="";
+  if(!rep){ el.classList.add("oculto"); return; }
+  el.appendChild(document.createTextNode(textoCatalogoRepetido(borrador, rep)));
+  if(rep.lugar==="navegador"){
+    var b=document.createElement("button"); b.type="button"; b.className="btn tenue small"; b.textContent="Ver ese registro";
+    b.onclick=function(){ abrirConsultaConFicha(rep.registro.id); };
+    el.appendChild(b);
+  }
+  el.classList.remove("oculto");
+}
+// Último control antes de guardar: el N.º de catálogo no se puede repetir nunca.
+function permitirCatalogo(r){
+  var rep=r && r.catalogo ? catalogoRepetido(r) : null;
+  if(!rep) return true;
+  activarTab("deposito"); revisarCatalogoForm();
+  var inp=document.querySelector('[data-f="catalogo"]'); if(inp){ try{ inp.scrollIntoView({block:"center"}); inp.focus(); }catch(e){} }
+  alert("No se guardó.\n\n"+textoCatalogoRepetido(r, rep)+"\n\nEl N.º de catálogo (acrónimos más número) es un identificador único: cámbialo para poder guardar.");
+  return false;
+}
+function gruposCatalogoRepetido(){
+  var m=indiceCatalogos(), out=[];
+  Object.keys(m).forEach(function(c){ if(m[c].length>1) out.push({clave:c, ids:m[c]}); });
+  return out;
+}
+function pintarAvisoCatalogosRepetidos(){
+  var el=document.getElementById("aviso-cat-dup"); if(!el) return;
+  var g=gruposCatalogoRepetido();
+  if(!g.length){ el.classList.add("oculto"); el.innerHTML=""; return; }
+  var lista=g.slice(0,10).map(function(x){ return escapeHtml(construirCatalogoCompleto(registroPorId(x.ids[0])||{catalogo:x.clave}))+" ("+x.ids.length+" registros)"; }).join("; ");
+  el.innerHTML="<strong>Atención: hay "+g.length+" N.º de catálogo repetido(s).</strong> "+lista+(g.length>10?"; …":"")+". Cada número debe ser único: búscalos en Consultas y corrige los repetidos.";
+  el.classList.remove("oculto");
+}
+// ---------- Latitud y Longitud decimales a partir de las coordenadas originales ----------
+// Solo se acepta una lectura cuando es inequívoca: cada coordenada debe traer su hemisferio (N, S, E, O/W) o su signo,
+// minutos y segundos deben ser menores de 60, y el texto no puede admitir otra lectura. Ante cualquier duda no se completa nada.
+function coordComponente(t){
+  t=String(t).trim(); var eje=null, letra=null, signo=null;
+  var m=/^(lat(?:itud|itude)?|lon(?:g|gitud|gitude)?|lng)\.?\s*[:=]?\s*/i.exec(t);
+  if(m){ eje=/^lat/i.test(m[1])?"lat":"lng"; t=t.slice(m[0].length); }
+  var ml=/^([NSEWO])(?=[\s\d.])\s*/i.exec(t), mt=/^(.*[\d°'"])\s*([NSEWO])$/i.exec(t);
+  if(ml && mt) return null;
+  if(ml){ letra=ml[1].toUpperCase(); t=t.slice(ml[0].length); }
+  else if(mt){ letra=mt[2].toUpperCase(); t=mt[1]; }
+  var sg=/^([+\-])\s*/.exec(t); if(sg){ signo=sg[1]; t=t.slice(sg[0].length); }
+  if(ml && sg) return null;
+  t=t.trim();
+  var f=function(x){ return parseFloat(String(x).replace(",",".")); }, g, mi=0, se=0, mm;
+  if((mm=/^(\d+)(?:\s*°\s*|\s+)(\d+)(?:\s*'\s*|\s+)(\d+(?:[.,]\d+)?)\s*"?$/.exec(t))){ g=+mm[1]; mi=+mm[2]; se=f(mm[3]); if(mi>=60||se>=60) return null; }
+  else if((mm=/^(\d+)(?:\s*°\s*|\s+)(\d+(?:[.,]\d+)?)\s*'?$/.exec(t))){ g=+mm[1]; mi=f(mm[2]); if(mi>=60) return null; }
+  else if((mm=/^(\d+(?:[.,]\d+)?)\s*°?$/.exec(t))){ g=f(mm[1]); }
+  else return null;
+  var v=g+mi/60+se/3600, neg;
+  if(letra){
+    var esLat=(letra==="N"||letra==="S");
+    if(eje && (eje==="lat")!==esLat) return null;
+    eje=esLat?"lat":"lng";
+    if(letra==="N"||letra==="E"){ if(signo==="-") return null; neg=false; } else { if(signo==="+") return null; neg=true; }
+  } else if(signo){ neg=(signo==="-"); }
+  else return null;
+  if(v===0) neg=false;
+  return {v:neg?-v:v, eje:eje};
+}
+function coordPar(a,b){
+  if(!a||!b) return null;
+  var lat, lng;
+  if(a.eje && b.eje){ if(a.eje===b.eje) return null; lat=(a.eje==="lat")?a.v:b.v; lng=(a.eje==="lng")?a.v:b.v; }
+  else if(a.eje){ if(a.eje==="lat"){ lat=a.v; lng=b.v; } else { lng=a.v; lat=b.v; } }
+  else if(b.eje){ if(b.eje==="lat"){ lat=b.v; lng=a.v; } else { lng=b.v; lat=a.v; } }
+  else { if(Math.abs(a.v)>=Math.abs(b.v)) return null; lat=a.v; lng=b.v; }   // sin letras ni etiquetas se asume latitud y luego longitud, solo si el orden es verosímil
+  if(Math.abs(lat)>90||Math.abs(lng)>180) return null;
+  return {lat:lat,lng:lng};
+}
+function interpretarCoordenadas(texto){
+  var s=String(texto||"").replace(/−/g,"-").replace(/[º˚]/g,"°").replace(/[′’‘´`]/g,"'").replace(/[″”“]/g,'"').replace(/''/g,'"').replace(/\s+/g," ").trim();
+  s=s.replace(/\bnorte\b/ig,"N").replace(/\bsur\b/ig,"S").replace(/\beste\b/ig,"E").replace(/\boeste\b/ig,"O");
+  if(!/\d/.test(s)) return {ok:false, motivo:"no hay números"};
+  var cortes=[], i, c, a, b;
+  for(i=1;i<s.length;i++){
+    c=s.charAt(i); a=s.charAt(i-1); b=s.charAt(i+1);
+    if(/[\s,;\/|]/.test(c)) cortes.push({i:i, sep:true});
+    else if(/[NSEWOnsewo]/.test(a) && /[\d+\-]/.test(c)) cortes.push({i:i, sep:false});
+    else if(/[NSEWOnsewo]/.test(c) && /[\d°'"]/.test(a) && /[\d.]/.test(b)) cortes.push({i:i, sep:false});
+  }
+  var vistos={}, res=[];
+  cortes.forEach(function(k){
+    var izq=s.slice(0,k.i).replace(/[\s,;\/|]+$/,""), der=s.slice(k.sep?k.i+1:k.i).replace(/^[\s,;\/|]+/,"");
+    var p=coordPar(coordComponente(izq), coordComponente(der));
+    if(p){ var kk=p.lat.toFixed(7)+"|"+p.lng.toFixed(7); if(!vistos[kk]){ vistos[kk]=1; res.push(p); } }
+  });
+  if(res.length===1) return {ok:true, lat:Math.round(res[0].lat*1e6)/1e6, lng:Math.round(res[0].lng*1e6)/1e6};
+  return {ok:false, motivo: res.length>1 ? "el texto admite más de una lectura" : "no se reconoce con seguridad (cada coordenada necesita su hemisferio N/S/E/O o su signo; los sistemas como UTM no se convierten)"};
+}
+var coordAuto=null;   // última Latitud/Longitud completada sola, para poder actualizarla si se corrige el texto original
+function avisoCoord(t, clase){ var el=document.getElementById("coord-aviso"); if(!el) return; el.textContent=t||""; el.className="nota coord-aviso"+(t?"":" oculto")+(clase?" "+clase:""); }
+document.addEventListener("change", function(e){
+  var t=e.target; if(!t.matches || !t.matches('[data-f="coordenadasOriginales"]') || !borrador || modoAcceso!=="admin") return;
+  var txt=t.value.trim(); if(!txt){ avisoCoord(""); return; }
+  var r=interpretarCoordenadas(txt), latEl=document.querySelector('[data-f="lat"]'), lngEl=document.querySelector('[data-f="lng"]');
+  if(!r.ok){ avisoCoord("Latitud y Longitud no se completaron solas: "+r.motivo+".", "aviso"); return; }
+  var la=String(r.lat), ln=String(r.lng), vl=String(latEl.value).trim(), vg=String(lngEl.value).trim();
+  var vacias=(!vl && !vg) || (coordAuto && vl===coordAuto.lat && vg===coordAuto.lng);
+  if(vacias){
+    latEl.value=la; lngEl.value=ln; borrador.lat=la; borrador.lng=ln; coordAuto={lat:la,lng:ln};
+    avisoCoord("Latitud y Longitud completadas desde las coordenadas originales ("+la+", "+ln+"). Revísalas antes de guardar.", "ok");
+    refrescarPanelesRegistros();
+  } else {
+    var c=coordenadasRegistro({lat:vl,lng:vg});
+    if(c && Math.abs(c.lat-r.lat)<0.0005 && Math.abs(c.lng-r.lng)<0.0005) avisoCoord("");
+    else avisoCoord("Latitud y Longitud ya tenían datos y no se modificaron. Las coordenadas originales equivalen a "+la+", "+ln+".", "aviso");
+  }
+});
 function coordenadasRegistro(r){
   var lat=parseFloat(String(r.lat==null?"":r.lat).replace(",",".")), lng=parseFloat(String(r.lng==null?"":r.lng).replace(",","."));
   if(isNaN(lat)||isNaN(lng)||Math.abs(lat)>90||Math.abs(lng)>180) return null;
@@ -3465,6 +3646,7 @@ function usarClasificacionExterna(clasif, fuente){
 }
 function usarClasificacionGbif(entrada){ if(entrada.gbif) usarClasificacionExterna(entrada.gbif.clasif, "GBIF"); }
 // Fila de GBIF dentro de cada determinación del bloque Depósito.
+var gbifDetAbiertos=new WeakSet(); // los «Antecedentes de GBIF» abiertos siguen abiertos al repintar la lista (p. ej. tras «Usar autor y año»)
 function crearLineaGbif(entrada, esUltimo){
   var caja=document.createElement("div"); caja.className="gbif-linea linea-gbif";
   function pintar(){
@@ -3502,6 +3684,8 @@ function crearLineaGbif(entrada, esUltimo){
     var aut=analizarAutoriaGbif(entrada, g);
     if(aut.puede && editando){ var pa=document.createElement("span"); pa.className="gbif-txt gbif-info"; pa.textContent="Autoría disponible"; pa.title="Abre «Antecedentes» para revisarla"; caja.appendChild(pa); }
     var det=document.createElement("details"); det.className="gbif-det";
+    if(gbifDetAbiertos.has(entrada)) det.open=true;
+    det.addEventListener("toggle", function(){ if(det.open) gbifDetAbiertos.add(entrada); else gbifDetAbiertos.delete(entrada); });
     var sm=document.createElement("summary"); sm.textContent="Antecedentes de GBIF"; det.appendChild(sm);
     var cuerpo=document.createElement("div"); cuerpo.className="gbif-det-cuerpo";
     var resumen=document.createElement("div"); resumen.innerHTML=r.html; cuerpo.appendChild(resumen);
@@ -3846,7 +4030,7 @@ function sincronizarSelectsOtro(){
   });
 }
 function cargarRegistroEnFormulario(){
-  var r=registroActivo();
+  var r=registroActivo(); coordAuto=null; if(typeof avisoCoord==="function") avisoCoord("");
   document.querySelectorAll("[data-f]").forEach(function(el){
     if(el.closest(".fila-repetible")) return;
     el.value = r ? (r[el.getAttribute("data-f")]||"") : "";
@@ -4013,6 +4197,7 @@ function aplicarCatalogadorSiCorresponde(obj){
 }
 function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   if(!borrador) borrador=registroVacioBase();
+  if(!permitirCatalogo(borrador)) return;
   if(origenDuplicadoId){
     var base = registroPorId(origenDuplicadoId);
     if(base && sonIguales(base, borrador)){
@@ -4060,11 +4245,13 @@ async function confirmarSinConflicto(){
   return true;
 }
 async function accionActualizar(siguienteTab){ if(modoAcceso!=="admin") return;
+  if(borrador && !permitirCatalogo(borrador)) return;
   if(!(await confirmarSinConflicto())) return;
   guardarActualizacion(siguienteTab);
 }
 function guardarActualizacion(siguienteTab){
   if(!borrador) borrador=registroVacioBase();
+  if(!permitirCatalogo(borrador)) return;
   var actualizado=clonar(borrador);
   actualizado.modificadoEn = new Date().toISOString();
   actualizado.modificadoPor = operadorActual();
@@ -4153,6 +4340,14 @@ function ajustarAlturaLista(cont){
   ls.style.maxHeight=Math.max(220, Math.floor(libre))+"px";
 }
 window.addEventListener("resize", function(){ var c=document.querySelector(".slot-panel-registros"); if(c) ajustarAlturaLista(c); });
+// Orden de la lista «Ver registros»: el último ingresado primero (por fecha de ingreso; a igual fecha, el que se agregó después).
+function registrosRecientesPrimero(arr){
+  return arr.map(function(r,i){ return {r:r,i:i}; }).sort(function(a,b){
+    var x=a.r.creadoEn||"", y=b.r.creadoEn||"";
+    if(x!==y) return x<y ? 1 : -1;
+    return b.i-a.i;
+  }).map(function(o){ return o.r; });
+}
 function montarPanelRegistros(cont){
   var abierto = cont.getAttribute("data-abierto")==="1";
   var etAct = borrador ? etiquetaRegistro(borrador) : null;
@@ -4193,7 +4388,9 @@ function montarPanelRegistros(cont){
   html += '<button class="btn small btn-icono btn-icono-nuevo btn-nuevo-activo'+(modoTexto==="Nuevo"?' modo-on':'')+'" title="Nuevo registro">+ Nuevo</button>';
   html += '</div>';
   if(abierto){
-    var filtrados = registros.filter(function(r){ return registroCoincideFiltro(r, filtroRegistros); });
+    var filtrados = registrosRecientesPrimero(registros.filter(function(r){ return registroCoincideFiltro(r, filtroRegistros); }));
+    var totalFiltrados = filtrados.length, LIM_LISTA = 400;
+    if(filtrados.length>LIM_LISTA) filtrados = filtrados.slice(0,LIM_LISTA);
     html += '<div class="desplegable-registros">';
     html += '<input type="search" class="nav input-filtro-registros" placeholder="Buscar por campo, entrada, catálogo, taxón, localidad, colector…" value="'+escapeHtml(filtroRegistros)+'">';
     html += '<div class="lista-scroll">';
@@ -4212,6 +4409,7 @@ function montarPanelRegistros(cont){
       html += '</div>';
       html += '</div>';
     });
+    if(totalFiltrados>LIM_LISTA) html += '<p class="nota" style="padding:8px;">Se muestran los '+LIM_LISTA+' más recientes de '+totalFiltrados+'. Escribe en el buscador para acotar la lista.</p>';
     html += '</div></div>';
   }
   cont.innerHTML = html;
@@ -4421,6 +4619,7 @@ function renderResumenDatos(){
 }
 function refrescarPanelesRegistros(){
   registrosVersion++;
+  revisarCatalogoForm(); pintarAvisoCatalogosRepetidos();
   programarAlertaPrestamos();
   var bAct=document.querySelector("#tabs button.active");
   if(bAct && bAct.getAttribute("data-tab")==="consultas" && consConstruida){ pintarConsultas(); return; }
@@ -4650,18 +4849,33 @@ async function revisarCarpeta(){
   return pendientesCarpeta.length;
 }
 function fusionarRegistros(lista){
-  var nuevos=0, actualizados=0;
+  var nuevos=0, actualizados=0, repetidos=[], claves={};
+  registros.forEach(function(r){ var c=claveCatalogo(r); if(c) claves[c]=r.id; });
   lista.forEach(function(obj){
     if(!obj || !obj.id) return;
     LISTAS_REGISTRO.forEach(function(k){ if(!obj[k]) obj[k]=[]; });
     var i=indicePorId(obj.id);
+    if(i>=0 && !((obj.modificadoEn||"") > (registros[i].modificadoEn||""))) return;
+    if(i>=0){ var oc=claveCatalogo(registros[i]); if(oc && claves[oc]===obj.id) delete claves[oc]; }
+    var c=claveCatalogo(obj);
+    if(c && claves[c] && claves[c]!==obj.id){
+      // el número ya pertenece a otro registro: se importa el registro, pero sin ese número, y se deja constancia
+      var cc=construirCatalogoCompleto(obj);
+      repetidos.push(cc);
+      obj.observaciones=(obj.observaciones ? obj.observaciones+"\n" : "")+"N.º de catálogo repetido al importar: «"+cc+"» ya pertenece a otro registro; este quedó sin número de catálogo.";
+      obj.catalogo=""; obj.modificadoEn=new Date().toISOString(); obj.modificadoPor=operadorActual();
+    } else if(c) claves[c]=obj.id;
     if(i<0){ registros.push(obj); nuevos++; }
-    else if((obj.modificadoEn||"") > (registros[i].modificadoEn||"")){ registros[i]=obj; actualizados++; }
+    else { registros[i]=obj; actualizados++; }
   });
   if(nuevos||actualizados) persistir();
   if(activoId && !editando && registroPorId(activoId)) cargarRegistroEnBorrador(activoId,false);
   refrescarPanelesRegistros();
-  return {nuevos:nuevos, actualizados:actualizados};
+  return {nuevos:nuevos, actualizados:actualizados, repetidos:repetidos};
+}
+function sufijoRepetidos(r){
+  if(!r.repetidos || !r.repetidos.length) return "";
+  return " "+r.repetidos.length+" registro(s) traían un N.º de catálogo que ya usa otro registro y se importaron sin número (quedó anotado en Observaciones): "+r.repetidos.slice(0,5).join(", ")+(r.repetidos.length>5?", …":"")+".";
 }
 async function actualizarDesdeCarpeta(interactivo){
   if(modoAcceso!=="admin" || !carpetaHandle) return;
@@ -4671,7 +4885,7 @@ async function actualizarDesdeCarpeta(interactivo){
     if(!n){ if(interactivo) mensajeCarpeta("La app ya está al día con la Carpeta local."); actualizarUICarpeta(); return; }
     if(interactivo){
       var r=fusionarRegistros(pendientesCarpeta); pendientesCarpeta=[];
-      mensajeCarpeta("Actualizado desde la Carpeta local: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados."+(editando?" El registro que estás editando conserva tus cambios hasta que guardes.":""));
+      mensajeCarpeta("Actualizado desde la Carpeta local: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados."+sufijoRepetidos(r)+(editando?" El registro que estás editando conserva tus cambios hasta que guardes.":""));
     }
   }catch(e){ if(interactivo) mensajeCarpeta("No se pudo leer la Carpeta local: "+((e&&e.message)||e)); }
   actualizarUICarpeta();
@@ -4684,11 +4898,73 @@ function revisarAlVolver(){
 }
 window.addEventListener("focus", revisarAlVolver);
 document.addEventListener("visibilitychange", revisarAlVolver);
-async function importarPendientes(){ if(modoAcceso!=="admin") return;
-  var r=fusionarRegistros(pendientesCarpeta);
-  pendientesCarpeta=[];
-  mensajeCarpeta("Importados desde la Carpeta local: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados.");
+async function importarPendientes(lista){ if(modoAcceso!=="admin") return;
+  lista=lista || pendientesCarpeta;
+  var r=fusionarRegistros(lista);
+  var ids={}; lista.forEach(function(o){ ids[o.id]=1; });
+  pendientesCarpeta=pendientesCarpeta.filter(function(o){ return !ids[o.id]; });
+  mensajeCarpeta("Importados desde la Carpeta local: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados."+sufijoRepetidos(r));
   actualizarUICarpeta();
+}
+// Mueve a Registros/_eliminados los archivos de los registros indicados (no es un borrado definitivo).
+async function eliminarPendientes(lista){ if(modoAcceso!=="admin" || !carpetaHandle || !lista.length) return;
+  var msg=document.getElementById("pend-msg");
+  if(!confirm("Se moverán "+lista.length+" registro(s) de la Carpeta local a Registros/_eliminados. Dejarán de aparecer como pendientes y no se importarán.\n\nNo se borran de forma definitiva: los archivos quedan en esa subcarpeta.\n\n¿Continuar?")) return;
+  if(!(await permisoCarpeta(true))){ carpetaEstado="permiso"; actualizarUICarpeta(); return; }
+  var hechos=0, fallos=0, ids={}, ahora=new Date().toISOString(), quien=operadorActual();
+  try{
+    await asegurarIndice();
+    await encolarCarpeta(async function(){
+      var d=await dirAnidado("Registros");
+      for(var i=0;i<lista.length;i++){
+        var o=lista[i], nombre=indiceArchivos[o.id];
+        try{
+          if(!nombre) throw new Error("archivo no encontrado");
+          var copia=clonar(o); copia.eliminadoEn=ahora; copia.eliminadoPor=quien;
+          await escribirArchivo("Registros/_eliminados", nombre, JSON.stringify(copia,null,2));
+          await d.removeEntry(nombre);
+          delete indiceArchivos[o.id]; delete modArchivo[o.id]; ids[o.id]=1; hechos++;
+        }catch(e){ fallos++; registrarError("eliminar registro pendiente de la Carpeta local", e); }
+        if(msg && (i%25===0 || i===lista.length-1)) msg.textContent="Moviendo a Registros/_eliminados… "+(i+1)+" de "+lista.length;
+      }
+    });
+  }catch(e){ registrarError("eliminar registros pendientes", e); }
+  pendientesCarpeta=pendientesCarpeta.filter(function(o){ return !ids[o.id]; });
+  var t=hechos+" registro(s) movidos a Registros/_eliminados de la Carpeta local."+(fallos?" "+fallos+" no se pudieron mover (ver Registro de errores).":"");
+  if(msg) msg.textContent=t; mensajeCarpeta(t);
+  registrarActividad("eliminar_pendientes", hechos+" registro(s) de la Carpeta local");
+  actualizarUICarpeta(); refrescarPanelesRegistros();
+}
+var pendMostrar=100;
+function pendFiltrados(){
+  var f=(document.getElementById("pend-filtro")||{}).value||"";
+  return pendientesCarpeta.filter(function(o){ var tipo=registroPorId(o.id)?"reciente":"nuevo"; return !f || tipo===f; });
+}
+function pintarPendientes(){
+  var cont=document.getElementById("pend-tabla"); if(!cont) return;
+  var tot=pendientesCarpeta.length, nuevos=pendientesCarpeta.filter(function(o){ return !registroPorId(o.id); }).length;
+  var res=document.getElementById("pend-resumen"), bd=document.getElementById("pend-badge");
+  if(bd) bd.textContent = tot ? " ("+tot+")" : "";
+  var lista=pendFiltrados();
+  if(res) res.textContent = !carpetaHandle ? "No hay una Carpeta local conectada." : (tot ? "En la Carpeta local hay "+tot+" registro(s) pendientes: "+nuevos+" que este navegador no tiene y "+(tot-nuevos)+" con una versión más reciente." : "No hay registros pendientes: este navegador tiene todo lo que hay en la Carpeta local.");
+  ["pend-importar","pend-eliminar"].forEach(function(id){ var b=document.getElementById(id); if(b) b.disabled=!lista.length || !carpetaHandle; });
+  if(!lista.length){ cont.innerHTML=""; return; }
+  var claves={}; registros.forEach(function(r){ var c=claveCatalogo(r); if(c) claves[c]=r.id; });
+  var h='<table><thead><tr><th>N.º de catálogo</th><th>Nombre</th><th>Modificado</th><th>Por</th><th>Estado</th></tr></thead><tbody>';
+  lista.slice(0,pendMostrar).forEach(function(o){
+    var c=claveCatalogo(o), rep=c && claves[c] && claves[c]!==o.id, nuevo=!registroPorId(o.id);
+    h+='<tr><td>'+escapeHtml(construirCatalogoCompleto(o)||(o.numeroCampo?"campo "+o.numeroCampo:"sin catálogo"))+(rep?' <span class="pend-rep" title="Ese número ya lo usa otro registro de este navegador">repetido</span>':'')+'</td><td>'+escapeHtml(nombreVigenteReg(o)||"")+'</td><td>'+escapeHtml(o.modificadoEn?formatearFechaHora(o.modificadoEn):"")+'</td><td>'+escapeHtml(o.modificadoPor||"")+'</td><td>'+(nuevo?"No está en el navegador":"Versión más reciente")+'</td></tr>';
+  });
+  h+='</tbody></table>';
+  if(lista.length>pendMostrar) h+='<div class="barra-botones"><button type="button" class="btn tenue small" id="pend-mas">Mostrar 100 más ('+pendMostrar+' de '+lista.length+')</button></div>';
+  cont.innerHTML=h;
+  var mas=document.getElementById("pend-mas"); if(mas) mas.onclick=function(){ pendMostrar+=100; pintarPendientes(); };
+}
+function verDetallesPendientes(){
+  activarTab("sistema");
+  ["det-gestion","sub-pendientes"].forEach(function(id){ var d=document.getElementById(id); if(d) d.open=true; });
+  pintarPendientes();
+  var d=document.getElementById("sub-pendientes"); if(d){ try{ d.scrollIntoView({block:"start"}); }catch(e){} }
 }
 async function sincronizarCarpeta(interactivo){ if(modoAcceso!=="admin") return;
   if(!carpetaHandle) return;
@@ -4781,7 +5057,7 @@ function importarArchivoJson(file){ if(modoAcceso!=="admin") return;
       if(!lista.length){ mensajeCarpeta("El archivo no contiene registros reconocibles."); return; }
       if(!confirm("El archivo contiene "+lista.length+" registro(s). Se agregarán los nuevos y se actualizarán los que sean más recientes que los de este navegador. ¿Continuar?")) return;
       var r=fusionarRegistros(lista);
-      mensajeCarpeta("Importados: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados.");
+      mensajeCarpeta("Importados: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados."+sufijoRepetidos(r));
       if(carpetaHandle) sincronizarCarpeta(false);
     }catch(e){ mensajeCarpeta("No se pudo leer el archivo: "+((e&&e.message)||e)); }
   };
@@ -4810,17 +5086,19 @@ function actualizarUICarpeta(){
   });
   var aviso=document.getElementById("aviso-carpeta"), tx=document.getElementById("aviso-carpeta-texto");
   var bA=document.getElementById("btn-aviso-accion"), bI=document.getElementById("btn-aviso-ignorar");
+  var bE=document.getElementById("btn-aviso-eliminar"), bD=document.getElementById("btn-aviso-detalles");
   if(carpetaHandle && carpetaEstado==="permiso"){
     tx.textContent="La Carpeta local necesita tu permiso para seguir guardando una copia de los registros.";
     bA.textContent="Reconectar carpeta"; bA.setAttribute("data-modo","reconectar");
-    bI.classList.add("oculto"); aviso.classList.remove("oculto");
+    bI.classList.add("oculto"); bE.classList.add("oculto"); bD.classList.add("oculto"); aviso.classList.remove("oculto");
   } else if(carpetaHandle && pendientesCarpeta.length && !avisoIgnorado){
     tx.textContent="Hay "+pendientesCarpeta.length+" registro(s) nuevos o más recientes en la Carpeta local que no están en este navegador.";
     bA.textContent="Importar"; bA.setAttribute("data-modo","importar");
-    bI.classList.remove("oculto"); aviso.classList.remove("oculto");
+    bI.classList.remove("oculto"); bE.classList.remove("oculto"); bD.classList.remove("oculto"); aviso.classList.remove("oculto");
   } else {
     aviso.classList.add("oculto");
   }
+  if(typeof pintarPendientes==="function") pintarPendientes();
 }
 function avisoLimitado(){
   var limitado=!soportaCarpeta(), ok=false;
@@ -4856,6 +5134,18 @@ document.getElementById("btn-aviso-accion").addEventListener("click", function()
   if(this.getAttribute("data-modo")==="reconectar") reconectarCarpeta(); else importarPendientes();
 });
 document.getElementById("btn-aviso-ignorar").addEventListener("click", function(){ avisoIgnorado=true; actualizarUICarpeta(); });
+document.getElementById("btn-aviso-eliminar").addEventListener("click", function(){ eliminarPendientes(pendientesCarpeta.slice()); });
+document.getElementById("btn-aviso-detalles").addEventListener("click", verDetallesPendientes);
+document.getElementById("pend-filtro").addEventListener("change", function(){ pendMostrar=100; pintarPendientes(); });
+document.getElementById("pend-importar").addEventListener("click", function(){ var l=pendFiltrados(); if(l.length && confirm("Se importarán "+l.length+" registro(s) desde la Carpeta local. ¿Continuar?")) importarPendientes(l); });
+document.getElementById("pend-eliminar").addEventListener("click", function(){ eliminarPendientes(pendFiltrados()); });
+document.getElementById("pend-revisar").addEventListener("click", async function(){
+  var m=document.getElementById("pend-msg"); if(!carpetaHandle){ if(m) m.textContent="Conecta primero una Carpeta local."; return; }
+  if(!(await permisoCarpeta(true))){ carpetaEstado="permiso"; actualizarUICarpeta(); return; }
+  if(m) m.textContent="Revisando la carpeta…";
+  try{ var n=await revisarCarpeta(); if(m) m.textContent="Revisión lista: "+n+" registro(s) pendientes."; }catch(e){ if(m) m.textContent="No se pudo leer la Carpeta local: "+((e&&e.message)||e); }
+  actualizarUICarpeta();
+});
 
 // ---------- PDF de publicaciones asociadas ----------
 function pintarPdfs(){
@@ -7026,7 +7316,7 @@ async function importarZipRespaldo(file){ if(modoAcceso!=="admin") return;
     if(!confirm("El zip contiene "+lista.length+" registro(s). Se agregarán los nuevos y se actualizarán los que sean más recientes que los de este navegador. ¿Continuar?")) return;
     var r=fusionarRegistros(lista);
     var rest=await restaurarArchivosZip(z, m);
-    var txt="Importados desde el zip: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados."+(rest.total?" Archivos: "+rest.escritos+" restaurados"+(rest.ya?", "+rest.ya+" ya estaban":"")+(rest.errores?", "+rest.errores+" con error (ver Registro de errores)":"")+(rest.enNavegador&&rest.escritos?" (guardados en este navegador)":"")+".":"");
+    var txt="Importados desde el zip: "+r.nuevos+" nuevos y "+r.actualizados+" actualizados."+sufijoRepetidos(r)+(rest.total?" Archivos: "+rest.escritos+" restaurados"+(rest.ya?", "+rest.ya+" ya estaban":"")+(rest.errores?", "+rest.errores+" con error (ver Registro de errores)":"")+(rest.enNavegador&&rest.escritos?" (guardados en este navegador)":"")+".":"");
     if(m) m.textContent=txt; mensajeCarpeta(txt);
     registrarActividad("importacion","zip de respaldo · "+lista.length+" registro(s)");
     if(carpetaHandle) sincronizarCarpeta(false);
@@ -8037,7 +8327,7 @@ async function impImportar(){
   if(esqNom) lista.forEach(function(o){ if(o.origenImportacion) o.origenImportacion.esquema=esqNom; });
   var r=fusionarRegistros(lista);
   if(esqNom) await esqGuardar(esqConstruir(esqNom));
-  var txt="Importación lista: "+r.nuevos+" nuevo(s)"+(r.actualizados?" y "+r.actualizados+" actualizado(s)":"")+". Quedan agrupados como una sesión de ingreso de hoy en Gestión de Datos.";
+  var txt="Importación lista: "+r.nuevos+" nuevo(s)"+(r.actualizados?" y "+r.actualizados+" actualizado(s)":"")+"."+sufijoRepetidos(r)+" Quedan agrupados como una sesión de ingreso de hoy en Gestión de Datos.";
   impMensaje(txt); mensajeCarpeta(txt);
   registrarActividad("importacion","planilla "+imp.nombreArchivo+" · "+r.nuevos+" nuevos, "+r.actualizados+" actualizados");
   if(carpetaHandle) sincronizarCarpeta(false);
@@ -8644,6 +8934,7 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
 document.querySelectorAll(".lbl .key").forEach(function(el){ el.title=el.textContent.trim(); });
 
 // ---------- Pantalla de inicio y modos de acceso ----------
+var CLAVE_ADMINS_EQUIPO="libroCatalogo_admins_equipo";
 var CLAVE_OPERADORES="libroCatalogo_operadores", CLAVE_ACTIVIDAD="libroCatalogo_actividad_pend";
 var ARCHIVO_ACTIVIDAD="_actividad.log", DIR_ACTIVIDAD="Registros/_actividad", CLAVE_EQUIPO="libroCatalogo_equipo";
 function idEquipo(){
@@ -8662,7 +8953,9 @@ function sugerenciasOperador(){
   var v={};
   leerJson(CLAVE_OPERADORES).forEach(function(n){ if(n) v[n]=1; });
   registros.forEach(function(r){ [r.modificadoPor,r.catalogador].forEach(function(n){ n=nombreLimpio(n); if(n) v[n]=1; }); });
-  var ocultos={}; listaAdmins().forEach(function(a){ ocultos[claveNombre(a)]=1; });
+  var propios={}; leerJson(CLAVE_ADMINS_EQUIPO).forEach(function(n){ propios[claveNombre(n)]=1; });
+  var ocultos={}; listaAdmins().forEach(function(a){ if(!propios[claveNombre(a)]) ocultos[claveNombre(a)]=1; });   // un administrador solo se sugiere en el equipo donde ya ingresó
+  leerJson(CLAVE_ADMINS_EQUIPO).forEach(function(n){ if(n && listaAdmins().indexOf(n)>-1) v[n]=1; });
   return Object.keys(v).filter(function(n){ return !ocultos[claveNombre(n)]; }).sort(function(a,b){ return a.localeCompare(b,"es"); });
 }
 function pintarSugerenciasOperador(){
@@ -8774,8 +9067,13 @@ async function entrarAdmin(){
   if(primera) guardarListaAdmins([n]);
   iniciarAdmin(n, primera ? "ingreso con clave de seguridad (primer administrador registrado)" : "ingreso con clave de seguridad");
 }
+function recordarAdminEnEquipo(n){
+  var l=leerJson(CLAVE_ADMINS_EQUIPO).filter(function(x){ return x!==n; }); l.unshift(n);
+  try{ localStorage.setItem(CLAVE_ADMINS_EQUIPO, JSON.stringify(l.slice(0,10))); }catch(e){}
+}
 function iniciarAdmin(n, detalle){
-  nombreSesion=n;                       // los administradores no se guardan como sugerencias
+  nombreSesion=n;                       // el nombre se sugiere solo en este equipo (CLAVE_ADMINS_EQUIPO)
+  recordarAdminEnEquipo(n);
   modoAcceso="admin";
   document.body.classList.add("modo-admin");
   inputOperador.value=n;

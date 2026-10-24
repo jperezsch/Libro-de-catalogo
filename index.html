@@ -975,43 +975,12 @@
 
     <div class="bloque">
       <h2>Catalogado</h2>
-      <p class="sub">Elige una colección del Área de Zoología de Invertebrados para autocompletar los acrónimos, o "Personalizado" para escribir el nombre de la colección y la institución cuando el material no pertenece al MNHNCL.</p>
+      <p class="sub">Escribe el nombre de la colección o elígelo de las sugerencias. Si es una colección del Área de Zoología de Invertebrados (por ejemplo, Colección de Anfípodos), los acrónimos y la institución se completan solos; si el material pertenece a otra institución, escribe también su nombre y acrónimos.</p>
       <div class="grid">
         <div class="campo opc full"><div class="lbl"><span class="name">Nombre completo de la institución</span><span class="key">institucionNombreCompleto</span></div><input class="nav" id="campo-institucion-nombre" data-f="institucionNombreCompleto" readonly></div>
         <div class="campo opc full">
           <div class="lbl"><span class="name">Colección</span><span class="key">coleccionNombre</span></div>
-          <select class="nav" id="sel-coleccion">
-            <option value="">—</option>
-            <option value="AMP">Colección de Anfípodos (AMP)</option>
-            <option value="CIR">Colección de Cirripedios (CIR)</option>
-            <option value="DEC">Colección de Decápodos (DEC)</option>
-            <option value="CUM">Colección de Cumáceos (CUM)</option>
-            <option value="ISO">Colección de Isópodos (ISO)</option>
-            <option value="STO">Colección de Estomatópodos (STO)</option>
-            <option value="CRU">Colección de Crustáceos menores (CRU)</option>
-            <option value="COP">Colección de Copépodos (COP)</option>
-            <option value="PYCN">Colección de Picnogónidos (PYCN)</option>
-            <option value="MOL">Colección de Moluscos (MOL)</option>
-            <option value="EQUI">Colección de Equinodermos (EQUI)</option>
-            <option value="POR">Colección de Poríferas (POR)</option>
-            <option value="CNID">Colección de Cnidarios (CNID)</option>
-            <option value="ANN">Colección de Anélidos (ANN)</option>
-            <option value="NEME">Colección de Nemertinos (NEME)</option>
-            <option value="PLAT">Colección de Platelmintos (PLAT)</option>
-            <option value="ACAN">Colección de Acantocéfalos (ACAN)</option>
-            <option value="NEM">Colección de Nemátodos (NEM)</option>
-            <option value="BRY">Colección de Briozoos (BRY)</option>
-            <option value="CHAE">Colección de Chaetognatha (CHAE)</option>
-            <option value="PRO">Colección de Protistas (PRO)</option>
-            <option value="CHO">Colección de Cordados, invertebrados (CHO)</option>
-            <option value="BRA">Colección de Braquiópodos (BRA)</option>
-            <option value="VER">Colección de Vermes menores (VER)</option>
-            <option value="CTEN">Colección de Ctenóforos (CTEN)</option>
-            <option value="MINV">Colección de microinvertebrados (MINV)</option>
-            <option value="__personalizado">Personalizado / otra institución…</option>
-          </select>
-          <input class="nav oculto" data-f="coleccionNombre" id="input-coleccion-nombre" placeholder="Nombre de la colección personalizada">
-          <button type="button" class="btn tenue small oculto" id="btn-coleccion-lista" style="margin-top:4px;">▸ Elegir de la lista</button>
+          <input class="nav" data-f="coleccionNombre" id="input-coleccion-nombre" placeholder="Escribe o elige de las sugerencias" autocomplete="off">
         </div>
         <div class="campo opc"><div class="lbl"><span class="name">Acrónimo de institución</span><span class="key">institucionAcronimo</span></div><input class="nav" id="campo-institucion-acronimo" data-f="institucionAcronimo" readonly></div>
         <div class="campo opc"><div class="lbl"><span class="name">Acrónimo de colección</span><span class="key">coleccionAcronimo</span></div><input class="nav" id="campo-coleccion-acronimo" data-f="coleccionAcronimo" readonly></div>
@@ -1453,7 +1422,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.71";
+var APP_VERSION = "v0.9.72";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2167,10 +2136,22 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
 // ---------- Estandarizaciones y sugerencias: listas editables de nombres (personas, localidades, etc.) ----------
 // Cada lista guarda nombres correctos con sus variantes conocidas. Se conserva en el navegador y en la Carpeta local (Catalogos/<lista>.json),
 // y se fusiona con la de otros equipos que usen la misma carpeta (gana la entrada modificada más recientemente; los nombres quitados quedan anotados).
+// Colecciones del Área de Zoología de Invertebrados (MNHNCL): acrónimo y nombre. Alimentan las sugerencias y el llenado automático de acrónimos.
+var COLECCIONES_AZI = [["AMP","Colección de Anfípodos"],["CIR","Colección de Cirripedios"],["DEC","Colección de Decápodos"],["CUM","Colección de Cumáceos"],["ISO","Colección de Isópodos"],["STO","Colección de Estomatópodos"],["CRU","Colección de Crustáceos menores"],["COP","Colección de Copépodos"],["PYCN","Colección de Picnogónidos"],["MOL","Colección de Moluscos"],["EQUI","Colección de Equinodermos"],["POR","Colección de Poríferas"],["CNID","Colección de Cnidarios"],["ANN","Colección de Anélidos"],["NEME","Colección de Nemertinos"],["PLAT","Colección de Platelmintos"],["ACAN","Colección de Acantocéfalos"],["NEM","Colección de Nemátodos"],["BRY","Colección de Briozoos"],["CHAE","Colección de Chaetognatha"],["PRO","Colección de Protistas"],["CHO","Colección de Cordados, invertebrados"],["BRA","Colección de Braquiópodos"],["VER","Colección de Vermes menores"],["CTEN","Colección de Ctenóforos"],["MINV","Colección de microinvertebrados"]];
+var NOMBRE_MNHNCL = "Museo Nacional de Historia Natural de Chile";
+function coleccionPredef(v){
+  var n=stdNorm(v); if(!n) return null;
+  for(var i=0;i<COLECCIONES_AZI.length;i++){
+    var c=COLECCIONES_AZI[i];
+    if(stdNorm(c[0])===n || stdNorm(c[1])===n || stdNorm(c[1]+" ("+c[0]+")")===n) return c;
+  }
+  return null;
+}
 var STD_DEF = [
   {g:"Personas e instituciones", id:"personas", nombre:"Personas e instituciones", desc:"Colectores, determinadores, legatarios y demás personas o instituciones que figuran en los registros. Los nombres compuestos («A & B», «A y B», «A; B») se tratan como personas separadas.", campos:[["colector","Colector"],["legatario","Legatario"],["destinatario","Destinatario"],["responsableBaja","Responsable de la baja"],["@determinaciones.determinador","Determinador"],["@fotos.fotografo","Fotógrafo"],["@prestamos.solicitante","Solicitante de préstamo"],["@usos.responsable","Responsable de uso"],["@monitoreos.responsable","Responsable de monitoreo"]]},
   {g:"Personas e instituciones", id:"proyectos", nombre:"Proyectos", desc:"Proyectos o iniciativas de origen del material.", campos:[["proyectoOrigen","Proyecto / iniciativa de origen"]]},
   {g:"Personas e instituciones", id:"colecciones", nombre:"Colecciones", desc:"Nombres de las colecciones a las que pertenecen los ejemplares.", campos:[["coleccionNombre","Nombre de la colección"]]},
+  {g:"Personas e instituciones", id:"instCustodia", nombre:"Instituciones (depósito)", desc:"Nombre completo de la institución que custodia la colección, tal como se escribe en la pestaña Depósito.", campos:[["institucionNombreCompleto","Nombre completo de la institución"]]},
   {g:"Lugares", id:"localidades", nombre:"Localidades", desc:"Nombres de lugares de colecta, escritos de forma consistente.", campos:[["localidad","Localidad"]]},
   {g:"Lugares", id:"localidadesVerbatim", nombre:"Localidades (verbatim)", desc:"Localidades tal como figuran en la etiqueta o la libreta, sin corregir. Se ofrecen para escribir más rápido las ya usadas.", campos:[["localidadVerbatim","Localidad (verbatim)"]]},
   {g:"Lugares", id:"estaciones", nombre:"Estaciones", desc:"Estaciones o puntos de muestreo. Sus sugerencias son distintas de las de las localidades.", campos:[["estacion","Estación"]]},
@@ -2212,11 +2193,31 @@ function stdLeer(){
     L[d.id]=o;
   });
   stdDatos={v:2, listas:L};
+  stdSembrar(L, ahora);
   if(L.instituciones){   // la antigua lista «Instituciones» (Legatario) pasó a «Personas e instituciones»
     var inst=L.instituciones; delete L.instituciones;
     stdFusionar("personas", {items:inst.items, borrados:inst.borrados});
   }
   return stdDatos;
+}
+// Primera vez que se abre cada lista de colecciones e instituciones: se cargan los nombres conocidos del Área.
+// Un nombre que el usuario quitó antes (queda en «borrados») no se vuelve a poner.
+function stdSembrar(L, ahora){
+  function sembrar(id, nombres, equivalentes){
+    var o=L[id]; if(!o || o.sembrada) return;
+    nombres.forEach(function(n, k){
+      if(o.borrados.some(function(b){ return (b && (b.n||b))===n; }) || o.items.some(function(it){ return it.n===n; })) return;
+      var a=[];
+      if(equivalentes && equivalentes[k]){   // un acrónimo ya guardado como nombre pasa a variante del nombre completo
+        var pos=o.items.map(function(it){ return it.n; }).indexOf(equivalentes[k]);
+        if(pos>-1){ a=(o.items[pos].a||[]).concat([equivalentes[k]]); o.items.splice(pos,1); }
+      }
+      o.items.push({n:n, a:a, t:ahora});
+    });
+    o.sembrada=true;
+  }
+  sembrar("colecciones", COLECCIONES_AZI.map(function(c){ return c[1]; }), COLECCIONES_AZI.map(function(c){ return c[0]; }));
+  sembrar("instCustodia", [NOMBRE_MNHNCL]);
 }
 function stdL(id){ return stdLeer().listas[id]; }
 function stdGuardarLocal(){ try{ localStorage.setItem(STD_CLAVE, JSON.stringify(stdDatos)); }catch(e){ registrarError("guardar listas de estandarización", e); } }
@@ -2274,7 +2275,9 @@ function stdListaDe(inp){
 function stdValoresReg(r, campo){
   var m=/^@(\w+)\.(\w+)$/.exec(campo);
   if(m){ var arr=r[m[1]]; return Array.isArray(arr) ? arr.map(function(x){ return x && x[m[2]]; }).filter(function(v){ return typeof v==="string" && v.trim(); }) : []; }
-  var v=r[campo]; return (typeof v==="string" && v.trim()) ? [v] : [];
+  var v=r[campo];
+  if(campo==="coleccionNombre" && typeof v==="string"){ var cp=coleccionPredef(v); if(cp) v=cp[1]; }   // «AMP» cuenta como «Colección de Anfípodos»
+  return (typeof v==="string" && v.trim()) ? [v] : [];
 }
 function stdUsos(id){
   var d=stdDef(id), mp=Object.create(null);
@@ -2689,68 +2692,45 @@ function actualizarVisibilidadEstado(){
 selEstado.addEventListener("change", actualizarVisibilidadEstado);
 
 // ---------- colección → acrónimos ----------
-var selColeccion=document.getElementById("sel-coleccion");
+// El nombre de la colección es un campo de texto con sugerencias. Si coincide con una colección del Área (por nombre o por acrónimo),
+// los acrónimos y el nombre de la institución se completan solos y quedan fijos; si no, se pueden escribir a mano.
 var inputColeccionNombre=document.getElementById("input-coleccion-nombre");
-var btnColeccionLista=document.getElementById("btn-coleccion-lista");
 var campoInstitucionAcr=document.getElementById("campo-institucion-acronimo");
 var campoColeccionAcr=document.getElementById("campo-coleccion-acronimo");
 var campoInstitucionNombre=document.getElementById("campo-institucion-nombre");
-var NOMBRE_MNHNCL="Museo Nacional de Historia Natural de Chile";
-var ACRONIMOS_COLECCION_AZI = Array.prototype.slice.call(selColeccion.options)
-  .map(function(o){ return o.value; })
-  .filter(function(v){ return v && v!=="__personalizado"; });
+var colAutoLlenado=false;
+function colFijar(p, escribir){
+  campoInstitucionAcr.readOnly=campoColeccionAcr.readOnly=campoInstitucionNombre.readOnly=true;
+  if(!escribir) return;
+  campoInstitucionAcr.value="MNHNCL"; campoColeccionAcr.value=p[0]; campoInstitucionNombre.value=NOMBRE_MNHNCL;
+  if(borrador){ borrador.institucionAcronimo="MNHNCL"; borrador.coleccionAcronimo=p[0]; borrador.institucionNombreCompleto=NOMBRE_MNHNCL; }
+}
 function actualizarColeccionUI(){
-  var v=inputColeccionNombre.value;
   if(!editando){
-    campoInstitucionAcr.readOnly=true;
-    campoColeccionAcr.readOnly=true;
-    campoInstitucionNombre.readOnly=true;
+    campoInstitucionAcr.readOnly=true; campoColeccionAcr.readOnly=true; campoInstitucionNombre.readOnly=true;
     return;
   }
-  if(v && ACRONIMOS_COLECCION_AZI.indexOf(v)>-1){
-    campoInstitucionAcr.value="MNHNCL"; campoInstitucionAcr.readOnly=true;
-    campoColeccionAcr.value=v; campoColeccionAcr.readOnly=true;
-    campoInstitucionNombre.value=NOMBRE_MNHNCL; campoInstitucionNombre.readOnly=true;
-    if(borrador){ borrador.institucionAcronimo="MNHNCL"; borrador.coleccionAcronimo=v; borrador.institucionNombreCompleto=NOMBRE_MNHNCL; }
+  var p=coleccionPredef(inputColeccionNombre.value);
+  if(p){ colFijar(p, true); colAutoLlenado=true; refrescarPanelesRegistros(); }
+  else { campoInstitucionAcr.readOnly=campoColeccionAcr.readOnly=campoInstitucionNombre.readOnly=false; colAutoLlenado=false; }
+}
+inputColeccionNombre.addEventListener("input", function(){
+  if(!editando) return;
+  var p=coleccionPredef(inputColeccionNombre.value);
+  if(p){ colFijar(p, true); colAutoLlenado=true; refrescarPanelesRegistros(); return; }
+  campoInstitucionAcr.readOnly=campoColeccionAcr.readOnly=campoInstitucionNombre.readOnly=false;
+  if(colAutoLlenado){   // dejó de coincidir con una colección del Área: se quitan los datos que se habían completado solos
+    colAutoLlenado=false;
+    [[campoInstitucionAcr,"institucionAcronimo"],[campoColeccionAcr,"coleccionAcronimo"],[campoInstitucionNombre,"institucionNombreCompleto"]].forEach(function(c){ c[0].value=""; if(borrador) borrador[c[1]]=""; });
     refrescarPanelesRegistros();
-  } else {
-    campoInstitucionAcr.readOnly=false;
-    campoColeccionAcr.readOnly=false;
-    campoInstitucionNombre.readOnly=false;
   }
-}
-// Muestra el desplegable o el campo de texto libre de Colección según el valor guardado
-// (mismo patrón que la cascada Región/Provincia/Comuna, ver más abajo).
-function sincronizarColeccionCatalogado(){
-  selColeccion.disabled = !editando;
-  var v = inputColeccionNombre.value;
-  if(v && ACRONIMOS_COLECCION_AZI.indexOf(v)>-1){
-    selColeccion.value = v;
-    activarModoSelectCl(selColeccion, inputColeccionNombre, btnColeccionLista);
-  } else if(v){
-    selColeccion.value = "__personalizado";
-    activarModoTextoCl(selColeccion, inputColeccionNombre, btnColeccionLista);
-  } else {
-    selColeccion.value = "";
-    activarModoSelectCl(selColeccion, inputColeccionNombre, btnColeccionLista);
-  }
-  if(!editando) btnColeccionLista.classList.add("oculto");
-}
-selColeccion.addEventListener("change", function(){
-  var v = selColeccion.value;
-  if(v==="__personalizado"){
-    inputColeccionNombre.value = "";
-    inputColeccionNombre.dispatchEvent(new Event("input", {bubbles:true}));
-    activarModoTextoCl(selColeccion, inputColeccionNombre, btnColeccionLista);
-    inputColeccionNombre.focus();
-    actualizarColeccionUI();
-    return;
-  }
-  inputColeccionNombre.value = v;
-  inputColeccionNombre.dispatchEvent(new Event("input", {bubbles:true}));
-  actualizarColeccionUI();
 });
-btnColeccionLista.addEventListener("click", function(){ selColeccion.value=""; activarModoSelectCl(selColeccion, inputColeccionNombre, btnColeccionLista); });
+// al salir del campo, un acrónimo o «nombre (ACR)» queda escrito con el nombre completo de la colección
+inputColeccionNombre.addEventListener("change", function(){
+  if(!editando) return;
+  var p=coleccionPredef(inputColeccionNombre.value);
+  if(p && inputColeccionNombre.value!==p[1]){ inputColeccionNombre.value=p[1]; if(borrador) borrador.coleccionNombre=p[1]; }
+});
 
 // ---------- región → provincia → comuna (Chile) ----------
 var DATOS_CHILE = [
@@ -3072,15 +3052,15 @@ function fichaSeccion(titulo, innerHtml, abierta){
 }
 function nombreColeccionCompleto(r){
   if(!r.coleccionAcronimo) return "";
-  var opt = document.querySelector('#sel-coleccion option[value="'+r.coleccionAcronimo+'"]');
-  if(opt) return opt.textContent;
+  var cn = COLECCIONES_AZI.filter(function(c){ return c[0]===r.coleccionAcronimo; })[0];
+  if(cn) return cn[1]+" ("+cn[0]+")";
   return [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
 }
 function lineaColeccionFicha(r){
   var acr=[r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" "), nombre="";
   if(r.coleccionAcronimo){
-    var opt=document.querySelector('#sel-coleccion option[value="'+r.coleccionAcronimo+'"]');
-    if(opt) nombre=opt.textContent.replace(/\s*\([^)]*\)\s*$/,"").trim();
+    var cn=COLECCIONES_AZI.filter(function(c){ return c[0]===r.coleccionAcronimo; })[0];
+    if(cn) nombre=cn[1];
   }
   if(!nombre && r.coleccionNombre && r.coleccionNombre!==r.coleccionAcronimo) nombre=r.coleccionNombre;
   return nombre && acr ? nombre+" ("+acr+")" : (nombre||acr);
@@ -4498,7 +4478,6 @@ function aplicarModoFormulario(){
   });
   var campoCatalogador=document.getElementById("campo-catalogador");
   if(campoCatalogador) campoCatalogador.readOnly = true; // se completa solo, nunca a mano
-  sincronizarColeccionCatalogado();
   actualizarColeccionUI();
   sincronizarCascadaChile();
   sincronizarSelectsOtro();

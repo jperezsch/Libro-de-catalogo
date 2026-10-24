@@ -654,6 +654,9 @@
   .fecha-ctl{display:flex;flex-wrap:wrap;gap:4px;align-items:stretch;position:relative;width:100%;}
   .fecha-ctl>input[data-tf]{flex:1 1 110px;min-width:0;}
   .fecha-ctl>.btn{flex:none;padding:0 8px;}
+  .fecha-ctl>.btn:disabled{opacity:.4;cursor:not-allowed;}
+  #undo-aviso{position:fixed;left:16px;bottom:16px;background:#2f3a2f;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;z-index:10060;opacity:0;pointer-events:none;transition:opacity .2s;}
+  #undo-aviso.visible{opacity:.95;}
   .fecha-ctl .fecha-nativo{position:absolute;left:0;bottom:0;width:100%;height:1px;opacity:0;pointer-events:none;border:0;padding:0;}
   .fecha-ctl .fecha-err{flex:1 0 100%;color:#8a2a1e;font-size:12px;}
   .fecha-ctl .fecha-err:empty{display:none;}
@@ -822,7 +825,7 @@
           <label>Ordenar por <select id="cons-orden"><option value="catalogo">N.º de catálogo</option><option value="campo">N.º de campo</option><option value="nombre">Nombre científico</option><option value="localidad">Localidad</option><option value="fecha">Fecha de colecta</option></select></label>
           <button type="button" class="btn small secundario" id="cons-csv" title="Archivo de texto separado por comas, abre en Excel y sirve para GBIF">Descargar CSV</button>
           <button type="button" class="btn small secundario" id="cons-xlsx" title="Planilla de Excel">Descargar Excel</button>
-          <button type="button" class="btn small secundario" id="cons-fotos" title="Descarga un zip con las fotos de los registros seleccionados (o de todos los resultados), ordenadas en carpetas por Phylum, Clase, Orden, Familia y Género">🖼️ Exportar fotos por taxonomía</button>
+          <button type="button" class="btn small secundario" id="cons-fotos" title="Descarga un zip con las fotos de los registros seleccionados (o de todos los resultados), todas juntas en una carpeta simple">🖼️ Descargar fotos</button>
           <button type="button" class="btn small secundario" id="cons-mapa" title="Abre un mapa con los registros seleccionados (o todos los resultados) para evaluar su distribución geográfica">🗺️ Evaluar patrón de distribución</button>
         </div>
       </div>
@@ -1450,7 +1453,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.69";
+var APP_VERSION = "v0.9.71";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1641,7 +1644,7 @@ function pintarDetalleEspacio(e){
       "Archivos guardados solo en el navegador: "+fmtBytes(barch)+" ("+arch.length+" archivo(s))"+(arch.length?"; conviene pasarlos a la Carpeta local":"")+"<br>"+
       "Listas, ajustes y actividad: "+fmtBytes(bls)+"<br>"+
       "Aplicación y datos internos del navegador: "+fmtBytes(otros)+"<br>"+
-      "Espacio en disco: sobra de sobra para los registros. El límite práctico lo pone la memoria: la app se mantiene fluida hasta unos "+TECHO.toLocaleString("es-CL")+" registros (probado), lo que deja "+(restan?"unos "+restan.toLocaleString("es-CL")+" por agregar.":"esa cifra ya superada; conviene revisar el rendimiento.");
+      (nreg>TECHO ? "Capacidad: ya superas los "+TECHO.toLocaleString("es-CL")+" registros con los que se probó la app; conviene vigilar su rendimiento." : "Capacidad: en pruebas con datos simulados, la app se mantiene fluida hasta unos "+TECHO.toLocaleString("es-CL")+" registros. Puedes agregar alrededor de "+(Math.floor(restan/100)*100).toLocaleString("es-CL")+" más.");
     var b=document.getElementById("btn-liberar-espacio"); if(b) b.classList.toggle("oculto", !arch.length || modoAcceso!=="admin");
   });
 }
@@ -2049,6 +2052,7 @@ function mejorarFechaHora(inp){
     w.querySelector(".fecha-nativo").addEventListener("change", function(){ if(this.value){ FH_VALOR.set.call(inp, fhMostrar("date", this.value)); fechaConfirmar(inp); } });
   }
   w.insertAdjacentHTML("beforeend",'<small class="fecha-err" role="alert"></small>');
+  bloquearBotonesFecha(w.parentNode);
   inp.addEventListener("blur", function(){ if(FH_VALOR.get.call(inp).trim()!=="" || inp._ult) fechaConfirmar(inp); });
   inp.addEventListener("input", function(){ if(inp.classList.contains("fecha-mala")) fhMarcar(inp,""); });
 }
@@ -2056,6 +2060,7 @@ document.addEventListener("click", function(e){
   var b=e.target.closest && e.target.closest(".fecha-hoy, .fecha-cal"); if(!b) return;
   var w=b.closest(".fecha-ctl"), inp=w && w.querySelector("input[data-tf]"); if(!inp) return;
   e.preventDefault();
+  if(inp.readOnly || inp.disabled || b.disabled) return;   // en modo Consultar los botones no cambian la fecha
   if(b.classList.contains("fecha-hoy")){ FH_VALOR.set.call(inp, fhMostrar("date", fhHoyISO())); fechaConfirmar(inp); inp.focus(); }
   else { var nat=w.querySelector(".fecha-nativo"); nat.value=inp.value||""; try{ nat.showPicker(); }catch(err){ nat.focus(); nat.click(); } }
 });
@@ -3659,31 +3664,34 @@ function kmEntre(a,b,c,d){
   var R=6371, rad=Math.PI/180, dl=(c-a)*rad, dg=(d-b)*rad, x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a*rad)*Math.cos(c*rad)*Math.sin(dg/2)*Math.sin(dg/2);
   return 2*R*Math.asin(Math.min(1,Math.sqrt(x)));
 }
-// Zip con las fotos de los registros elegidos, en carpetas Phylum/Clase/Orden/Familia/Género (los niveles vacíos se omiten).
-async function exportarFotosTaxonomia(){
+// Zip con las fotos de los registros elegidos, todas en una sola carpeta (los nombres de archivo llevan el número del ejemplar).
+async function exportarFotos(){
   var ids=marcadosConsulta(), lista=ids.length ? resultadosConsulta().filter(function(r){ return ids.indexOf(r.id)>-1; }) : resultadosConsulta();
   var msg=document.getElementById("cons-msg"), items=[];
   lista.forEach(function(r){
-    var niveles=["phylum","clase","orden","familia","genero"].map(function(k){ return sanitizarNombre(r[k]); }).filter(Boolean);
-    (r.fotos||[]).forEach(function(f){ if(/^Fotos\//.test(f.archivo||"")) items.push({ruta:f.archivo, dir:niveles.length?niveles.join("/"):"Sin_clasificar"}); });
+    var cat=sanitizarNombre(construirCatalogoCompleto(r)), campo=r.numeroCampo ? sanitizarNombre(r.numeroCampo) : "";
+    var num=cat || (campo ? "campo_"+campo : "") || "sin-numero", base=cat || campo || "sin-numero";
+    (r.fotos||[]).forEach(function(f){ if(/^Fotos\//.test(f.archivo||"")) items.push({ruta:f.archivo, num:num, base:base}); });
   });
   if(!items.length){ if(msg) msg.textContent="Los registros elegidos no tienen fotos asociadas."; return; }
-  if(!confirm("Se descargará un zip con "+items.length+" foto(s) de "+lista.length+" registro(s), ordenadas en carpetas por su clasificación. Los niveles que falten en un registro se omiten. ¿Continuar?")) return;
+  if(!confirm("Se descargará un zip con "+items.length+" foto(s) de "+lista.length+" registro(s), todas juntas en una carpeta y con el número del ejemplar al comienzo del nombre. ¿Continuar?")) return;
   var arch=[], usados={}, faltan=0, enc=0;
   for(var i=0;i<items.length;i++){
     if(msg) msg.textContent="Preparando fotos: "+(i+1)+" de "+items.length+"…";
     try{
-      var file=await archivoDeRuta(items[i].ruta), nom=items[i].ruta.split("/").pop(), ruta=items[i].dir+"/"+nom, k=1;
-      while(usados[ruta]){ k++; ruta=items[i].dir+"/"+nom.replace(/(\.[^.]*)?$/, "_"+k+"$1"); }
+      var file=await archivoDeRuta(items[i].ruta), nom=items[i].ruta.split("/").pop();
+      if(nom.toLowerCase().indexOf(items[i].base.toLowerCase())<0) nom=items[i].num+"_"+nom;   // si el nombre aún no trae el número del ejemplar, se le antepone
+      var ruta="Fotos/"+nom, k=1;
+      while(usados[ruta]){ k++; ruta="Fotos/"+nom.replace(/(\.[^.]*)?$/, "_"+k+"$1"); }
       usados[ruta]=1; arch.push({nombre:ruta, datos:new Uint8Array(await file.arrayBuffer())}); enc++;
     }catch(e){ faltan++; }
   }
   if(!arch.length){ if(msg) msg.textContent="No se pudo leer ninguna foto. Revisa que la Carpeta local esté conectada y con acceso."; return; }
   var blob=zipSinCompresion(arch,"application/zip"), url=URL.createObjectURL(blob), a=document.createElement("a");
-  a.href=url; a.download=nombreDescarga("Fotos por taxonomia", enc+"fotos", "zip");
+  a.href=url; a.download=nombreDescarga("Fotos", enc+"fotos", "zip");
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
   if(msg) msg.textContent=enc+" foto(s) en el zip"+(faltan?"; "+faltan+" no se pudieron leer.":".");
-  registrarActividad("descarga","fotos por taxonomía · "+enc+" foto(s)");
+  registrarActividad("descarga","fotos · "+enc+" foto(s)");
 }
 function abrirMapaDistribucion(){
   var dlg=document.getElementById("dialog-mapa-dist"); if(!dlg) return;
@@ -4346,6 +4354,7 @@ function sincronizarSelectsOtro(){
   });
 }
 function cargarRegistroEnFormulario(){
+  if(!undoAplicando) undoReiniciar();
   var r=registroActivo(); coordAuto=null; if(typeof avisoCoord==="function") avisoCoord("");
   document.querySelectorAll("[data-f]").forEach(function(el){
     if(el.closest(".fila-repetible")) return;
@@ -4410,12 +4419,79 @@ function actualizarFooterAcciones(){
     }
   });
 }
+// Los botones Hoy y calendario siguen el estado de su campo: bloqueados cuando el campo está en solo lectura.
+// ---------- deshacer y rehacer (Ctrl+Z, Ctrl+Y) en los formularios ----------
+// Se guarda una copia del borrador cada vez que un campo confirma un cambio o se agrega o quita una fila.
+var undoPila=[], undoRehacer=[], undoActual="", undoAplicando=false, undoTimer=null;
+function valorCrudo(t){ return t.tagName==="TEXTAREA" ? t.value : FH_VALOR.get.call(t); }
+function undoReiniciar(){ undoPila=[]; undoRehacer=[]; try{ undoActual=borrador ? JSON.stringify(borrador) : ""; }catch(e){ undoActual=""; } }
+function undoRegistrar(){
+  if(undoAplicando || !borrador || !editando) return;
+  var snap; try{ snap=JSON.stringify(borrador); }catch(e){ return; }
+  if(snap===undoActual) return;
+  if(undoActual) undoPila.push(undoActual);
+  if(undoPila.length>100) undoPila.shift();
+  undoActual=snap; undoRehacer=[];
+}
+function undoProg(ms){ clearTimeout(undoTimer); undoTimer=setTimeout(undoRegistrar, ms); }
+function undoAviso(txt){
+  var el=document.getElementById("undo-aviso");
+  if(!el){ el=document.createElement("div"); el.id="undo-aviso"; el.setAttribute("role","status"); document.body.appendChild(el); }
+  el.textContent=txt; el.classList.add("visible"); clearTimeout(el._t); el._t=setTimeout(function(){ el.classList.remove("visible"); }, 2200);
+}
+function undoAplicar(snap){
+  var y=window.pageYOffset, f=document.activeElement, campo=f && f.getAttribute ? f.getAttribute("data-f") : null;
+  undoAplicando=true;
+  try{
+    borrador=JSON.parse(snap); undoActual=snap;
+    cargarRegistroEnFormulario(); refrescarPanelesRegistros();
+    if(typeof actualizarAvisoConteo==="function") actualizarAvisoConteo();
+  } finally { undoAplicando=false; }
+  try{ window.scrollTo(0,y); }catch(e){}
+  if(campo){ var n=document.querySelector('[data-f="'+campo+'"]'); if(n && !n.closest(".fila-repetible")){ try{ n.focus({preventScroll:true}); }catch(e){} } }
+}
+function undoDeshacer(){
+  undoRegistrar();
+  if(!undoPila.length){ undoAviso("No hay más cambios para deshacer."); return; }
+  undoRehacer.push(undoActual); undoAplicar(undoPila.pop()); undoAviso("Cambio deshecho. Ctrl+Y lo rehace.");
+}
+function undoRehace(){
+  if(!undoRehacer.length){ undoAviso("No hay cambios para rehacer."); return; }
+  undoPila.push(undoActual); undoAplicar(undoRehacer.pop()); undoAviso("Cambio rehecho.");
+}
+document.addEventListener("change", function(e){ var t=e.target; if(t && t.closest && t.closest(".tabpanel") && t.closest(".tabpanel").querySelector("[data-f]")) undoProg(0); }, true);
+document.addEventListener("click", function(e){ var b=e.target.closest && e.target.closest("button"); if(b && editando && b.closest(".tabpanel") && b.closest(".tabpanel").querySelector("[data-f]")) undoProg(120); }, true);
+document.addEventListener("keydown", function(e){
+  if(!(e.ctrlKey || e.metaKey) || e.altKey) return;
+  var k=(e.key||"").toLowerCase(); if(k!=="z" && k!=="y") return;
+  if(modoAcceso!=="admin" || !editando || !borrador) return;
+  var t=e.target, panel=t && t.closest ? t.closest(".tabpanel") : null;
+  if(!panel) panel=document.querySelector(".tabpanel.active");
+  if(!panel || !panel.querySelector("[data-f]")) return;
+  var esCampo=t && t.matches && t.matches("input,textarea,select");
+  if(esCampo && !t.matches("[data-f],[data-key]")) return;   // filtros y otros campos usan su propio deshacer
+  var rehacer = k==="y" || (k==="z" && e.shiftKey);
+  // mientras se escribe en un campo y aún no se confirmó, el navegador deshace lo tecleado
+  if(esCampo && !rehacer && t.tagName!=="SELECT" && t._valorInicial!==undefined && valorCrudo(t)!==t._valorInicial) return;
+  e.preventDefault();
+  if(rehacer) undoRehace(); else undoDeshacer();
+}, true);
+document.addEventListener("focusin", function(e){ var t=e.target; if(t && t.matches && t.matches("input,textarea")) t._valorInicial=valorCrudo(t); }, true);
+document.addEventListener("change", function(e){ var t=e.target; if(t && t.matches && t.matches("input,textarea")) t._valorInicial=valorCrudo(t); });
+function bloquearBotonesFecha(raiz){
+  (raiz||document).querySelectorAll(".fecha-ctl").forEach(function(w){
+    var inp=w.querySelector("input[data-tf]"); if(!inp) return;
+    var bloq=!!(inp.readOnly || inp.disabled);
+    w.querySelectorAll(".fecha-hoy, .fecha-cal").forEach(function(b){ b.disabled=bloq; });
+  });
+}
 function aplicarModoFormulario(){
   document.querySelectorAll("[data-f]").forEach(function(el){
     if(el.closest(".fila-repetible")) return;
     if(el.tagName==="SELECT"){ el.disabled = !editando; }
     else { el.readOnly = !editando; }
   });
+  bloquearBotonesFecha();
   ["btn-add-determinacion","btn-add-submuestra","btn-add-foto","btn-add-prestamo","btn-add-uso","btn-add-monitoreo","btn-add-pdf","btn-add-adjunto"].forEach(function(id){
     var b=document.getElementById(id);
     if(b){ b.disabled = !editando; b.classList.toggle("oculto", !editando); }
@@ -7290,7 +7366,7 @@ function construirConsultas(){
   document.getElementById("cons-csv").addEventListener("click", function(){ descargarConsulta("csv"); });
   document.getElementById("cons-xlsx").addEventListener("click", function(){ descargarConsulta("xlsx"); });
   document.getElementById("cons-mapa").addEventListener("click", abrirMapaDistribucion);
-  document.getElementById("cons-fotos").addEventListener("click", exportarFotosTaxonomia);
+  document.getElementById("cons-fotos").addEventListener("click", exportarFotos);
   document.getElementById("cons-chips").addEventListener("click", function(e){
     var b=e.target.closest("button[data-quitar]"); if(!b) return;
     var q=b.getAttribute("data-quitar");

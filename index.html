@@ -1450,7 +1450,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.68";
+var APP_VERSION = "v0.9.69";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1635,13 +1635,13 @@ function pintarDetalleEspacio(e){
     if(!breg && nreg){ registros.forEach(function(r){ try{ breg+=JSON.stringify(r).length; }catch(x){} }); }
     var bls=bytesLocalStorage(), otros=Math.max(0, e.usage-breg-bls-barch);
     var medio=nreg ? Math.max(500, breg/nreg) : 4096;
-    var libres=Math.max(0, e.quota*0.8-e.usage), caben=Math.floor(libres/medio);
+    var TECHO=30000, restan=Math.max(0, TECHO-nreg);
     el.innerHTML="<strong>Qué ocupa ese espacio (aproximado)</strong><br>"+
       "Registros: "+fmtBytes(breg)+" ("+nreg+" registros, unos "+fmtBytes(Math.round(medio))+" cada uno)<br>"+
       "Archivos guardados solo en el navegador: "+fmtBytes(barch)+" ("+arch.length+" archivo(s))"+(arch.length?"; conviene pasarlos a la Carpeta local":"")+"<br>"+
       "Listas, ajustes y actividad: "+fmtBytes(bls)+"<br>"+
       "Aplicación y datos internos del navegador: "+fmtBytes(otros)+"<br>"+
-      "Con el tamaño medio actual caben unos "+caben.toLocaleString("es-CL")+" registros más antes de llegar al 80 % del espacio.";
+      "Espacio en disco: sobra de sobra para los registros. El límite práctico lo pone la memoria: la app se mantiene fluida hasta unos "+TECHO.toLocaleString("es-CL")+" registros (probado), lo que deja "+(restan?"unos "+restan.toLocaleString("es-CL")+" por agregar.":"esa cifra ya superada; conviene revisar el rendimiento.");
     var b=document.getElementById("btn-liberar-espacio"); if(b) b.classList.toggle("oculto", !arch.length || modoAcceso!=="admin");
   });
 }

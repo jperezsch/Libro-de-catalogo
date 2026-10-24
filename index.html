@@ -472,6 +472,7 @@
   .acciones-fila .btn-sec:hover{opacity:1;border-color:var(--line-fuerte);}
   .acciones-fila .btn-sec.btn-eliminar-registro:hover{color:#a3261c;}
   button.btn.principal-fila{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
+  .respaldo-linea{font-weight:600;} .respaldo-alerta{color:#a1402a;}
   .ico-arch{margin-left:6px;font-size:15px;white-space:nowrap;cursor:help;}
   button.btn.peligro{background:#fff;border-color:#a3261c;color:#a3261c;}
   button.btn.peligro:disabled{opacity:.5;cursor:default;}
@@ -1160,6 +1161,8 @@
       <p class="nota" id="estado-almacenamiento"></p>
       <p class="nota" id="estado-espacio"></p>
       <div class="barra-espacio" id="barra-espacio" role="progressbar" aria-label="Espacio usado del navegador" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="barra-espacio-in"></div></div>
+      <div class="nota" id="espacio-detalle"></div>
+      <div class="barra-botones"><button class="btn secundario small oculto" id="btn-liberar-espacio" title="Copia a la Carpeta local los archivos que solo están en este navegador, comprueba que quedaron completos y recién entonces los borra del navegador">Pasar a la Carpeta local y liberar espacio</button></div>
       <details class="det-errores" id="det-errores"><summary>Registro de errores (<span id="n-errores">0</span>)</summary>
         <pre id="txt-errores" class="txt-errores">Sin errores registrados.</pre>
         <div class="barra-botones"><button class="btn secundario small" id="btn-errores-descargar">Descargar registro</button><button class="btn tenue small" id="btn-errores-vaciar">Vaciar</button></div>
@@ -1398,6 +1401,8 @@
         </div>
       </div>
       <input type="file" id="input-importar-json" accept=".json,.zip,application/json,application/zip" class="oculto">
+      <p class="nota respaldo-linea oculto" id="carpeta-respaldo"></p>
+      <div class="barra-botones"><button class="btn secundario small oculto" id="btn-respaldar-pend">Copiar los pendientes a la Carpeta local</button></div>
       <p class="nota" id="carpeta-mensaje"></p>
 
       <details class="det-carpetas">
@@ -1445,7 +1450,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.67";
+var APP_VERSION = "v0.9.68";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1608,13 +1613,81 @@ function actualizarEspacio(){
   navigator.storage.estimate().then(function(e){
     if(!e || !e.quota) return;
     var pct=e.usage/e.quota*100;
-    el.textContent="Espacio del navegador: "+fmtBytes(e.usage)+" de "+fmtBytes(e.quota)+" ("+(pct<1?"menos de 1":Math.round(pct))+" %)."+(pct>=80?" Queda poco espacio: descarga un respaldo y libera archivos.":"");
+    el.textContent="Espacio del navegador: "+fmtBytes(e.usage)+" de "+fmtBytes(e.quota)+" ("+(pct<1?"menos de 1":Math.round(pct))+" %)."+(pct>=80?" Queda poco espacio: descarga un respaldo antes de seguir agregando registros.":"");
     el.classList.toggle("espacio-alerta", pct>=80);
     var bar=document.getElementById("barra-espacio-in"), cb=document.getElementById("barra-espacio");
     if(bar){ bar.style.width=Math.min(100,Math.max(e.usage>0?2:0,pct))+"%"; bar.className=pct>=80?"alto":(pct>=60?"medio":""); }
     if(cb) cb.setAttribute("aria-valuenow", String(Math.round(pct)));
+    pintarDetalleEspacio(e);
     if(pct>=90) mostrarAvisoGuardado("Queda muy poco espacio en el navegador ("+Math.round(pct)+" % usado). Descarga un respaldo ahora.");
   }).catch(function(e){ registrarError("estimación de espacio", e); });
+}
+function bytesLocalStorage(){
+  var n=0; try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k && k.indexOf("libroCatalogo")===0) n+=(k.length+(localStorage.getItem(k)||"").length)*2; } }catch(x){}
+  return n;
+}
+function pintarDetalleEspacio(e){
+  var el=document.getElementById("espacio-detalle"); if(!el) return;
+  archivosNavegadorListar().catch(function(){ return []; }).then(function(arch){
+    var nreg=registros.length, breg=0, barch=0;
+    arch.forEach(function(a){ barch+=a.bytes; });
+    Object.keys(idbCache).forEach(function(id){ breg+=idbCache[id].length; });
+    if(!breg && nreg){ registros.forEach(function(r){ try{ breg+=JSON.stringify(r).length; }catch(x){} }); }
+    var bls=bytesLocalStorage(), otros=Math.max(0, e.usage-breg-bls-barch);
+    var medio=nreg ? Math.max(500, breg/nreg) : 4096;
+    var libres=Math.max(0, e.quota*0.8-e.usage), caben=Math.floor(libres/medio);
+    el.innerHTML="<strong>Qué ocupa ese espacio (aproximado)</strong><br>"+
+      "Registros: "+fmtBytes(breg)+" ("+nreg+" registros, unos "+fmtBytes(Math.round(medio))+" cada uno)<br>"+
+      "Archivos guardados solo en el navegador: "+fmtBytes(barch)+" ("+arch.length+" archivo(s))"+(arch.length?"; conviene pasarlos a la Carpeta local":"")+"<br>"+
+      "Listas, ajustes y actividad: "+fmtBytes(bls)+"<br>"+
+      "Aplicación y datos internos del navegador: "+fmtBytes(otros)+"<br>"+
+      "Con el tamaño medio actual caben unos "+caben.toLocaleString("es-CL")+" registros más antes de llegar al 80 % del espacio.";
+    var b=document.getElementById("btn-liberar-espacio"); if(b) b.classList.toggle("oculto", !arch.length || modoAcceso!=="admin");
+  });
+}
+// ---------- archivos que solo están en el navegador (respaldo temporal) ----------
+function archivosNavegadorListar(){
+  return abrirDB().then(function(db){ return new Promise(function(res,rej){
+    var out=[], rq=db.transaction("config","readonly").objectStore("config").openCursor();
+    rq.onsuccess=function(){
+      var c=rq.result; if(!c){ res(out); return; }
+      var k=String(c.key);
+      if(k.indexOf("foto:")===0){ var v=c.value && c.value.valor; out.push({clave:k, ruta:k.slice(5), bytes:(v && v.size)||0}); }
+      c.continue();
+    };
+    rq.onerror=function(){ rej(rq.error); };
+  }); });
+}
+async function archivoSoloCarpeta(ruta){
+  try{
+    var partes=ruta.split("/"), d=carpetaHandle;
+    for(var i=0;i<partes.length-1;i++) d=await d.getDirectoryHandle(partes[i]);
+    return await (await d.getFileHandle(partes[partes.length-1])).getFile();
+  }catch(e){ return null; }
+}
+// Un archivo se borra del navegador solo si la Carpeta local tiene una copia del mismo tamaño en la misma ruta.
+async function liberarEspacioNavegador(){ if(modoAcceso!=="admin") return null;
+  if(!carpetaHandle || !(await permisoCarpeta(true))){ alert("Conecta primero la Carpeta local en la pestaña Sistema."); return null; }
+  var antes=await archivosNavegadorListar(), bytesAntes=0; antes.forEach(function(a){ bytesAntes+=a.bytes; });
+  var res={liberados:0, conflictos:0, errores:0, bytes:0};
+  try{ await docPasarNavegadorACarpeta(); }catch(e){ registrarError("pasar documentos a la Carpeta local", e); res.errores++; }
+  var lista=await archivosNavegadorListar();
+  for(var i=0;i<lista.length;i++){
+    var a=lista[i];
+    try{
+      var blob=await cfgLeer(a.clave); if(!blob){ await cfgBorrar(a.clave); continue; }
+      var enC=await archivoSoloCarpeta(a.ruta);
+      if(enC && enC.size!==blob.size){ res.conflictos++; continue; }
+      if(!enC){
+        var partes=a.ruta.split("/"), nom=partes.pop();
+        await copiarVerificado(partes.join("/"), nom, new File([blob], nom, {type:blob.type||mimePorNombre(a.ruta)}));
+      }
+      await cfgBorrar(a.clave); res.liberados++;
+    }catch(e){ res.errores++; registrarError("liberar espacio: "+a.ruta, e); }
+  }
+  var despues=await archivosNavegadorListar(), bytesDespues=0; despues.forEach(function(a){ bytesDespues+=a.bytes; });
+  res.bytes=Math.max(0, bytesAntes-bytesDespues); res.quedan=despues.length;
+  return res;
 }
 var idbCache = {}, idbOcupado = false, idbPendiente = false;
 var registrosVersion = 0, persistirTimer = null;
@@ -1647,7 +1720,7 @@ function cargarDesdeIndexedDB(cb){
 
 // Agrupa los guardados seguidos (una importación llama a persistir muchas veces) y fuerza el guardado al ocultar o cerrar la página.
 function persistir(){
-  registrosVersion++; stdAutoProg();
+  registrosVersion++; stdAutoProg(); respaldoProg();
   if(modoAcceso!=="admin") return;
   clearTimeout(persistirTimer);
   persistirTimer=setTimeout(function(){ persistirTimer=null; guardarEnIndexedDB(); }, 250);
@@ -4525,6 +4598,36 @@ function guardarActualizacion(siguienteTab){
 }
 
 // ---------- panel de registros (transversal) ----------
+// ---------- estado de respaldo de cada registro en la Carpeta local ----------
+// "ok": el archivo de la carpeta tiene la misma modificación (o una más nueva); "pend": falta o está desactualizado;
+// "sin": no hay Carpeta local conectada; "desc": aún no se leyó el contenido de la carpeta.
+function estadoRespaldo(r){
+  if(!carpetaHandle) return "sin";
+  if(!indiceArchivos) return "desc";
+  return (indiceArchivos[r.id] && (modArchivo[r.id]||"") >= (r.modificadoEn||"")) ? "ok" : "pend";
+}
+function resumenRespaldo(){
+  var o={ok:0,pend:0,total:registros.length,estado:carpetaHandle?(indiceArchivos?"ok":"desc"):"sin"};
+  if(o.estado!=="ok") return o;
+  registros.forEach(function(r){ if(estadoRespaldo(r)==="ok") o.ok++; else o.pend++; });
+  return o;
+}
+function marcaRespaldo(r){
+  return estadoRespaldo(r)==="pend" ? '<span class="ico-arch ico-resp" title="Este registro aún no tiene su copia al día en la Carpeta local">⏳</span>' : "";
+}
+var respaldoTimer=null;
+function respaldoProg(){ clearTimeout(respaldoTimer); respaldoTimer=setTimeout(pintarRespaldo, 400); }
+function pintarRespaldo(){
+  var el=document.getElementById("carpeta-respaldo"); if(!el) return;
+  var o=resumenRespaldo(), b=document.getElementById("btn-respaldar-pend");
+  var txt, alerta=false;
+  if(o.estado==="sin"){ txt=o.total ? "Respaldo de registros: ninguno de los "+o.total+" registros tiene copia en una Carpeta local." : ""; alerta=!!o.total; }
+  else if(o.estado==="desc"){ txt="Respaldo de registros: revisando la Carpeta local…"; }
+  else if(!o.pend){ txt="Respaldo de registros: los "+o.total+" registros están al día en la Carpeta local."; }
+  else { txt="Respaldo de registros: "+o.ok+" al día y "+o.pend+" pendientes de copiar a la Carpeta local (marcados con ⏳ en las listas)."; alerta=true; }
+  el.textContent=txt; el.classList.toggle("respaldo-alerta", alerta); el.classList.toggle("oculto", !txt);
+  if(b) b.classList.toggle("oculto", !(o.estado==="ok" && o.pend));
+}
 function iconosArchivos(reg){
   var lleno=function(a){ return (a||[]).filter(function(x){ return x && (typeof x==="string" ? x : (x.archivo||x.ruta)); }).length; };
   var nf=lleno(reg.fotos), npdf=(reg.publicacionesPdf||[]).filter(Boolean).length, nad=lleno(reg.adjuntos);
@@ -4612,7 +4715,7 @@ function montarPanelRegistros(cont){
       if(!listaC.length) hc+='<p class="nota" style="padding:8px;">Ningún registro coincide con los filtros actuales.</p>';
       listaC.slice(0,150).forEach(function(reg){
         var etc=etiquetaRegistro(reg);
-        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong>'+iconosArchivos(reg)+'<br><span class="ts2">'+resumenLinea2Html(etc)+'</span></div><div class="acciones-fila"><button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button></div></div>';
+        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong>'+iconosArchivos(reg)+marcaRespaldo(reg)+'<br><span class="ts2">'+resumenLinea2Html(etc)+'</span></div><div class="acciones-fila"><button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button></div></div>';
       });
       if(listaC.length>150) hc+='<p class="nota" style="padding:8px;">Se muestran 150 de '+listaC.length+'. Afina los filtros o usa la lista completa de abajo.</p>';
       hc+='</div></div>';
@@ -4649,7 +4752,7 @@ function montarPanelRegistros(cont){
       var esActivo = reg.id===activoId;
       var et = esActivo && borrador ? etiquetaRegistro(borrador) : etiquetaRegistro(reg);
       html += '<div class="fila-registro'+(esActivo?' activa':'')+'" data-id="'+reg.id+'">';
-      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(reg)+'<br><span class="ts2">'+resumenLinea2Html(et)+'</span></div>';
+      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(reg)+marcaRespaldo(reg)+'<br><span class="ts2">'+resumenLinea2Html(et)+'</span></div>';
       html += '<div class="acciones-fila">';
       if(esActivo) html += '<span class="tag-activo-mini">'+(editando?'editando':'consultando')+'</span>';
       html += '<button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button>';
@@ -5348,6 +5451,7 @@ function actualizarUICarpeta(){
     aviso.classList.add("oculto");
   }
   if(typeof pintarPendientes==="function") pintarPendientes();
+  respaldoProg();
 }
 function avisoLimitado(){
   var limitado=!soportaCarpeta(), ok=false;
@@ -5388,6 +5492,17 @@ async function verCarpetaLocal(){
   }catch(e){ if(e && e.name==="AbortError") mensajeCarpeta(""); else mensajeCarpeta("No se pudo abrir la carpeta: "+((e&&e.message)||e)); }
 }
 document.getElementById("btn-carpeta-ver").addEventListener("click", verCarpetaLocal);
+document.getElementById("btn-liberar-espacio").addEventListener("click", async function(){
+  var b=this; b.disabled=true;
+  try{
+    var r=await liberarEspacioNavegador();
+    if(r){
+      alert("Se liberaron "+fmtBytes(r.bytes)+" del navegador.\n\nArchivos verificados y borrados del navegador: "+r.liberados+(r.conflictos?"\nSe conservaron "+r.conflictos+" porque la Carpeta local ya tiene otro archivo con ese nombre y distinto tamaño.":"")+(r.errores?"\nCon error: "+r.errores+" (ver Registro de errores).":"")+(r.quedan?"\nAún quedan "+r.quedan+" archivo(s) en el navegador.":""));
+    }
+  }catch(e){ alert("No se pudo completar: "+((e&&e.message)||e)); }
+  b.disabled=false; actualizarEspacio();
+});
+document.getElementById("btn-respaldar-pend").addEventListener("click", function(){ sincronizarCarpeta(true); });
 document.getElementById("btn-carpeta-sincronizar").addEventListener("click", function(){ sincronizarCarpeta(true); });
 document.getElementById("btn-carpeta-actualizar").addEventListener("click", function(){ actualizarDesdeCarpeta(true); });
 document.getElementById("btn-carpeta-respaldo").addEventListener("click", respaldoCompleto);
@@ -7246,7 +7361,7 @@ function pintarConsultas(){
   lista.slice(0,e.mostrar).forEach(function(r){
     var et=etiquetaRegistro(r);
     var extra=[r.phylum,r.clase,r.orden,r.familia,r.genero].filter(Boolean).join(" › ");
-    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Seleccionar este registro para descargar o evaluar su distribución"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Seleccionar</label></div></div>';
+    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+marcaRespaldo(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Seleccionar este registro para descargar o evaluar su distribución"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Seleccionar</label></div></div>';
   });
   cont.innerHTML=h;
   document.getElementById("cons-mas-btn").classList.toggle("oculto", lista.length<=e.mostrar);

@@ -1422,7 +1422,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.72";
+var APP_VERSION = "v0.9.73";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2730,6 +2730,11 @@ inputColeccionNombre.addEventListener("change", function(){
   if(!editando) return;
   var p=coleccionPredef(inputColeccionNombre.value);
   if(p && inputColeccionNombre.value!==p[1]){ inputColeccionNombre.value=p[1]; if(borrador) borrador.coleccionNombre=p[1]; }
+  // «Colección de Opiliones (OPI)»: si el acrónimo de colección está vacío, se toma del paréntesis final
+  var m=!p && /\(\s*([A-Za-z]{2,8})\s*\)\s*$/.exec(inputColeccionNombre.value);
+  if(m && !campoColeccionAcr.value.trim() && !campoColeccionAcr.readOnly){
+    campoColeccionAcr.value=m[1].toUpperCase(); if(borrador) borrador.coleccionAcronimo=campoColeccionAcr.value; refrescarPanelesRegistros();
+  }
 });
 
 // ---------- región → provincia → comuna (Chile) ----------
@@ -3051,7 +3056,7 @@ function fichaSeccion(titulo, innerHtml, abierta){
   return '<details'+(abierta?' open':'')+'><summary>'+escapeHtml(titulo)+'</summary><div class="ficha-seccion-body">'+innerHtml+'</div></details>';
 }
 function nombreColeccionCompleto(r){
-  if(!r.coleccionAcronimo) return "";
+  if(!r.coleccionAcronimo){ var pn=coleccionPredef(r.coleccionNombre||""); return pn ? pn[1] : (r.coleccionNombre||""); }   // colección escrita a mano, sin acrónimo
   var cn = COLECCIONES_AZI.filter(function(c){ return c[0]===r.coleccionAcronimo; })[0];
   if(cn) return cn[1]+" ("+cn[0]+")";
   return [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
@@ -3063,6 +3068,8 @@ function lineaColeccionFicha(r){
     if(cn) nombre=cn[1];
   }
   if(!nombre && r.coleccionNombre && r.coleccionNombre!==r.coleccionAcronimo) nombre=r.coleccionNombre;
+  if(!nombre && r.coleccionNombre){ var pr=coleccionPredef(r.coleccionNombre); nombre=pr ? pr[1] : r.coleccionNombre; }
+  if(nombre && r.coleccionAcronimo && nombre.indexOf("("+r.coleccionAcronimo+")")>-1) return nombre;   // el nombre ya trae su acrónimo
   return nombre && acr ? nombre+" ("+acr+")" : (nombre||acr);
 }
 function construirCatalogoCompleto(r){
@@ -4865,7 +4872,7 @@ document.addEventListener("click", function(e){
   });
 });
 function coleccionDeRegistro(r){
-  return r.coleccionAcronimo ? lineaColeccionFicha(r) : "Sin colección asignada";
+  return ((r.coleccionAcronimo || r.coleccionNombre) && lineaColeccionFicha(r)) || "Sin colección asignada";
 }
 function sesionDeRegistro(r){
   return r.creadoEn ? r.creadoEn.slice(0,10) : "Sin sesión registrada";
@@ -9119,7 +9126,7 @@ function iniciarEtiquetas(){
     {k:"@cat",l:"N.º de catálogo completo",g:"Especiales",f:function(r){ return construirCatalogoCompleto(r)||""; }},
     {k:"@nombre",l:"Nombre científico vigente",g:"Especiales",f:function(r){ return nombreVigenteReg(r)||""; }},
     {k:"@coord",l:"Coordenadas (latitud, longitud)",g:"Especiales",f:function(r){ return (r.lat!==undefined && r.lat!=="" && r.lng!==undefined && r.lng!=="") ? r.lat+", "+r.lng : ""; }},
-    {k:"@col",l:"Colección (institución y colección)",g:"Especiales",f:function(r){ return r.coleccionAcronimo ? lineaColeccionFicha(r) : ""; }}
+    {k:"@col",l:"Colección (institución y colección)",g:"Especiales",f:function(r){ return (r.coleccionAcronimo || r.coleccionNombre) ? lineaColeccionFicha(r) : ""; }}
   ];
   var cat=null;
   function catalogo(){

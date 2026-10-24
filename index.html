@@ -228,7 +228,7 @@
   .bloque-desp>summary::before{content:"▸ ";}
   .bloque-desp[open]>summary::before{content:"▾ ";}
   .bloque-desp[open]>summary{margin-bottom:8px;}
-  .sug-panel{position:fixed;z-index:3000;background:#fffdf8;border:1px solid var(--line-fuerte);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.22);max-height:240px;overflow:auto;text-align:left;font-size:14px;color:var(--ink);}
+  .sug-panel{position:fixed;z-index:10050;background:#fffdf8;border:1px solid var(--line-fuerte);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.22);max-height:240px;overflow:auto;text-align:left;font-size:14px;color:var(--ink);}
   .sug-op{padding:7px 12px;cursor:pointer;text-align:left;white-space:normal;overflow-wrap:anywhere;}
   .sug-op.sel,.sug-op:hover{background:var(--accent-soft);}
   .bloque h2{font-family:var(--serif);font-size:19px;margin:0 0 6px;color:var(--accent);}
@@ -657,10 +657,23 @@
   .fecha-ctl .fecha-err{flex:1 0 100%;color:#8a2a1e;font-size:12px;}
   .fecha-ctl .fecha-err:empty{display:none;}
   input.fecha-mala{border-color:#8a2a1e !important;background:#fbebeb !important;}
+  .chk-zip{display:flex;align-items:center;justify-content:flex-start;gap:8px;text-align:left;}
+  .chk-zip input{width:auto !important;flex:none;margin:0;}
+  .barra-espacio{height:12px;border-radius:6px;background:#e5dfcd;border:1px solid var(--line);overflow:hidden;max-width:520px;margin:-2px 0 10px;}
+  #barra-espacio-in{height:100%;width:0;background:#4f8a5b;transition:width .4s;}
+  #barra-espacio-in.medio{background:#d29a1e;} #barra-espacio-in.alto{background:#a1402a;}
+  .std-dos{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;margin:10px 0;}
+  .std-caja{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fffdf8;}
+  .std-caja .fila-admin{margin:0;}
+  @media (max-width:760px){ .std-dos{grid-template-columns:1fr;} }
+  #et-tabla{max-height:340px;overflow:auto;}
+  #et-tabla table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;} #et-tabla th,#et-tabla td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;}
+  #et-campos{display:flex;flex-direction:column;gap:4px;margin:6px 0;} .et-fila{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:3px 8px;background:#fffdf8;} .et-fila .et-nom{flex:1;} .et-fila button{padding:0 8px;}
+  #et-prev{border:1px dashed var(--line-fuerte);border-radius:8px;padding:8px;background:#fff;max-height:380px;overflow:auto;margin:6px 0;}
   #cb-tabla{max-height:340px;overflow:auto;}
   #cb-tabla .cb-dest{background:#fff3c4;font-weight:600;border-left:2px solid #e0a800;border-right:2px solid #e0a800;}
   #cb-tabla th.cb-dest{background:#ffe27a;}
-  #cb-marcar.activo{background:var(--accent,#2f6f4f);color:#fff;}
+  #cb-marcar.activo,#et-marcar.activo{background:var(--accent,#2f6f4f);color:#fff;}
   #pend-tabla th,#pend-tabla td,#cb-tabla th,#cb-tabla td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;}
   #pend-tabla .pend-rep{color:#a3261c;font-weight:600;}
   .aviso-limitado .aviso-texto{font-weight:400;}
@@ -1146,6 +1159,7 @@
       <p class="nota" id="estado-actualizacion"></p>
       <p class="nota" id="estado-almacenamiento"></p>
       <p class="nota" id="estado-espacio"></p>
+      <div class="barra-espacio" id="barra-espacio" role="progressbar" aria-label="Espacio usado del navegador" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="barra-espacio-in"></div></div>
       <details class="det-errores" id="det-errores"><summary>Registro de errores (<span id="n-errores">0</span>)</summary>
         <pre id="txt-errores" class="txt-errores">Sin errores registrados.</pre>
         <div class="barra-botones"><button class="btn secundario small" id="btn-errores-descargar">Descargar registro</button><button class="btn tenue small" id="btn-errores-vaciar">Vaciar</button></div>
@@ -1206,6 +1220,33 @@
         <h4>3. Revisar y aplicar</h4>
         <div class="barra-botones"><button type="button" class="btn secundario" id="cb-ver">Ver cuántos cambiarían</button><button type="button" class="btn" id="cb-aplicar" disabled>Aplicar</button></div>
         <p class="nota" id="cb-msg"></p>
+      </details>
+      <details class="subbloque-gest" id="sub-etiquetas">
+        <summary>Etiquetas automáticas</summary>
+        <p class="nota">Arma etiquetas imprimibles para los ejemplares que elijas, con los campos que quieras y en el orden que prefieras. Sigue tres pasos: elige los registros, elige y ordena los campos, y revisa la vista previa antes de imprimir o guardar como PDF.</p>
+        <h4>1. Elegir los ejemplares</h4>
+        <div class="grid">
+          <div class="campo opc"><div class="lbl"><span class="name">Buscar</span></div><input class="nav" id="et-buscar" autocomplete="off" placeholder="Campo, entrada, catálogo, taxón, localidad, colector…"></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Colección</span></div><select class="nav" id="et-coleccion"></select></div>
+          <div class="campo opc"><div class="lbl"><span class="name">Sesión de ingreso</span></div><select class="nav" id="et-sesion"></select></div>
+        </div>
+        <div class="barra-botones"><button type="button" class="btn secundario small" id="et-marcar">Marcar todos</button></div>
+        <p class="nota" id="et-cuenta"></p>
+        <div id="et-tabla"></div>
+        <h4>2. Campos de la etiqueta</h4>
+        <div class="imp-fila-opc"><div><label>Agregar un campo</label><select class="nav" id="et-agregar"></select></div></div>
+        <p class="nota">Los campos aparecen en la etiqueta en el orden de esta lista. Usa ▲ y ▼ para ordenarlos y ✕ para quitarlos. Un campo vacío en un ejemplar se omite en su etiqueta.</p>
+        <div id="et-campos"></div>
+        <h4>3. Formato, vista previa y salida</h4>
+        <div class="imp-fila-opc">
+          <div><label>Etiquetas por fila</label><select class="nav" id="et-cols"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+          <div><label>Tamaño de letra</label><select class="nav" id="et-pt"><option>7</option><option>8</option><option selected>9</option><option>10</option><option>11</option><option>12</option><option>14</option></select></div>
+          <div><label>Copias de cada etiqueta</label><input class="nav" id="et-copias" type="number" min="1" max="20" value="1" style="width:80px"></div>
+        </div>
+        <div class="imp-fila-opc"><label><input type="checkbox" id="et-nombres" checked> Mostrar el nombre de cada campo</label><label><input type="checkbox" id="et-borde" checked> Dibujar un borde alrededor de cada etiqueta</label></div>
+        <div id="et-prev"></div>
+        <div class="barra-botones"><button type="button" class="btn" id="et-imprimir" disabled>Imprimir o guardar como PDF</button><button type="button" class="btn secundario" id="et-descargar" disabled>Descargar archivo (.html)</button></div>
+        <p class="nota" id="et-msg"></p>
       </details>
       <details class="subbloque-gest" id="sub-exportar">
         <summary>Exportar datos</summary>
@@ -1273,15 +1314,20 @@
       <summary>Estandarizaciones y sugerencias <span class="std-badge oculto" id="std-badge"></span> <button type="button" class="ayuda-btn" data-ayuda="ayuda-estandares" aria-label="Ayuda" title="Ayuda">?</button></summary>
       <div class="ayuda-panel oculto" id="ayuda-estandares">Cada lista reúne los nombres correctos que la app ofrece como sugerencia en los campos del formulario. Si escribes un nombre que no está, la app avisa y propone el más parecido. Un nombre puede tener variantes conocidas (por ejemplo «Jorge Perez» como variante de «Jorge Pérez-Schultheiss»): la variante deja de sugerirse y, si alguien la escribe, se propone el nombre correcto. Las listas se llenan solas con lo que ya se usó en los registros y en el historial de cada campo (los nombres que quitas no vuelven a entrar); «Reunir» repite esa recolección a pedido; «Buscar variantes parecidas» agrupa nombres casi iguales para unificarlos. Las listas se guardan también en la Carpeta local (Catalogos/), de modo que los equipos que usan la misma carpeta comparten las correcciones; si un registro de otro equipo aún usa una variante, aparece el aviso para corregirlo.</div>
       <div class="std-banner oculto" id="std-banner"><span id="std-banner-txt"></span> <button type="button" class="btn small" id="std-corregir">Corregir registros</button></div>
-      <div class="grid">
-        <div class="campo opc"><div class="lbl"><span class="name">Lista</span></div><select class="nav" id="std-sel"></select></div>
-      </div>
-      <p class="nota" id="std-desc"></p>
-      <p class="nota" id="std-campos"></p>
-      <p class="nota" id="std-pend"></p>
-      <div class="fila-admin">
-        <div class="campo opc"><div class="lbl"><span class="name">Agregar un nombre a esta lista</span></div><input type="text" id="std-nuevo" autocomplete="off" spellcheck="false"></div>
-        <button type="button" class="btn small" id="std-add">Agregar</button>
+      <div class="std-dos">
+        <div class="std-caja">
+          <div class="campo opc"><div class="lbl"><span class="name">Lista</span></div><select class="nav" id="std-sel"></select></div>
+          <p class="nota" id="std-desc"></p>
+          <p class="nota" id="std-campos"></p>
+          <p class="nota" id="std-pend"></p>
+        </div>
+        <div class="std-caja">
+          <div class="fila-admin">
+            <div class="campo opc"><div class="lbl"><span class="name">Agregar un nombre a esta lista</span></div><input type="text" id="std-nuevo" autocomplete="off" spellcheck="false"></div>
+            <button type="button" class="btn small" id="std-add">Agregar</button>
+          </div>
+          <p class="nota" id="std-crit"></p>
+        </div>
       </div>
       <div class="barra-botones">
         <button type="button" class="btn secundario small" id="std-reunir" title="Agrega a la lista los valores que ya usan los registros y el historial del campo">Reunir nombres desde los registros</button>
@@ -1399,7 +1445,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.66";
+var APP_VERSION = "v0.9.67";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1530,10 +1576,21 @@ function errorGuardado(e){
   var q=e && (e.name==="QuotaExceededError" || /quota/i.test(e.message||""));
   mostrarAvisoGuardado((q?"El navegador no tiene espacio para guardar los registros. ":"No se pudo guardar en este navegador. ")+"Los cambios siguen en pantalla: descarga un respaldo ahora para no perderlos.");
 }
+// Nombre de toda descarga: LCat_<Tipo>_<Contenido>_<Fecha>.<ext>  (LCat = Libro de Catálogo)
+function nombreSeguro(t,max){ return String(t==null?"":t).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,max||40).replace(/-+$/,""); }
+function contenidoDeLista(lista){
+  lista=lista||[]; var cols={};
+  lista.forEach(function(r){ var c=(r.coleccionNombre && r.coleccionNombre!==r.coleccionAcronimo) ? r.coleccionNombre : (r.coleccionAcronimo||""); cols[c||"Sin coleccion"]=1; });
+  var k=Object.keys(cols), base=k.length===1 ? k[0] : k.length+" colecciones";
+  return nombreSeguro(base,32)+"-"+lista.length+"reg";
+}
+function nombreDescarga(tipo, contenido, ext){
+  return "LCat_"+nombreSeguro(tipo,40)+(contenido ? "_"+nombreSeguro(contenido,40) : "")+"_"+selloFecha()+"."+ext;
+}
 function selloFecha(){ var f=new Date(); return f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes()); }
 // Zip solo con los datos, descargado antes de un cambio masivo. La copia de los registros se toma de inmediato.
 function respaldoPrevio(prefijo){
-  return zipDeRespaldo(registros,false).then(function(z){ descargarBlob(z.blob, prefijo+selloFecha()+".zip"); }).catch(function(e){ registrarError("respaldo previo a un cambio masivo", e); });
+  return zipDeRespaldo(registros,false).then(function(z){ descargarBlob(z.blob, nombreDescarga(prefijo.replace(/_+$/,""), contenidoDeLista(registros), "zip")); }).catch(function(e){ registrarError("respaldo previo a un cambio masivo", e); });
 }
 function descargarBlob(blob, nombre){
   var url=URL.createObjectURL(blob), a=document.createElement("a");
@@ -1541,7 +1598,7 @@ function descargarBlob(blob, nombre){
   setTimeout(function(){ URL.revokeObjectURL(url); },30000);
 }
 async function respaldoUrgente(){
-  try{ var r=await zipDeRespaldo(registros,false); descargarBlob(r.blob, "Respaldo_urgente_Libro_de_Catalogo_"+selloFecha()+".zip"); }
+  try{ var r=await zipDeRespaldo(registros,false); descargarBlob(r.blob, nombreDescarga("Respaldo urgente", contenidoDeLista(registros), "zip")); }
   catch(e){ registrarError("respaldo urgente", e); alert("No se pudo preparar el respaldo: "+((e&&e.message)||e)); }
 }
 function fmtBytes(n){ if(n<1024) return n+" B"; var u=["KB","MB","GB","TB"], i=-1; do{ n/=1024; i++; }while(n>=1024 && i<u.length-1); return (n>=100?Math.round(n):n.toFixed(1)).toString().replace(".",",")+" "+u[i]; }
@@ -1553,6 +1610,9 @@ function actualizarEspacio(){
     var pct=e.usage/e.quota*100;
     el.textContent="Espacio del navegador: "+fmtBytes(e.usage)+" de "+fmtBytes(e.quota)+" ("+(pct<1?"menos de 1":Math.round(pct))+" %)."+(pct>=80?" Queda poco espacio: descarga un respaldo y libera archivos.":"");
     el.classList.toggle("espacio-alerta", pct>=80);
+    var bar=document.getElementById("barra-espacio-in"), cb=document.getElementById("barra-espacio");
+    if(bar){ bar.style.width=Math.min(100,Math.max(e.usage>0?2:0,pct))+"%"; bar.className=pct>=80?"alto":(pct>=60?"medio":""); }
+    if(cb) cb.setAttribute("aria-valuenow", String(Math.round(pct)));
     if(pct>=90) mostrarAvisoGuardado("Queda muy poco espacio en el navegador ("+Math.round(pct)+" % usado). Descarga un respaldo ahora.");
   }).catch(function(e){ registrarError("estimación de espacio", e); });
 }
@@ -2050,6 +2110,13 @@ var STD_DEF = [
   {g:"Procedimientos", id:"submuestras", nombre:"Submuestras", desc:"Tipos, métodos de conservación y destinos de uso de las submuestras.", campos:[["@submuestras.tipoSubmuestra","Tipo de submuestra"],["@submuestras.metodoConservacion","Método de conservación de la submuestra"],["@submuestras.destinoUso","Destino de uso de la submuestra"]]},
   {g:"Procedimientos", id:"eventos", nombre:"Eventos de uso", desc:"Descripción de los eventos del historial de usos (exhibición, análisis, docencia, etc.).", campos:[["@usos.evento","Evento de uso"]]}
 ];
+var STD_CRIT_GEN="Antes de agregar, comprueba que no esté ya en la lista ni como variante. Agrega un solo nombre por vez, sin espacios al inicio o al final y con la ortografía correcta (tildes, ñ, mayúscula inicial). Si es una forma errónea de un nombre ya incluido, no la agregues: márcala con «Es variante de…» en ese nombre.";
+var STD_CRIT={"Personas e instituciones":"Personas: apellido(s) y nombre completos, escritos siempre igual (por ejemplo, Pérez-Schultheiss, Jorge). Una persona por entrada. Instituciones: nombre oficial completo, con la sigla entre paréntesis si se usa.",
+  "Lugares":"Escribe el nombre oficial del lugar, sin comentarios ni indicaciones de ruta (eso va en Localidad (verbatim)). Respeta las tildes de los topónimos.",
+  "Taxonomía":"Nombres científicos: género con mayúscula inicial y epíteto en minúscula, sin autor ni año. Clasificación superior (phylum, clase, orden, familia): mayúscula inicial.",
+  "Procedimientos":"Escribe los términos en minúscula (salvo nombres propios), en singular y sin siglas internas, de forma que el mismo procedimiento se escriba siempre igual."};
+var STD_CRIT_ID={localidadesVerbatim:"Esta lista guarda la localidad tal como figura en la etiqueta o la libreta: se agrega sin corregir ni normalizar su ortografía.",
+  estaciones:"Escribe el código o nombre de la estación exactamente como se rotula en terreno, siempre con el mismo formato."};
 var STD_CLAVE = LS_PREFIX+"estandares", STD_MAPA = {}, stdDatos = null, stdSel = "personas", stdGrupos = [], stdOcultos = {}, stdOcupado = false, stdReintento = false, stdTimer = null, stdUltSync = 0;
 var STD_SEP = /(\s*[&;|]\s*|\s+(?:y|e|and)\s+)/i;
 STD_DEF.forEach(function(d){ d.campos.forEach(function(c){ STD_MAPA[c[0].replace(/^@/,"")]=d.id; }); });
@@ -2339,6 +2406,7 @@ function stdRender(){
   });
   sel.innerHTML=hs+'</optgroup>';
   stdEl("std-desc").textContent=d.desc;
+  stdEl("std-crit").textContent=(STD_CRIT_ID[d.id]||STD_CRIT[d.g]||"")+" "+STD_CRIT_GEN;
   stdEl("std-campos").textContent="Se ofrece como sugerencia en: "+d.campos.map(function(c){ return c[1]; }).join(", ")+".";
   var nombres=Object.create(null); L.items.forEach(function(it){ nombres[it.n]=1; it.a.forEach(function(a){ nombres[a]=1; }); });
   var pend=Object.keys(usos).filter(function(v){ return !nombres[v]; }).length;
@@ -2505,8 +2573,8 @@ function stdIniciar(){
   stdEl("std-exportar").addEventListener("click", function(){
     var out={tipo:"libro-catalogo-estandares",version:2,listas:{}}; STD_DEF.forEach(function(d){ out.listas[d.id]=stdSerial(d.id); });
     var blob=new Blob([JSON.stringify(out,null,1)],{type:"application/json"});
-    var url=URL.createObjectURL(blob), a=document.createElement("a"), f=new Date();
-    a.href=url; a.download="Estandarizaciones_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+".json";
+    var url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download=nombreDescarga("Listas de estandarizacion", STD_DEF.length+"listas", "json");
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
   });
   stdEl("std-importar").addEventListener("click", function(){ stdEl("std-archivo").click(); });
@@ -3538,8 +3606,8 @@ async function exportarFotosTaxonomia(){
     }catch(e){ faltan++; }
   }
   if(!arch.length){ if(msg) msg.textContent="No se pudo leer ninguna foto. Revisa que la Carpeta local esté conectada y con acceso."; return; }
-  var blob=zipSinCompresion(arch,"application/zip"), f=new Date(), url=URL.createObjectURL(blob), a=document.createElement("a");
-  a.href=url; a.download="Fotos_por_taxonomia_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+".zip";
+  var blob=zipSinCompresion(arch,"application/zip"), url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=nombreDescarga("Fotos por taxonomia", enc+"fotos", "zip");
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
   if(msg) msg.textContent=enc+" foto(s) en el zip"+(faltan?"; "+faltan+" no se pudieron leer.":".");
   registrarActividad("descarga","fotos por taxonomía · "+enc+" foto(s)");
@@ -4853,7 +4921,7 @@ window.addEventListener("appinstalled", function(){ document.getElementById("btn
 document.getElementById("btn-exportar-zip").addEventListener("click", function(){ descargarDatos("zip"); });
 document.getElementById("btn-guardado-respaldo").addEventListener("click", respaldoUrgente);
 document.getElementById("btn-guardado-cerrar").addEventListener("click", function(){ mostrarAvisoGuardado(""); });
-document.getElementById("btn-errores-descargar").addEventListener("click", function(){ descargarBlob(new Blob([textoRegistroErrores()||"Sin errores registrados."],{type:"text/plain;charset=utf-8"}), "Errores_Libro_de_Catalogo_"+selloFecha()+".txt"); });
+document.getElementById("btn-errores-descargar").addEventListener("click", function(){ descargarBlob(new Blob([textoRegistroErrores()||"Sin errores registrados."],{type:"text/plain;charset=utf-8"}), nombreDescarga("Registro de errores", "", "txt")); });
 document.getElementById("btn-errores-vaciar").addEventListener("click", function(){ logErrores=[]; try{ localStorage.removeItem(CLAVE_ERRORES); }catch(e){} pintarRegistroErrores(); });
 pintarRegistroErrores(); actualizarEspacio();
 document.getElementById("btn-exportar-xlsx").addEventListener("click", function(){ descargarDatos("xlsx"); });
@@ -5134,7 +5202,7 @@ function pintarPendientes(){
   var h='<table><thead><tr><th>N.º de catálogo</th><th>Nombre</th><th>Modificado</th><th>Por</th><th>Estado</th></tr></thead><tbody>';
   lista.slice(0,pendMostrar).forEach(function(o){
     var c=claveCatalogo(o), rep=c && claves[c] && claves[c]!==o.id, nuevo=!registroPorId(o.id);
-    h+='<tr><td>'+escapeHtml(construirCatalogoCompleto(o)||(o.numeroCampo?"campo "+o.numeroCampo:"sin catálogo"))+(rep?' <span class="pend-rep" title="Ese número ya lo usa otro registro de este navegador">repetido</span>':'')+'</td><td>'+escapeHtml(nombreVigenteReg(o)||"")+'</td><td>'+escapeHtml(o.modificadoEn?formatearFechaHora(o.modificadoEn):"")+'</td><td>'+escapeHtml(o.modificadoPor||"")+'</td><td>'+(nuevo?"No está en el navegador":"Versión más reciente")+'</td></tr>';
+    h+='<tr><td>'+escapeHtml(construirCatalogoCompleto(o)||(o.numeroCampo?"campo "+o.numeroCampo:"sin catálogo"))+iconosArchivos(o)+(rep?' <span class="pend-rep" title="Ese número ya lo usa otro registro de este navegador">repetido</span>':'')+'</td><td>'+escapeHtml(nombreVigenteReg(o)||"")+'</td><td>'+escapeHtml(o.modificadoEn?formatearFechaHora(o.modificadoEn):"")+'</td><td>'+escapeHtml(o.modificadoPor||"")+'</td><td>'+(nuevo?"No está en el navegador":"Versión más reciente")+'</td></tr>';
   });
   h+='</tbody></table>';
   if(lista.length>pendMostrar) h+='<div class="barra-botones"><button type="button" class="btn tenue small" id="pend-mas">Mostrar 100 más ('+pendMostrar+' de '+lista.length+')</button></div>';
@@ -5220,7 +5288,7 @@ async function respaldoCompleto(){ if(modoAcceso!=="admin") return;
   if(!(await permisoCarpeta(true))){ carpetaEstado="permiso"; actualizarUICarpeta(); return; }
   var f=new Date();
   var sello=f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes());
-  var nombre="respaldo_"+sello+".json";
+  var nombre=nombreDescarga("Respaldo", contenidoDeLista(registros), "json"); void sello;
   var data={app:"Libro de Catálogo", version:APP_VERSION, generado:f.toISOString(), generadoPor:operadorActual(), total:registros.length, registros:registros};
   try{
     await escribirArchivo("Respaldos", nombre, JSON.stringify(data,null,2));
@@ -5865,7 +5933,7 @@ function bloqueExtrasLista(tipo, entrada){
     cal.textContent="📅 Calendario (.ics)"; cal.title="Descarga un evento de calendario con la fecha de devolución y los avisos configurados";
     cal.onclick=function(){
       if(!entrada.fechaDevolucionEsperada){ alert("Indica primero la fecha de devolución esperada."); return; }
-      descargarIcs([{reg:borrador, p:entrada}], "prestamo_"+(sanitizarNombre(entrada.numeroPrestamo||"")||entrada.fechaDevolucionEsperada)+".ics");
+      descargarIcs([{reg:borrador, p:entrada}], nombreDescarga("Prestamo", (sanitizarNombre(entrada.numeroPrestamo||"")||entrada.fechaDevolucionEsperada), "ics"));
     };
     wrap.appendChild(cal);
   }
@@ -6074,8 +6142,8 @@ function pintarAlertas(){
     h+='<div class="al-conf"><button type="button" class="btn small secundario" id="al-ics-todos">📅 Descargar todos (.ics)</button></div>';
     bp.innerHTML=h; bp.open=ab;
     bp.querySelectorAll("[data-al-ver]").forEach(function(b){ b.onclick=function(){ consultarRegistro(lp[+b.getAttribute("data-al-ver")].reg.id); activarTab("manejo"); }; });
-    bp.querySelectorAll("[data-al-ics]").forEach(function(b){ b.onclick=function(){ var x=lp[+b.getAttribute("data-al-ics")]; descargarIcs([x], "prestamo_"+(sanitizarNombre(x.p.numeroPrestamo||"")||x.p.fechaDevolucionEsperada)+".ics"); }; });
-    bp.querySelector("#al-ics-todos").onclick=function(){ descargarIcs(lp, "prestamos_"+fechaIsoLocal(new Date())+".ics"); };
+    bp.querySelectorAll("[data-al-ics]").forEach(function(b){ b.onclick=function(){ var x=lp[+b.getAttribute("data-al-ics")]; descargarIcs([x], nombreDescarga("Prestamo", (sanitizarNombre(x.p.numeroPrestamo||"")||x.p.fechaDevolucionEsperada), "ics")); }; });
+    bp.querySelector("#al-ics-todos").onclick=function(){ descargarIcs(lp, nombreDescarga("Prestamos", "todos", "ics")); };
   }
   // monitoreos
   var atr=lm.filter(function(x){ return x.dias<0; }).length, ab2=bm.open;
@@ -6092,7 +6160,7 @@ function pintarAlertas(){
     bm.innerHTML=h2; bm.open=ab2;
     bm.querySelectorAll("[data-am-ver]").forEach(function(b){ b.onclick=function(){ consultarRegistro(lm[+b.getAttribute("data-am-ver")].reg.id); activarTab("manejo"); }; });
     bm.querySelector("#am-sesion").onclick=function(){ abrirSesionMonitoreo("pend"); };
-    bm.querySelector("#am-ics").onclick=function(){ descargarTextoIcs(construirIcsMonitoreo(lm), "monitoreos_"+fechaIsoLocal(new Date())+".ics"); };
+    bm.querySelector("#am-ics").onclick=function(){ descargarTextoIcs(construirIcsMonitoreo(lm), nombreDescarga("Monitoreos", "todos", "ics")); };
   }
   fila.classList.toggle("oculto", !lp.length && !lm.length);
   var tot=lp.length+lm.length;
@@ -7223,10 +7291,11 @@ var CONS_COLUMNAS = [
 function filasDeLista(lista){
   return [CONS_COLUMNAS.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return CONS_COLUMNAS.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
 }
-function filasConsulta(){
+function listaConsultaDescarga(){
   var m=new Set(marcadosConsulta()), lista=resultadosConsulta();
-  return filasDeLista(m.size ? lista.filter(function(r){ return m.has(r.id); }) : lista);
+  return m.size ? lista.filter(function(r){ return m.has(r.id); }) : lista;
 }
+function filasConsulta(){ return filasDeLista(listaConsultaDescarga()); }
 function csvDeFilas(filas, sinBom){
   return (sinBom?"":"﻿")+filas.map(function(f){ return f.map(function(v){ v=String(v); return /[",\r\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(","); }).join("\r\n")+"\r\n";
 }
@@ -7441,7 +7510,7 @@ async function zipDeRespaldo(lista, conArchivos, progreso){
 async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
   var lista=listaParaDescarga(); if(!lista) return;
   var f=new Date(), sello=f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes());
-  var nombre=(formato==="zip"?"Respaldo_":formato==="dwc"?"DarwinCore_":"Registros_")+"Libro_de_Catalogo_"+sello+"."+(formato==="dwc"?"csv":formato), blob, infoZip=null;
+  var nombre=nombreDescarga(formato==="zip"?"Respaldo":formato==="dwc"?"Darwin Core":"Registros", contenidoDeLista(lista), formato==="dwc"?"csv":formato), blob, infoZip=null; void sello;
   var msgPrev=document.getElementById("datos-msg");
   if(formato==="zip"){
     var conA=!!(document.getElementById("chk-zip-archivos")||{}).checked;
@@ -8788,7 +8857,7 @@ function iniciarBloque(){
     var h='<table><thead><tr><th></th><th>N.º de catálogo o de campo</th><th>Nombre</th><th>Localidad</th>'+(o?'<th class="cb-dest">'+escapeHtml(o.l)+' (actual)</th>':'')+'</tr></thead><tbody>';
     lista.slice(0,200).forEach(function(r){
       var et=etiquetaRegistro(r);
-      h+='<tr><td><input type="checkbox" class="cb-chk" data-id="'+r.id+'"'+(sel.has(r.id)?' checked':'')+'></td><td>'+escapeHtml(construirCatalogoCompleto(r)||(r.numeroCampo?"campo "+r.numeroCampo:"sin número"))+'</td><td>'+escapeHtml(et.nombreVigente||"")+'</td><td>'+escapeHtml(r.localidad||r.localidadVerbatim||"")+'</td>'+(o?'<td class="cb-dest">'+escapeHtml(String(moverApi.getV(r,k)==null?"":moverApi.getV(r,k)))+'</td>':'')+'</tr>';
+      h+='<tr><td><input type="checkbox" class="cb-chk" data-id="'+r.id+'"'+(sel.has(r.id)?' checked':'')+'></td><td>'+escapeHtml(construirCatalogoCompleto(r)||(r.numeroCampo?"campo "+r.numeroCampo:"sin número"))+iconosArchivos(r)+'</td><td>'+escapeHtml(et.nombreVigente||"")+'</td><td>'+escapeHtml(r.localidad||r.localidadVerbatim||"")+'</td>'+(o?'<td class="cb-dest">'+escapeHtml(String(moverApi.getV(r,k)==null?"":moverApi.getV(r,k)))+'</td>':'')+'</tr>';
     });
     h+='</tbody></table>'+(lista.length>200?'<p class="nota">Se muestran 200 de '+lista.length+'. «Marcar todos» marca los '+lista.length+'.</p>':'');
     var btnM=$("cb-marcar"); btnM.classList.toggle("activo", lista.length>0 && marc===lista.length);
@@ -8867,6 +8936,147 @@ function iniciarBloque(){
   });
 }
 iniciarBloque();
+
+// ---------- Etiquetas automáticas ----------
+function iniciarEtiquetas(){
+  var det=document.getElementById("sub-etiquetas"); if(!det) return;
+  var $=function(i){ return document.getElementById(i); };
+  var sel=new Set(), CLAVE=LS_PREFIX+"etiquetas_cfg", tCuenta=null;
+  var cfg={campos:["@cat","@nombre","localidad","fechaColecta","colector"], cols:2, pt:9, copias:1, nombres:true, borde:true};
+  try{ var g=JSON.parse(localStorage.getItem(CLAVE)||"null"); if(g && Array.isArray(g.campos)) cfg=Object.assign(cfg,g); }catch(e){}
+  function guardarCfg(){ try{ localStorage.setItem(CLAVE, JSON.stringify(cfg)); }catch(e){} }
+  var ESP=[
+    {k:"@cat",l:"N.º de catálogo completo",g:"Especiales",f:function(r){ return construirCatalogoCompleto(r)||""; }},
+    {k:"@nombre",l:"Nombre científico vigente",g:"Especiales",f:function(r){ return nombreVigenteReg(r)||""; }},
+    {k:"@coord",l:"Coordenadas (latitud, longitud)",g:"Especiales",f:function(r){ return (r.lat!==undefined && r.lat!=="" && r.lng!==undefined && r.lng!=="") ? r.lat+", "+r.lng : ""; }},
+    {k:"@col",l:"Colección (institución y colección)",g:"Especiales",f:function(r){ return r.coleccionAcronimo ? lineaColeccionFicha(r) : ""; }}
+  ];
+  var cat=null;
+  function catalogo(){
+    if(cat) return cat;
+    var lista=ESP.slice();
+    (moverApi ? moverApi.campos() : []).forEach(function(o){
+      if(String(o.k).indexOf("L:")===0) return;
+      lista.push({k:o.k,l:o.l,g:String(o.g||"Otros").split(" › ")[0],f:function(r){ var v=moverApi.getV(r,o.k); return v==null ? "" : String(v); }});
+    });
+    cat={}; lista.forEach(function(d){ cat[d.k]=d; cat.__orden=(cat.__orden||[]).concat(d); });
+    return cat;
+  }
+  function llenarSelect(id, vals, todas){
+    var el=$(id), previo=el.value;
+    el.innerHTML='<option value="">'+todas+'</option>'+vals.map(function(v){ return '<option value="'+escapeHtml(v)+'">'+escapeHtml(v)+'</option>'; }).join("");
+    if(vals.indexOf(previo)>-1) el.value=previo;
+  }
+  function filtrados(){
+    var q=$("et-buscar").value.trim(), col=$("et-coleccion").value, se=$("et-sesion").value;
+    return registrosRecientesPrimero(registros.filter(function(r){
+      if(q && !registroCoincideFiltro(r,q)) return false;
+      if(col && coleccionDeRegistro(r)!==col) return false;
+      if(se && sesionDeRegistro(r)!==se) return false;
+      return true;
+    }));
+  }
+  function elegidos(){ return registrosRecientesPrimero(registros.filter(function(r){ return sel.has(r.id); })); }
+  function etiquetaHtml(r){
+    var c=catalogo(), n=0;
+    var filas=cfg.campos.map(function(k){
+      var d=c[k]; if(!d) return ""; var v=String(d.f(r)||"").trim(); if(!v) return "";
+      n++;
+      var vh=(k==="@nombre") ? nombreCientificoHtml(v) : escapeHtml(v);
+      return '<div class="et-l">'+(cfg.nombres ? '<span class="et-n">'+escapeHtml(d.l)+':</span> ' : '')+'<span class="et-v">'+vh+'</span></div>';
+    }).join("");
+    return n ? '<div class="et">'+filas+'</div>' : "";
+  }
+  function css(pref){
+    return pref+" .et-hoja{display:grid;grid-template-columns:repeat("+cfg.cols+",1fr);gap:6px;} "
+      +pref+" .et{box-sizing:border-box;"+(cfg.borde?"border:1px solid #333;":"")+"padding:6px 8px;font-size:"+cfg.pt+"pt;line-height:1.3;break-inside:avoid;page-break-inside:avoid;overflow-wrap:anywhere;font-family:Arial,Helvetica,sans-serif;color:#000;} "
+      +pref+" .et-l:first-child .et-v{font-weight:700;} "+pref+" .et-n{color:#444;font-size:.85em;}";
+  }
+  function listaConCopias(lista){
+    var out=[]; lista.forEach(function(r){ var h=etiquetaHtml(r); if(h) for(var i=0;i<cfg.copias;i++) out.push(h); }); return out;
+  }
+  function documento(lista, auto){
+    var et=listaConCopias(lista).join("");
+    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Etiquetas Libro de Catálogo</title><style>@page{margin:10mm} body{margin:0;padding:8px;} '+css("")+'</style></head><body><div class="et-hoja">'+et+'</div>'
+      +(auto ? '<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script>' : '')+'</body></html>';
+  }
+  function pintarCampos(){
+    var c=catalogo(), h="";
+    cfg.campos=cfg.campos.filter(function(k){ return c[k]; });
+    cfg.campos.forEach(function(k,i){
+      h+='<div class="et-fila"><span class="et-nom">'+escapeHtml(c[k].l)+'</span><button type="button" class="btn tenue small" data-et-sube="'+i+'" title="Subir"'+(i===0?' disabled':'')+'>▲</button><button type="button" class="btn tenue small" data-et-baja="'+i+'" title="Bajar"'+(i===cfg.campos.length-1?' disabled':'')+'>▼</button><button type="button" class="btn tenue small" data-et-quita="'+i+'" title="Quitar">✕</button></div>';
+    });
+    $("et-campos").innerHTML=h || '<p class="nota">Agrega al menos un campo.</p>';
+    var gr={}, ops='<option value="">Elige un campo para agregarlo…</option>';
+    c.__orden.forEach(function(d){ if(cfg.campos.indexOf(d.k)>-1) return; (gr[d.g]=gr[d.g]||[]).push(d); });
+    Object.keys(gr).forEach(function(g){ ops+='<optgroup label="'+escapeHtml(g)+'">'+gr[g].map(function(d){ return '<option value="'+escapeHtml(d.k)+'">'+escapeHtml(d.l)+'</option>'; }).join("")+'</optgroup>'; });
+    $("et-agregar").innerHTML=ops;
+    guardarCfg();
+  }
+  function pintarPrev(){
+    var lista=elegidos(), et=listaConCopias(lista.slice(0,6));
+    var st=document.getElementById("et-estilo"); if(!st){ st=document.createElement("style"); st.id="et-estilo"; document.head.appendChild(st); }
+    st.textContent=css("#et-prev");
+    $("et-prev").innerHTML = et.length ? '<div class="et-hoja">'+et.join("")+'</div>'+(lista.length>6?'<p class="nota">Vista previa de las primeras etiquetas; se imprimirán '+listaConCopias(lista).length+' en total.</p>':'') : '<p class="nota">Marca ejemplares y agrega campos para ver la vista previa.</p>';
+    var ok=lista.length>0 && cfg.campos.length>0 && et.length>0;
+    $("et-imprimir").disabled=!ok; $("et-descargar").disabled=!ok;
+  }
+  function pintar(){
+    var lista=filtrados(), marc=0; lista.forEach(function(r){ if(sel.has(r.id)) marc++; });
+    $("et-cuenta").textContent=lista.length+" registro(s) coinciden con los filtros; "+sel.size+" marcado(s) en total.";
+    var h='<table><thead><tr><th></th><th>N.º de catálogo o de campo</th><th>Nombre</th><th>Localidad</th></tr></thead><tbody>';
+    lista.slice(0,200).forEach(function(r){
+      var et=etiquetaRegistro(r);
+      h+='<tr><td><input type="checkbox" class="et-chk" data-id="'+r.id+'"'+(sel.has(r.id)?' checked':'')+'></td><td>'+escapeHtml(construirCatalogoCompleto(r)||(r.numeroCampo?"campo "+r.numeroCampo:"sin número"))+iconosArchivos(r)+'</td><td>'+escapeHtml(et.nombreVigente||"")+'</td><td>'+escapeHtml(r.localidad||r.localidadVerbatim||"")+'</td></tr>';
+    });
+    h+='</tbody></table>'+(lista.length>200?'<p class="nota">Se muestran 200 de '+lista.length+'. «Marcar todos» marca los '+lista.length+'.</p>':'');
+    $("et-tabla").innerHTML=lista.length?h:'<p class="nota">Ningún registro coincide con los filtros.</p>';
+    $("et-marcar").classList.toggle("activo", lista.length>0 && marc===lista.length);
+    pintarPrev();
+  }
+  function llenar(){
+    llenarSelect("et-coleccion", valoresUnicos(coleccionDeRegistro), "Todas");
+    llenarSelect("et-sesion", valoresUnicos(sesionDeRegistro), "Todas");
+    $("et-cols").value=String(cfg.cols); $("et-pt").value=String(cfg.pt); $("et-copias").value=String(cfg.copias);
+    $("et-nombres").checked=!!cfg.nombres; $("et-borde").checked=!!cfg.borde;
+  }
+  det.addEventListener("toggle", function(){ if(det.open){ catalogo(); llenar(); pintarCampos(); pintar(); } });
+  $("et-buscar").addEventListener("input", function(){ clearTimeout(tCuenta); tCuenta=setTimeout(pintar,200); });
+  ["et-coleccion","et-sesion"].forEach(function(id){ $(id).addEventListener("change", pintar); });
+  $("et-marcar").addEventListener("click", function(){ var l=filtrados(), todos=l.length>0 && l.every(function(r){ return sel.has(r.id); }); l.forEach(function(r){ if(todos) sel.delete(r.id); else sel.add(r.id); }); pintar(); });
+  $("et-tabla").addEventListener("change", function(e){ var t=e.target; if(!t.classList.contains("et-chk")) return; var id=t.getAttribute("data-id"); if(t.checked) sel.add(id); else sel.delete(id); pintar(); });
+  $("et-agregar").addEventListener("change", function(){ if(this.value){ cfg.campos.push(this.value); pintarCampos(); pintarPrev(); } });
+  $("et-campos").addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    var i, a=cfg.campos;
+    if(b.hasAttribute("data-et-sube")){ i=+b.getAttribute("data-et-sube"); if(i>0){ var t=a[i]; a[i]=a[i-1]; a[i-1]=t; } }
+    else if(b.hasAttribute("data-et-baja")){ i=+b.getAttribute("data-et-baja"); if(i<a.length-1){ var t2=a[i]; a[i]=a[i+1]; a[i+1]=t2; } }
+    else if(b.hasAttribute("data-et-quita")){ a.splice(+b.getAttribute("data-et-quita"),1); }
+    pintarCampos(); pintarPrev();
+  });
+  function leerOpciones(){
+    cfg.cols=parseInt($("et-cols").value,10)||2; cfg.pt=parseInt($("et-pt").value,10)||9;
+    cfg.copias=Math.min(20,Math.max(1,parseInt($("et-copias").value,10)||1)); cfg.nombres=$("et-nombres").checked; cfg.borde=$("et-borde").checked;
+    guardarCfg(); pintarPrev();
+  }
+  ["et-cols","et-pt","et-copias","et-nombres","et-borde"].forEach(function(id){ $(id).addEventListener("change", leerOpciones); });
+  $("et-imprimir").addEventListener("click", function(){
+    var lista=elegidos(); if(!lista.length) return;
+    var url=URL.createObjectURL(new Blob([documento(lista,true)],{type:"text/html;charset=utf-8"}));
+    var w=window.open(url,"_blank"); setTimeout(function(){ URL.revokeObjectURL(url); },120000);
+    $("et-msg").textContent = w ? "Se abrió la ventana de impresión con "+listaConCopias(lista).length+" etiqueta(s). Para obtener un PDF, elige «Guardar como PDF» como impresora." : "El navegador bloqueó la ventana nueva. Permite las ventanas emergentes de esta página o usa «Descargar archivo (.html)» y ábrelo para imprimir.";
+    registrarActividad("descarga","etiquetas · "+lista.length+" registro(s)");
+  });
+  $("et-descargar").addEventListener("click", function(){
+    var lista=elegidos(); if(!lista.length) return;
+    var nombre=nombreDescarga("Etiquetas", contenidoDeLista(lista), "html");
+    descargarBlob(new Blob([documento(lista,false)],{type:"text/html;charset=utf-8"}), nombre);
+    $("et-msg").textContent=listaConCopias(lista).length+" etiqueta(s) descargadas en "+nombre+". Ábrelo en el navegador e imprime con Ctrl+P.";
+    registrarActividad("descarga","etiquetas (html) · "+lista.length+" registro(s)");
+  });
+}
+iniciarEtiquetas();
+
 instalarAyudasCampos();
 
 iniciarSelectsOtro();
@@ -8874,7 +9084,7 @@ iniciarSelectsOtro();
 async function descargarConsulta(formato){
   var filas=filasConsulta();
   if(filas.length<2){ alert("No hay resultados para descargar."); return; }
-  var f=new Date(), nombre="Consulta_Libro_de_Catalogo_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes())+"."+formato;
+  var nombre=nombreDescarga("Consulta", contenidoDeLista(listaConsultaDescarga()), formato);
   var blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas);
   var url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
@@ -9021,7 +9231,7 @@ async function esqTraducir(){
   }
   if(!lista.length){ msg.textContent="No hay registros para traducir con este alcance."; return; }
   var res=esqFilas(lista,es,document.getElementById("esq-extra").checked), formato=document.getElementById("esq-formato").value;
-  var f=new Date(), base=sanitizarNombre(es.nombre)+"_"+f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes()), nombre=base+"."+formato;
+  var nombre=nombreDescarga("Planilla "+es.nombre, contenidoDeLista(lista), formato);
   var blob=formato==="csv"?new Blob([csvDeFilas(res.filas)],{type:"text/csv;charset=utf-8"}):xlsxDeFilas(res.filas,res.tipos);
   var url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
@@ -9270,6 +9480,7 @@ function sugerenciasOperador(){
   leerJson(CLAVE_OPERADORES).forEach(function(n){ if(n) v[n]=1; });
   registros.forEach(function(r){ [r.modificadoPor,r.catalogador].forEach(function(n){ n=nombreLimpio(n); if(n) v[n]=1; }); });
   var propios={}; leerJson(CLAVE_ADMINS_EQUIPO).forEach(function(n){ propios[claveNombre(n)]=1; });
+  registros.forEach(function(r){ [r.modificadoPor,r.catalogador].forEach(function(n){ n=nombreLimpio(n); if(n) propios[claveNombre(n)]=1; }); });   // quien dejó registros en este equipo ya trabajó aquí
   var ocultos={}; listaAdmins().forEach(function(a){ if(!propios[claveNombre(a)]) ocultos[claveNombre(a)]=1; });   // un administrador solo se sugiere en el equipo donde ya ingresó
   leerJson(CLAVE_ADMINS_EQUIPO).forEach(function(n){ if(n && listaAdmins().indexOf(n)>-1) v[n]=1; });
   return Object.keys(v).filter(function(n){ return !ocultos[claveNombre(n)]; }).sort(function(a,b){ return a.localeCompare(b,"es"); });
@@ -9492,7 +9703,7 @@ async function descargarActividad(){
   if(!lista.length){ alert("Todavía no hay actividad registrada."); return; }
   var filas=[["Fecha y hora (UTC)","Equipo","Modo","Persona","Evento","Detalle"]].concat(lista.map(function(a){ return [a.fecha,a.equipo,a.modo,a.nombre,a.evento,a.detalle]; }));
   var blob=new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}), url=URL.createObjectURL(blob), a=document.createElement("a");
-  a.href=url; a.download="Actividad_Libro_de_Catalogo_"+new Date().toISOString().slice(0,10)+".csv"; document.body.appendChild(a); a.click(); a.remove();
+  a.href=url; a.download=nombreDescarga("Registro de actividad", "", "csv"); document.body.appendChild(a); a.click(); a.remove();
   setTimeout(function(){ URL.revokeObjectURL(url); },30000);
 }
 document.getElementById("btn-modo-consulta").addEventListener("click", entrarConsulta);

@@ -520,6 +520,7 @@
   .btn-alertas-ficha:hover,.btn-alertas-ficha[aria-expanded="true"]{background:rgba(255,255,255,.18);}
   .panel-alertas-ficha{position:absolute;z-index:5;right:20px;top:calc(100% - 6px);width:min(480px,calc(100% - 40px));max-height:50vh;overflow:auto;background:#fffdf8;color:var(--ink);border:1.5px solid #a99f80;border-radius:10px;box-shadow:0 8px 24px rgba(38,51,43,.3);padding:10px;font-size:14px;}
   .panel-alertas-ficha.oculto{display:none;}
+  .resaltado{outline:3px solid #e0b34a;outline-offset:2px;border-radius:6px;transition:outline-color .3s;}
   .panel-alertas-ficha .al-enlace{color:var(--accent);font-weight:600;text-decoration:underline;}
   .panel-alertas-ficha .al-grupo{font-weight:700;margin:6px 0 2px;}
   .panel-alertas-ficha .al-fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 0;border-bottom:1px dashed var(--line);}
@@ -3563,11 +3564,16 @@ function idsHermanos(el, sel){ var p=el&&el.parentElement; return p ? Array.prot
 // Alertas de un solo registro (botón en la barra superior de la ficha de consulta)
 function alertasDeRegistro(r){
   var h="", n=0, lp=prestamosPendientes([r]), lm=monitoreosPendientes([r]), segs=[];
-  segLeer().reglas.forEach(function(g){ if(g.activa && segCoincide(r,g)) segs.push({id:g.id, t:g.nombre}); });
-  segManualAbiertos(r).forEach(function(x){ segs.push({id:"@manual", t:"Manual: "+x.motivo+(x.fechaRevision ? " (revisar el "+x.fechaRevision+")" : "")}); });
-  if(lp.length){ h+='<div class="al-grupo">⏰ Préstamos</div>'; lp.forEach(function(x){ n++; h+='<div class="al-fila"><span class="al-dias '+(x.dias<0?'venc':(x.dias<=7?'pronto':''))+'">'+textoDias(x.dias)+'</span><span>'+escapeHtml(x.p.solicitante||"sin solicitante")+' · '+escapeHtml(x.p.fechaDevolucionEsperada)+'</span></div>'; }); }
-  if(lm.length){ h+='<div class="al-grupo">🔎 Monitoreo</div>'; lm.forEach(function(x){ n++; h+='<div class="al-fila"><span class="al-dias '+(x.dias<0?'venc':(x.dias<=7?'pronto':''))+'">'+textoDiasMon(x.dias)+'</span><span>'+escapeHtml(x.reg.monitoreoProxima)+'</span></div>'; }); }
-  if(segs.length){ h+='<div class="al-grupo">🚩 Seguimientos</div>'; segs.forEach(function(x){ n++; h+='<div class="al-fila"><span>'+escapeHtml(x.t)+'</span><a href="#" class="al-enlace" data-seg-id="'+escapeHtml(x.id)+'" style="margin-left:auto">Ver lista en Sistema</a></div>'; }); }
+  var VIRT_SEL={"@sinDeterminacion":"#lista-determinaciones","@noEspecie":"#lista-determinaciones","@sinDeterminador":"#lista-determinaciones","@sinSexar":'[data-f="cantidadMachos"]',"@prestamoVigente":"#lista-prestamos","@sinPrestamoVigente":"#lista-prestamos","@diasEstado":'[data-f="estadoUbicacion"]'};
+  segLeer().reglas.forEach(function(g){
+    if(!g.activa || !segCoincide(r,g)) return;
+    var cs=(g.cond||[]).filter(function(c){ return c && c.k; }), c1=cs.filter(function(c){ return segCumple(r,c); })[0] || cs[0];
+    segs.push({sel: c1 ? (VIRT_SEL[c1.k] || '[data-f="'+c1.k+'"]') : "#tab-entrada", t:g.nombre});
+  });
+  segManualAbiertos(r).forEach(function(x){ segs.push({sel:"#lista-seguimientos", t:"Manual: "+x.motivo+(x.fechaRevision ? " (revisar el "+x.fechaRevision+")" : "")}); });
+  if(lp.length){ h+='<div class="al-grupo">⏰ Préstamos</div>'; lp.forEach(function(x){ n++; h+='<div class="al-fila"><span class="al-dias '+(x.dias<0?'venc':(x.dias<=7?'pronto':''))+'">'+textoDias(x.dias)+'</span><span>'+escapeHtml(x.p.solicitante||"sin solicitante")+' · '+escapeHtml(x.p.fechaDevolucionEsperada)+'</span><a href="#" class="al-enlace" data-ir="#lista-prestamos" style="margin-left:auto">Ver</a></div>'; }); }
+  if(lm.length){ h+='<div class="al-grupo">🔎 Monitoreo</div>'; lm.forEach(function(x){ n++; h+='<div class="al-fila"><span class="al-dias '+(x.dias<0?'venc':(x.dias<=7?'pronto':''))+'">'+textoDiasMon(x.dias)+'</span><span>'+escapeHtml(x.reg.monitoreoProxima)+'</span><a href="#" class="al-enlace" data-ir="#bloque-monitoreo" style="margin-left:auto">Ver</a></div>'; }); }
+  if(segs.length){ h+='<div class="al-grupo">🚩 Seguimientos</div>'; segs.forEach(function(x){ n++; h+='<div class="al-fila"><span>'+escapeHtml(x.t)+'</span><a href="#" class="al-enlace" data-ir="'+escapeHtml(x.sel)+'" style="margin-left:auto">Ver</a></div>'; }); }
   return {html:h || '<p class="nota">Este registro no tiene alertas.</p>', n:n};
 }
 function montarAlertasFicha(dialogEl, r){
@@ -3577,8 +3583,8 @@ function montarAlertasFicha(dialogEl, r){
   b.onclick=function(e){ e.stopPropagation(); var ab=pn.classList.toggle("oculto"); b.setAttribute("aria-expanded", ab?"false":"true"); };
   pn.onclick=function(e){
     e.stopPropagation();
-    var l=e.target.closest("[data-seg-id]"); if(!l) return;
-    e.preventDefault(); var sid=l.getAttribute("data-seg-id"); dialogEl.close(); verSeguimiento(sid);
+    var l=e.target.closest("[data-ir]"); if(!l) return;
+    e.preventDefault(); var sel=l.getAttribute("data-ir"); dialogEl.close(); irADetalleRegistro(r.id, sel);
   };
   dialogEl.querySelector(".ficha-caja").addEventListener("click", function(){ pn.classList.add("oculto"); b.setAttribute("aria-expanded","false"); });
 }
@@ -4643,7 +4649,19 @@ function editarRegistroYa(id){
   cargarRegistroEnBorrador(id, true);
   if(cur==="consultas") activarTab("entrada");   // el formulario de edición vive en Entrada
   try{ window.scrollTo(0,0); }catch(e){}
+  if(destinoPendiente){ var dp=destinoPendiente; destinoPendiente=null; irASelector(dp); }
 }
+// Lleva al campo o bloque del formulario que hay que corregir (desde las alertas de un registro)
+var destinoPendiente=null;
+function irASelector(sel){
+  var el=document.querySelector(sel); if(!el) return;
+  var panel=el.closest(".tabpanel"); if(panel) activarTab(panel.id.replace("tab-",""));
+  for(var d=el.parentElement; d; d=d.parentElement){ if(d.tagName==="DETAILS") d.open=true; }
+  try{ el.scrollIntoView({block:"center"}); }catch(e){}
+  var c=el.closest(".campo")||el; c.classList.add("resaltado"); setTimeout(function(){ c.classList.remove("resaltado"); }, 2500);
+  if(/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)){ try{ el.focus(); }catch(e){} }
+}
+function irADetalleRegistro(id, sel){ destinoPendiente=sel; editarRegistro(id); }
 // Elimina uno o varios registros (con una sola confirmación). Cada uno se archiva en Registros/_eliminados.
 function eliminarRegistros(ids){ if(modoAcceso!=="admin") return;
   ids=ids.filter(function(id){ return indicePorId(id)>-1; });

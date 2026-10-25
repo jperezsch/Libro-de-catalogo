@@ -114,6 +114,16 @@
   .docs-manejo .nota{margin:0 0 6px;}
   .docs-manejo .doc-fila select,.docs-manejo .doc-fila input{width:auto;}
   .ficha-docs{margin:4px 0 8px;padding-left:18px;font-size:14px;}
+  .seg-regla{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:7px 0;border-bottom:1px dashed var(--line);}
+  .seg-regla .seg-nom{font-weight:600;} .seg-regla .seg-res{flex:1 1 260px;font-size:13px;color:#5a5a4a;} .seg-regla .seg-n{font-weight:700;min-width:96px;text-align:right;}
+  .seg-regla.inactiva .seg-nom,.seg-regla.inactiva .seg-res{opacity:.55;}
+  .seg-edit{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;background:#faf8f0;}
+  .seg-edit .seg-cond{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;align-items:center;} .seg-edit select,.seg-edit input[type=text]{font-size:14px;padding:4px 6px;}
+  .seg-lista{margin:6px 0 10px;overflow-x:auto;} .seg-lista table{border-collapse:collapse;font-size:13px;width:100%;} .seg-lista td,.seg-lista th{border-bottom:1px solid var(--line);padding:3px 8px;text-align:left;}
+  .seg-auto-caja{border:1px solid #e0b34a;background:#fff8e6;border-radius:8px;padding:8px 10px;margin:6px 0 10px;}
+  .seg-auto-fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px;}
+  .seg-auto-fila.excluida{opacity:.7;}
+  .ico-seg{margin-left:6px;font-size:14px;cursor:help;}
   .alerta-prestamos{margin-bottom:14px;border:1px solid #e0b34a;background:#fff8e6;border-radius:10px;padding:8px 12px;}
   .alerta-prestamos summary{cursor:pointer;font-weight:600;}
   .alerta-prestamos.hay-vencidos{border-color:#c0392b;background:#fdecea;}
@@ -796,7 +806,7 @@
 
   <!-- CONSULTAS -->
   <section class="tabpanel" id="tab-consultas">
-    <div class="alertas-fila oculto" id="alertas-fila"><details class="alerta-prestamos oculto" id="alerta-prestamos"></details><details class="alerta-prestamos oculto" id="alerta-monitoreo"></details></div>
+    <div class="alertas-fila oculto" id="alertas-fila"><details class="alerta-prestamos oculto" id="alerta-prestamos"></details><details class="alerta-prestamos oculto" id="alerta-monitoreo"></details><details class="alerta-prestamos oculto" id="alerta-seguimientos"></details></div>
     <div class="cons-sup">
     <div class="bloque">
       <h2>Buscar en la colección <button type="button" class="ayuda-btn" data-ayuda="ayuda-consultas" aria-label="Ayuda" title="Ayuda">?</button></h2>
@@ -1104,6 +1114,10 @@
       <div id="lista-monitoreos"></div>
       <button class="btn small secundario" id="btn-add-monitoreo">+ Agregar monitoreo</button>
       <button type="button" class="btn small secundario" id="btn-sesion-monitoreo">Sesión de monitoreo…</button>
+      <p class="subtitulo-mini" style="margin-top:14px;">Seguimientos de este ejemplar</p>
+      <div id="seg-auto"></div>
+      <div id="lista-seguimientos"></div>
+      <button class="btn small secundario" id="btn-add-seguimiento">+ Agregar seguimiento</button>
     </details>
 
     <div class="bloque">
@@ -1321,6 +1335,14 @@
       </div>
     </details>
 
+    <details class="bloque bloque-desp" id="det-seguimientos">
+      <summary>Seguimientos o contingencias <button type="button" class="ayuda-btn" data-ayuda="ayuda-seguimientos" aria-label="Ayuda" title="Ayuda">?</button></summary>
+      <div class="ayuda-panel oculto" id="ayuda-seguimientos">Cada regla revisa todos los registros y reúne los que cumplen sus condiciones (por ejemplo, ejemplares En colección sin Ubicación, o sin determinador). Las reglas activas avisan en la parte superior de Consultas y marcan con 🚩 los registros en las listas. Los ejemplares dados de baja no se incluyen, salvo que la regla mire el Estado. Con Excluir se saca un ejemplar de una regla cuando su situación es una excepción justificada. Las reglas se guardan en este navegador.</div>
+      <div class="barra-botones"><button type="button" class="btn small" id="seg-nueva">+ Nueva regla</button><button type="button" class="btn secundario small" id="seg-plantillas">Agregar las plantillas que falten</button></div>
+      <div class="barra-botones"><label>Guardar las reglas <select id="seg-ambito" class="nav"><option value="propia">Solo en este equipo</option><option value="compartida">Compartidas con todos los equipos (Carpeta local)</option></select></label><button type="button" class="btn tenue small" id="seg-releer" title="Vuelve a leer el archivo común de la Carpeta local">Releer de la carpeta</button><span class="nota" id="seg-msg"></span></div>
+      <div id="seg-cont"></div>
+    </details>
+
     <details class="bloque bloque-desp" id="det-admins">
       <summary>Administradores autorizados <button type="button" class="ayuda-btn" data-ayuda="ayuda-admins" aria-label="Ayuda" title="Ayuda">?</button></summary>
       <div class="ayuda-panel oculto" id="ayuda-admins">Solo los nombres registrados aquí pueden ingresar como Administrador, y deben escribirse exactamente igual (mayúsculas, tildes y guiones). Estos nombres no se ofrecen como sugerencias en la pantalla de inicio, salvo en el equipo donde ese administrador ya ingresó antes (así puede entrar más rápido). La lista se guarda en este navegador y en Registros/_administradores.json de la Carpeta local, de modo que otro equipo con la misma carpeta la recupera. Si el nombre no figura, o la lista está vacía, se puede ingresar con la clave de seguridad (primer ingreso o pérdida de acceso); en el primer ingreso el nombre queda registrado.</div>
@@ -1422,7 +1444,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.73";
+var APP_VERSION = "v0.9.75";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1499,7 +1521,7 @@ function escapeHtml(s){
   });
 }
 function clonar(obj){ return JSON.parse(JSON.stringify(obj)); }
-function registroVacioBase(){ return {determinaciones:[], submuestras:[], fotos:[], adjuntos:[], prestamos:[], usos:[], monitoreos:[], publicacionesPdf:[], publicacionesPdfInfo:{}}; }
+function registroVacioBase(){ return {determinaciones:[], submuestras:[], fotos:[], adjuntos:[], prestamos:[], usos:[], monitoreos:[], seguimientos:[], publicacionesPdf:[], publicacionesPdfInfo:{}}; }
 function registroActivo(){ return borrador; }
 function registroPorId(id){ return registros.find(function(r){ return r.id===id; }); }
 function indicePorId(id){ return registros.findIndex(function(r){ return r.id===id; }); }
@@ -1802,6 +1824,12 @@ var DEF_CAMPOS = {
   "L:monitoreos.proximaFecha":"Fecha del siguiente monitoreo. Se propone con la periodicidad y se puede cambiar.",
   "L:monitoreos.acciones":"Acciones que fueron necesarias, por ejemplo rellenar, cambiar el fluido o el frasco, o tratar una plaga.",
   "L:monitoreos.observaciones":"Cualquier otro comentario del monitoreo.",
+  "L:seguimientos.motivo":"Qué hay que vigilar o resolver en este ejemplar (por ejemplo, ubicación incierta, falta trasladar a la colección, revisar etiqueta).",
+  "L:seguimientos.responsable":"Persona encargada de resolverlo.",
+  "L:seguimientos.fechaRevision":"Fecha en que conviene volver a mirar este seguimiento. Los vencidos aparecen en las alertas de Consultas.",
+  "L:seguimientos.estado":"Abierto mientras esté pendiente. Al pasarlo a Resuelto se anota la fecha de resolución.",
+  "L:seguimientos.fechaResolucion":"Día en que se resolvió.",
+  "L:seguimientos.resolucion":"Qué se hizo para resolverlo.",
   "fotos.fechaFoto":"Fecha en que se tomó la fotografía.",
   "fotos.tipoFoto":"Qué muestra la foto: ejemplar en su hábitat, vista dorsal, detalle morfológico, etc.",
   "fotos.archivo":"Nombre del archivo de imagen, guardado en la Carpeta local.",
@@ -1822,7 +1850,7 @@ var GLOS_EXTRA = [
 ];
 function claveAyudaLista(tipo,key){
   if(tipo==="determinaciones") return {nombreCientifico:"@nombre",determinador:"@determinador",fechaDeterminacion:"@fechaDet",calificador:"@calificador"}[key]||"";
-  if(tipo==="submuestras"||tipo==="prestamos"||tipo==="usos"||tipo==="monitoreos") return "L:"+tipo+"."+key;
+  if(tipo==="submuestras"||tipo==="prestamos"||tipo==="usos"||tipo==="monitoreos"||tipo==="seguimientos") return "L:"+tipo+"."+key;
   return tipo+"."+key;
 }
 function ponerAyudaCampo(lbl,key){
@@ -1881,7 +1909,7 @@ function activarTab(nombre){
   if(contReg) montarPanelRegistros(contReg);
   if(typeof pintarAvisoClasif==="function" && borrador) pintarAvisoClasif();
   if(nombre==="consultas") pintarConsultas();
-  if(nombre==="sistema") actualizarEspacio();
+  if(nombre==="sistema"){ actualizarEspacio(); if(typeof pintarSeguimientos==="function") pintarSeguimientos(); }
 }
 tabButtons.forEach(function(btn){ btn.addEventListener("click", function(){ activarTab(btn.getAttribute("data-tab")); }); });
 
@@ -2938,6 +2966,7 @@ document.addEventListener("input", function(e){
   if(t.closest(".fila-repetible")) return;
   if(!borrador){ borrador = registroVacioBase(); activoId=null; }
   borrador[t.getAttribute("data-f")]=t.value;
+  if(t.getAttribute("data-f")==="estadoUbicacion") borrador.estadoDesde=fhHoyISO();   // desde cuándo está en este Estado
   refrescarPanelesRegistros();
   actualizarAvisoConteo();
 });
@@ -2996,6 +3025,14 @@ var listasCfg = {
     {key:"proximaFecha",label:"Próximo monitoreo",type:"date"},
     {key:"acciones",label:"Acciones realizadas",full:true},
     {key:"observaciones",label:"Observaciones",full:true}
+  ]},
+  seguimientos: {contenedorId:"lista-seguimientos", campos:[
+    {key:"motivo",label:"Motivo del seguimiento",full:true},
+    {key:"responsable",label:"Responsable"},
+    {key:"fechaRevision",label:"Revisar el",type:"date"},
+    {key:"estado",label:"Estado del seguimiento",type:"select",options:["Abierto","Resuelto"]},
+    {key:"fechaResolucion",label:"Fecha de resolución",type:"date"},
+    {key:"resolucion",label:"Resolución o acciones",full:true}
   ]}
 };
 
@@ -3166,7 +3203,8 @@ function construirFicha(r){
   if(r.estadoUbicacion==="Baja") manejoCampos += fichaDocsHtml(r.docsBaja, "Documentos de respaldo de la baja");
   var tablaPrestamos = fichaTablaLista("prestamos", r.prestamos) + fichaExtrasLista("prestamos", r.prestamos);
   var tablaUsos = fichaTablaLista("usos", r.usos) + fichaExtrasLista("usos", r.usos);
-  var camposMon = fichaCampos([["Monitoreo activo","monitoreoActivo"], ["Próximo monitoreo","monitoreoProxima"]], r) + fichaTablaLista("monitoreos", r.monitoreos);
+  var camposMon = fichaCampos([["Monitoreo activo","monitoreoActivo"], ["Próximo monitoreo","monitoreoProxima"]], r) + fichaTablaLista("monitoreos", r.monitoreos)
+    + ((r.seguimientos||[]).length ? '<p class="subtitulo-mini">Seguimientos</p>'+fichaTablaLista("seguimientos", r.seguimientos) : "");
   var notas = fichaCampo("Observaciones", r.observaciones);
   var manejoHtml = manejoCampos
     + (tablaPrestamos ? '<p class="subtitulo-mini">Préstamos</p>'+tablaPrestamos : "")
@@ -4214,6 +4252,12 @@ function pintarLista(tipo){
       input.className="nav"; input.value=entrada[c.key]||""; input.setAttribute("data-key", c.key); input._anterior=input.value;
       input.addEventListener("input", function(){
         entrada[c.key]=input.value; refrescarPanelesRegistros(); actualizarPrev();
+        if(tipo==="prestamos") estadoPorPrestamo(c.key);
+        if(tipo==="seguimientos" && c.key==="estado"){
+          var ifr=fila.querySelector('[data-key="fechaResolucion"]');
+          if(input.value==="Resuelto" && !entrada.fechaResolucion){ entrada.fechaResolucion=fhHoyISO(); if(ifr) ifr.value=entrada.fechaResolucion; }
+          else if(input.value!=="Resuelto" && entrada.fechaResolucion){ entrada.fechaResolucion=""; if(ifr) ifr.value=""; }
+        }
         if(tipo==="monitoreos"){
           if(c.key==="fecha"){
             var pm=periodoDeRegistro(borrador), autoAntes=sumarPeriodo(input._anterior, pm.n, pm.u), fp=sumarPeriodo(entrada.fecha, pm.n, pm.u);
@@ -4281,11 +4325,13 @@ function pintarLista(tipo){
     cont.appendChild(fila);
   });
   if(tipo==="monitoreos"){ var mp=document.getElementById("mon-plan"); if(mp) mp.classList.toggle("oculto", !datos.length); }
+  if(tipo==="seguimientos" && typeof pintarSegAuto==="function") pintarSegAuto();
 }
 function agregarEntrada(tipo){
   if(!borrador){ borrador=registroVacioBase(); activoId=null; }
   var nueva={}; listasCfg[tipo].campos.forEach(function(c){ nueva[c.key]=""; });
   if(tipo==="monitoreos") prellenarMonitoreo(nueva);
+  if(tipo==="seguimientos"){ nueva.estado="Abierto"; nueva.responsable=operadorActual()||nombreSesion||""; }
   borrador[tipo].push(nueva);
   if(tipo==="monitoreos") sincronizarProximaMonitoreo();
   pintarLista(tipo);
@@ -4297,6 +4343,7 @@ document.getElementById("btn-add-foto").addEventListener("click", function(){ ag
 document.getElementById("btn-add-prestamo").addEventListener("click", function(){ agregarEntrada("prestamos"); });
 document.getElementById("btn-add-uso").addEventListener("click", function(){ agregarEntrada("usos"); });
 document.getElementById("btn-add-monitoreo").addEventListener("click", function(){ agregarEntrada("monitoreos"); });
+document.getElementById("btn-add-seguimiento").addEventListener("click", function(){ agregarEntrada("seguimientos"); });
 document.getElementById("btn-sesion-monitoreo").addEventListener("click", function(){
   var pend=monitoreosPendientes().length, act=registros.filter(function(r){ return r.monitoreoActivo==="Sí"; }).length;
   abrirSesionMonitoreo(pend ? "pend" : (act ? "activos" : "todos"));
@@ -4479,7 +4526,7 @@ function aplicarModoFormulario(){
     else { el.readOnly = !editando; }
   });
   bloquearBotonesFecha();
-  ["btn-add-determinacion","btn-add-submuestra","btn-add-foto","btn-add-prestamo","btn-add-uso","btn-add-monitoreo","btn-add-pdf","btn-add-adjunto"].forEach(function(id){
+  ["btn-add-determinacion","btn-add-submuestra","btn-add-foto","btn-add-prestamo","btn-add-uso","btn-add-monitoreo","btn-add-seguimiento","btn-add-pdf","btn-add-adjunto"].forEach(function(id){
     var b=document.getElementById(id);
     if(b){ b.disabled = !editando; b.classList.toggle("oculto", !editando); }
   });
@@ -4777,7 +4824,7 @@ function montarPanelRegistros(cont){
       if(!listaC.length) hc+='<p class="nota" style="padding:8px;">Ningún registro coincide con los filtros actuales.</p>';
       listaC.slice(0,150).forEach(function(reg){
         var etc=etiquetaRegistro(reg);
-        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong>'+iconosArchivos(reg)+marcaRespaldo(reg)+'<br><span class="ts2">'+resumenLinea2Html(etc)+'</span></div><div class="acciones-fila"><button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button></div></div>';
+        hc+='<div class="fila-registro" data-id="'+reg.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(etc))+'</strong>'+iconosArchivos(reg)+marcaRespaldo(reg)+marcaSeguimiento(reg)+'<br><span class="ts2">'+resumenLinea2Html(etc)+'</span></div><div class="acciones-fila"><button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button></div></div>';
       });
       if(listaC.length>150) hc+='<p class="nota" style="padding:8px;">Se muestran 150 de '+listaC.length+'. Afina los filtros o usa la lista completa de abajo.</p>';
       hc+='</div></div>';
@@ -4814,7 +4861,7 @@ function montarPanelRegistros(cont){
       var esActivo = reg.id===activoId;
       var et = esActivo && borrador ? etiquetaRegistro(borrador) : etiquetaRegistro(reg);
       html += '<div class="fila-registro'+(esActivo?' activa':'')+'" data-id="'+reg.id+'">';
-      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(reg)+marcaRespaldo(reg)+'<br><span class="ts2">'+resumenLinea2Html(et)+'</span></div>';
+      html += '<div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(reg)+marcaRespaldo(reg)+marcaSeguimiento(reg)+'<br><span class="ts2">'+resumenLinea2Html(et)+'</span></div>';
       html += '<div class="acciones-fila">';
       if(esActivo) html += '<span class="tag-activo-mini">'+(editando?'editando':'consultando')+'</span>';
       html += '<button class="btn tenue small principal-fila btn-consultar-registro">Consultar</button>';
@@ -5035,6 +5082,7 @@ function refrescarPanelesRegistros(){
   registrosVersion++; stdAutoProg();
   revisarCatalogoForm(); pintarAvisoCatalogosRepetidos();
   programarAlertaPrestamos();
+  if(typeof pintarSegAuto==="function") pintarSegAuto();
   var bAct=document.querySelector("#tabs button.active");
   if(bAct && bAct.getAttribute("data-tab")==="consultas" && consConstruida){ pintarConsultas(); return; }
   document.querySelectorAll(".slot-panel-registros").forEach(montarPanelRegistros);
@@ -5132,7 +5180,7 @@ document.getElementById("btn-actualizar-manejo").addEventListener("click", funct
 
 // ---------- Carpeta local (copia de registros, respaldos y PDF de publicaciones) ----------
 var SUBCARPETAS = ["Registros","Entradas","Exportaciones","Respaldos","Publicaciones","Fotos","Adjuntos"];
-var LISTAS_REGISTRO = ["determinaciones","submuestras","fotos","adjuntos","prestamos","usos","monitoreos","publicacionesPdf"];
+var LISTAS_REGISTRO = ["determinaciones","submuestras","fotos","adjuntos","prestamos","usos","monitoreos","seguimientos","publicacionesPdf"];
 var carpetaHandle = null;       // carpeta elegida por el usuario (FileSystemDirectoryHandle)
 var carpetaEstado = "sin";      // "sin" | "ok" | "permiso"
 var indiceArchivos = null;      // id de registro -> nombre del archivo en Registros/
@@ -6212,6 +6260,21 @@ function alertaFilaUI(tipo, entrada){
   btn.onclick=function(){ cuerpo.classList.toggle("oculto"); };
   wrap.appendChild(btn); wrap.appendChild(cuerpo); return wrap;
 }
+// Un préstamo es vigente si tiene fecha de préstamo y aún no se registra su devolución real.
+function prestamoVigente(r){ return (r.prestamos||[]).some(function(p){ return p && p.fechaPrestamo && !p.fechaDevolucionReal; }); }
+function estadoPorPrestamo(clave){
+  if(!editando || !borrador) return;
+  if(prestamoVigente(borrador)){
+    if(borrador.estadoUbicacion!=="En préstamo"){
+      borrador.estadoUbicacion="En préstamo"; borrador.estadoDesde=fhHoyISO();
+      var el=document.querySelector('[data-f="estadoUbicacion"]'); if(el) el.value="En préstamo";
+      refrescarPanelesRegistros();
+      undoAviso("Estado cambiado a «En préstamo» por el préstamo vigente. Ctrl+Z lo deshace.");
+    }
+  } else if(clave==="fechaDevolucionReal" && borrador.estadoUbicacion==="En préstamo"){
+    undoAviso("Préstamo devuelto: recuerda actualizar el Estado del ejemplar.");
+  }
+}
 function monitoreoVigente(r){
   var ev=(r.monitoreos||[]).filter(function(e){ return e.fecha && e.proximaFecha; }).sort(function(a,b){ return a.fecha<b.fecha?-1:(a.fecha>b.fecha?1:0); });
   return ev.length ? ev[ev.length-1] : null;
@@ -6296,6 +6359,353 @@ function descargarTextoIcs(texto, nombre){
   setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
 }
 function descargarIcs(items, nombre){ descargarTextoIcs(construirIcs(items), nombre); }
+// ---------- Seguimientos o contingencias: reglas por atributos ----------
+// Cada regla reúne las condiciones que deben cumplir los registros (todas, o alguna). Las reglas activas avisan en Consultas y marcan los registros con 🚩.
+var SEG_CLAVE=LS_PREFIX+"seguimientos", segDatos=null, segVersion=0, segCache=null, segEdit=null, segAbierta=null, segMostrar=100;
+var SEG_MANUAL={id:"@manual", nombre:"Seguimientos manuales abiertos", activa:true, modo:"todas", cond:[], manual:true};
+function segManualAbiertos(r){ return (r.seguimientos||[]).filter(function(x){ return x && String(x.motivo||"").trim() && x.estado!=="Resuelto"; }); }
+var SEG_VIRT=[
+  {k:"@sinDeterminacion", l:"No tiene determinación", b:true},
+  {k:"@noEspecie", l:"No está determinado a nivel de especie (incluye los sin determinar)", b:true},
+  {k:"@sinDeterminador", l:"No tiene determinador registrado", b:true},
+  {k:"@sinSexar", l:"No ha sido sexado (sin machos, hembras ni juveniles)", b:true},
+  {k:"@prestamoVigente", l:"Tiene un préstamo vigente", b:true},
+  {k:"@sinPrestamoVigente", l:"No tiene un préstamo vigente", b:true},
+  {k:"@diasEstado", l:"Días que lleva en el Estado actual", n:true}
+];
+var SEG_PLANT=[
+  {id:"p-prep", nombre:"Preparación y Conservación incompleta", modo:"alguna", cond:[{k:"tipoColeccion",op:"vacio"},{k:"medioFijado",op:"vacio"},{k:"preparacion",op:"vacio"},{k:"condicionEjemplar",op:"vacio"}]},
+  {id:"p-cat", nombre:"Sin número de catálogo", modo:"todas", cond:[{k:"catalogo",op:"vacio"}]},
+  {id:"p-ubic", nombre:"En colección sin ubicación", modo:"todas", cond:[{k:"estadoUbicacion",op:"es",v:"En colección"},{k:"ubicacionColeccion",op:"vacio"}]},
+  {id:"p-sindet", nombre:"Sin determinación", modo:"todas", cond:[{k:"@sinDeterminacion",op:"si"}]},
+  {id:"p-esp", nombre:"No determinado a nivel de especie", modo:"todas", cond:[{k:"@noEspecie",op:"si"}]},
+  {id:"p-detor", nombre:"Sin determinador registrado", modo:"todas", cond:[{k:"@sinDeterminador",op:"si"}]},
+  {id:"p-sex", nombre:"Sin sexar", modo:"todas", cond:[{k:"@sinSexar",op:"si"}]},
+  {id:"p-lab", nombre:"En laboratorio por más de 30 días", modo:"todas", cond:[{k:"estadoUbicacion",op:"es",v:"En laboratorio"},{k:"@diasEstado",op:">",v:"30"}]},
+  {id:"p-prest", nombre:"En préstamo sin préstamo vigente", modo:"todas", cond:[{k:"estadoUbicacion",op:"es",v:"En préstamo"},{k:"@sinPrestamoVigente",op:"si"}]},
+  {id:"p-estado", nombre:"Sin Estado definido", modo:"todas", cond:[{k:"estadoUbicacion",op:"vacio"}]}
+];
+var SEG_OPS=[["vacio","está vacío"],["novacio","tiene dato"],["es","es"],["noes","no es"],["contiene","contiene"]];
+var SEG_GRUPOS={entrada:"Entrada", preparacion:"Preparación y conservación", deposito:"Depósito", manejo:"Manejo"};
+function segAmbito(){ return cfgAmbito("seguimientos"); }
+function segCompartidaValida(){ var c=cfgCompartida.seguimientos; return c && Array.isArray(c.reglas) ? c : null; }
+function segLeer(){
+  if(segAmbito()==="compartida"){ var cm=segCompartidaValida(); if(cm) return cm; }
+  if(segDatos) return segDatos;
+  var raw=null; try{ raw=JSON.parse(localStorage.getItem(SEG_CLAVE)||"null"); }catch(e){}
+  if(!raw || !Array.isArray(raw.reglas)) raw={v:1, reglas:SEG_PLANT.map(function(p){ var r=clonar(p); r.activa=false; return r; })};
+  segDatos=raw; return raw;
+}
+async function segEscribirCompartida(){
+  var cm=segCompartidaValida(); if(!cm) return false;
+  cm.actualizado=new Date().toISOString(); cm.por=operadorActual()||"";
+  if(!carpetaHandle || !(await permisoCarpeta(false))) return false;
+  try{
+    var mio=cm; await cfgCargarCompartida(); cfgCompartida.seguimientos=mio;
+    await escribirArchivo("Registros","_configuracion.json",JSON.stringify(cfgCompartida,null,1));
+    return true;
+  }catch(e){ registrarError("escribir reglas de seguimiento compartidas", e); return false; }
+}
+function segMensaje(t){ var m=document.getElementById("seg-msg"); if(m) m.textContent=t||""; }
+function segInfoCompartida(){
+  var cm=segCompartidaValida(); if(!cm) return "";
+  return "Reglas compartidas"+(cm.actualizado ? ", última actualización "+formatearFechaHora(cm.actualizado) : "")+(cm.por ? " por "+cm.por : "")+".";
+}
+function segRecargar(){
+  segVersion++; segCache=null;
+  var sel=document.getElementById("seg-ambito"); if(sel) sel.value=segAmbito();
+  if(segAmbito()==="compartida") segMensaje(segCompartidaValida() ? segInfoCompartida() : "No hay reglas compartidas en la Carpeta local; se usan las de este equipo.");
+  pintarSeguimientos(); programarAlertaPrestamos(); refrescarPanelesRegistros();
+}
+function segGuardar(){
+  var compartida=(segAmbito()==="compartida" && segCompartidaValida());
+  if(compartida){
+    // copia local de respaldo de lo compartido
+    try{ localStorage.setItem(SEG_CLAVE, JSON.stringify({v:1, reglas:clonar(segCompartidaValida().reglas)})); segDatos=null; }catch(e){}
+    segEscribirCompartida().then(function(ok){ segMensaje(ok ? segInfoCompartida() : "Guardado en este equipo; no se pudo escribir en la Carpeta local (¿está conectada?)."); });
+  } else {
+    try{ localStorage.setItem(SEG_CLAVE, JSON.stringify(segLeer())); }catch(e){ registrarError("guardar reglas de seguimiento", e); }
+  }
+  segVersion++; segCache=null; pintarSeguimientos(); programarAlertaPrestamos();
+  if(typeof refrescarPanelesRegistros==="function") refrescarPanelesRegistros();
+}
+function segDetalladas(r){ return (r.determinaciones||[]).filter(function(x){ return x && String(x.nombreCientifico||"").trim(); }); }
+function segEsEspecie(det){
+  if(!det) return false;
+  var cal=String(det.calificador||"").trim();
+  if(cal==="sp." || cal==="indet." || cal==="incertae sedis") return false;
+  var t=String(det.nombreCientifico||"").replace(/\([^)]*\)/g," ").split(/\s+/).filter(function(x){ return x && x!=="cf." && x!=="aff."; });
+  return t.length>=2 && /^[a-z][a-z-]+$/.test(t[1]) && ["sp","spp","indet"].indexOf(t[1])<0;
+}
+function segDiasEstado(r){
+  var iso=r.estadoDesde || r.modificadoEn || r.creadoEn; if(!iso) return null;
+  var f=new Date(iso); if(isNaN(f.getTime())) return null;
+  return Math.floor((fechaHoy()-new Date(f.getFullYear(), f.getMonth(), f.getDate()))/864e5);
+}
+function segCumple(r, c){
+  var k=c.k;
+  if(k==="@sinDeterminacion") return !segDetalladas(r).length;
+  if(k==="@noEspecie"){ var d=segDetalladas(r); return !segEsEspecie(d[d.length-1]); }
+  if(k==="@sinDeterminador"){ var d2=segDetalladas(r), u=d2[d2.length-1]; return !u || !String(u.determinador||"").trim(); }
+  if(k==="@sinSexar") return !["cantidadMachos","cantidadHembras","cantidadJuveniles"].some(function(f){ return parseInt(r[f],10)>0; });
+  if(k==="@prestamoVigente") return prestamoVigente(r);
+  if(k==="@sinPrestamoVigente") return !prestamoVigente(r);
+  if(k==="@diasEstado"){ var n=segDiasEstado(r); return n!==null && n>(parseFloat(c.v)||0); }
+  var v=r[k]==null ? "" : String(r[k]).trim();
+  switch(c.op){
+    case "vacio": return v==="";
+    case "novacio": return v!=="";
+    case "es": return normTxt(v)===normTxt(c.v);
+    case "noes": return normTxt(v)!==normTxt(c.v);
+    case "contiene": return normTxt(v).indexOf(normTxt(c.v))>-1;
+  }
+  return false;
+}
+function segCoincide(r, rg){
+  var conds=(rg.cond||[]).filter(function(c){ return c && c.k; });
+  if(!conds.length) return false;
+  if((r.seguimientosExcluidos||[]).indexOf(rg.id)>-1) return false;
+  if(r.estadoUbicacion==="Baja" && !conds.some(function(c){ return c.k==="estadoUbicacion"; })) return false;   // las bajas no se revisan, salvo que la regla mire el Estado
+  return rg.modo==="alguna" ? conds.some(function(c){ return segCumple(r,c); }) : conds.every(function(c){ return segCumple(r,c); });
+}
+function segIndice(){
+  var key=registrosVersion+"|"+registros.length+"|"+segVersion;
+  if(segCache && segCache.key===key) return segCache;
+  var reglas=segLeer().reglas, porRegla={}, porReg={};
+  reglas.forEach(function(rg){ porRegla[rg.id]=[]; });
+  porRegla["@manual"]=[];
+  registros.forEach(function(r){
+    var man=segManualAbiertos(r);
+    if(man.length){ porRegla["@manual"].push(r.id); porReg[r.id]=man.map(function(x){ return "Manual: "+String(x.motivo).slice(0,70); }); }
+    reglas.forEach(function(rg){
+      if(segCoincide(r, rg)){ porRegla[rg.id].push(r.id); if(rg.activa) (porReg[r.id]=porReg[r.id]||[]).push(rg.nombre); }
+    });
+  });
+  segCache={key:key, porRegla:porRegla, porReg:porReg}; return segCache;
+}
+function seguimientosDe(r){ return modoAcceso==="admin" ? (segIndice().porReg[r.id]||[]) : []; }
+function seguimientosResumen(){
+  var idx=segIndice();
+  var out=segLeer().reglas.filter(function(rg){ return rg.activa && idx.porRegla[rg.id].length; }).map(function(rg){ return {regla:rg, n:idx.porRegla[rg.id].length}; });
+  if(idx.porRegla["@manual"].length) out.unshift({regla:SEG_MANUAL, n:idx.porRegla["@manual"].length, venc:segManualVencidos()});
+  return out;
+}
+function segManualVencidos(){
+  var hoy=fhHoyISO(), n=0;
+  registros.forEach(function(r){ if(segManualAbiertos(r).some(function(x){ return x.fechaRevision && x.fechaRevision<=hoy; })) n++; });
+  return n;
+}
+function segRegla(id){ return id==="@manual" ? SEG_MANUAL : segLeer().reglas.filter(function(x){ return x.id===id; })[0]; }
+// Panel de seguimientos automáticos del ejemplar abierto (dentro de Monitoreo)
+function pintarSegAuto(){
+  var cont=document.getElementById("seg-auto"); if(!cont) return;
+  var r=(typeof registroActivo==="function") ? registroActivo() : null;
+  if(!r || modoAcceso!=="admin"){ cont.innerHTML=""; return; }
+  var activas=segLeer().reglas.filter(function(g){ return g.activa; }), coinc=[], excl=[];
+  activas.forEach(function(g){
+    if(segCoincide(r, g)) coinc.push(g);
+    else if((r.seguimientosExcluidos||[]).indexOf(g.id)>-1 && segCoincide(Object.assign({}, r, {seguimientosExcluidos:[]}), g)) excl.push(g);
+  });
+  if(!coinc.length && !excl.length){ cont.innerHTML='<p class="nota">Ninguna regla automática de Seguimientos o contingencias marca este ejemplar.</p>'; return; }
+  var h='<div class="seg-auto-caja"><strong>Seguimientos automáticos</strong> <span class="nota">(según las reglas activas de Sistema)</span>';
+  coinc.forEach(function(g){ h+='<div class="seg-auto-fila">🚩 <span>'+escapeHtml(g.nombre)+'</span> <span class="nota">'+escapeHtml(segResumenRegla(g))+'</span>'+(editando?' <button type="button" class="btn tenue small" data-sa="excluir" data-r="'+escapeHtml(g.id)+'">Excluir de esta regla</button>':'')+'</div>'; });
+  excl.forEach(function(g){ h+='<div class="seg-auto-fila excluida">⏸ <span>'+escapeHtml(g.nombre)+'</span> <span class="nota">excluido para este ejemplar</span>'+(editando?' <button type="button" class="btn tenue small" data-sa="incluir" data-r="'+escapeHtml(g.id)+'">Volver a incluir</button>':'')+'</div>'; });
+  cont.innerHTML=h+'</div>';
+}
+document.getElementById("seg-auto").addEventListener("click", function(e){
+  var b=e.target.closest("button[data-sa]"); if(!b || !borrador) return;
+  var id=b.getAttribute("data-r"), l=(borrador.seguimientosExcluidos||[]).slice(), i=l.indexOf(id);
+  if(b.getAttribute("data-sa")==="excluir"){ if(i<0) l.push(id); } else if(i>-1) l.splice(i,1);
+  borrador.seguimientosExcluidos=l; pintarSegAuto(); refrescarPanelesRegistros();
+});
+function marcaSeguimiento(r){
+  var ns=seguimientosDe(r);
+  return ns.length ? '<span class="ico-seg" title="Seguimiento: '+escapeHtml(ns.join("; "))+'">🚩</span>' : "";
+}
+function segCampos(){
+  var out=[], vistos={};
+  ["entrada","preparacion","deposito","manejo"].forEach(function(tab){
+    var panel=document.getElementById("tab-"+tab); if(!panel) return;
+    panel.querySelectorAll(".campo [data-f]").forEach(function(el){
+      var k=el.getAttribute("data-f"); if(vistos[k] || el.closest(".fila-repetible")) return;
+      var nm=el.closest(".campo").querySelector(".lbl .name"); if(!nm) return;
+      vistos[k]=1; out.push({k:k, l:nm.textContent.trim(), g:tab});
+    });
+  });
+  return out;
+}
+function segEtiqueta(k){
+  var v=SEG_VIRT.filter(function(x){ return x.k===k; })[0]; if(v) return v.l;
+  var c=segCampos().filter(function(x){ return x.k===k; })[0]; return c ? c.l : k;
+}
+function segTextoCond(c){
+  var v=SEG_VIRT.filter(function(x){ return x.k===c.k; })[0];
+  if(v) return v.n ? v.l+" > "+(c.v||0) : v.l;
+  var op=SEG_OPS.filter(function(o){ return o[0]===c.op; })[0];
+  return segEtiqueta(c.k)+" "+(op ? op[1] : c.op)+((c.op==="es"||c.op==="noes"||c.op==="contiene") ? " «"+(c.v||"")+"»" : "");
+}
+function segResumenRegla(rg){ return (rg.cond||[]).map(segTextoCond).join(rg.modo==="alguna" ? " o " : " y "); }
+function segCsv(rg){
+  var ids=segIndice().porRegla[rg.id]||[];
+  var filas=[["N.º de catálogo","N.º de campo","Nombre","Estado","Ubicación en colección","Regla"]];
+  ids.forEach(function(id){ var r=registroPorId(id); if(r) filas.push([construirCatalogoCompleto(r)||"", r.numeroCampo||"", nombreVigenteReg(r)||r.taxon||"", r.estadoUbicacion||"", r.ubicacionColeccion||"", rg.nombre]); });
+  descargarBlob(new Blob([csvDeFilas(filas)], {type:"text/csv;charset=utf-8"}), nombreDescarga("Seguimiento", nombreSeguro(rg.nombre), "csv"));
+}
+function segExcluir(rid, id){
+  var r=registroPorId(id); if(!r || modoAcceso!=="admin") return;
+  r.seguimientosExcluidos=(r.seguimientosExcluidos||[]).concat([rid]);
+  r.modificadoEn=new Date().toISOString(); r.modificadoPor=operadorActual();
+  persistir(); segCache=null; pintarSeguimientos(); programarAlertaPrestamos();
+  if(carpetaHandle) espejarRegistro(r);
+}
+function segRestablecer(rid){
+  var n=0, ahora=new Date().toISOString();
+  registros.forEach(function(r){ var i=(r.seguimientosExcluidos||[]).indexOf(rid); if(i>-1){ r.seguimientosExcluidos.splice(i,1); r.modificadoEn=ahora; r.modificadoPor=operadorActual(); n++; } });
+  if(n){ persistir(); segCache=null; pintarSeguimientos(); programarAlertaPrestamos(); if(carpetaHandle) sincronizarCarpeta(false); }
+}
+function verSeguimiento(id){
+  segAbierta=id; segMostrar=100; segEdit=null;
+  activarTab("sistema");
+  var d=document.getElementById("det-seguimientos"); if(d) d.open=true;
+  pintarSeguimientos();
+  if(d){ try{ d.scrollIntoView({block:"start"}); }catch(e){} }
+}
+function segOpcionesCampo(sel){
+  var h='<optgroup label="Calculados">'+SEG_VIRT.map(function(v){ return '<option value="'+v.k+'"'+(v.k===sel?' selected':'')+'>'+escapeHtml(v.l)+'</option>'; }).join("")+'</optgroup>';
+  var campos=segCampos();
+  Object.keys(SEG_GRUPOS).forEach(function(g){
+    var l=campos.filter(function(c){ return c.g===g; });
+    if(l.length) h+='<optgroup label="'+SEG_GRUPOS[g]+'">'+l.map(function(c){ return '<option value="'+c.k+'"'+(c.k===sel?' selected':'')+'>'+escapeHtml(c.l)+'</option>'; }).join("")+'</optgroup>';
+  });
+  return h;
+}
+function segFilaCondHtml(c){
+  c=c||{k:"estadoUbicacion", op:"es", v:""};
+  return '<div class="seg-cond"><select data-c="k" class="nav">'+segOpcionesCampo(c.k)+'</select>'
+    +'<select data-c="op" class="nav">'+SEG_OPS.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===c.op?' selected':'')+'>'+o[1]+'</option>'; }).join("")+'</select>'
+    +'<input type="text" data-c="v" class="nav" placeholder="valor" value="'+escapeHtml(c.v||"")+'">'
+    +'<button type="button" class="btn tenue small" data-c="del" title="Quitar condición">✕</button></div>';
+}
+function segAjustarFila(f){
+  var k=f.querySelector('[data-c="k"]').value, v=SEG_VIRT.filter(function(x){ return x.k===k; })[0];
+  var op=f.querySelector('[data-c="op"]'), val=f.querySelector('[data-c="v"]');
+  op.classList.toggle("oculto", !!v);
+  if(v){ val.classList.toggle("oculto", !v.n); val.placeholder="días"; }
+  else { val.placeholder="valor"; val.classList.toggle("oculto", ["es","noes","contiene"].indexOf(op.value)<0); }
+}
+function segEditorHtml(rg){
+  var conds=(rg.cond && rg.cond.length) ? rg.cond : [null];
+  return '<div class="seg-edit" data-edit="'+escapeHtml(rg.id)+'"><label>Nombre de la regla <input type="text" class="nav" data-e="nombre" style="min-width:260px" value="'+escapeHtml(rg.nombre||"")+'"></label> '
+    +'<label>Coinciden <select class="nav" data-e="modo"><option value="todas"'+(rg.modo!=="alguna"?' selected':'')+'>todas las condiciones</option><option value="alguna"'+(rg.modo==="alguna"?' selected':'')+'>alguna de las condiciones</option></select></label>'
+    +'<div data-e="conds">'+conds.map(segFilaCondHtml).join("")+'</div>'
+    +'<div class="barra-botones"><button type="button" class="btn tenue small" data-e="mas">+ Condición</button><button type="button" class="btn small" data-e="guardar">Guardar regla</button><button type="button" class="btn tenue small" data-e="cancelar">Cancelar</button></div><p class="nota" data-e="msg"></p></div>';
+}
+function pintarSeguimientos(){
+  var cont=document.getElementById("seg-cont"); if(!cont) return;
+  var datos=segLeer(), idx=segIndice(), h="";
+  if(segEdit==="nueva") h+=segEditorHtml({id:"u"+Date.now().toString(36), nombre:"", modo:"todas", cond:[]});
+  [SEG_MANUAL].concat(datos.reglas).forEach(function(rg){
+    if(segEdit===rg.id && !rg.manual){ h+=segEditorHtml(rg); return; }
+    var n=idx.porRegla[rg.id].length;
+    h+='<div class="seg-regla'+(rg.activa?'':' inactiva')+'" data-id="'+escapeHtml(rg.id)+'">'+(rg.manual ? '<span class="nota">Siempre activa</span>' : '<label title="Activar o desactivar la regla"><input type="checkbox" data-s="activa"'+(rg.activa?' checked':'')+'> Activa</label>')
+      +'<span class="seg-nom">'+escapeHtml(rg.nombre)+'</span><span class="seg-res">'+escapeHtml(rg.manual ? "Anotados ejemplar por ejemplar en Manejo, bloque Monitoreo" : segResumenRegla(rg))+'</span><span class="seg-n">'+n.toLocaleString("es-CL")+' ejemplar(es)</span>'
+      +'<button type="button" class="btn tenue small" data-s="ver"'+(n?'':' disabled')+'>'+(segAbierta===rg.id?'Ocultar':'Ver')+'</button>'
+      +(rg.manual ? '' : '<button type="button" class="btn tenue small" data-s="editar">Editar</button><button type="button" class="btn tenue small" data-s="borrar">Eliminar</button>')+'</div>';
+    if(segAbierta===rg.id){
+      var ids=idx.porRegla[rg.id], lim=Math.min(ids.length, segMostrar);
+      h+='<div class="seg-lista"><table><thead><tr><th>N.º de catálogo</th><th>Nombre</th><th>Estado</th><th>'+(rg.manual ? 'Motivo' : 'Ubicación')+'</th><th></th></tr></thead><tbody>';
+      ids.slice(0,lim).forEach(function(id){
+        var r=registroPorId(id); if(!r) return;
+        h+='<tr><td>'+escapeHtml(construirCatalogoCompleto(r)||(r.numeroCampo?"campo "+r.numeroCampo:"sin catálogo"))+'</td><td>'+escapeHtml(nombreVigenteReg(r)||r.taxon||"")+'</td><td>'+escapeHtml(r.estadoUbicacion||"")+'</td><td>'+escapeHtml(rg.manual ? segManualAbiertos(r).map(function(x){ return x.motivo+(x.fechaRevision ? " (revisar el "+x.fechaRevision+")" : ""); }).join("; ") : (r.ubicacionColeccion||""))+'</td>'
+          +'<td><button type="button" class="btn tenue small" data-s="abrir" data-r="'+escapeHtml(id)+'">Abrir</button>'+(rg.manual ? '' : ' <button type="button" class="btn tenue small" data-s="excluir" data-r="'+escapeHtml(id)+'" title="Sacar este ejemplar de la regla">Excluir</button>')+'</td></tr>';
+      });
+      h+='</tbody></table></div><div class="barra-botones"><button type="button" class="btn secundario small" data-s="csv">Descargar lista (CSV)</button>'
+        +(ids.length>lim?'<button type="button" class="btn tenue small" data-s="mas">Mostrar 100 más ('+lim+' de '+ids.length+')</button>':'')
+        +(!rg.manual && registros.some(function(r){ return (r.seguimientosExcluidos||[]).indexOf(rg.id)>-1; })?'<button type="button" class="btn tenue small" data-s="restablecer">Restablecer exclusiones</button>':'')+'</div>';
+    }
+  });
+  if(!datos.reglas.length) h+='<p class="nota">No hay reglas. Crea una o agrega las plantillas.</p>';
+  cont.innerHTML=h;
+  cont.querySelectorAll(".seg-cond").forEach(segAjustarFila);
+}
+(function(){
+  var cont=document.getElementById("seg-cont"); if(!cont) return;
+  cont.addEventListener("change", function(e){
+    var t=e.target;
+    if(t.getAttribute("data-s")==="activa"){
+      var rg=segLeer().reglas.filter(function(x){ return x.id===t.closest(".seg-regla").getAttribute("data-id"); })[0];
+      if(rg){ rg.activa=t.checked; segGuardar(); }
+      return;
+    }
+    var f=t.closest(".seg-cond"); if(f) segAjustarFila(f);
+  });
+  cont.addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    var datos=segLeer(), fila=b.closest(".seg-regla"), id=fila ? fila.getAttribute("data-id") : segAbierta;
+    var rg=segRegla(id);
+    var acc=b.getAttribute("data-s"), ed=b.getAttribute("data-e"), c=b.getAttribute("data-c");
+    if(c==="del"){ var cc=b.closest('[data-e="conds"]'); if(cc.children.length>1) b.closest(".seg-cond").remove(); return; }
+    if(ed==="mas"){ var cs=b.closest(".seg-edit").querySelector('[data-e="conds"]'); cs.insertAdjacentHTML("beforeend", segFilaCondHtml()); segAjustarFila(cs.lastElementChild); return; }
+    if(ed==="cancelar"){ segEdit=null; pintarSeguimientos(); return; }
+    if(ed==="guardar"){
+      var box=b.closest(".seg-edit"), nombre=box.querySelector('[data-e="nombre"]').value.trim(), msg=box.querySelector('[data-e="msg"]');
+      var conds=[]; box.querySelectorAll(".seg-cond").forEach(function(f){
+        var k=f.querySelector('[data-c="k"]').value, v=SEG_VIRT.filter(function(x){ return x.k===k; })[0];
+        var o={k:k, op:v ? (v.n ? ">" : "si") : f.querySelector('[data-c="op"]').value};
+        var val=f.querySelector('[data-c="v"]').value.trim();
+        if(o.op==="es"||o.op==="noes"||o.op==="contiene"||o.op===">") o.v=val;
+        if((o.op==="es"||o.op==="noes"||o.op==="contiene") && !val){ o.k=""; }
+        conds.push(o);
+      });
+      conds=conds.filter(function(o){ return o.k; });
+      if(!nombre){ msg.textContent="Escribe un nombre para la regla."; return; }
+      if(!conds.length){ msg.textContent="Agrega al menos una condición completa."; return; }
+      var modo=box.querySelector('[data-e="modo"]').value, eid=box.getAttribute("data-edit");
+      var ex=datos.reglas.filter(function(x){ return x.id===eid; })[0];
+      if(ex){ ex.nombre=nombre; ex.modo=modo; ex.cond=conds; }
+      else datos.reglas.unshift({id:eid, nombre:nombre, modo:modo, cond:conds, activa:true});
+      segEdit=null; segGuardar(); return;
+    }
+    if(!acc) return;
+    if(acc==="ver"){ segAbierta=(segAbierta===id)?null:id; segMostrar=100; pintarSeguimientos(); }
+    else if(acc==="editar"){ segEdit=id; pintarSeguimientos(); }
+    else if(acc==="borrar"){ if(rg && confirm("¿Eliminar la regla «"+rg.nombre+"»?")){ datos.reglas.splice(datos.reglas.indexOf(rg),1); if(segAbierta===id) segAbierta=null; segGuardar(); } }
+    else if(acc==="mas"){ segMostrar+=100; pintarSeguimientos(); }
+    else if(acc==="csv"){ if(rg) segCsv(rg); }
+    else if(acc==="abrir"){ consultarRegistro(b.getAttribute("data-r")); activarTab(id==="@manual" ? "manejo" : "entrada"); if(id==="@manual"){ var dm=document.getElementById("bloque-monitoreo"); if(dm) dm.open=true; } }
+    else if(acc==="excluir"){ segExcluir(id, b.getAttribute("data-r")); }
+    else if(acc==="restablecer"){ if(confirm("¿Volver a incluir en esta regla los ejemplares que se habían excluido?")) segRestablecer(id); }
+  });
+  document.getElementById("seg-nueva").addEventListener("click", function(){ segEdit="nueva"; pintarSeguimientos(); });
+  document.getElementById("seg-plantillas").addEventListener("click", function(){
+    var datos=segLeer(), n=0;
+    SEG_PLANT.forEach(function(p){ if(!datos.reglas.some(function(r){ return r.id===p.id; })){ var c=clonar(p); c.activa=false; datos.reglas.push(c); n++; } });
+    segGuardar();
+    if(!n) alert("Ya están todas las plantillas.");
+  });
+  document.getElementById("seg-ambito").addEventListener("change", async function(){
+    var sel=this, nuevo=sel.value;
+    if(nuevo==="propia"){ try{ localStorage.setItem(CFG_CLAVE+"seguimientos", JSON.stringify({ambito:"propia"})); }catch(e){} segMensaje("Las reglas se guardan solo en este equipo."); segRecargar(); return; }
+    if(!carpetaHandle || !(await permisoCarpeta(false))){ sel.value="propia"; segMensaje("Conecta la Carpeta local para compartir las reglas."); return; }
+    await cfgCargarCompartida();
+    if(segCompartidaValida()){
+      if(!confirm("La Carpeta local ya tiene reglas compartidas. Se usarán esas en lugar de las de este equipo, que quedan guardadas aparte. ¿Continuar?")){ sel.value="propia"; return; }
+    } else {
+      cfgCompartida.seguimientos={v:1, reglas:clonar(segLeer().reglas)};
+    }
+    try{ localStorage.setItem(CFG_CLAVE+"seguimientos", JSON.stringify({ambito:"compartida"})); }catch(e){}
+    var ok=segCompartidaValida() && await segEscribirCompartida();
+    segMensaje(ok ? segInfoCompartida() : "No se pudo escribir en la Carpeta local.");
+    segRecargar();
+  });
+  document.getElementById("seg-releer").addEventListener("click", async function(){
+    if(!carpetaHandle || !(await permisoCarpeta(false))){ segMensaje("La Carpeta local no está conectada."); return; }
+    await cfgCargarCompartida(); segRecargar();
+    if(segAmbito()!=="compartida") segMensaje("Este equipo guarda sus reglas solo para sí; elige «Compartidas» para usar el archivo común.");
+  });
+  document.getElementById("det-seguimientos").addEventListener("toggle", function(){ if(this.open) pintarSeguimientos(); });
+})();
+
 var alertaTimer=null, ALERTA_MAX_FILAS=10;
 function programarAlertaPrestamos(){ clearTimeout(alertaTimer); alertaTimer=setTimeout(pintarAlertas, 250); }
 function pintarAlertas(){
@@ -6303,7 +6713,7 @@ function pintarAlertas(){
   var bp=document.getElementById("alerta-prestamos"), bm=document.getElementById("alerta-monitoreo");
   if(!fila||!bp||!bm) return;
   if(modoAcceso!=="admin"){ fila.classList.add("oculto"); if(ins) ins.classList.add("oculto"); return; }
-  if(!cfgIntentada && carpetaHandle){ cfgIntentada=true; cfgCargarCompartida().then(function(){ pintarConfigAlertas(); programarAlertaPrestamos(); }); }
+  if(!cfgIntentada && carpetaHandle){ cfgIntentada=true; cfgCargarCompartida().then(function(){ pintarConfigAlertas(); if(typeof segRecargar==="function") segRecargar(); programarAlertaPrestamos(); }); }
   var lp=prestamosPendientes(), lm=monitoreosPendientes();
   // préstamos
   var venc=lp.filter(function(x){ return x.dias<0; }).length, ab=bp.open;
@@ -6339,7 +6749,17 @@ function pintarAlertas(){
     bm.querySelector("#am-sesion").onclick=function(){ abrirSesionMonitoreo("pend"); };
     bm.querySelector("#am-ics").onclick=function(){ descargarTextoIcs(construirIcsMonitoreo(lm), nombreDescarga("Monitoreos", "todos", "ics")); };
   }
-  fila.classList.toggle("oculto", !lp.length && !lm.length);
+  var bs=document.getElementById("alerta-seguimientos"), ls=bs ? seguimientosResumen() : [];
+  if(bs){
+    var abs=bs.open; bs.classList.toggle("oculto", !ls.length);
+    if(ls.length){
+      var h3='<summary>🚩 Seguimientos: '+ls.length+' regla(s) con ejemplares pendientes</summary>';
+      ls.forEach(function(x){ h3+='<div class="al-fila"><span class="al-dias">'+x.n.toLocaleString("es-CL")+' ejemplar(es)</span><span>'+escapeHtml(x.regla.nombre)+(x.venc ? ' ('+x.venc+' con revisión vencida o de hoy)' : '')+'</span><button type="button" class="btn tenue small" data-as-ver="'+escapeHtml(x.regla.id)+'">Ver lista</button></div>'; });
+      bs.innerHTML=h3; bs.open=abs;
+      bs.querySelectorAll("[data-as-ver]").forEach(function(b){ b.onclick=function(){ verSeguimiento(b.getAttribute("data-as-ver")); }; });
+    }
+  }
+  fila.classList.toggle("oculto", !lp.length && !lm.length && !ls.length);
   var tot=lp.length+lm.length;
   if(ins){ ins.textContent=tot; ins.classList.toggle("oculto", !tot); ins.title=lp.length+" préstamo(s) y "+lm.length+" monitoreo(s) por atender"; }
 }
@@ -7185,7 +7605,7 @@ var CONS_RANGOS = [
 ];
 var CONS_GRUPOS = ["Terreno","Entrada","Preparación","Depósito","Manejo"];
 var consSel = new Set();
-var consEstado = {texto:"", f:{}, r:{}, tiene:{coord:false, fotos:false, pdf:false}, orden:"catalogo", mostrar:100};
+var consEstado = {texto:"", f:{}, r:{}, tiene:{coord:false, fotos:false, pdf:false, seg:false}, orden:"catalogo", mostrar:100};
 var consIndice = {};
 function indiceTexto(r){
   var c=consIndice[r.id];
@@ -7223,6 +7643,7 @@ function cumpleConsulta(r, omitir){
   if(e.tiene.coord && !coordenadasRegistro(r)) return false;
   if(e.tiene.fotos && !(r.fotos||[]).some(function(f){ return f.archivo; })) return false;
   if(e.tiene.pdf && !((r.publicacionesPdf||[]).length)) return false;
+  if(e.tiene.seg && !seguimientosDe(r).length) return false;
   return true;
 }
 var consTimer=null;
@@ -7262,7 +7683,7 @@ function resumenConsulta(lista){
 function topN(obj,n){ return Object.keys(obj).sort(function(a,b){ return obj[b]-obj[a] || a.localeCompare(b); }).slice(0,n).map(function(k){ return k+" ("+obj[k]+")"; }); }
 function hayFiltrosConsulta(){
   var e=consEstado;
-  return !!(e.texto.trim() || Object.keys(e.f).some(function(k){ return e.f[k]; }) || Object.keys(e.r).some(function(k){ return e.r[k] && (e.r[k].d||e.r[k].h); }) || e.tiene.coord || e.tiene.fotos || e.tiene.pdf);
+  return !!(e.texto.trim() || Object.keys(e.f).some(function(k){ return e.f[k]; }) || Object.keys(e.r).some(function(k){ return e.r[k] && (e.r[k].d||e.r[k].h); }) || e.tiene.coord || e.tiene.fotos || e.tiene.pdf || e.tiene.seg);
 }
 function resumenConsultaHtml(lista){
   lista=lista||registros.filter(function(r){ return cumpleConsulta(r); });
@@ -7326,7 +7747,7 @@ function construirConsultas(){
     sec.appendChild(det);
   });
   var tiene=document.createElement("div"); tiene.className="cons-tiene";
-  tiene.innerHTML='<span class="name">Solo registros con:</span> <label><input type="checkbox" data-t="coord"> coordenadas</label> <label><input type="checkbox" data-t="fotos"> fotos</label> <label><input type="checkbox" data-t="pdf"> PDF de publicaciones</label>';
+  tiene.innerHTML='<span class="name">Solo registros con:</span> <label><input type="checkbox" data-t="coord"> coordenadas</label> <label><input type="checkbox" data-t="fotos"> fotos</label> <label><input type="checkbox" data-t="pdf"> PDF de publicaciones</label> <label><input type="checkbox" data-t="seg"> seguimiento abierto</label>';
   var bus=document.querySelector("#tab-consultas .cons-buscador"); bus.parentNode.insertBefore(tiene, bus.nextSibling);
   var tab=document.getElementById("tab-consultas");
   tab.addEventListener("focusin", function(e){
@@ -7390,7 +7811,7 @@ function descripcionFiltros(){
   if(e.texto.trim()) d.push("texto: "+e.texto.trim());
   CONS_CAMPOS.forEach(function(c){ if((e.f[c.k]||"").trim()) d.push(c.l+": "+e.f[c.k].trim()); });
   CONS_RANGOS.forEach(function(g){ var r=e.r[g.k]; if(r&&(r.d||r.h)) d.push(g.l+": "+(r.d||"…")+" a "+(r.h||"…")); });
-  [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"]].forEach(function(t){ if(e.tiene[t[0]]) d.push("solo "+t[1]); });
+  [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"],["seg","con seguimiento abierto"]].forEach(function(t){ if(e.tiene[t[0]]) d.push("solo "+t[1]); });
   return d.join(" | ");
 }
 function programarRegistroBusqueda(){
@@ -7411,7 +7832,7 @@ function pintarConsultas(){
   if(e.texto.trim()) chips.push(["texto","Texto: "+e.texto.trim()]);
   CONS_CAMPOS.forEach(function(c){ if((e.f[c.k]||"").trim()) chips.push(["f:"+c.k, c.l+": "+e.f[c.k].trim()]); });
   CONS_RANGOS.forEach(function(g){ var r=e.r[g.k]; if(r&&(r.d||r.h)) chips.push(["r:"+g.k, g.l+": "+(r.d||"…")+" a "+(r.h||"…")]); });
-  [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"]].forEach(function(t){ if(e.tiene[t[0]]) chips.push(["t:"+t[0],"Solo "+t[1]]); });
+  [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"],["seg","con seguimiento abierto"]].forEach(function(t){ if(e.tiene[t[0]]) chips.push(["t:"+t[0],"Solo "+t[1]]); });
   document.getElementById("cons-chips").innerHTML=chips.map(function(c){ return '<span class="cons-chip">'+escapeHtml(c[1])+' <button type="button" data-quitar="'+escapeHtml(c[0])+'" title="Quitar este filtro">✕</button></span>'; }).join("");
   document.getElementById("cons-limpiar").classList.toggle("oculto", !chips.length);
   // las sugerencias de cada campo se calculan al entrar en él (ver construirConsultas), no en cada repintado
@@ -7423,7 +7844,7 @@ function pintarConsultas(){
   lista.slice(0,e.mostrar).forEach(function(r){
     var et=etiquetaRegistro(r);
     var extra=[r.phylum,r.clase,r.orden,r.familia,r.genero].filter(Boolean).join(" › ");
-    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+marcaRespaldo(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Seleccionar este registro para descargar o evaluar su distribución"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Seleccionar</label></div></div>';
+    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+marcaRespaldo(r)+marcaSeguimiento(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Seleccionar este registro para descargar o evaluar su distribución"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Seleccionar</label></div></div>';
   });
   cont.innerHTML=h;
   document.getElementById("cons-mas-btn").classList.toggle("oculto", lista.length<=e.mostrar);

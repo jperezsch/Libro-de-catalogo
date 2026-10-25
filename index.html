@@ -1464,7 +1464,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.76";
+var APP_VERSION = "v0.9.77";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2120,9 +2120,9 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   function adoptar(inp){ if(inp && inp.tagName==="INPUT" && inp.hasAttribute("list")){ inp.setAttribute("data-lista",inp.getAttribute("list")); inp.removeAttribute("list"); } }
   function conLista(t){ return !!t && t.tagName==="INPUT" && (t.hasAttribute("data-lista") || !!stdListaDe(t)); }
   function valores(inp){
-    var sid=stdListaDe(inp), std=sid ? stdNombres(sid) : [];
-    if(std.length) return std.slice();   // con lista estándar solo se ofrece ella
-    if(sid){ var libres=stdSugerenciasLibres(sid); if(libres.length) return libres; }   // lista vacía: lo ya usado en los registros
+    var sid=stdListaDe(inp), std=sid ? stdNombres(sid) : [], esCol=(inp.id==="input-coleccion-nombre" && typeof colReordenar==="function");
+    if(std.length) return esCol ? colReordenar(std.slice()) : std.slice();   // con lista estándar solo se ofrece ella
+    if(sid){ var libres=stdSugerenciasLibres(sid); if(libres.length) return esCol ? colReordenar(libres) : libres; }   // lista vacía: lo ya usado en los registros
     var dl=document.getElementById(inp.getAttribute("data-lista")||"");
     return dl ? Array.prototype.map.call(dl.options,function(o){ return o.value; }) : [];
   }
@@ -2785,6 +2785,43 @@ inputColeccionNombre.addEventListener("change", function(){
   }
 });
 
+// Al elegir (o escribir) el nombre completo del Museo Nacional de Historia Natural de Chile, el acrónimo de institución se completa solo
+function institucionAutoAcronimo(){
+  if(!editando || campoInstitucionNombre.readOnly) return;
+  if(stdNorm(campoInstitucionNombre.value.trim())!==stdNorm(NOMBRE_MNHNCL)) return;
+  if(campoInstitucionAcr.value!=="MNHNCL"){ campoInstitucionAcr.value="MNHNCL"; if(borrador) borrador.institucionAcronimo="MNHNCL"; refrescarPanelesRegistros(); }
+}
+campoInstitucionNombre.addEventListener("input", institucionAutoAcronimo);
+campoInstitucionNombre.addEventListener("change", institucionAutoAcronimo);
+
+// Colecciones: la última usada queda al inicio de las sugerencias
+var COL_RECIENTES_CLAVE="libroCatalogo_colReciente";
+function colRecientes(){
+  try{ var a=JSON.parse(localStorage.getItem(COL_RECIENTES_CLAVE)||"[]"); return Array.isArray(a) ? a : []; }catch(e){ return []; }
+}
+function colNombreCanonico(v){ var p=coleccionPredef(v||""); return p ? p[1] : String(v||"").trim(); }
+function colRegistrarUso(v){
+  var n=colNombreCanonico(v); if(!n) return;
+  var k=stdNorm(n), a=colRecientes().filter(function(x){ return stdNorm(x)!==k; });
+  a.unshift(n);
+  try{ localStorage.setItem(COL_RECIENTES_CLAVE, JSON.stringify(a.slice(0,30))); }catch(e){}
+}
+function colReordenar(lista){
+  var rec=colRecientes();
+  if(!rec.length && Array.isArray(registros)){   // sin historial local: se toma la colección del registro más reciente
+    var u=registros.filter(function(r){ return r.coleccionNombre; }).sort(function(a,b){ return String(b.modificadoEn||b.creadoEn||"").localeCompare(String(a.modificadoEn||a.creadoEn||"")); })[0];
+    if(u) rec=[colNombreCanonico(u.coleccionNombre)];
+  }
+  var salida=[], usados={};
+  rec.forEach(function(x){
+    var k=stdNorm(x), it=lista.filter(function(v){ return stdNorm(v)===k; })[0];
+    if(it && !usados[k]){ usados[k]=1; salida.push(it); }
+  });
+  lista.forEach(function(v){ var k=stdNorm(v); if(!usados[k]){ usados[k]=1; salida.push(v); } });
+  return salida;
+}
+inputColeccionNombre.addEventListener("change", function(){ if(editando) colRegistrarUso(inputColeccionNombre.value); });
+
 // ---------- región → provincia → comuna (Chile) ----------
 var DATOS_CHILE = [
   {region:"Arica y Parinacota", provincias:[
@@ -3128,6 +3165,38 @@ function lineaColeccionFicha(r){
   if(!nombre && r.coleccionNombre){ var pr=coleccionPredef(r.coleccionNombre); nombre=pr ? pr[1] : r.coleccionNombre; }
   if(nombre && r.coleccionAcronimo && nombre.indexOf("("+r.coleccionAcronimo+")")>-1) return nombre;   // el nombre ya trae su acrónimo
   return nombre && acr ? nombre+" ("+acr+")" : (nombre||acr);
+}
+// Nombre único de una colección para Consultas: los registros de una misma colección pueden traer solo el nombre, solo el acrónimo
+// o ambos; aquí todos se reúnen bajo el mismo nombre completo, tomado de la lista predefinida o del nombre más usado con ese acrónimo.
+var colMapaCache=null, colMapaClave="";
+function colAcrDe(r){
+  if(r.coleccionAcronimo) return r.coleccionAcronimo.trim();
+  var n=(r.coleccionNombre||"").trim(), m=/\(\s*([A-Za-z]{2,8})\s*\)\s*$/.exec(n);
+  if(m) return m[1].toUpperCase();
+  return (/^[A-Za-z]{2,8}$/.test(n) && !/\s/.test(n)) ? n.toUpperCase() : "";
+}
+function colMapaNombres(){
+  var clave=registros.length+"|"+(registros.length ? (registros[0].modificadoEn||"")+(registros[registros.length-1].modificadoEn||"") : "");
+  if(colMapaCache && colMapaClave===clave) return colMapaCache;
+  var cuenta={};
+  registros.forEach(function(r){
+    var n=(r.coleccionNombre||"").trim(), a=colAcrDe(r);
+    if(!n || !a || stdNorm(n)===stdNorm(a)) return;
+    var nom=n.indexOf("("+a+")")>-1 ? n : n+" ("+a+")", peso=n.indexOf("("+a+")")>-1 ? 1.5 : 1;
+    (cuenta[a]=cuenta[a]||{})[nom]=((cuenta[a]||{})[nom]||0)+peso;
+  });
+  var mapa={};
+  Object.keys(cuenta).forEach(function(a){ var mejor="", pm=-1; Object.keys(cuenta[a]).forEach(function(nom){ if(cuenta[a][nom]>pm){ pm=cuenta[a][nom]; mejor=nom; } }); mapa[a]=mejor; });
+  colMapaCache=mapa; colMapaClave=clave;
+  return mapa;
+}
+function lineaColeccionUnica(r){
+  if(!(r.coleccionAcronimo||r.coleccionNombre)) return "";
+  var a=colAcrDe(r);
+  if(a && !COLECCIONES_AZI.some(function(c){ return c[0]===a; }) && !coleccionPredef(r.coleccionNombre||"")){
+    var nom=colMapaNombres()[a]; if(nom) return nom;
+  }
+  return lineaColeccionFicha(r);
 }
 function construirCatalogoCompleto(r){
   if(!r.catalogo) return "";
@@ -4691,6 +4760,7 @@ function aplicarCatalogadorSiCorresponde(obj){
 function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   if(!borrador) borrador=registroVacioBase();
   if(!permitirCatalogo(borrador)) return;
+  colRegistrarUso(borrador.coleccionNombre);
   if(origenDuplicadoId){
     var base = registroPorId(origenDuplicadoId);
     if(base && sonIguales(base, borrador)){
@@ -4745,6 +4815,7 @@ async function accionActualizar(siguienteTab){ if(modoAcceso!=="admin") return;
 function guardarActualizacion(siguienteTab){
   if(!borrador) borrador=registroVacioBase();
   if(!permitirCatalogo(borrador)) return;
+  colRegistrarUso(borrador.coleccionNombre);
   var actualizado=clonar(borrador);
   actualizado.modificadoEn = new Date().toISOString();
   actualizado.modificadoPor = operadorActual();
@@ -7655,7 +7726,7 @@ function nombreVigenteReg(r){
   return d ? unirCalificador(d.calificador, d.nombreCientifico) : (r.taxon||"");
 }
 function listaVals(r, lista, clave){ return (r[lista]||[]).map(function(x){ return x[clave]; }).filter(Boolean); }
-function CF(k,l,g,p,v){ return {k:k,l:l,g:g,p:p,v:v}; }
+function CF(k,l,g,p,v,s){ return {k:k,l:l,g:g,p:p,v:v,s:s}; }
 function campoSimple(k,l,g,p){ return CF(k,l,g,p,function(r){ return r[k]!=null && r[k]!=="" ? [String(r[k])] : []; }); }
 var CONS_CAMPOS = [
   CF("nombre","Nombre científico","Taxonomía",true,function(r){
@@ -7670,7 +7741,11 @@ var CONS_CAMPOS = [
   campoSimple("colector","Colector","Personas",true),
   CF("catalogo","N.º de catálogo","Números",true,function(r){ var c=construirCatalogoCompleto(r); return [c,r.catalogo].filter(Boolean); }),
   campoSimple("numeroCampo","N.º de campo","Números",true),
-  CF("coleccion","Colección","Colección",true,function(r){ return [nombreColeccionCompleto(r), r.coleccionAcronimo].filter(Boolean); }),
+  CF("coleccion","Colección","Colección",true,function(r){
+    // para filtrar valen todas las formas con que se puede escribir la colección; para sugerir se usa solo el nombre completo (ver s)
+    if(!(r.coleccionAcronimo||r.coleccionNombre)) return [];
+    return [lineaColeccionUnica(r), lineaColeccionFicha(r), nombreColeccionCompleto(r), r.coleccionNombre, r.coleccionAcronimo, [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ")].filter(Boolean);
+  }, function(r){ var l=lineaColeccionUnica(r); return l ? [l] : []; }),
   campoSimple("estadoUbicacion","Estado","Manejo",true),
   // secundarios, agrupados por la pestaña de origen
   campoSimple("provincia","Provincia","Lugar",true), campoSimple("comuna","Comuna","Lugar",true),
@@ -7809,7 +7884,7 @@ function resumenConsultaHtml(lista){
 var consConstruida=false;
 function opcionesCampo(c){
   var vistos={}, out=[];
-  registros.forEach(function(r){ if(cumpleConsulta(r,c.k)) c.v(r).forEach(function(v){ v=String(v).trim(); if(v && !vistos[v]){ vistos[v]=1; out.push(v); } }); });
+  registros.forEach(function(r){ if(cumpleConsulta(r,c.k)) (c.s||c.v)(r).forEach(function(v){ v=String(v).trim(); if(v && !vistos[v]){ vistos[v]=1; out.push(v); } }); });
   return out.sort(function(a,b){ return a.localeCompare(b,"es"); }).slice(0,400);
 }
 function construirConsultas(){

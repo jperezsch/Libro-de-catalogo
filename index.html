@@ -629,6 +629,7 @@
   .exp-gtit{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:2px;}
   #exp-lista{display:block;}
   #exp-lista > .exp-chip{margin:0 6px 6px 0;}
+  .exp-chip.vacio .exp-tg{font-style:italic;}
   .exp-chip.off{background:transparent;color:#7a7660;border-style:dashed;opacity:.75;}
   .exp-chip.arrastrando{opacity:.4;}
   .exp-chip.antes{box-shadow:-3px 0 0 #2f5d3a;}
@@ -1275,56 +1276,63 @@
       </details>
       <details class="subbloque-gest" id="sub-exportar">
         <summary>Exportar datos</summary>
-      <div class="grid">
-        <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
-          <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option><option value="sesionEdicion">Sesión de edición</option></select>
-        </div>
-        <div class="campo opc"><div class="lbl"><span class="name">Filtrar por colección</span></div>
-          <select class="nav" id="sel-filtro-coleccion"><option value="">Todas</option></select>
-        </div>
-        <div class="campo opc"><div class="lbl"><span class="name">Filtrar por sesión de ingreso</span></div>
-          <select class="nav" id="sel-filtro-sesion"><option value="">Todas</option></select>
-        </div>
-        <div class="campo opc"><div class="lbl"><span class="name">Filtrar por sesión de edición</span></div>
-          <select class="nav" id="sel-filtro-sesion-edicion"><option value="">Todas</option></select>
-        </div>
-      </div>
-
       <div id="aviso-cat-dup" class="oculto"></div>
-      <div id="resumen-datos"></div>
+      <details class="cons-esq" id="exp-set" open>
+        <summary>Seleccionar set de datos</summary>
+        <div class="cons-esq-cuerpo">
+      <div class="grid">
+          <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
+            <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option><option value="sesionEdicion">Sesión de edición</option></select>
+          </div>
+          <div class="campo opc"><div class="lbl"><span class="name">Filtrar por colección</span></div>
+            <select class="nav" id="sel-filtro-coleccion"><option value="">Todas</option></select>
+          </div>
+          <div class="campo opc"><div class="lbl"><span class="name">Filtrar por sesión de ingreso</span></div>
+            <select class="nav" id="sel-filtro-sesion"><option value="">Todas</option></select>
+          </div>
+          <div class="campo opc"><div class="lbl"><span class="name">Filtrar por sesión de edición</span></div>
+            <select class="nav" id="sel-filtro-sesion-edicion"><option value="">Todas</option></select>
+          </div>
+        </div>
 
-      <div class="barra-botones">
-        <button class="btn secundario small" id="btn-marcar-datos" aria-pressed="false" title="Marca todos los registros mostrados; vuelve a pincharlo para quitar las marcas">Marcar todo</button>
-        <button class="btn peligro small" id="btn-eliminar-datos" disabled title="Elimina los registros marcados (o usa el 🗑️ de cada fila para uno solo)">Eliminar marcados</button>
-      </div>
-      <label class="nota chk-zip"><input type="checkbox" id="chk-zip-archivos" checked> Incluir fotos, PDF y adjuntos en el zip de respaldo (puede pesar mucho)</label>
+        <div id="resumen-datos"></div>
+
+        <div class="barra-botones">
+          <button class="btn secundario small" id="btn-marcar-datos" aria-pressed="false" title="Marca todos los registros mostrados; vuelve a pincharlo para quitar las marcas">Marcar todo</button>
+          <button class="btn peligro small" id="btn-eliminar-datos" disabled title="Elimina los registros marcados (o usa el 🗑️ de cada fila para uno solo)">Eliminar marcados</button>
+        </div>
+        </div>
+      </details>
       <details class="cons-esq" id="exp-campos">
         <summary>Elegir los campos y su orden (Excel y CSV) · <span id="exp-resumen"></span></summary>
         <div class="cons-esq-cuerpo">
-          <p class="nota">Arrastra cada botón al lugar que quieras. Pincha un botón para incluir o quitar ese campo: los apagados no se descargan. Vale para Excel y CSV de Gestión de datos y de Consultas.</p>
-          <div class="barra-botones"><select class="nav" id="exp-plant" aria-label="Plantillas de orden y campos"></select><button type="button" class="btn small secundario" id="exp-guardar">Guardar como plantilla…</button><button type="button" class="btn small tenue" id="exp-renombrar" disabled>Renombrar</button><button type="button" class="btn small tenue" id="exp-borrar" disabled>Eliminar</button></div>
-          <div class="barra-botones"><button type="button" class="btn small tenue" id="exp-todos">Incluir todos</button><button type="button" class="btn small tenue" id="exp-ninguno">Quitar todos</button><input type="search" class="nav" id="exp-filtro" placeholder="Buscar un campo…" aria-label="Buscar un campo" autocomplete="off"><select class="nav" id="exp-vista" aria-label="Vista"><option value="orden">Vista: orden de descarga</option><option value="temas">Vista: agrupados por tema</option></select><label class="nota"><input type="checkbox" id="exp-flechas"> Mostrar flechas ◀ ▶ para mover</label></div>
+          <p class="nota">Elige una plantilla de campos o una planilla emparejada. Con una plantilla de campos, arrastra cada botón al lugar que quieras, pincha para incluir o quitar un campo e inserta columnas vacías donde las necesites. Vale para Excel y CSV de Gestión de datos y de Consultas.</p>
+          <div class="barra-botones"><select class="nav" id="exp-plant" aria-label="Plantillas de campos y planillas emparejadas"></select><button type="button" class="btn small secundario" id="exp-guardar">Guardar como plantilla…</button><button type="button" class="btn small tenue" id="exp-renombrar" disabled>Renombrar</button><button type="button" class="btn small tenue" id="exp-borrar" disabled>Eliminar</button></div>
+          <div id="exp-planilla-opc" class="oculto">
+            <p class="nota" id="exp-planilla-info"></p>
+            <label><input type="checkbox" id="exp-p-nuevos"> Solo registros modificados o aún no exportados a esta planilla</label>
+            <label><input type="checkbox" id="exp-p-extra"> Agregar al final columnas para datos sin columna equivalente</label>
+            <label><input type="checkbox" id="exp-p-marcar" checked> Registrar estos registros como exportados a esta planilla</label>
+          </div>
+          <div id="exp-edicion">
+            <div class="barra-botones"><button type="button" class="btn small tenue" id="exp-todos">Incluir todos</button><button type="button" class="btn small tenue" id="exp-ninguno">Quitar todos</button><button type="button" class="btn small tenue" id="exp-vacia" title="Agrega una columna sin datos al final; arrástrala al lugar que quieras">Insertar columna vacía</button><input type="search" class="nav" id="exp-filtro" placeholder="Buscar un campo…" aria-label="Buscar un campo" autocomplete="off"><select class="nav" id="exp-vista" aria-label="Vista"><option value="orden">Vista: orden de descarga</option><option value="temas">Vista: agrupados por tema</option></select><label class="nota"><input type="checkbox" id="exp-flechas"> Mostrar flechas ◀ ▶ para mover</label></div>
+          </div>
           <p class="nota" id="exp-msg"></p>
           <div class="exp-chips" id="exp-lista"></div>
         </div>
       </details>
       <div class="barra-botones">
-        <button class="btn secundario" id="btn-exportar-zip" title="Respaldo y traspaso rápido: un archivo por registro y, si está marcada la casilla, sus fotos, PDF y adjuntos. Esta misma app puede volver a importarlo">Descargar zip (respaldo)</button>
         <button class="btn secundario" id="btn-exportar-xlsx" title="Planilla de Excel para consulta y uso rápido">Descargar Excel</button>
         <button class="btn secundario" id="btn-exportar-csv" title="Archivo de texto separado por comas, para grandes cantidades de registros">Descargar CSV</button>
         <button class="btn secundario" id="btn-exportar-dwc" title="CSV con los nombres de columna de Darwin Core, listo para mapear en el IPT de GBIF">Descargar CSV Darwin Core</button>
       </div>
-      <p class="nota" id="datos-msg">Se descargan o eliminan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados.</p>
-      <details class="cons-esq oculto" id="cons-esq"><summary>Traducir a una planilla emparejada</summary>
+      <p class="nota" id="datos-msg">Se descargan o eliminan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados. Excel y CSV siguen la plantilla elegida arriba; el CSV Darwin Core tiene columnas fijas.</p>
+      <details class="cons-esq" id="exp-respaldo">
+        <summary>Respaldo (zip)</summary>
         <div class="cons-esq-cuerpo">
-          <p class="nota">Genera las filas de los registros marcados en la lista de arriba (o, si no hay ninguno, de los mostrados) con las columnas en el orden de una plantilla de emparejamiento guardada (se guardan y se borran en el importador), para pegarlas al final de la planilla.</p>
-          <div class="imp-fila-opc"><select id="esq-sel"></select><select id="esq-formato"><option value="xlsx">Excel</option><option value="csv">CSV</option></select></div>
-          <p class="nota" id="esq-info"></p>
-          <label><input type="checkbox" id="esq-nuevos"> Solo registros modificados o aún no exportados a esta planilla</label>
-          <label><input type="checkbox" id="esq-extra"> Agregar al final columnas para datos sin columna equivalente</label>
-          <label><input type="checkbox" id="esq-marcar" checked> Registrar estos registros como exportados a esta planilla</label>
-          <div class="barra-botones"><button type="button" class="btn small" id="esq-btn">Traducir a planilla</button></div>
-          <p class="nota" id="esq-msg"></p>
+          <p class="nota">El respaldo no depende de las plantillas: guarda cada registro tal como está en la app y esta misma app puede volver a importarlo. Descarga los registros marcados o, si no hay ninguno, los mostrados.</p>
+      <label class="nota chk-zip"><input type="checkbox" id="chk-zip-archivos" checked> Incluir fotos, PDF y adjuntos en el zip de respaldo (puede pesar mucho)</label>
+          <div class="barra-botones"><button class="btn secundario" id="btn-exportar-zip" title="Respaldo y traspaso rápido: un archivo por registro y, si está marcada la casilla, sus fotos, PDF y adjuntos. Esta misma app puede volver a importarlo">Descargar zip (respaldo)</button></div>
         </div>
       </details>
       <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
@@ -1490,7 +1498,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.81";
+var APP_VERSION = "v0.9.82";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -8078,7 +8086,7 @@ function actualizarMarcasConsulta(){
   if(t) t.textContent=n ? n+" registro(s) seleccionado(s): la descarga y el mapa incluirán solo esos." : "Sin selección: la descarga y el mapa incluyen todos los resultados.";
   var csv=document.getElementById("cons-csv"), xl=document.getElementById("cons-xlsx");
   if(csv) csv.textContent=n?"Descargar CSV ("+n+")":"Descargar CSV";
-  var tc="Columnas: las elegidas en Sistema, Gestión de datos, Exportar datos ("+expColumnas().length+" de "+CONS_COLUMNAS.length+")"; if(csv) csv.title=tc; if(xl) xl.title=tc;
+  var tc="Columnas: las elegidas en Sistema, Gestión de datos, Exportar datos ("+expDescripcion()+")"; if(csv) csv.title=tc; if(xl) xl.title=tc;
   if(xl) xl.textContent=n?"Descargar Excel ("+n+")":"Descargar Excel";
   var bm=document.getElementById("cons-marcar-todos");
   if(bm){ var lr=resultadosConsulta(), act=lr.length>0 && lr.every(function(r){ return consSel.has(r.id); }); bm.setAttribute("aria-pressed", act?"true":"false"); bm.textContent=act?"✓ Marcar todos":"Marcar todos"; }
@@ -8125,7 +8133,7 @@ function filasDeLista(lista, cols){
 // Una lista con todos los campos: se arrastran para ordenarlos y se pinchan para incluirlos o quitarlos.
 // «Orden predeterminado» es la primera plantilla del desplegable; las plantillas propias se comparten por la Carpeta local (Registros/_configuracion.json).
 var EXP_CLAVE=LS_PREFIX+"expCampos", EXP_PLANT=LS_PREFIX+"expPlantillas2", EXP_PLANT_V1=LS_PREFIX+"expPlantillas", EXP_VISTA=LS_PREFIX+"expVista", EXP_FLECHAS=LS_PREFIX+"expFlechas";
-var EXP_PREDET="Orden predeterminado", expOrden=null, expOff={}, expArrastre="", expFiltro="", expSincBusy=false, expSincUlt=0, expSincMsg="";
+var EXP_PREDET="Orden predeterminado", expOrden=null, expOff={}, expArrastre="", expFiltro="", expSincBusy=false, expSincUlt=0, expSincMsg="", expPlanilla="", expEnc={}, expNuevos=false, expExtra=false, expMarcar=true;
 var EXP_GRUPOS=[
   ["Identificación",["N.º de catálogo","N.º de campo","N.º de entrada"]],
   ["Taxonomía",["Nombre científico (vigente)","Phylum","Clase","Orden","Familia","Género","Taxón (referencia)","Determinador","Fecha de determinación","Tipo nomenclatural"]],
@@ -8144,26 +8152,29 @@ function expGrupos(){   // los campos que no estén en ningún tema van a «Otro
   return g.filter(function(x){ return x[1].length; });
 }
 function expLS(k, v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){} return null; }
+function expEsVacio(n){ return /^@v\d+$/.test(n); }
+function expNombre(n){ return expEsVacio(n) ? (expEnc[n] || "columna vacía") : n; }
 // Ordena según lo guardado; los campos que la app agregó después van al final (activos en el estado actual, apagados en las plantillas).
-function expNormalizar(orden, off, nuevosActivos){
-  var t=expTodos(), o=[], visto={}, of={};
-  (orden||[]).forEach(function(n){ if(t.indexOf(n)>-1 && !visto[n]){ visto[n]=1; o.push(n); } });
-  (off||[]).forEach(function(n){ if(visto[n]) of[n]=1; });
+// Las columnas vacías (@v1, @v2…) se conservan con su encabezado opcional.
+function expNormalizar(orden, off, nuevosActivos, enc){
+  var t=expTodos(), o=[], visto={}, of={}, ec={};
+  (orden||[]).forEach(function(n){ if((t.indexOf(n)>-1 || expEsVacio(n)) && !visto[n]){ visto[n]=1; o.push(n); if(expEsVacio(n) && enc && enc[n]) ec[n]=String(enc[n]); } });
+  (off||[]).forEach(function(n){ if(visto[n] && !expEsVacio(n)) of[n]=1; });
   t.forEach(function(n){ if(!visto[n]){ o.push(n); if(!nuevosActivos) of[n]=1; } });
-  return {orden:o, off:of};
+  return {orden:o, off:of, enc:ec};
 }
-function expPredeterminado(){ expOrden=expTodos(); expOff={}; }
+function expPredeterminado(){ expOrden=expTodos(); expOff={}; expEnc={}; expPlanilla=""; }
 function expEsPredet(){ return !Object.keys(expOff).length && expOrden.join("|")===expTodos().join("|"); }
-function expIgual(e){ var n=Object.keys(expOff).sort().join("|"), m=Object.keys(e.off).sort().join("|"); return n===m && expOrden.join("|")===e.orden.join("|"); }
+function expIgual(e){ var n=Object.keys(expOff).sort().join("|"), m=Object.keys(e.off).sort().join("|"); return n===m && expOrden.join("|")===e.orden.join("|") && expOrden.every(function(x){ return !expEsVacio(x) || (expEnc[x]||"")===((e.enc||{})[x]||""); }); }
 function expCargar(){
   try{
     var a=JSON.parse(expLS(EXP_CLAVE)||"null");
-    if(Array.isArray(a)){ var e0=expNormalizar(a, [], false); expOrden=e0.orden; expOff=e0.off; return; }   // formato de la v0.9.78
-    if(a && Array.isArray(a.orden)){ var e1=expNormalizar(a.orden, a.off, true); expOrden=e1.orden; expOff=e1.off; return; }
+    if(Array.isArray(a)){ var e0=expNormalizar(a, [], false); expOrden=e0.orden; expOff=e0.off; expEnc={}; return; }   // formato de la v0.9.78
+    if(a && Array.isArray(a.orden)){ var e1=expNormalizar(a.orden, a.off, true, a.enc); expOrden=e1.orden; expOff=e1.off; expEnc=e1.enc; expPlanilla=a.planilla||""; return; }
   }catch(e){}
   expPredeterminado();
 }
-function expGuardar(){ expLS(EXP_CLAVE, JSON.stringify({orden:expOrden, off:Object.keys(expOff)})); }
+function expGuardar(){ expLS(EXP_CLAVE, JSON.stringify({orden:expOrden, off:Object.keys(expOff), enc:expEnc, planilla:expPlanilla})); }
 // plantillas: {plantillas:{nombre:{orden,off,t}}, borradas:{nombre:t}}; t = instante del último cambio, para fusionar entre equipos
 function expPlantLeer(){
   try{
@@ -8192,7 +8203,7 @@ async function expSincronizar(forzar){
     var rem=cfgCompartida.plantillasExportacion||{plantillas:{},borradas:{}}, loc=expPlantLeer(), m=expFusionar(loc, rem);
     if(JSON.stringify(m)!==JSON.stringify(loc)) expPlantEscribir(m);
     var remI=cfgCompartida.plantillasEmparejamiento||{plantillas:{},borradas:{}}, locI=impPlantLeer(), mI=expFusionar(locI, remI), cambioI=JSON.stringify(mI)!==JSON.stringify(locI);
-    if(cambioI){ impPlantEscribir(mI); esqRefrescar(); }
+    if(cambioI){ impPlantEscribir(mI); expPintar(); }
     if(JSON.stringify(m)!==JSON.stringify(rem) || JSON.stringify(mI)!==JSON.stringify(remI)){
       cfgCompartida.plantillasExportacion=m; cfgCompartida.plantillasEmparejamiento=mI;
       await escribirArchivo("Registros","_configuracion.json",JSON.stringify(cfgCompartida,null,1));
@@ -8203,30 +8214,63 @@ async function expSincronizar(forzar){
 }
 function expColumnas(){
   if(!expOrden) expCargar();
-  return expOrden.filter(function(n){ return !expOff[n]; }).map(function(n){ return CONS_COLUMNAS.filter(function(c){ return c[0]===n; })[0]; }).filter(Boolean);
+  return expOrden.filter(function(n){ return !expOff[n]; }).map(function(n){
+    if(expEsVacio(n)) return [expEnc[n]||"", function(){ return ""; }, ""];
+    return CONS_COLUMNAS.filter(function(c){ return c[0]===n; })[0];
+  }).filter(Boolean);
 }
+function expPlanillaActual(){ var es=expPlanilla ? esqLeer()[expPlanilla] : null; return es||null; }
+// Filas de la descarga (Exportar datos y Consultas): según la plantilla de campos (con columnas vacías) o la planilla emparejada elegida.
+function expFilas(lista){
+  if(!expOrden) expCargar();
+  var es=expPlanillaActual();
+  if(es){
+    if(expNuevos) lista=lista.filter(function(r){ var x=r.exportadoA&&r.exportadoA[es.nombre]; return !x||(r.modificadoEn&&r.modificadoEn>x); });
+    var res=esqFilas(lista, es, expExtra);
+    return {filas:res.filas, tipos:res.tipos, lista:lista, planilla:es, faltan:res.faltan};
+  }
+  var cols=expColumnas();
+  return {filas:filasDeLista(lista, cols), tipos:cols.map(function(c){ return c[2]||""; }), lista:lista, planilla:null, faltan:[]};
+}
+function expSinColumnas(){ if(!expOrden) expCargar(); return !expPlanillaActual() && !expColumnas().length; }
+function expRegistrarExportados(res){
+  if(!res.planilla || !expMarcar) return;
+  var ahora=new Date().toISOString(); res.lista.forEach(function(r){ r.exportadoA=r.exportadoA||{}; r.exportadoA[res.planilla.nombre]=ahora; });
+  persistir();
+}
+function expAvisoPlanilla(res){
+  if(!res.planilla) return "";
+  return " Formato de la planilla «"+res.planilla.nombre+"»."+(res.faltan.length?(expExtra?" Se agregaron al final columnas para datos sin equivalente: ":" Datos sin columna equivalente (no incluidos): ")+res.faltan.map(function(o){ return o.l; }).join(", ")+".":"");
+}
+function expDescripcion(){ var es=expPlanillaActual(); return es ? "planilla emparejada «"+es.nombre+"»" : expColumnas().length+" de "+CONS_COLUMNAS.length+" campos"; }
 function expPlantillaActual(){   // nombre de la plantilla que coincide con el estado actual ("" si está modificado)
+  if(expPlanillaActual()) return "";
   if(expEsPredet()) return EXP_PREDET;
   var pl=expPlantLeer().plantillas, hallada="";
   Object.keys(pl).forEach(function(n){ if(!hallada && expIgual(expNormalizar(pl[n].orden, pl[n].off, false))) hallada=n; });
   return hallada;
 }
 function expChip(n, k, on, flechas, arrastrable){
+  var vacio=expEsVacio(n), mv=flechas?'<button type="button" class="exp-mv" data-a="izq" title="Mover antes">◀</button><button type="button" class="exp-mv" data-a="der" title="Mover después">▶</button>':'';
+  if(vacio) return '<span class="exp-chip on vacio"'+(arrastrable?' draggable="true"':'')+' data-n="'+escapeHtml(n)+'"><button type="button" class="exp-tg" data-a="vacio-enc" title="Pulsa para escribir el encabezado de esta columna vacía">'+'<span class="exp-n">'+k+'.</span> '+(expEnc[n]?escapeHtml(expEnc[n])+' (vacía)':'(columna vacía)')+'</button>'+mv+'<button type="button" class="exp-mv" data-a="vacio-quitar" title="Quitar esta columna vacía">✕</button></span>';
   return '<span class="exp-chip'+(on?' on':' off')+'"'+(arrastrable?' draggable="true"':'')+' data-n="'+escapeHtml(n)+'">'
-    +'<button type="button" class="exp-tg" data-a="alterna" title="'+(on?'Pulsa para quitar este campo':'Pulsa para incluir este campo')+(arrastrable?'; arrástralo para moverlo':'')+'">'+(on?'<span class="exp-n">'+k+'.</span> ':'')+escapeHtml(n)+'</button>'
-    +(flechas?'<button type="button" class="exp-mv" data-a="izq" title="Mover antes">◀</button><button type="button" class="exp-mv" data-a="der" title="Mover después">▶</button>':'')+'</span>';
+    +'<button type="button" class="exp-tg" data-a="alterna" title="'+(on?'Pulsa para quitar este campo':'Pulsa para incluir este campo')+(arrastrable?'; arrástralo para moverlo':'')+'">'+(on?'<span class="exp-n">'+k+'.</span> ':'')+escapeHtml(n)+'</button>'+mv+'</span>';
 }
 function expPintar(){
   var li=document.getElementById("exp-lista"), sel=document.getElementById("exp-plant");
   if(!li || !sel) return;
   if(!expOrden) expCargar();
+  var es=expPlanillaActual(); if(expPlanilla && !es){ expPlanilla=""; expGuardar(); }
   var vista=expLS(EXP_VISTA)==="temas" ? "temas" : "orden", flechas=expLS(EXP_FLECHAS)==="1", q=stdNorm(expFiltro), k=0, num={};
   expOrden.forEach(function(n){ if(!expOff[n]) num[n]=++k; });
-  var visible=function(n){ return !q || stdNorm(n).indexOf(q)>-1; };
-  if(vista==="orden"){
+  var visible=function(n){ return !q || stdNorm(expNombre(n)).indexOf(q)>-1; };
+  if(es){
+    li.innerHTML = es.cols.map(function(c, i){ return '<span class="exp-chip '+(c.ignorada?'off':'on')+'" title="'+(c.ignorada?'Columna ignorada al emparejar: sale vacía':'Columna emparejada')+'"><span class="exp-n">'+(i+1)+'.</span> '+escapeHtml(c.nombre)+(c.ignorada?' (vacía)':'')+'</span>'; }).join("");
+    k=es.cols.length;
+  } else if(vista==="orden"){
     li.innerHTML = expOrden.filter(visible).map(function(n){ return expChip(n, num[n], !expOff[n], flechas, true); }).join("") || '<span class="nota">Ningún campo coincide con la búsqueda.</span>';
   } else {
-    li.innerHTML = '<p class="nota">En esta vista solo se incluyen o quitan campos; para ordenarlos usa «Orden de descarga».</p>'+expGrupos().map(function(g, gi){
+    li.innerHTML = '<p class="nota">En esta vista solo se incluyen o quitan campos; para ordenarlos y para insertar columnas vacías usa «Vista: orden de descarga».</p>'+expGrupos().map(function(g, gi){
       var lista=g[1].filter(visible); if(!lista.length) return "";
       var on=g[1].filter(function(n){ return !expOff[n]; }).length;
       return '<div class="exp-grupo"><div class="exp-gtit"><strong>'+escapeHtml(g[0])+'</strong> <span class="nota">('+on+' de '+g[1].length+')</span> <button type="button" class="btn small tenue" data-a="grupo-on" data-g="'+gi+'">Incluir grupo</button><button type="button" class="btn small tenue" data-a="grupo-off" data-g="'+gi+'">Quitar grupo</button></div><div class="exp-chips">'
@@ -8234,19 +8278,29 @@ function expPintar(){
     }).join("");
   }
   var pl=expPlantLeer().plantillas, nombres=Object.keys(pl).sort(function(a,b){ return a.localeCompare(b,"es"); }), act=expPlantillaActual();
-  sel.innerHTML=(act?'':'<option value="" selected disabled>Orden modificado (sin guardar)</option>')
+  var planillas=Object.keys(esqLeer()).sort(function(a,b){ return a.localeCompare(b,"es"); });
+  sel.innerHTML=(act||es?'':'<option value="" selected disabled>Orden modificado (sin guardar)</option>')
     +'<option value="'+escapeHtml(EXP_PREDET)+'"'+(act===EXP_PREDET?' selected':'')+'>'+EXP_PREDET+'</option>'
-    +nombres.map(function(n){ return '<option value="'+escapeHtml(n)+'"'+(n===act?' selected':'')+'>'+escapeHtml(n)+'</option>'; }).join("");
+    +nombres.map(function(n){ return '<option value="'+escapeHtml(n)+'"'+(n===act?' selected':'')+'>'+escapeHtml(n)+'</option>'; }).join("")
+    +(planillas.length?'<optgroup label="Planillas emparejadas (formato de la planilla original)">'+planillas.map(function(n){ return '<option value="esq:'+escapeHtml(n)+'"'+(es&&es.nombre===n?' selected':'')+'>Planilla: '+escapeHtml(n)+'</option>'; }).join("")+'</optgroup>':'');
   var propia=act && act!==EXP_PREDET;
   ["exp-renombrar","exp-borrar"].forEach(function(id){ var b=document.getElementById(id); if(b) b.disabled=!propia; });
+  var gb=document.getElementById("exp-guardar"); if(gb) gb.disabled=!!es;
+  var ed=document.getElementById("exp-edicion"); if(ed) ed.classList.toggle("oculto", !!es);
+  var po=document.getElementById("exp-planilla-opc"); if(po){ po.classList.toggle("oculto", !es);
+    var inf=document.getElementById("exp-planilla-info");
+    if(es && inf){ var ign=es.cols.filter(function(c){ return c.ignorada; }).length; inf.textContent="Planilla «"+es.archivo+"»"+(es.hoja?", hoja «"+es.hoja+"»":"")+": "+es.cols.length+" columnas ("+(es.cols.length-ign)+" emparejadas, "+ign+" ignoradas que salen vacías). Se descarga con sus encabezados y orden; las plantillas de emparejamiento se guardan y se borran en el importador."; }
+    var c1=document.getElementById("exp-p-nuevos"); if(c1) c1.checked=expNuevos;
+    var c2=document.getElementById("exp-p-extra"); if(c2) c2.checked=expExtra;
+    var c3=document.getElementById("exp-p-marcar"); if(c3) c3.checked=expMarcar; }
   var v=document.getElementById("exp-vista"); if(v) v.value=vista;
   var f=document.getElementById("exp-flechas"); if(f) f.checked=flechas;
-  var r=document.getElementById("exp-resumen"); if(r) r.textContent=k+" de "+expOrden.length+" campos";
+  var r=document.getElementById("exp-resumen"); if(r) r.textContent=es ? "Planilla: "+es.nombre : k+" de "+expOrden.length+" campos"+(Object.keys(expEnc).length||expOrden.some(expEsVacio)?" (con columnas vacías)":"");
   var m=document.getElementById("exp-msg"); if(m) m.textContent = carpetaHandle ? (expSincMsg||"") : "Carpeta local no conectada: las plantillas quedan solo en este navegador.";
 }
-function expAplicar(e){ expOrden=e.orden; expOff=e.off; expGuardar(); expPintar(); }
+function expAplicar(e){ expOrden=e.orden; expOff=e.off; expEnc=e.enc||{}; expPlanilla=""; expGuardar(); expPintar(); }
 function expMoverRelativo(n, dir){   // mueve un campo junto al vecino visible más cercano
-  var q=stdNorm(expFiltro), vis=expOrden.filter(function(x){ return !q || stdNorm(x).indexOf(q)>-1; }), i=vis.indexOf(n), v=vis[i+dir];
+  var q=stdNorm(expFiltro), vis=expOrden.filter(function(x){ return !q || stdNorm(expNombre(x)).indexOf(q)>-1; }), i=vis.indexOf(n), v=vis[i+dir];
   if(i<0 || !v) return;
   var o=expOrden.filter(function(x){ return x!==n; }), j=o.indexOf(v);
   o.splice(dir<0 ? j : j+1, 0, n); expOrden=o; expGuardar(); expPintar();
@@ -8267,7 +8321,7 @@ function expMoverRelativo(n, dir){   // mueve un campo junto al vecino visible m
       if(!nombreValido(nom)) return;
       var d=expPlantLeer();
       if(d.plantillas[nom] && !confirm("Ya existe la plantilla «"+nom+"». ¿Reemplazarla con el orden actual?")) return;
-      d.plantillas[nom]={orden:expOrden.slice(), off:Object.keys(expOff), t:Date.now()}; delete d.borradas[nom]; expPlantEscribir(d); expPintar(); expSincronizar(true); return;
+      d.plantillas[nom]={orden:expOrden.slice(), off:Object.keys(expOff), enc:Object.assign({}, expEnc), t:Date.now()}; delete d.borradas[nom]; expPlantEscribir(d); expPintar(); expSincronizar(true); return;
     }
     if(b.id==="exp-renombrar"){
       var viejo=expPlantillaActual(); if(!viejo || viejo===EXP_PREDET) return;
@@ -8282,6 +8336,13 @@ function expMoverRelativo(n, dir){   // mueve un campo junto al vecino visible m
       var nb=expPlantillaActual(); if(!nb || nb===EXP_PREDET || !confirm("¿Eliminar la plantilla «"+nb+"»? También se quitará de los demás equipos que usan esta Carpeta local.")) return;
       var d3=expPlantLeer(); delete d3.plantillas[nb]; d3.borradas[nb]=Date.now(); expPlantEscribir(d3); expPintar(); expSincronizar(true); return;
     }
+    if(b.id==="exp-vacia"){
+      var mx=0; expOrden.forEach(function(x){ if(expEsVacio(x)) mx=Math.max(mx, parseInt(x.slice(2),10)); });
+      var id="@v"+(mx+1), enc0=(prompt("Encabezado de la columna vacía (puede quedar en blanco):","")||"").trim();
+      expOrden.push(id); if(enc0) expEnc[id]=enc0; expGuardar(); expPintar(); return;
+    }
+    if(a==="vacio-enc"){ var nv=prompt("Encabezado de esta columna vacía (en blanco, sin encabezado):", expEnc[n]||""); if(nv===null) return; nv=nv.trim(); if(nv) expEnc[n]=nv; else delete expEnc[n]; expGuardar(); expPintar(); return; }
+    if(a==="vacio-quitar"){ expOrden=expOrden.filter(function(x){ return x!==n; }); delete expEnc[n]; expGuardar(); expPintar(); return; }
     if(b.id==="exp-todos"){ expOff={}; expGuardar(); expPintar(); return; }
     if(b.id==="exp-ninguno"){ expOrden.forEach(function(x){ expOff[x]=1; }); expGuardar(); expPintar(); return; }
     if(a==="alterna"){ if(expOff[n]) delete expOff[n]; else expOff[n]=1; expGuardar(); expPintar(); return; }
@@ -8296,11 +8357,15 @@ function expMoverRelativo(n, dir){   // mueve un campo junto al vecino visible m
   cont.addEventListener("change", function(ev){
     var t=ev.target;
     if(t.id==="exp-plant"){
+      if(t.value.indexOf("esq:")===0){ expPlanilla=t.value.slice(4); expGuardar(); expPintar(); return; }
       if(t.value===EXP_PREDET){ expPredeterminado(); expGuardar(); expPintar(); return; }
       var pl=expPlantLeer().plantillas[t.value];
       if(pl) expAplicar(expNormalizar(pl.orden, pl.off, false)); else expPintar();
     } else if(t.id==="exp-vista"){ expLS(EXP_VISTA, t.value); expPintar(); }
     else if(t.id==="exp-flechas"){ expLS(EXP_FLECHAS, t.checked?"1":"0"); expPintar(); }
+    else if(t.id==="exp-p-nuevos") expNuevos=t.checked;
+    else if(t.id==="exp-p-extra") expExtra=t.checked;
+    else if(t.id==="exp-p-marcar") expMarcar=t.checked;
   });
   cont.addEventListener("input", function(ev){ if(ev.target.id==="exp-filtro"){ expFiltro=ev.target.value; expPintar(); } });
   // arrastrar y soltar: el campo arrastrado queda antes o después de aquel sobre el que se suelta
@@ -8339,7 +8404,7 @@ function listaConsultaDescarga(){
   var m=new Set(marcadosConsulta()), lista=resultadosConsulta();
   return m.size ? lista.filter(function(r){ return m.has(r.id); }) : lista;
 }
-function filasConsulta(){ return filasDeLista(listaConsultaDescarga(), expColumnas()); }
+function filasConsulta(){ return expFilas(listaConsultaDescarga()).filas; }
 function csvDeFilas(filas, sinBom){
   return (sinBom?"":"﻿")+filas.map(function(f){ return f.map(function(v){ v=String(v); return /[",\r\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(","); }).join("\r\n")+"\r\n";
 }
@@ -8552,9 +8617,14 @@ async function zipDeRespaldo(lista, conArchivos, progreso){
   return {blob:zipSinCompresion(arch,"application/zip"), incluidos:incluidos, bytes:bytes, faltantes:faltantes, omitidos:omitidos};
 }
 async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
-  var colsExp=(formato==="xlsx"||formato==="csv") ? expColumnas() : null;
-  if(colsExp && !colsExp.length){ alert("No hay campos elegidos para exportar. Abre «Elegir los campos y su orden» y marca al menos uno."); return; }
+  var esTabla=(formato==="xlsx"||formato==="csv"), resExp=null;
+  if(esTabla && expSinColumnas()){ alert("No hay campos elegidos para exportar. Abre «Elegir los campos y su orden» y marca al menos uno."); return; }
   var lista=listaParaDescarga(); if(!lista) return;
+  if(esTabla){
+    resExp=expFilas(lista);
+    if(resExp.filas.length<2){ alert("No hay registros para descargar con este alcance (todos ya fueron exportados a esta planilla)."); return; }
+    lista=resExp.lista;
+  }
   var f=new Date(), sello=f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes());
   var nombre=nombreDescarga(formato==="zip"?"Respaldo":formato==="dwc"?"Darwin Core":"Registros", contenidoDeLista(lista), formato==="dwc"?"csv":formato), blob, infoZip=null; void sello;
   var msgPrev=document.getElementById("datos-msg");
@@ -8564,8 +8634,9 @@ async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
     catch(e){ registrarError("zip de respaldo", e); var tz="No se pudo preparar el zip: "+((e&&e.message)||e)+". Prueba desmarcando la inclusión de fotos y archivos."; if(msgPrev) msgPrev.textContent=tz; alert(tz); return; }
   }
   else if(formato==="dwc") blob=new Blob([csvDeFilas(filasDwc(lista),true)],{type:"text/csv;charset=utf-8"});
-  else { var filas=filasDeLista(lista, colsExp); blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas, colsExp.map(function(c){ return c[2]||""; })); }
+  else blob = formato==="csv" ? new Blob([csvDeFilas(resExp.filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(resExp.filas, resExp.tipos);
   descargarBlob(blob, nombre);
+  if(resExp) expRegistrarExportados(resExp);
   var extra="";
   if(carpetaHandle && await permisoCarpeta(false)){
     try{
@@ -8575,7 +8646,7 @@ async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
       await escribirArchivo(formato==="zip"?"Respaldos":"Exportaciones", nomCopia, blobCopia); extra=" Copia guardada en "+(formato==="zip"?"Respaldos/":"Exportaciones/")+" de la Carpeta local.";
     }catch(e){ registrarError("copia en la Carpeta local", e); extra=" No se pudo guardar la copia en la Carpeta local ("+((e&&e.message)||e)+")."; }
   }
-  var msg=lista.length+" registro(s) descargados en "+nombre+"."+extra;
+  var msg=lista.length+" registro(s) descargados en "+nombre+"."+extra+(resExp?expAvisoPlanilla(resExp):"");
   if(infoZip && infoZip.incluidos) msg+=" Incluye "+infoZip.incluidos+" archivo(s) ("+fmtBytes(infoZip.bytes)+").";
   if(infoZip && infoZip.omitidos) msg+=" Los archivos no se incluyeron por su tamaño.";
   if(infoZip && infoZip.faltantes.length) msg+=" No se encontraron "+infoZip.faltantes.length+" archivo(s) asociado(s): quedan anotados en el manifiesto del zip.";
@@ -9768,7 +9839,7 @@ function iniciarImportador(){
       if(d.plantillas[nom] && !confirm("Ya existe la plantilla «"+nom+"». ¿Reemplazarla con el emparejado actual?")) return;
       d.plantillas[nom]={mapas:imp.mapas.map(function(m){ return {nombre:imp.cols[m.col].nombre,target:m.target,opts:m.opts}; }),fijos:imp.fijos,clave:imp.clave,politica:imp.politica,minLlenos:imp.minLlenos,esquema:esqConstruir(nom),t:Date.now()};
       delete d.borradas[nom]; impPlantEscribir(d); imp.plantillaNombre=nom;
-      impMensaje("Plantilla «"+nom+"» guardada"+(carpetaHandle?" y compartida con la Carpeta local.":" en este navegador.")); impPintar(); esqRefrescar(); expSincronizar(true);
+      impMensaje("Plantilla «"+nom+"» guardada"+(carpetaHandle?" y compartida con la Carpeta local.":" en este navegador.")); impPintar(); expPintar(); expSincronizar(true);
     }
     else if(t.id==="imp-aplicar"){ impAplicarPlantilla(impElem("imp-guardados").value); }
     else if(t.hasAttribute("data-plantilla")){ impAplicarPlantilla(t.getAttribute("data-plantilla")); }
@@ -9776,7 +9847,7 @@ function iniciarImportador(){
     else if(t.hasAttribute("data-anexar")){ impAsignar(parseInt(t.getAttribute("data-anexar"),10),"@obs"); var sg3=impPendientesManual()[0]; if(imp.paso===2) imp.foco=sg3?sg3.i:null; impPintar(); }
     else if(t.id==="imp-borrar-guardado"){
       var nb=impElem("imp-guardados").value; if(!nb || !confirm("¿Borrar la plantilla «"+nb+"»? También se quitará de los demás equipos que usan esta Carpeta local.")) return;
-      var d3=impPlantLeer(); delete d3.plantillas[nb]; d3.borradas[nb]=Date.now(); impPlantEscribir(d3); impPintar(); esqRefrescar(); expSincronizar(true);
+      var d3=impPlantLeer(); delete d3.plantillas[nb]; d3.borradas[nb]=Date.now(); impPlantEscribir(d3); impPintar(); expPintar(); expSincronizar(true);
     }
   });
   // arrastrar y soltar
@@ -10147,12 +10218,12 @@ instalarAyudasCampos();
 iniciarSelectsOtro();
 
 async function descargarConsulta(formato){
-  var colsExp=expColumnas();
-  if(!colsExp.length){ alert("No hay campos elegidos para descargar. Se eligen en Sistema, Gestión de datos, Exportar datos, «Elegir los campos y su orden»."); return; }
-  var filas=filasConsulta();
-  if(filas.length<2){ alert("No hay resultados para descargar."); return; }
-  var nombre=nombreDescarga("Consulta", contenidoDeLista(listaConsultaDescarga()), formato);
-  var blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas, colsExp.map(function(c){ return c[2]||""; }));
+  if(expSinColumnas()){ alert("No hay campos elegidos para descargar. Se eligen en Sistema, Gestión de datos, Exportar datos, «Elegir los campos y su orden»."); return; }
+  var resExp=expFilas(listaConsultaDescarga()), filas=resExp.filas;
+  if(filas.length<2){ alert("No hay resultados para descargar."+(resExp.planilla&&expNuevos?" Todos ya fueron exportados a esta planilla.":"")); return; }
+  var nombre=nombreDescarga("Consulta", contenidoDeLista(resExp.lista), formato);
+  var blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas, resExp.tipos);
+  expRegistrarExportados(resExp);
   var url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(function(){ URL.revokeObjectURL(url); },30000);
@@ -10160,9 +10231,9 @@ async function descargarConsulta(formato){
   if(carpetaHandle && await permisoCarpeta(false)){
     try{ await escribirArchivo("Exportaciones", nombre, blob); extra=" Copia guardada en Exportaciones/ de la Carpeta local."; }catch(e){ registrarError("copia en Exportaciones/", e); extra=" No se pudo guardar la copia en la Carpeta local."; }
   }
-  mensajeCarpeta((filas.length-1)+" registro(s) descargados en "+nombre+"."+extra);
+  mensajeCarpeta((filas.length-1)+" registro(s) descargados en "+nombre+"."+extra+expAvisoPlanilla(resExp));
   registrarActividad("descarga", formato.toUpperCase()+" · "+(filas.length-1)+" registro(s)"+(marcadosConsulta().length?" · solo marcados":"")+(descripcionFiltros()?" · filtros: "+descripcionFiltros():" · sin filtros"));
-  var m=document.getElementById("cons-msg"); if(m) m.textContent=(filas.length-1)+" registro(s) descargados como "+nombre+"."+extra;
+  var m=document.getElementById("cons-msg"); if(m) m.textContent=(filas.length-1)+" registro(s) descargados como "+nombre+"."+extra+expAvisoPlanilla(resExp);
 }
 
 // ---------- Planillas emparejadas: esquemas guardados y traducción de registros a su formato ----------
@@ -10180,20 +10251,6 @@ function esqConstruir(nombre){
     })};
   });
   return {nombre:nombre, archivo:imp.nombreArchivo, hoja:imp.hojaNombre||"", filaEnc:imp.filaEnc, creado:new Date().toISOString(), cols:cols};
-}
-async function esqRefrescar(){
-  var det=document.getElementById("cons-esq"); if(!det) return;
-  var g=esqLeer(), nombres=Object.keys(g), sel=document.getElementById("esq-sel"), previo=sel.value;
-  det.classList.toggle("oculto", !nombres.length||modoAcceso!=="admin");
-  sel.innerHTML=nombres.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("");
-  if(nombres.indexOf(previo)>-1) sel.value=previo;
-  esqActualizarInfo();
-}
-function esqActualizarInfo(){
-  var g=esqLeer(), es=g[document.getElementById("esq-sel").value], el=document.getElementById("esq-info"); if(!el) return;
-  if(!es){ el.textContent=""; return; }
-  var ign=es.cols.filter(function(c){ return c.ignorada; }).length;
-  el.textContent="Planilla «"+es.archivo+"»"+(es.hoja?", hoja «"+es.hoja+"»":"")+": "+es.cols.length+" columnas ("+(es.cols.length-ign)+" emparejadas, "+ign+" ignoradas que quedarán vacías o con su valor original).";
 }
 function esqFecha(v,fmt){
   var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v)); if(!m) return String(v);
@@ -10268,37 +10325,6 @@ function esqFilas(lista,es,conExtra){
   });
   return {filas:filas, tipos:tipos, faltan:faltan};
 }
-async function esqTraducir(){
-  if(modoAcceso!=="admin") return;
-  var g=esqLeer(), es=g[document.getElementById("esq-sel").value], msg=document.getElementById("esq-msg");
-  if(!es){ msg.textContent="Elige una planilla."; return; }
-  var lista=registros.filter(function(r){ return seleccionDescarga.has(r.id); });
-  if(!lista.length) lista=registrosMostradosDatos();
-  if(document.getElementById("esq-nuevos").checked){
-    lista=lista.filter(function(r){ var x=r.exportadoA&&r.exportadoA[es.nombre]; return !x||(r.modificadoEn&&r.modificadoEn>x); });
-  }
-  if(!lista.length){ msg.textContent="No hay registros para traducir con este alcance."; return; }
-  var res=esqFilas(lista,es,document.getElementById("esq-extra").checked), formato=document.getElementById("esq-formato").value;
-  var nombre=nombreDescarga("Planilla "+es.nombre, contenidoDeLista(lista), formato);
-  var blob=formato==="csv"?new Blob([csvDeFilas(res.filas)],{type:"text/csv;charset=utf-8"}):xlsxDeFilas(res.filas,res.tipos);
-  var url=URL.createObjectURL(blob), a=document.createElement("a");
-  a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
-  var extra="";
-  if(carpetaHandle && await permisoCarpeta(false)){ try{ await escribirArchivo("Exportaciones", nombre, blob); extra=" Copia en Exportaciones/ de la Carpeta local."; }catch(e){ registrarError("copia en Exportaciones/", e); extra=" No se pudo guardar la copia en la Carpeta local."; } }
-  if(document.getElementById("esq-marcar").checked){
-    var ahora=new Date().toISOString(); lista.forEach(function(r){ r.exportadoA=r.exportadoA||{}; r.exportadoA[es.nombre]=ahora; });
-    persistir();
-  }
-  var aviso=res.faltan.length?(document.getElementById("esq-extra").checked?" Se agregaron al final columnas para datos sin equivalente: ":" Datos sin columna equivalente en la planilla (no incluidos): ")+res.faltan.map(function(o){ return o.l; }).join(", ")+".":"";
-  msg.textContent=lista.length+" registro(s) traducidos al formato de «"+es.nombre+"»: "+nombre+". Pega las filas al final de tu planilla."+extra+aviso;
-  registrarActividad("traduccion","planilla "+es.nombre+" · "+lista.length+" registro(s)");
-}
-function esqIniciar(){
-  var det=document.getElementById("cons-esq"); if(!det||det._ini) return; det._ini=true;
-  document.getElementById("esq-btn").addEventListener("click", esqTraducir);
-  document.getElementById("esq-sel").addEventListener("change", esqActualizarInfo);
-}
-
 // ---------- Importar zip de Libreta de Campo ----------
 // Lee el .zip sin librerías: directorio central + descompresión nativa (DecompressionStream, Chrome y Edge).
 async function leerZip(buf){
@@ -10653,7 +10679,7 @@ function iniciarAdmin(n, detalle){
   registrarActividad("ingreso", detalle+" · v"+APP_VERSION.replace(/^v/,""));
   pintarAdmins();
   guardarAdminsCarpeta();
-  esqIniciar(); esqRefrescar(); stdIniciar(); stdRender(); stdSincronizar();
+  stdIniciar(); stdRender(); stdSincronizar();
   activarTab("entrada");
   pintarConfigAlertas();
   programarAlertaPrestamos();

@@ -616,6 +616,7 @@
   .gbif-det-cuerpo .gbif-acciones{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
   .ficha-valor{color:#14201a;font-weight:500;font-size:15.5px;white-space:pre-wrap;}
   .ficha-campo{align-items:baseline;}
+  /* v0.9.87: etiquetas con papel, márgenes y reparto por ancho o por número (hasta 8 por fila) */
   /* v0.9.85: ficha de consulta con encabezados discretos en columna alineada y valores protagonistas */
   .ficha-campo{grid-template-columns:minmax(150px,210px) 1fr !important;gap:2px 18px !important;padding:9px 6px !important;border-bottom:none !important;align-items:baseline !important;}
   .ficha-campo:nth-child(even){background:rgba(47,93,58,.045);}
@@ -729,7 +730,7 @@
   #et-tabla{max-height:340px;overflow:auto;}
   #et-tabla table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;} #et-tabla th,#et-tabla td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;}
   #et-campos{display:flex;flex-direction:column;gap:4px;margin:6px 0;} .et-fila{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:3px 8px;background:#fffdf8;} .et-fila .et-nom{flex:1;} .et-fila button{padding:0 8px;}
-  #et-prev{border:1px dashed var(--line-fuerte);border-radius:8px;padding:8px;background:#fff;max-height:380px;overflow:auto;margin:6px 0;}
+  #et-prev{border:1px dashed var(--line-fuerte);border-radius:8px;padding:10px;background:#e6e6df;max-height:620px;overflow:auto;margin:6px 0;} #et-prev .et-pagina{box-sizing:border-box;background:#fff;box-shadow:0 0 0 1px #b9b9b0,0 2px 8px rgba(0,0,0,.18);overflow:hidden;margin:0 auto 6px;} #et-est{margin:6px 0;} #et-est .aviso-et{color:#8a4b00;display:block;margin-top:3px;}
   #cb-tabla{max-height:340px;overflow:auto;}
   #cb-tabla .cb-dest{background:#fff3c4;font-weight:600;border-left:2px solid #e0a800;border-right:2px solid #e0a800;}
   #cb-tabla th.cb-dest{background:#ffe27a;}
@@ -1266,7 +1267,7 @@
       </details>
       <details class="subbloque-gest" id="sub-etiquetas">
         <summary>Etiquetas automáticas <button type="button" class="ayuda-btn" data-ayuda="ayuda-etiquetas" aria-label="Ayuda" title="Ayuda">?</button></summary>
-        <div class="ayuda-panel oculto" id="ayuda-etiquetas">Arma etiquetas imprimibles para los ejemplares que elijas, con los campos que quieras y en el orden que prefieras. Se hace en tres pasos: elegir los ejemplares, elegir y ordenar los campos, y revisar la vista previa antes de imprimir o guardar como PDF.</div>
+        <div class="ayuda-panel oculto" id="ayuda-etiquetas">Arma etiquetas imprimibles para los ejemplares que elijas, con los campos que quieras y en el orden que prefieras. Se hace en tres pasos: elegir los ejemplares, elegir y ordenar los campos, y definir la hoja (papel, márgenes y reparto) con una vista previa a tamaño real. La vista previa muestra la primera hoja y calcula cuántas etiquetas caben. Al imprimir, el cuadro de impresión del navegador debe tener el mismo papel, escala 100 % y sin encabezados ni pies.</div>
         <p class="nota">Arma etiquetas imprimibles para los ejemplares que elijas, con los campos que quieras y en el orden que prefieras. Sigue tres pasos: elige los registros, elige y ordena los campos, y revisa la vista previa antes de imprimir o guardar como PDF.</p>
         <h4>1. Elegir los ejemplares</h4>
         <div class="grid">
@@ -1281,13 +1282,26 @@
         <div class="imp-fila-opc"><div><label>Agregar un campo</label><select class="nav" id="et-agregar"></select></div></div>
         <p class="nota">Los campos aparecen en la etiqueta en el orden de esta lista. Usa ▲ y ▼ para ordenarlos y ✕ para quitarlos. Un campo vacío en un ejemplar se omite en su etiqueta.</p>
         <div id="et-campos"></div>
-        <h4>3. Formato, vista previa y salida</h4>
+        <h4>3. Hoja, formato, vista previa y salida</h4>
         <div class="imp-fila-opc">
-          <div><label>Etiquetas por fila</label><select class="nav" id="et-cols"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
-          <div><label>Tamaño de letra</label><select class="nav" id="et-pt"><option>7</option><option>8</option><option selected>9</option><option>10</option><option>11</option><option>12</option><option>14</option></select></div>
+          <div><label>Papel</label><select class="nav" id="et-papel"><option value="A4">A4 (210 × 297 mm)</option><option value="Carta">Carta (216 × 279 mm)</option><option value="Oficio">Oficio (216 × 356 mm)</option><option value="A5">A5 (148 × 210 mm)</option><option value="custom">Personalizado…</option></select></div>
+          <div><label>Orientación</label><select class="nav" id="et-orient"><option value="v">Vertical</option><option value="h">Horizontal</option></select></div>
+          <div id="et-custom" class="oculto"><label>Ancho × alto del papel (mm)</label><input class="nav" id="et-pw" type="number" min="50" max="1000" step="0.5" style="width:80px"> × <input class="nav" id="et-ph" type="number" min="50" max="1000" step="0.5" style="width:80px"></div>
+          <div><label>Márgenes de la hoja (mm)</label><input class="nav" id="et-margen" type="number" min="0" max="30" step="0.5" style="width:80px"></div>
+          <div><label>Separación entre etiquetas (mm)</label><input class="nav" id="et-gap" type="number" min="0" max="20" step="0.5" style="width:80px"></div>
+        </div>
+        <div class="imp-fila-opc">
+          <div><label>Cómo repartir las etiquetas</label><select class="nav" id="et-modo"><option value="filas">Elegir cuántas etiquetas por fila</option><option value="tam">Elegir el ancho de la etiqueta</option></select></div>
+          <div id="et-w-filas"><label>Etiquetas por fila (hasta 8)</label><select class="nav" id="et-cols"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+          <div id="et-w-tam" class="oculto"><label>Ancho de la etiqueta (mm, mínimo 15)</label><input class="nav" id="et-ancho" type="number" min="15" max="300" step="0.5" style="width:90px"></div>
+          <div><label>Alto de la etiqueta (mm; vacío = según el contenido)</label><input class="nav" id="et-alto" type="number" min="8" max="300" step="0.5" placeholder="automático" style="width:110px"></div>
+        </div>
+        <div class="imp-fila-opc">
+          <div><label>Tamaño de letra (pt)</label><select class="nav" id="et-pt"><option>5</option><option>6</option><option>7</option><option>8</option><option selected>9</option><option>10</option><option>11</option><option>12</option><option>14</option></select></div>
           <div><label>Copias de cada etiqueta</label><input class="nav" id="et-copias" type="number" min="1" max="20" value="1" style="width:80px"></div>
         </div>
         <div class="imp-fila-opc"><label><input type="checkbox" id="et-nombres" checked> Mostrar el nombre de cada campo</label><label><input type="checkbox" id="et-borde" checked> Dibujar un borde alrededor de cada etiqueta</label></div>
+        <p class="nota" id="et-est"></p>
         <div id="et-prev"></div>
         <div class="barra-botones"><button type="button" class="btn" id="et-imprimir" disabled>Imprimir o guardar como PDF</button><button type="button" class="btn secundario" id="et-descargar" disabled>Descargar archivo (.html)</button></div>
         <p class="nota" id="et-msg"></p>
@@ -1521,7 +1535,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.86";
+var APP_VERSION = "v0.9.87";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -10127,7 +10141,7 @@ function iniciarEtiquetas(){
   var det=document.getElementById("sub-etiquetas"); if(!det) return;
   var $=function(i){ return document.getElementById(i); };
   var sel=new Set(), CLAVE=LS_PREFIX+"etiquetas_cfg", tCuenta=null;
-  var cfg={campos:["@cat","@nombre","localidad","fechaColecta","colector"], cols:2, pt:9, copias:1, nombres:true, borde:true};
+  var cfg={campos:["@cat","@nombre","localidad","fechaColecta","colector"], cols:2, pt:9, copias:1, nombres:true, borde:true, papel:"A4", orient:"v", pw:210, ph:297, margen:10, gap:2, modo:"filas", ancho:60, alto:0};
   try{ var g=JSON.parse(localStorage.getItem(CLAVE)||"null"); if(g && Array.isArray(g.campos)) cfg=Object.assign(cfg,g); }catch(e){}
   function guardarCfg(){ try{ localStorage.setItem(CLAVE, JSON.stringify(cfg)); }catch(e){} }
   var ESP=[
@@ -10172,17 +10186,42 @@ function iniciarEtiquetas(){
     }).join("");
     return n ? '<div class="et">'+filas+'</div>' : "";
   }
-  function css(pref){
-    return pref+" .et-hoja{display:grid;grid-template-columns:repeat("+cfg.cols+",1fr);gap:6px;} "
-      +pref+" .et{box-sizing:border-box;"+(cfg.borde?"border:1px solid #333;":"")+"padding:6px 8px;font-size:"+cfg.pt+"pt;line-height:1.3;break-inside:avoid;page-break-inside:avoid;overflow-wrap:anywhere;font-family:Arial,Helvetica,sans-serif;color:#000;} "
+  function fm(x){ return (Math.round(x*10)/10).toString().replace(".",","); }
+  function pagina(){
+    var P={A4:[210,297],Carta:[215.9,279.4],Oficio:[215.9,355.6],A5:[148,210]};
+    var d=(cfg.papel==="custom") ? [cfg.pw,cfg.ph] : (P[cfg.papel]||P.A4);
+    return cfg.orient==="h" ? [d[1],d[0]] : [d[0],d[1]];
+  }
+  // Geometría real de la hoja: ancho de etiqueta, columnas, filas que caben y avisos
+  function geom(){
+    var d=pagina(), W=d[0], H=d[1], m=cfg.margen, gap=cfg.gap, Wu=W-2*m, Hu=H-2*m, MIN=15, av=[], cols, w;
+    var maxCols=Math.max(1,Math.floor((Wu+gap)/(MIN+gap)));
+    if(Wu<MIN) av.push("Los márgenes dejan menos de 15 mm de ancho útil en la hoja.");
+    if(cfg.modo==="tam"){
+      w=Math.max(MIN,cfg.ancho);
+      if(w>Wu){ w=Math.max(MIN,Wu); av.push("El ancho pedido no cabe en la hoja; se usa "+fm(w)+" mm."); }
+      cols=Math.max(1,Math.floor((Wu+gap)/(w+gap)));
+    } else {
+      cols=Math.min(cfg.cols,8,maxCols);
+      if(cols<cfg.cols) av.push("Con este papel y estos márgenes, cada etiqueta de al menos 15 mm de ancho permite como máximo "+cols+" por fila; se usan "+cols+".");
+      w=(Wu-gap*(cols-1))/cols;
+    }
+    var h=cfg.alto>0 ? cfg.alto : null, rows=h ? Math.max(0,Math.floor((Hu+gap)/(h+gap))) : null;
+    if(h && rows<1) av.push("El alto de la etiqueta no cabe en la hoja.");
+    return {W:W,H:H,Wu:Wu,Hu:Hu,cols:cols,w:w,h:h,rows:rows,av:av};
+  }
+  function css(pref,g){
+    var pad=g.w<30 ? "0.8mm 1mm" : (g.w<50 ? "1.2mm 1.6mm" : "2mm 2.5mm");
+    return pref+" .et-hoja{display:grid;grid-template-columns:repeat("+g.cols+","+g.w.toFixed(3)+"mm);gap:"+cfg.gap+"mm;justify-content:start;align-content:start;} "
+      +pref+" .et{box-sizing:border-box;"+(cfg.borde?"border:1px solid #333;":"")+"padding:"+pad+";font-size:"+cfg.pt+"pt;line-height:1.25;"+(g.h?"height:"+g.h+"mm;overflow:hidden;":"")+"break-inside:avoid;page-break-inside:avoid;overflow-wrap:anywhere;font-family:Arial,Helvetica,sans-serif;color:#000;} "
       +pref+" .et-l:first-child .et-v{font-weight:700;} "+pref+" .et-n{color:#444;font-size:.85em;}";
   }
   function listaConCopias(lista){
     var out=[]; lista.forEach(function(r){ var h=etiquetaHtml(r); if(h) for(var i=0;i<cfg.copias;i++) out.push(h); }); return out;
   }
   function documento(lista, auto){
-    var et=listaConCopias(lista).join("");
-    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Etiquetas Libro de Catálogo</title><style>@page{margin:10mm} body{margin:0;padding:8px;} '+css("")+'</style></head><body><div class="et-hoja">'+et+'</div>'
+    var g=geom(), et=listaConCopias(lista).join("");
+    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Etiquetas Libro de Catálogo</title><style>@page{size:'+g.W+'mm '+g.H+'mm;margin:'+cfg.margen+'mm} body{margin:0;padding:0;} '+css("",g)+'</style></head><body><div class="et-hoja">'+et+'</div>'
       +(auto ? '<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script>' : '')+'</body></html>';
   }
   function pintarCampos(){
@@ -10199,12 +10238,28 @@ function iniciarEtiquetas(){
     guardarCfg();
   }
   function pintarPrev(){
-    var lista=elegidos(), et=listaConCopias(lista.slice(0,6));
+    var g=geom(), lista=elegidos(), todas=listaConCopias(lista);
+    var porHoja=g.h ? Math.max(g.cols, g.cols*g.rows) : 48;
+    var et=todas.slice(0,porHoja);
     var st=document.getElementById("et-estilo"); if(!st){ st=document.createElement("style"); st.id="et-estilo"; document.head.appendChild(st); }
-    st.textContent=css("#et-prev");
-    $("et-prev").innerHTML = et.length ? '<div class="et-hoja">'+et.join("")+'</div>'+(lista.length>6?'<p class="nota">Vista previa de las primeras etiquetas; se imprimirán '+listaConCopias(lista).length+' en total.</p>':'') : '<p class="nota">Marca ejemplares y agrega campos para ver la vista previa.</p>';
+    st.textContent=css("#et-prev",g);
+    $("et-prev").innerHTML = et.length ? '<div class="et-pagina" style="width:'+g.W+'mm;height:'+g.H+'mm;padding:'+cfg.margen+'mm"><div class="et-hoja">'+et.join("")+'</div></div>'+(todas.length>et.length?'<p class="nota">Vista previa de la primera hoja; se imprimirán '+todas.length+' etiquetas en total.</p>':'') : '<p class="nota">Marca ejemplares y agrega campos para ver la vista previa.</p>';
     var ok=lista.length>0 && cfg.campos.length>0 && et.length>0;
     $("et-imprimir").disabled=!ok; $("et-descargar").disabled=!ok;
+    // estimación del tamaño real
+    var t="Hoja "+(cfg.papel==="custom"?"personalizada":cfg.papel)+" "+(cfg.orient==="h"?"horizontal":"vertical")+" de "+fm(g.W)+" × "+fm(g.H)+" mm; con márgenes de "+fm(cfg.margen)+" mm queda un área útil de "+fm(g.Wu)+" × "+fm(g.Hu)+" mm. "
+      +"Cada etiqueta mide "+fm(g.w)+" mm de ancho y caben "+g.cols+" por fila (separación de "+fm(cfg.gap)+" mm). ";
+    var avisos=g.av.slice(), PX=96/25.4;
+    var els=$("et-prev").querySelectorAll(".et"), mx=0, cortada=false;
+    for(var k=0;k<els.length;k++){ var hh=els[k].offsetHeight/PX; if(hh>mx) mx=hh; if(els[k].scrollHeight>els[k].clientHeight+1) cortada=true; }
+    if(g.h){
+      t+="Alto fijo de "+fm(g.h)+" mm: "+g.rows+" fila(s) por hoja, "+(g.rows*g.cols)+" etiquetas por hoja.";
+      if(cortada) avisos.push("Hay etiquetas con el texto cortado: aumenta el alto, baja el tamaño de letra o quita campos.");
+    } else if(els.length){
+      var rf=Math.max(1,Math.floor((g.Hu+cfg.gap)/(mx+cfg.gap)));
+      t+="Alto según el contenido: la etiqueta más alta de la vista previa mide unos "+fm(mx)+" mm, así que caben cerca de "+rf+" fila(s), unas "+(rf*g.cols)+" etiquetas por hoja.";
+    } else t+="El alto se ajusta al contenido de cada etiqueta.";
+    $("et-est").innerHTML=escapeHtml(t)+avisos.map(function(a){ return '<span class="aviso-et">⚠ '+escapeHtml(a)+'</span>'; }).join("");
   }
   function pintar(){
     var lista=filtrados(), marc=0; lista.forEach(function(r){ if(sel.has(r.id)) marc++; });
@@ -10224,6 +10279,9 @@ function iniciarEtiquetas(){
     llenarSelect("et-sesion", valoresUnicos(sesionDeRegistro), "Todas");
     $("et-cols").value=String(cfg.cols); $("et-pt").value=String(cfg.pt); $("et-copias").value=String(cfg.copias);
     $("et-nombres").checked=!!cfg.nombres; $("et-borde").checked=!!cfg.borde;
+    $("et-papel").value=cfg.papel; $("et-orient").value=cfg.orient; $("et-pw").value=cfg.pw; $("et-ph").value=cfg.ph;
+    $("et-margen").value=cfg.margen; $("et-gap").value=cfg.gap; $("et-modo").value=cfg.modo; $("et-ancho").value=cfg.ancho; $("et-alto").value=cfg.alto>0?cfg.alto:"";
+    mostrarModos();
   }
   det.addEventListener("toggle", function(){ if(det.open){ catalogo(); llenar(); pintarCampos(); pintar(); } });
   $("et-buscar").addEventListener("input", function(){ clearTimeout(tCuenta); tCuenta=setTimeout(pintar,200); });
@@ -10239,12 +10297,23 @@ function iniciarEtiquetas(){
     else if(b.hasAttribute("data-et-quita")){ a.splice(+b.getAttribute("data-et-quita"),1); }
     pintarCampos(); pintarPrev();
   });
+  function num(id,def,mn,mx){ var v=parseFloat(String($(id).value).replace(",",".")); if(isNaN(v)) return def; return Math.min(mx,Math.max(mn,v)); }
+  function mostrarModos(){
+    $("et-custom").classList.toggle("oculto", cfg.papel!=="custom");
+    $("et-w-filas").classList.toggle("oculto", cfg.modo!=="filas");
+    $("et-w-tam").classList.toggle("oculto", cfg.modo!=="tam");
+  }
   function leerOpciones(){
     cfg.cols=parseInt($("et-cols").value,10)||2; cfg.pt=parseInt($("et-pt").value,10)||9;
     cfg.copias=Math.min(20,Math.max(1,parseInt($("et-copias").value,10)||1)); cfg.nombres=$("et-nombres").checked; cfg.borde=$("et-borde").checked;
-    guardarCfg(); pintarPrev();
+    cfg.papel=$("et-papel").value; cfg.orient=$("et-orient").value;
+    cfg.pw=num("et-pw",210,50,1000); cfg.ph=num("et-ph",297,50,1000);
+    cfg.margen=num("et-margen",10,0,30); cfg.gap=num("et-gap",2,0,20);
+    cfg.modo=$("et-modo").value; cfg.ancho=num("et-ancho",60,15,300);
+    var a=String($("et-alto").value).trim(); cfg.alto = a==="" ? 0 : num("et-alto",0,8,300);
+    mostrarModos(); guardarCfg(); pintarPrev();
   }
-  ["et-cols","et-pt","et-copias","et-nombres","et-borde"].forEach(function(id){ $(id).addEventListener("change", leerOpciones); });
+  ["et-cols","et-pt","et-copias","et-nombres","et-borde","et-papel","et-orient","et-pw","et-ph","et-margen","et-gap","et-modo","et-ancho","et-alto"].forEach(function(id){ $(id).addEventListener("change", leerOpciones); });
   $("et-imprimir").addEventListener("click", function(){
     var lista=elegidos(); if(!lista.length) return;
     var url=URL.createObjectURL(new Blob([documento(lista,true)],{type:"text/html;charset=utf-8"}));

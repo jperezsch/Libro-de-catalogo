@@ -455,7 +455,7 @@
   .fila-repetible{border:1px dashed var(--line-fuerte);border-radius:8px;padding:12px 14px;margin-bottom:9px;position:relative;background:#fbfaf1;}
   .fila-repetible.vigente{border:1px solid var(--accent);background:var(--accent-soft);}
   .fila-repetible .tag-vigente{position:absolute;top:-9px;left:12px;background:var(--accent);color:#fff;font-size:10px;padding:1px 9px;border-radius:999px;font-family:var(--mono);letter-spacing:.3px;}
-  .fila-repetible .quitar{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--danger);cursor:pointer;font-size:17px;line-height:1;}
+  .fila-repetible .quitar{position:absolute;top:4px;right:6px;z-index:5;min-width:26px;min-height:26px;background:none;border:none;color:var(--danger);cursor:pointer;font-size:19px;line-height:1;}
   .oculto{display:none !important;}
   html,body{overflow-anchor:none;}
   footer.acciones{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
@@ -630,6 +630,9 @@
   #exp-lista{display:block;}
   #exp-lista > .exp-chip{margin:0 6px 6px 0;}
   .exp-chip.vacio .exp-tg{font-style:italic;}
+  .aviso-duplicado{background:#fff7d6;border:1px solid #d9b83a;border-radius:8px;padding:8px 12px;margin:6px 0 10px;font-size:13.5px;}
+  .atencion{outline:3px solid #e0a800;outline-offset:3px;border-radius:6px;background:#fff9e0;animation:atencion-pulso 1.6s ease-in-out 3;}
+  @keyframes atencion-pulso{0%,100%{outline-color:#e0a800;}50%{outline-color:#ffe08a;}}
   .exp-chip.off{background:transparent;color:#7a7660;border-style:dashed;opacity:.75;}
   .exp-chip.arrastrando{opacity:.4;}
   .exp-chip.antes{box-shadow:-3px 0 0 #2f5d3a;}
@@ -886,6 +889,7 @@
   <!-- ENTRADA -->
   <section class="tabpanel active" id="tab-entrada">
     <p class="leyenda-campos">* campo obligatorio para esta etapa · el resto es complementario</p>
+    <p class="aviso-duplicado oculto" id="aviso-duplicado"></p>
 
     <div class="bloque">
       <h2>Datos de terreno</h2>
@@ -1197,7 +1201,8 @@
       <summary>Gestión de Datos <button type="button" class="ayuda-btn" data-ayuda="ayuda-gestion" aria-label="Ayuda" title="Ayuda">?</button></summary>
       <div class="ayuda-panel oculto" id="ayuda-gestion">Aquí se administran los registros guardados: puedes agrupar y filtrar por colección o por sesión de ingreso o edición, marcar registros (todos los mostrados con «Marcar todo», que se desactiva pinchándolo otra vez, o uno a uno), descargar un respaldo en zip, una planilla Excel, un CSV o un CSV con nombres Darwin Core, importar datos (zip de Libreta de Campo, zip de respaldo de esta app o planilla Excel/CSV) y, solo en este bloque, eliminar los registros marcados. Si no hay ninguno marcado, las descargas ofrecen los registros mostrados.</div>
       <details class="subbloque-gest" id="sub-importar">
-        <summary>Importar datos</summary>
+        <summary>Importar datos <button type="button" class="ayuda-btn" data-ayuda="ayuda-importar" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-importar">Trae registros a la app desde tres fuentes: un zip de Libreta de Campo (ejemplares recién colectados en terreno), un zip de respaldo hecho con esta misma app (para traspasar o recuperar registros) y una planilla de Excel o CSV propia, donde tú decides a qué campo va cada columna. Antes de importar se muestra una vista previa y nada se guarda hasta que lo confirmas. Los registros que ya existen se reconocen por sus campos clave y se omiten, se completan o se sobrescriben según lo que elijas.</div>
         <div class="barra-botones">
           <button class="btn secundario" id="btn-importar-zip-libreta" title="Trae los ejemplares de un zip descargado desde Libreta de Campo">Importar datos de terreno (.zip Libreta de Campo)</button>
           <button class="btn secundario" id="btn-importar-zip-datos" title="Trae los registros de un zip de respaldo hecho con esta app">Importar registros (.zip Libro de Catálogo)</button>
@@ -1212,7 +1217,8 @@
       </div>
       </details>
       <details class="subbloque-gest" id="sub-mover">
-        <summary>Mover valores entre campos (corregir una importación)</summary>
+        <summary>Mover valores entre campos (corregir una importación) <button type="button" class="ayuda-btn" data-ayuda="ayuda-mover" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-mover">Copia el contenido de un campo a otro en los registros que elijas, para corregir una columna que quedó emparejada con el campo equivocado. Primero se cuenta cuántos registros cambiarían y solo después se aplica. Por defecto vacía el campo de origen y no pisa un destino que ya tenga valor; ambas opciones se pueden cambiar. Un zip de respaldo previo queda marcado por defecto. Más abajo hay una reparación específica para determinaciones que quedaron como secundarias.</div>
         <p class="nota">Copia el contenido de un campo a otro en los registros que elijas. Sirve para corregir una columna que se emparejó con el campo equivocado. Por ejemplo, mover «Nombre de la colección» a «Ubicación en colección». Primero se muestra cuántos registros cambiarían y no se modifica nada hasta que lo confirmes. Las listas están en orden alfabético y tienen un buscador.</p>
         <div class="imp-fila-opc mv-fila"><div><label>Mover desde</label><div class="combo" id="mv-origen" data-tipo="mv" data-id="mv-origen" data-valor=""><button type="button" class="combo-btn">Elige un campo…</button></div></div><div><label>hacia</label><div class="combo" id="mv-destino" data-tipo="mv" data-id="mv-destino" data-valor=""><button type="button" class="combo-btn">Elige un campo…</button></div></div></div>
         <div class="imp-fila-opc"><label>Registros <select id="mv-alcance"></select></label></div>
@@ -1223,7 +1229,8 @@
         <div class="barra-botones"><button type="button" class="btn secundario" id="mv-det-ver">Buscar registros afectados</button><button type="button" class="btn" id="mv-det-aplicar" disabled>Reparar determinaciones</button></div><p class="nota" id="mv-det-msg"></p></div>
       </details>
       <details class="subbloque-gest" id="sub-bloque">
-        <summary>Correcciones en bloque</summary>
+        <summary>Correcciones en bloque <button type="button" class="ayuda-btn" data-ayuda="ayuda-bloque" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-bloque">Cambia un mismo campo en muchos registros a la vez, por ejemplo para fijar la ubicación en la colección de todo un lote. Se hace en tres pasos: elegir los registros (con búsqueda, colección, sesión de ingreso o de edición, archivo de origen y condición sobre el valor actual), elegir el campo y el dato nuevo, y revisar cuántos cambiarían antes de aplicar. Un zip de respaldo previo queda marcado por defecto.</div>
         <p class="nota">Cambia un mismo campo en muchos registros a la vez, por ejemplo para fijar la ubicación en la colección de todo un lote. Sigue tres pasos: elige los registros, elige el campo y el dato nuevo, y revisa el resumen antes de aplicar.</p>
         <h4>1. Elegir los registros</h4>
         <div class="grid">
@@ -1248,7 +1255,8 @@
         <p class="nota" id="cb-msg"></p>
       </details>
       <details class="subbloque-gest" id="sub-etiquetas">
-        <summary>Etiquetas automáticas</summary>
+        <summary>Etiquetas automáticas <button type="button" class="ayuda-btn" data-ayuda="ayuda-etiquetas" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-etiquetas">Arma etiquetas imprimibles para los ejemplares que elijas, con los campos que quieras y en el orden que prefieras. Se hace en tres pasos: elegir los ejemplares, elegir y ordenar los campos, y revisar la vista previa antes de imprimir o guardar como PDF.</div>
         <p class="nota">Arma etiquetas imprimibles para los ejemplares que elijas, con los campos que quieras y en el orden que prefieras. Sigue tres pasos: elige los registros, elige y ordena los campos, y revisa la vista previa antes de imprimir o guardar como PDF.</p>
         <h4>1. Elegir los ejemplares</h4>
         <div class="grid">
@@ -1275,10 +1283,12 @@
         <p class="nota" id="et-msg"></p>
       </details>
       <details class="subbloque-gest" id="sub-exportar">
-        <summary>Exportar datos</summary>
+        <summary>Exportar datos <button type="button" class="ayuda-btn" data-ayuda="ayuda-exportar" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-exportar">Descarga los registros marcados (o los mostrados, si no hay ninguno) en Excel, CSV o CSV Darwin Core. Se hace en secuencia: «Seleccionar set de datos» define qué registros salen, «Elegir los campos y su orden» define las columnas, y los botones de descarga generan el archivo. El respaldo en zip tiene su propio desplegable al final.</div>
       <div id="aviso-cat-dup" class="oculto"></div>
       <details class="cons-esq" id="exp-set" open>
-        <summary>Seleccionar set de datos</summary>
+        <summary>Seleccionar set de datos <button type="button" class="ayuda-btn" data-ayuda="ayuda-exp-set" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-exp-set">Define qué registros se exportan. Agrupa y filtra por colección o por sesión de ingreso o de edición, y marca los que quieras. Si no marcas ninguno, las descargas toman todos los registros mostrados. Desde aquí también puedes eliminar los registros marcados.</div>
         <div class="cons-esq-cuerpo">
       <div class="grid">
           <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
@@ -1304,7 +1314,8 @@
         </div>
       </details>
       <details class="cons-esq" id="exp-campos">
-        <summary>Elegir los campos y su orden (Excel y CSV) · <span id="exp-resumen"></span></summary>
+        <summary>Elegir los campos y su orden (Excel y CSV) · <span id="exp-resumen"></span> <button type="button" class="ayuda-btn" data-ayuda="ayuda-exp-campos" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-exp-campos">Define las columnas de las descargas en Excel y CSV, tanto aquí como en Consultas. Elige «Orden predeterminado», una plantilla propia o una planilla emparejada (con el formato de una planilla original). Con las plantillas de campos puedes arrastrar los botones para ordenarlos, incluir o quitar campos, buscar por nombre, agrupar por tema e insertar columnas vacías. Las plantillas se guardan con el nombre que elijas y se comparten con los equipos que usan la misma Carpeta local.</div>
         <div class="cons-esq-cuerpo">
           <p class="nota">Elige una plantilla de campos o una planilla emparejada. Con una plantilla de campos, arrastra cada botón al lugar que quieras, pincha para incluir o quitar un campo e inserta columnas vacías donde las necesites. Vale para Excel y CSV de Gestión de datos y de Consultas.</p>
           <div class="barra-botones"><select class="nav" id="exp-plant" aria-label="Plantillas de campos y planillas emparejadas"></select><button type="button" class="btn small secundario" id="exp-guardar">Guardar como plantilla…</button><button type="button" class="btn small tenue" id="exp-renombrar" disabled>Renombrar</button><button type="button" class="btn small tenue" id="exp-borrar" disabled>Eliminar</button></div>
@@ -1328,7 +1339,8 @@
       </div>
       <p class="nota" id="datos-msg">Se descargan o eliminan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados. Excel y CSV siguen la plantilla elegida arriba; el CSV Darwin Core tiene columnas fijas.</p>
       <details class="cons-esq" id="exp-respaldo">
-        <summary>Respaldo (zip)</summary>
+        <summary>Respaldo (zip) <button type="button" class="ayuda-btn" data-ayuda="ayuda-exp-respaldo" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-exp-respaldo">El respaldo guarda cada registro tal como está en la app, sin depender de las plantillas, y esta misma app puede volver a importarlo. Incluye de forma opcional las fotos, los PDF y los adjuntos. Es la copia que conviene para traspasar registros a otro equipo o resguardarlos.</div>
         <div class="cons-esq-cuerpo">
           <p class="nota">El respaldo no depende de las plantillas: guarda cada registro tal como está en la app y esta misma app puede volver a importarlo. Descarga los registros marcados o, si no hay ninguno, los mostrados.</p>
       <label class="nota chk-zip"><input type="checkbox" id="chk-zip-archivos" checked> Incluir fotos, PDF y adjuntos en el zip de respaldo (puede pesar mucho)</label>
@@ -1338,7 +1350,8 @@
       <p class="archivo-estado" id="archivo-estado">Guardado automático en este navegador.</p>
       </details>
       <details class="subbloque-gest" id="sub-pendientes">
-        <summary>Registros no respaldados de Carpeta local<span id="pend-badge"></span></summary>
+        <summary>Registros no respaldados de Carpeta local<span id="pend-badge"></span> <button type="button" class="ayuda-btn" data-ayuda="ayuda-pendientes" aria-label="Ayuda" title="Ayuda">?</button></summary>
+        <div class="ayuda-panel oculto" id="ayuda-pendientes">Reúne los registros que están en la Carpeta local (Registros/) y que este navegador no tiene, o cuya versión en la carpeta es más reciente. Sirve para traer a este equipo lo que se guardó desde otro PC. Puedes importarlos al navegador o eliminarlos de la carpeta; «Eliminar» los mueve a Registros/_eliminados y no los borra de forma definitiva.</div>
         <p class="nota">Son los registros guardados en la Carpeta local (Registros/) que este navegador no tiene, o cuya versión en la carpeta es más reciente que la del navegador. Puedes traerlos al navegador o eliminarlos de la carpeta: «Eliminar» los mueve a Registros/_eliminados, de donde se pueden recuperar a mano.</p>
         <p class="nota" id="pend-resumen"></p>
         <div class="imp-fila-opc"><label>Mostrar <select id="pend-filtro"><option value="">Todos</option><option value="nuevo">Solo los que este navegador no tiene</option><option value="reciente">Solo versiones más recientes</option></select></label></div>
@@ -1498,7 +1511,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.82";
+var APP_VERSION = "v0.9.84";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -4559,6 +4572,7 @@ function sincronizarSelectsOtro(){
 }
 function cargarRegistroEnFormulario(){
   if(!undoAplicando) undoReiniciar();
+  if(!origenDuplicado) limpiarResaltadoDuplicado();
   var r=registroActivo(); coordAuto=null; if(typeof avisoCoord==="function") avisoCoord("");
   document.querySelectorAll("[data-f]").forEach(function(el){
     if(el.closest(".fila-repetible")) return;
@@ -4721,7 +4735,30 @@ function crearDuplicadoDesde(origen){
   origenDuplicado = true;
   cargarRegistroEnFormulario();
   refrescarPanelesRegistros();
+  irAEntradaDuplicado();
 }
+// Tras duplicar: va al inicio de Entrada y destaca lo que más probablemente cambia en otro individuo del mismo evento de recolección.
+// Es solo un llamado de atención: no condiciona el guardado.
+function limpiarResaltadoDuplicado(){
+  document.querySelectorAll(".atencion").forEach(function(e){ e.classList.remove("atencion"); });
+  var a=document.getElementById("aviso-duplicado"); if(a){ a.classList.add("oculto"); a.textContent=""; }
+}
+function irAEntradaDuplicado(){
+  try{ activarTab("entrada"); }catch(e){}
+  limpiarResaltadoDuplicado();
+  var objetivos=["catalogo","individuos","cantidadMachos","cantidadHembras","cantidadJuveniles","cantidadNoSexados"].map(function(k){ var el=document.querySelector('[data-f="'+k+'"]'); return el&&el.closest(".campo"); });
+  objetivos.push(document.getElementById("lista-determinaciones"));
+  objetivos.forEach(function(e){ if(!e) return; e.classList.add("atencion"); var d=e.parentNode&&e.parentNode.closest&&e.parentNode.closest("details"); while(d){ d.open=true; d=d.parentNode&&d.parentNode.closest&&d.parentNode.closest("details"); } });
+  var a=document.getElementById("aviso-duplicado");
+  if(a){ a.classList.remove("oculto"); a.textContent="Registro duplicado. Se destacaron el N.º de catálogo, el conteo de individuos, el sexo y las determinaciones, que es lo que más probablemente cambia en otro individuo del mismo evento de recolección (por ejemplo, en muestras mixtas). Para guardar es obligatorio un N.º de catálogo distinto del original; el resto del resalte es solo un aviso."; }
+  try{ window.scrollTo(0,0); var t=document.getElementById("tab-entrada"); if(t&&t.scrollIntoView) t.scrollIntoView({block:"start"}); }catch(e){}
+}
+document.addEventListener("input", function(e){
+  var el=e.target.closest&&e.target.closest(".atencion"); if(el) el.classList.remove("atencion");
+});
+document.addEventListener("click", function(e){
+  var el=e.target.closest&&e.target.closest("#lista-determinaciones.atencion"); if(el && e.target.closest("button")) el.classList.remove("atencion");
+});
 function accionDuplicarComoNuevo(){ if(modoAcceso!=="admin") return;
   if(!borrador || activoId===null) return;
   var ok = confirm("Se creará un nuevo registro con los mismos datos que tienes ahora en el formulario. El registro original no se modifica. No olvides cambiar el número de catálogo (u otro dato que deba diferenciarlo). ¿Continuar?");
@@ -4814,9 +4851,11 @@ function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   colRegistrarUso(borrador.coleccionNombre);
   if(origenDuplicadoId){
     var base = registroPorId(origenDuplicadoId);
-    if(base && sonIguales(base, borrador)){
-      var seguir = confirm("Los datos son exactamente iguales a los del registro del que partiste ("+resumenLinea1(etiquetaRegistro(base))+"). Normalmente querrás cambiar al menos el número de catálogo antes de guardar un duplicado. ¿Guardar de todas formas?");
-      if(!seguir) return;
+    var nuevoCat=String(borrador.catalogo||"").trim();
+    if(base && (!nuevoCat || claveCatalogo(base)===claveCatalogo(borrador))){
+      alert("Para guardar un duplicado hay que cambiar el N.º de catálogo: debe ser propio y distinto del registro del que partiste ("+resumenLinea1(etiquetaRegistro(base))+").");
+      var ci=document.querySelector('[data-f="catalogo"]'); if(ci){ try{ activarTab("entrada"); ci.scrollIntoView({block:"center"}); ci.focus(); }catch(e){} }
+      return;
     }
   }
   var nuevo=clonar(borrador);

@@ -617,6 +617,11 @@
   .ficha-valor{color:#14201a;font-weight:500;font-size:15.5px;white-space:pre-wrap;}
   .ficha-campo{align-items:baseline;}
   .ficha-linea-institucion{text-align:center;font-family:var(--serif);font-size:15.5px;font-weight:700;letter-spacing:.3px;color:var(--ink);margin:2px 0;}
+  .exp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px;}
+  .exp-chip{font-family:var(--sans);font-size:12px;border:1px solid #b9b39a;background:#f4f0e2;color:#2b2b2b;border-radius:14px;padding:3px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+  .exp-chip.on{background:#2f5d3a;border-color:#2f5d3a;color:#fff;}
+  .exp-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:12px;padding:0 2px;}
+  .exp-chip .exp-n{font-weight:700;}
   .ficha-linea-clasificacion{text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.2px;color:var(--ink-soft);margin:6px 0 2px;}
   .ficha-subtitulo{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--accent);text-align:center;margin:10px 0 12px;padding-top:10px;border-top:1px solid var(--line);}
   .ficha-tabla{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0;}
@@ -1282,6 +1287,17 @@
         <button class="btn peligro small" id="btn-eliminar-datos" disabled title="Elimina los registros marcados (o usa el 🗑️ de cada fila para uno solo)">Eliminar marcados</button>
       </div>
       <label class="nota chk-zip"><input type="checkbox" id="chk-zip-archivos" checked> Incluir fotos, PDF y adjuntos en el zip de respaldo (puede pesar mucho)</label>
+      <details class="cons-esq" id="exp-campos">
+        <summary>Elegir los campos y su orden (Excel y CSV) · <span id="exp-resumen"></span></summary>
+        <div class="cons-esq-cuerpo">
+          <p class="nota">Pincha un campo para agregarlo al final de las columnas; vuelve a pincharlo para quitarlo. Las columnas se descargan en el orden numerado, y puedes cambiarlo con las flechas ↑ ↓. La elección se recuerda en este equipo.</p>
+          <div class="barra-botones"><button type="button" class="btn small tenue" id="exp-todos">Todos los campos</button><button type="button" class="btn small tenue" id="exp-ninguno">Ninguno</button><button type="button" class="btn small tenue" id="exp-predet">Orden predeterminado</button></div>
+          <p class="subtitulo-mini">Columnas elegidas, en orden</p>
+          <div class="exp-chips" id="exp-elegidos"></div>
+          <p class="subtitulo-mini">Campos disponibles</p>
+          <div class="exp-chips" id="exp-disponibles"></div>
+        </div>
+      </details>
       <div class="barra-botones">
         <button class="btn secundario" id="btn-exportar-zip" title="Respaldo y traspaso rápido: un archivo por registro y, si está marcada la casilla, sus fotos, PDF y adjuntos. Esta misma app puede volver a importarlo">Descargar zip (respaldo)</button>
         <button class="btn secundario" id="btn-exportar-xlsx" title="Planilla de Excel para consulta y uso rápido">Descargar Excel</button>
@@ -1464,7 +1480,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.77";
+var APP_VERSION = "v0.9.78";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -2225,7 +2241,7 @@ var STD_CRIT={"Personas e instituciones":"Personas: apellido(s) y nombre complet
 var STD_CRIT_ID={localidadesVerbatim:"Esta lista guarda la localidad tal como figura en la etiqueta o la libreta: se agrega sin corregir ni normalizar su ortografía.",
   estaciones:"Escribe el código o nombre de la estación exactamente como se rotula en terreno, siempre con el mismo formato."};
 var STD_CLAVE = LS_PREFIX+"estandares", STD_MAPA = {}, stdDatos = null, stdSel = "personas", stdGrupos = [], stdOcultos = {}, stdOcupado = false, stdReintento = false, stdTimer = null, stdUltSync = 0;
-var STD_SEP = /(\s*[&;|]\s*|\s+(?:y|e|and)\s+)/i;
+var STD_SEP = /(\s*[&;|,]\s*|\s+(?:y|e|and)\s+)/i;
 STD_DEF.forEach(function(d){ d.campos.forEach(function(c){ STD_MAPA[c[0].replace(/^@/,"")]=d.id; }); });
 function stdEl(i){ return document.getElementById(i); }
 function stdDef(id){ return STD_DEF.filter(function(d){ return d.id===id; })[0]; }
@@ -2308,7 +2324,7 @@ function stdMapValor(id, v, fn){
 function stdParteFinal(inp){
   var id=stdListaDe(inp), v=inp.value;
   if(id!=="personas") return {prefijo:"", parte:v};
-  var re=/\s*[&;|]\s*|\s+(?:y|e|and)\s+/gi, m, fin=0;
+  var re=/\s*[&;|,]\s*|\s+(?:y|e|and)\s+/gi, m, fin=0;
   while((m=re.exec(v))){ fin=m.index+m[0].length; }
   return {prefijo:v.slice(0,fin), parte:v.slice(fin)};
 }
@@ -3155,6 +3171,21 @@ function nombreColeccionCompleto(r){
   if(cn) return cn[1]+" ("+cn[0]+")";
   return [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
 }
+// Número de ejemplares y sexo: «5 ejemplares (2 ♂ · 3 ♀)»
+function sexoEjemplaresTexto(r){
+  var p=[];
+  if(r.cantidadMachos) p.push(r.cantidadMachos+" ♂");
+  if(r.cantidadHembras) p.push(r.cantidadHembras+" ♀");
+  if(r.cantidadJuveniles) p.push(r.cantidadJuveniles+" juv.");
+  if(r.cantidadNoSexados) p.push(r.cantidadNoSexados+" sin sexo");
+  return p.join(" · ");
+}
+function ejemplaresTexto(r){
+  var t="", v=String(r.individuos==null?"":r.individuos).trim();
+  if(v){ var n=parseInt(v,10); t=(!isNaN(n) && String(n)===v) ? (n===1 ? "1 ejemplar" : n+" ejemplares") : v+" ejemplares"; }
+  var sx=sexoEjemplaresTexto(r);
+  return t ? t+(sx?" ("+sx+")":"") : sx;
+}
 function lineaColeccionFicha(r){
   var acr=[r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" "), nombre="";
   if(r.coleccionAcronimo){
@@ -3222,6 +3253,8 @@ function construirFicha(r){
   if(lineaCol) general += '<div class="ficha-linea-institucion">'+escapeHtml(lineaCol)+'</div>';
   if(clasificacionTexto) general += '<div class="ficha-linea-clasificacion">'+escapeHtml(clasificacionTexto)+'</div>';
   if(nombreVigente) general += '<div class="ficha-subtitulo">'+nombreCientificoHtml(nombreVigente)+'</div>';
+  var lineaEj=ejemplaresTexto(r);
+  if(lineaEj) general += '<div class="ficha-linea-clasificacion ficha-linea-ejemplares">'+escapeHtml(lineaEj)+'</div>';
   general += fichaCampo("Número de Catálogo", construirCatalogoCompleto(r));
   general += fichaCampos([["Número de campo","numeroCampo"], ["Número de entrada","numeroAccesion"]], r);
   general += fichaCampo("Localidad (verbatim)", r.localidadVerbatim);
@@ -8020,7 +8053,7 @@ function pintarConsultas(){
   lista.slice(0,e.mostrar).forEach(function(r){
     var et=etiquetaRegistro(r);
     var extra=[r.phylum,r.clase,r.orden,r.familia,r.genero].filter(Boolean).join(" › ");
-    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+marcaRespaldo(r)+marcaSeguimiento(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span><br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Seleccionar este registro para descargar o evaluar su distribución"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Seleccionar</label></div></div>';
+    h+='<div class="cons-fila'+(consSel.has(r.id)?' marcada':'')+'" data-id="'+r.id+'"><div class="info"><strong>'+escapeHtml(resumenLinea1(et))+'</strong>'+iconosArchivos(r)+marcaRespaldo(r)+marcaSeguimiento(r)+'<br><span class="cons-nom">'+nombreCientificoHtml(nombreVigenteReg(r)||"sin determinar")+'</span>'+(ejemplaresTexto(r)?' <span class="ts2">· '+escapeHtml(ejemplaresTexto(r))+'</span>':'')+'<br><span class="ts2">'+escapeHtml([r.localidad||r.localidadVerbatim, r.fechaColecta, r.colector].filter(Boolean).join(" · "))+(extra?'<br>'+escapeHtml(extra):'')+'</span></div><div class="acciones-fila"><button class="btn small principal-fila cons-btn-ver">Consultar</button><label class="cons-sel" title="Seleccionar este registro para descargar o evaluar su distribución"><input type="checkbox" class="cons-chk"'+(consSel.has(r.id)?' checked':'')+'> Seleccionar</label></div></div>';
   });
   cont.innerHTML=h;
   document.getElementById("cons-mas-btn").classList.toggle("oculto", lista.length<=e.mostrar);
@@ -8046,25 +8079,81 @@ var CONS_COLUMNAS = [
   ["Nombre científico (vigente)",nombreVigenteReg],
   ["Phylum",function(r){ return r.phylum; }], ["Clase",function(r){ return r.clase; }], ["Orden",function(r){ return r.orden; }],
   ["Familia",function(r){ return r.familia; }], ["Género",function(r){ return r.genero; }],
+  ["N.º de ejemplares",function(r){ return r.individuos; },"n"], ["Machos",function(r){ return r.cantidadMachos; },"n"], ["Hembras",function(r){ return r.cantidadHembras; },"n"],
+  ["Juveniles",function(r){ return r.cantidadJuveniles; },"n"], ["Sin sexo",function(r){ return r.cantidadNoSexados; },"n"], ["Sexo (resumen)",sexoEjemplaresTexto],
   ["Localidad",function(r){ return r.localidad; }], ["Localidad (verbatim)",function(r){ return r.localidadVerbatim; }],
   ["Región",function(r){ return r.region; }], ["Provincia",function(r){ return r.provincia; }], ["Comuna",function(r){ return r.comuna; }],
   ["Latitud",function(r){ var c=coordenadasRegistro(r); return c?c.lat:""; },"n"], ["Longitud",function(r){ var c=coordenadasRegistro(r); return c?c.lng:""; },"n"],
-  ["Altitud/profundidad (m)",function(r){ return r.altitud_m; },"n"],
-  ["Fecha de colecta",function(r){ return r.fechaColecta; }], ["Colector",function(r){ return r.colector; }],
-  ["Hábitat",function(r){ return r.habitat; }], ["Método de recolección",function(r){ return r.metodoColecta; }],
+  ["Altitud/profundidad (m)",function(r){ return r.altitud_m; },"n"], ["Coordenadas originales",function(r){ return r.coordenadasOriginales; }],
+  ["Fecha de colecta",function(r){ return r.fechaColecta; }], ["Hora de colecta",function(r){ return r.horaColecta; }], ["Colector",function(r){ return r.colector; }],
+  ["Hábitat",function(r){ return r.habitat; }], ["Microhábitat",function(r){ return r.microhabitat; }], ["Método de recolección",function(r){ return r.metodoColecta; }],
+  ["Estación",function(r){ return r.estacion; }], ["Taxón (referencia)",function(r){ return r.taxon; }],
   ["Institución",function(r){ return r.institucionAcronimo; }], ["Colección",function(r){ return r.coleccionAcronimo; }],
   ["Tipo de colección",function(r){ return r.tipoColeccion; }], ["Conservación",function(r){ return r.conservacion; }],
   ["Estado",function(r){ return r.estadoUbicacion; }], ["Ubicación en colección",function(r){ return r.ubicacionColeccion; }],
   ["Tipo nomenclatural",function(r){ return r.tipoNomenclatural; }],
+  ["Nombre de la colección",lineaColeccionUnica], ["Institución (nombre completo)",function(r){ return r.institucionNombreCompleto || (r.institucionAcronimo==="MNHNCL" ? NOMBRE_MNHNCL : ""); }],
+  ["Medio de fijado",function(r){ return r.medioFijado; }], ["Preparación",function(r){ return r.preparacion; }], ["Condición del ejemplar",function(r){ return r.condicionEjemplar; }],
   ["Determinador",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].determinador:""; }],
   ["Fecha de determinación",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].fechaDeterminacion:""; }],
+  ["Fecha de recepción",function(r){ return r.fechaRecepcion; }], ["Procedencia",function(r){ return r.procedencia; }], ["Destino",function(r){ return r.destino; }],
+  ["Condición de la accesión",function(r){ return r.condicionAccesion; }], ["Tipo de accesión",function(r){ return r.tipoAccesion; }],
+  ["Legatario",function(r){ return r.legatario; }], ["Proyecto / iniciativa de origen",function(r){ return r.proyectoOrigen; }],
+  ["Fecha de catalogación",function(r){ return r.fechaCatalogacion; }], ["Catalogador",function(r){ return r.catalogador; }],
+  ["Observaciones",function(r){ return r.observaciones; }], ["Observaciones biológicas",function(r){ return r.observacionesBiologicas; }],
+  ["Asociaciones biológicas",function(r){ return r.asociacionesBiologicas; }], ["Publicación original",function(r){ return r.publicacionOriginal; }],
   ["N.º de fotos",function(r){ return (r.fotos||[]).filter(function(f){ return f.archivo; }).length; },"n"],
   ["PDF de publicaciones",function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }).join("; "); }],
   ["Motivo de PDF",function(r){ var inf=r.publicacionesPdfInfo||{}; return (r.publicacionesPdf||[]).map(function(n){ var i0=inf[n]||{}; return n.split("/").pop()+": "+[i0.motivo,i0.comentario].filter(Boolean).join(", "); }).filter(function(t){ return /: .+/.test(t); }).join("; "); }]
 ];
-function filasDeLista(lista){
-  return [CONS_COLUMNAS.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return CONS_COLUMNAS.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
+function filasDeLista(lista, cols){
+  cols=cols||CONS_COLUMNAS;
+  return [cols.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return cols.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
 }
+// ---- elección de campos y de su orden para Excel y CSV (Sistema > Gestión de datos > Exportar datos) ----
+var EXP_CLAVE=LS_PREFIX+"expCampos", expElegidos=null;
+function expTodos(){ return CONS_COLUMNAS.map(function(c){ return c[0]; }); }
+function expCargar(){
+  try{ var a=JSON.parse(localStorage.getItem(EXP_CLAVE)||"null"); if(Array.isArray(a)){ var t=expTodos(); expElegidos=a.filter(function(n,i){ return t.indexOf(n)>-1 && a.indexOf(n)===i; }); return; } }catch(e){}
+  expElegidos=expTodos();
+}
+function expGuardar(){ try{ localStorage.setItem(EXP_CLAVE, JSON.stringify(expElegidos)); }catch(e){} }
+function expColumnas(){
+  if(!expElegidos) expCargar();
+  return expElegidos.map(function(n){ return CONS_COLUMNAS.filter(function(c){ return c[0]===n; })[0]; }).filter(Boolean);
+}
+function expPintar(){
+  var el=document.getElementById("exp-elegidos"), di=document.getElementById("exp-disponibles");
+  if(!el || !di) return;
+  if(!expElegidos) expCargar();
+  el.innerHTML = expElegidos.length ? expElegidos.map(function(n,i){
+    return '<span class="exp-chip on" data-n="'+escapeHtml(n)+'"><span class="exp-n">'+(i+1)+'.</span> '+escapeHtml(n)
+      +' <button type="button" data-a="sube" title="Subir">↑</button><button type="button" data-a="baja" title="Bajar">↓</button><button type="button" data-a="quita" title="Quitar">✕</button></span>';
+  }).join("") : '<span class="nota">Ningún campo elegido: pincha los campos de abajo para agregarlos.</span>';
+  di.innerHTML = expTodos().map(function(n){
+    var i=expElegidos.indexOf(n);
+    return '<button type="button" class="exp-chip'+(i>-1?' on':'')+'" data-a="alterna" data-n="'+escapeHtml(n)+'">'+(i>-1?'<span class="exp-n">'+(i+1)+'.</span> ':'')+escapeHtml(n)+'</button>';
+  }).join("");
+  var r=document.getElementById("exp-resumen"); if(r) r.textContent=expElegidos.length+" de "+CONS_COLUMNAS.length+" campos elegidos";
+}
+(function(){
+  var cont=document.getElementById("exp-campos"); if(!cont) return;
+  cont.addEventListener("click", function(ev){
+    var b=ev.target.closest("[data-a],#exp-todos,#exp-ninguno,#exp-predet"); if(!b) return;
+    if(!expElegidos) expCargar();
+    if(b.id==="exp-todos" || b.id==="exp-predet") expElegidos=expTodos();
+    else if(b.id==="exp-ninguno") expElegidos=[];
+    else {
+      var a=b.getAttribute("data-a"), n=b.getAttribute("data-n")||(b.closest(".exp-chip")||{getAttribute:function(){return "";}}).getAttribute("data-n"), i=expElegidos.indexOf(n);
+      if(a==="alterna"){ if(i>-1) expElegidos.splice(i,1); else expElegidos.push(n); }
+      else if(a==="quita" && i>-1) expElegidos.splice(i,1);
+      else if(a==="sube" && i>0){ expElegidos[i]=expElegidos[i-1]; expElegidos[i-1]=n; }
+      else if(a==="baja" && i>-1 && i<expElegidos.length-1){ expElegidos[i]=expElegidos[i+1]; expElegidos[i+1]=n; }
+    }
+    expGuardar(); expPintar();
+  });
+  expPintar();
+})();
 function listaConsultaDescarga(){
   var m=new Set(marcadosConsulta()), lista=resultadosConsulta();
   return m.size ? lista.filter(function(r){ return m.has(r.id); }) : lista;
@@ -8282,6 +8371,8 @@ async function zipDeRespaldo(lista, conArchivos, progreso){
   return {blob:zipSinCompresion(arch,"application/zip"), incluidos:incluidos, bytes:bytes, faltantes:faltantes, omitidos:omitidos};
 }
 async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
+  var colsExp=(formato==="xlsx"||formato==="csv") ? expColumnas() : null;
+  if(colsExp && !colsExp.length){ alert("No hay campos elegidos para exportar. Abre «Elegir los campos y su orden» y marca al menos uno."); return; }
   var lista=listaParaDescarga(); if(!lista) return;
   var f=new Date(), sello=f.getFullYear()+"-"+pad2(f.getMonth()+1)+"-"+pad2(f.getDate())+"_"+pad2(f.getHours())+pad2(f.getMinutes());
   var nombre=nombreDescarga(formato==="zip"?"Respaldo":formato==="dwc"?"Darwin Core":"Registros", contenidoDeLista(lista), formato==="dwc"?"csv":formato), blob, infoZip=null; void sello;
@@ -8292,7 +8383,7 @@ async function descargarDatos(formato){ if(modoAcceso!=="admin") return;
     catch(e){ registrarError("zip de respaldo", e); var tz="No se pudo preparar el zip: "+((e&&e.message)||e)+". Prueba desmarcando la inclusión de fotos y archivos."; if(msgPrev) msgPrev.textContent=tz; alert(tz); return; }
   }
   else if(formato==="dwc") blob=new Blob([csvDeFilas(filasDwc(lista),true)],{type:"text/csv;charset=utf-8"});
-  else { var filas=filasDeLista(lista); blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas); }
+  else { var filas=filasDeLista(lista, colsExp); blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas, colsExp.map(function(c){ return c[2]||""; })); }
   descargarBlob(blob, nombre);
   var extra="";
   if(carpetaHandle && await permisoCarpeta(false)){

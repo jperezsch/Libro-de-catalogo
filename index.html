@@ -623,6 +623,12 @@
   .exp-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:12px;padding:0 2px;}
   .exp-chip .exp-n{font-weight:700;}
   .exp-chip{cursor:grab;user-select:none;}
+  .exp-chip .exp-tg{font-family:inherit;font-size:12px;padding:0;cursor:pointer;}
+  .exp-chip .exp-mv{opacity:.8;font-size:10px;}
+  .exp-grupo{margin:6px 0 10px;width:100%;}
+  .exp-gtit{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:2px;}
+  #exp-lista{display:block;}
+  #exp-lista > .exp-chip{margin:0 6px 6px 0;}
   .exp-chip.off{background:transparent;color:#7a7660;border-style:dashed;opacity:.75;}
   .exp-chip.arrastrando{opacity:.4;}
   .exp-chip.antes{box-shadow:-3px 0 0 #2f5d3a;}
@@ -1295,8 +1301,10 @@
       <details class="cons-esq" id="exp-campos">
         <summary>Elegir los campos y su orden (Excel y CSV) · <span id="exp-resumen"></span></summary>
         <div class="cons-esq-cuerpo">
-          <p class="nota">Arrastra cada botón al lugar que quieras. Pincha un botón para incluir o quitar ese campo: los apagados no se descargan.</p>
-          <div class="barra-botones"><select class="nav" id="exp-plant" aria-label="Plantillas guardadas"></select><button type="button" class="btn small tenue" id="exp-predet">Orden predeterminado</button><button type="button" class="btn small secundario" id="exp-guardar">Guardar como plantilla…</button><button type="button" class="btn small tenue" id="exp-borrar" disabled>Eliminar plantilla</button></div>
+          <p class="nota">Arrastra cada botón al lugar que quieras. Pincha un botón para incluir o quitar ese campo: los apagados no se descargan. Vale para Excel y CSV de Gestión de datos y de Consultas.</p>
+          <div class="barra-botones"><select class="nav" id="exp-plant" aria-label="Plantillas de orden y campos"></select><button type="button" class="btn small secundario" id="exp-guardar">Guardar como plantilla…</button><button type="button" class="btn small tenue" id="exp-renombrar" disabled>Renombrar</button><button type="button" class="btn small tenue" id="exp-borrar" disabled>Eliminar</button></div>
+          <div class="barra-botones"><button type="button" class="btn small tenue" id="exp-todos">Incluir todos</button><button type="button" class="btn small tenue" id="exp-ninguno">Quitar todos</button><input type="search" class="nav" id="exp-filtro" placeholder="Buscar un campo…" aria-label="Buscar un campo" autocomplete="off"><select class="nav" id="exp-vista" aria-label="Vista"><option value="orden">Vista: orden de descarga</option><option value="temas">Vista: agrupados por tema</option></select><label class="nota"><input type="checkbox" id="exp-flechas"> Mostrar flechas ◀ ▶ para mover</label></div>
+          <p class="nota" id="exp-msg"></p>
           <div class="exp-chips" id="exp-lista"></div>
         </div>
       </details>
@@ -1309,8 +1317,8 @@
       <p class="nota" id="datos-msg">Se descargan o eliminan los registros marcados; si no hay ninguno, se ofrece descargar los mostrados.</p>
       <details class="cons-esq oculto" id="cons-esq"><summary>Traducir a una planilla emparejada</summary>
         <div class="cons-esq-cuerpo">
-          <p class="nota">Genera las filas de los registros marcados en la lista de arriba (o, si no hay ninguno, de los mostrados) con las columnas en el orden de una planilla que ya emparejaste al importar, para pegarlas al final de ella.</p>
-          <div class="imp-fila-opc"><select id="esq-sel"></select><select id="esq-formato"><option value="xlsx">Excel</option><option value="csv">CSV</option></select><button type="button" class="btn small tenue" id="esq-quitar">Olvidar planilla</button></div>
+          <p class="nota">Genera las filas de los registros marcados en la lista de arriba (o, si no hay ninguno, de los mostrados) con las columnas en el orden de una plantilla de emparejamiento guardada (se guardan y se borran en el importador), para pegarlas al final de la planilla.</p>
+          <div class="imp-fila-opc"><select id="esq-sel"></select><select id="esq-formato"><option value="xlsx">Excel</option><option value="csv">CSV</option></select></div>
           <p class="nota" id="esq-info"></p>
           <label><input type="checkbox" id="esq-nuevos"> Solo registros modificados o aún no exportados a esta planilla</label>
           <label><input type="checkbox" id="esq-extra"> Agregar al final columnas para datos sin columna equivalente</label>
@@ -1482,7 +1490,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.79";
+var APP_VERSION = "v0.9.81";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -6919,7 +6927,7 @@ function pintarAlertas(){
   var btnAl=document.getElementById("btn-alertas");
   if(modoAcceso!=="admin"){ fila.classList.add("oculto"); if(ins) ins.classList.add("oculto"); if(btnAl) btnAl.classList.add("oculto"); alertasCerrar(); return; }
   if(btnAl) btnAl.classList.remove("oculto");
-  if(!cfgIntentada && carpetaHandle){ cfgIntentada=true; cfgCargarCompartida().then(function(){ pintarConfigAlertas(); if(typeof segRecargar==="function") segRecargar(); programarAlertaPrestamos(); }); }
+  if(!cfgIntentada && carpetaHandle){ cfgIntentada=true; cfgCargarCompartida().then(function(){ pintarConfigAlertas(); if(typeof segRecargar==="function") segRecargar(); programarAlertaPrestamos(); expSincronizar(true); }); }
   var lp=prestamosPendientes(), lm=monitoreosPendientes();
   // préstamos
   var venc=lp.filter(function(x){ return x.dias<0; }).length, ab=bp.open;
@@ -8070,6 +8078,7 @@ function actualizarMarcasConsulta(){
   if(t) t.textContent=n ? n+" registro(s) seleccionado(s): la descarga y el mapa incluirán solo esos." : "Sin selección: la descarga y el mapa incluyen todos los resultados.";
   var csv=document.getElementById("cons-csv"), xl=document.getElementById("cons-xlsx");
   if(csv) csv.textContent=n?"Descargar CSV ("+n+")":"Descargar CSV";
+  var tc="Columnas: las elegidas en Sistema, Gestión de datos, Exportar datos ("+expColumnas().length+" de "+CONS_COLUMNAS.length+")"; if(csv) csv.title=tc; if(xl) xl.title=tc;
   if(xl) xl.textContent=n?"Descargar Excel ("+n+")":"Descargar Excel";
   var bm=document.getElementById("cons-marcar-todos");
   if(bm){ var lr=resultadosConsulta(), act=lr.length>0 && lr.every(function(r){ return consSel.has(r.id); }); bm.setAttribute("aria-pressed", act?"true":"false"); bm.textContent=act?"✓ Marcar todos":"Marcar todos"; }
@@ -8112,10 +8121,29 @@ function filasDeLista(lista, cols){
   cols=cols||CONS_COLUMNAS;
   return [cols.map(function(c){ return c[0]; })].concat(lista.map(function(r){ return cols.map(function(c){ var v=c[1](r); return v==null?"":v; }); }));
 }
-// ---- elección de campos, orden y plantillas para Excel y CSV (Sistema > Gestión de datos > Exportar datos) ----
-// Una sola lista de botones con todos los campos: se arrastran para ordenarlos y se pinchan para incluirlos o quitarlos.
-var EXP_CLAVE=LS_PREFIX+"expCampos", EXP_PLANT=LS_PREFIX+"expPlantillas", expOrden=null, expOff={}, expPlantSel="", expArrastre="";
+// ---- elección de campos, orden y plantillas para Excel y CSV (Sistema > Gestión de datos > Exportar datos; también rige en Consultas) ----
+// Una lista con todos los campos: se arrastran para ordenarlos y se pinchan para incluirlos o quitarlos.
+// «Orden predeterminado» es la primera plantilla del desplegable; las plantillas propias se comparten por la Carpeta local (Registros/_configuracion.json).
+var EXP_CLAVE=LS_PREFIX+"expCampos", EXP_PLANT=LS_PREFIX+"expPlantillas2", EXP_PLANT_V1=LS_PREFIX+"expPlantillas", EXP_VISTA=LS_PREFIX+"expVista", EXP_FLECHAS=LS_PREFIX+"expFlechas";
+var EXP_PREDET="Orden predeterminado", expOrden=null, expOff={}, expArrastre="", expFiltro="", expSincBusy=false, expSincUlt=0, expSincMsg="";
+var EXP_GRUPOS=[
+  ["Identificación",["N.º de catálogo","N.º de campo","N.º de entrada"]],
+  ["Taxonomía",["Nombre científico (vigente)","Phylum","Clase","Orden","Familia","Género","Taxón (referencia)","Determinador","Fecha de determinación","Tipo nomenclatural"]],
+  ["Ejemplares y sexo",["N.º de ejemplares","Machos","Hembras","Juveniles","Sin sexo","Sexo (resumen)"]],
+  ["Localidad y coordenadas",["Localidad","Localidad (verbatim)","Región","Provincia","Comuna","Latitud","Longitud","Altitud/profundidad (m)","Coordenadas originales"]],
+  ["Colecta",["Fecha de colecta","Hora de colecta","Colector","Hábitat","Microhábitat","Método de recolección","Estación"]],
+  ["Colección y preparación",["Institución","Colección","Nombre de la colección","Institución (nombre completo)","Tipo de colección","Conservación","Medio de fijado","Preparación","Condición del ejemplar","Estado","Ubicación en colección"]],
+  ["Recepción y catalogación",["Fecha de recepción","Procedencia","Destino","Condición de la accesión","Tipo de accesión","Legatario","Proyecto / iniciativa de origen","Fecha de catalogación","Catalogador"]],
+  ["Notas y archivos",["Observaciones","Observaciones biológicas","Asociaciones biológicas","Publicación original","N.º de fotos","PDF de publicaciones","Motivo de PDF"]]
+];
 function expTodos(){ return CONS_COLUMNAS.map(function(c){ return c[0]; }); }
+function expGrupos(){   // los campos que no estén en ningún tema van a «Otros»
+  var usados={}, g=EXP_GRUPOS.map(function(x){ var l=x[1].filter(function(n){ return expTodos().indexOf(n)>-1; }); l.forEach(function(n){ usados[n]=1; }); return [x[0],l]; });
+  var otros=expTodos().filter(function(n){ return !usados[n]; });
+  if(otros.length) g.push(["Otros",otros]);
+  return g.filter(function(x){ return x[1].length; });
+}
+function expLS(k, v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){} return null; }
 // Ordena según lo guardado; los campos que la app agregó después van al final (activos en el estado actual, apagados en las plantillas).
 function expNormalizar(orden, off, nuevosActivos){
   var t=expTodos(), o=[], visto={}, of={};
@@ -8125,105 +8153,193 @@ function expNormalizar(orden, off, nuevosActivos){
   return {orden:o, off:of};
 }
 function expPredeterminado(){ expOrden=expTodos(); expOff={}; }
+function expEsPredet(){ return !Object.keys(expOff).length && expOrden.join("|")===expTodos().join("|"); }
+function expIgual(e){ var n=Object.keys(expOff).sort().join("|"), m=Object.keys(e.off).sort().join("|"); return n===m && expOrden.join("|")===e.orden.join("|"); }
 function expCargar(){
   try{
-    var a=JSON.parse(localStorage.getItem(EXP_CLAVE)||"null");
-    if(Array.isArray(a)){   // formato anterior (v0.9.78): solo los campos elegidos, en orden
-      var e0=expNormalizar(a, [], false); expOrden=e0.orden; expOff=e0.off; return;
-    }
+    var a=JSON.parse(expLS(EXP_CLAVE)||"null");
+    if(Array.isArray(a)){ var e0=expNormalizar(a, [], false); expOrden=e0.orden; expOff=e0.off; return; }   // formato de la v0.9.78
     if(a && Array.isArray(a.orden)){ var e1=expNormalizar(a.orden, a.off, true); expOrden=e1.orden; expOff=e1.off; return; }
   }catch(e){}
   expPredeterminado();
 }
-function expGuardar(){ try{ localStorage.setItem(EXP_CLAVE, JSON.stringify({orden:expOrden, off:Object.keys(expOff)})); }catch(e){} }
-function expPlantillas(){
-  try{ var o=JSON.parse(localStorage.getItem(EXP_PLANT)||"{}"); return (o && typeof o==="object" && !Array.isArray(o)) ? o : {}; }catch(e){ return {}; }
+function expGuardar(){ expLS(EXP_CLAVE, JSON.stringify({orden:expOrden, off:Object.keys(expOff)})); }
+// plantillas: {plantillas:{nombre:{orden,off,t}}, borradas:{nombre:t}}; t = instante del último cambio, para fusionar entre equipos
+function expPlantLeer(){
+  try{
+    var o=JSON.parse(expLS(EXP_PLANT)||"null");
+    if(o && o.plantillas) return {plantillas:o.plantillas, borradas:o.borradas||{}};
+    var v1=JSON.parse(expLS(EXP_PLANT_V1)||"null");   // plantillas de la v0.9.79 (solo en este navegador)
+    if(v1 && typeof v1==="object"){ var r={plantillas:{},borradas:{}}; Object.keys(v1).forEach(function(n){ if(v1[n] && Array.isArray(v1[n].orden)) r.plantillas[n]={orden:v1[n].orden, off:v1[n].off||[], t:Date.now()}; }); return r; }
+  }catch(e){}
+  return {plantillas:{},borradas:{}};
 }
-function expPlantillasGuardar(o){ try{ localStorage.setItem(EXP_PLANT, JSON.stringify(o)); }catch(e){ alert("No se pudo guardar la plantilla en este navegador."); } }
+function expPlantEscribir(o){ expLS(EXP_PLANT, JSON.stringify(o)); }
+function expFusionar(a, b){
+  var r={plantillas:{}, borradas:{}};
+  [a,b].forEach(function(x){ Object.keys(x.borradas||{}).forEach(function(n){ if(!(r.borradas[n]>=x.borradas[n])) r.borradas[n]=x.borradas[n]; }); });
+  [a,b].forEach(function(x){ Object.keys(x.plantillas||{}).forEach(function(n){ var p=x.plantillas[n], c=r.plantillas[n]; if(!c || (p.t||0)>(c.t||0)) r.plantillas[n]=p; }); });
+  Object.keys(r.borradas).forEach(function(n){ var p=r.plantillas[n]; if(p && (p.t||0)<=r.borradas[n]) delete r.plantillas[n]; });
+  return r;
+}
+async function expSincronizar(forzar){
+  if(expSincBusy || !carpetaHandle) return;
+  if(!forzar && Date.now()-expSincUlt<45000) return;
+  expSincBusy=true;
+  try{
+    if(!(await permisoCarpeta(false))) return;
+    await cfgCargarCompartida();
+    var rem=cfgCompartida.plantillasExportacion||{plantillas:{},borradas:{}}, loc=expPlantLeer(), m=expFusionar(loc, rem);
+    if(JSON.stringify(m)!==JSON.stringify(loc)) expPlantEscribir(m);
+    var remI=cfgCompartida.plantillasEmparejamiento||{plantillas:{},borradas:{}}, locI=impPlantLeer(), mI=expFusionar(locI, remI), cambioI=JSON.stringify(mI)!==JSON.stringify(locI);
+    if(cambioI){ impPlantEscribir(mI); esqRefrescar(); }
+    if(JSON.stringify(m)!==JSON.stringify(rem) || JSON.stringify(mI)!==JSON.stringify(remI)){
+      cfgCompartida.plantillasExportacion=m; cfgCompartida.plantillasEmparejamiento=mI;
+      await escribirArchivo("Registros","_configuracion.json",JSON.stringify(cfgCompartida,null,1));
+    }
+    expSincUlt=Date.now(); expSincMsg="Plantillas compartidas con la Carpeta local (revisadas a las "+pad2(new Date().getHours())+":"+pad2(new Date().getMinutes())+").";
+  }catch(e){ registrarError("sincronizar plantillas de exportación", e); expSincMsg="No se pudieron compartir las plantillas con la Carpeta local; quedan en este navegador."; }
+  finally{ expSincBusy=false; expPintar(); }
+}
 function expColumnas(){
   if(!expOrden) expCargar();
   return expOrden.filter(function(n){ return !expOff[n]; }).map(function(n){ return CONS_COLUMNAS.filter(function(c){ return c[0]===n; })[0]; }).filter(Boolean);
+}
+function expPlantillaActual(){   // nombre de la plantilla que coincide con el estado actual ("" si está modificado)
+  if(expEsPredet()) return EXP_PREDET;
+  var pl=expPlantLeer().plantillas, hallada="";
+  Object.keys(pl).forEach(function(n){ if(!hallada && expIgual(expNormalizar(pl[n].orden, pl[n].off, false))) hallada=n; });
+  return hallada;
+}
+function expChip(n, k, on, flechas, arrastrable){
+  return '<span class="exp-chip'+(on?' on':' off')+'"'+(arrastrable?' draggable="true"':'')+' data-n="'+escapeHtml(n)+'">'
+    +'<button type="button" class="exp-tg" data-a="alterna" title="'+(on?'Pulsa para quitar este campo':'Pulsa para incluir este campo')+(arrastrable?'; arrástralo para moverlo':'')+'">'+(on?'<span class="exp-n">'+k+'.</span> ':'')+escapeHtml(n)+'</button>'
+    +(flechas?'<button type="button" class="exp-mv" data-a="izq" title="Mover antes">◀</button><button type="button" class="exp-mv" data-a="der" title="Mover después">▶</button>':'')+'</span>';
 }
 function expPintar(){
   var li=document.getElementById("exp-lista"), sel=document.getElementById("exp-plant");
   if(!li || !sel) return;
   if(!expOrden) expCargar();
-  var k=0;
-  li.innerHTML = expOrden.map(function(n){
-    var on=!expOff[n], num=on ? '<span class="exp-n">'+(++k)+'.</span> ' : '';
-    return '<button type="button" class="exp-chip'+(on?' on':' off')+'" draggable="true" data-n="'+escapeHtml(n)+'" title="Arrástralo para moverlo; púlsalo para '+(on?'quitarlo':'incluirlo')+'">'+num+escapeHtml(n)+'</button>';
-  }).join("");
-  var pl=expPlantillas(), nombres=Object.keys(pl).sort(function(a,b){ return a.localeCompare(b,"es"); });
-  if(nombres.indexOf(expPlantSel)<0) expPlantSel="";
-  sel.innerHTML='<option value="">'+(nombres.length?'Plantillas guardadas…':'Sin plantillas guardadas')+'</option>'+nombres.map(function(n){ return '<option value="'+escapeHtml(n)+'"'+(n===expPlantSel?' selected':'')+'>'+escapeHtml(n)+'</option>'; }).join("");
-  sel.disabled=!nombres.length;
-  var bd=document.getElementById("exp-borrar"); if(bd) bd.disabled=!expPlantSel;
+  var vista=expLS(EXP_VISTA)==="temas" ? "temas" : "orden", flechas=expLS(EXP_FLECHAS)==="1", q=stdNorm(expFiltro), k=0, num={};
+  expOrden.forEach(function(n){ if(!expOff[n]) num[n]=++k; });
+  var visible=function(n){ return !q || stdNorm(n).indexOf(q)>-1; };
+  if(vista==="orden"){
+    li.innerHTML = expOrden.filter(visible).map(function(n){ return expChip(n, num[n], !expOff[n], flechas, true); }).join("") || '<span class="nota">Ningún campo coincide con la búsqueda.</span>';
+  } else {
+    li.innerHTML = '<p class="nota">En esta vista solo se incluyen o quitan campos; para ordenarlos usa «Orden de descarga».</p>'+expGrupos().map(function(g, gi){
+      var lista=g[1].filter(visible); if(!lista.length) return "";
+      var on=g[1].filter(function(n){ return !expOff[n]; }).length;
+      return '<div class="exp-grupo"><div class="exp-gtit"><strong>'+escapeHtml(g[0])+'</strong> <span class="nota">('+on+' de '+g[1].length+')</span> <button type="button" class="btn small tenue" data-a="grupo-on" data-g="'+gi+'">Incluir grupo</button><button type="button" class="btn small tenue" data-a="grupo-off" data-g="'+gi+'">Quitar grupo</button></div><div class="exp-chips">'
+        +expOrden.filter(function(n){ return lista.indexOf(n)>-1; }).map(function(n){ return expChip(n, num[n], !expOff[n], false, false); }).join("")+'</div></div>';
+    }).join("");
+  }
+  var pl=expPlantLeer().plantillas, nombres=Object.keys(pl).sort(function(a,b){ return a.localeCompare(b,"es"); }), act=expPlantillaActual();
+  sel.innerHTML=(act?'':'<option value="" selected disabled>Orden modificado (sin guardar)</option>')
+    +'<option value="'+escapeHtml(EXP_PREDET)+'"'+(act===EXP_PREDET?' selected':'')+'>'+EXP_PREDET+'</option>'
+    +nombres.map(function(n){ return '<option value="'+escapeHtml(n)+'"'+(n===act?' selected':'')+'>'+escapeHtml(n)+'</option>'; }).join("");
+  var propia=act && act!==EXP_PREDET;
+  ["exp-renombrar","exp-borrar"].forEach(function(id){ var b=document.getElementById(id); if(b) b.disabled=!propia; });
+  var v=document.getElementById("exp-vista"); if(v) v.value=vista;
+  var f=document.getElementById("exp-flechas"); if(f) f.checked=flechas;
   var r=document.getElementById("exp-resumen"); if(r) r.textContent=k+" de "+expOrden.length+" campos";
+  var m=document.getElementById("exp-msg"); if(m) m.textContent = carpetaHandle ? (expSincMsg||"") : "Carpeta local no conectada: las plantillas quedan solo en este navegador.";
+}
+function expAplicar(e){ expOrden=e.orden; expOff=e.off; expGuardar(); expPintar(); }
+function expMoverRelativo(n, dir){   // mueve un campo junto al vecino visible más cercano
+  var q=stdNorm(expFiltro), vis=expOrden.filter(function(x){ return !q || stdNorm(x).indexOf(q)>-1; }), i=vis.indexOf(n), v=vis[i+dir];
+  if(i<0 || !v) return;
+  var o=expOrden.filter(function(x){ return x!==n; }), j=o.indexOf(v);
+  o.splice(dir<0 ? j : j+1, 0, n); expOrden=o; expGuardar(); expPintar();
 }
 (function(){
   var cont=document.getElementById("exp-campos"); if(!cont) return;
-  function cambiado(){ expPlantSel=""; expGuardar(); expPintar(); }
+  function nombreValido(nom){
+    if(!nom) return false;
+    if(stdNorm(nom)===stdNorm(EXP_PREDET)){ alert("«Orden predeterminado» es una plantilla fija; elige otro nombre."); return false; }
+    return true;
+  }
   cont.addEventListener("click", function(ev){
     var b=ev.target.closest("button"); if(!b) return;
     if(!expOrden) expCargar();
-    if(b.id==="exp-predet"){ expPredeterminado(); cambiado(); return; }
+    var a=b.getAttribute("data-a"), chip=b.closest(".exp-chip"), n=chip ? chip.getAttribute("data-n") : "";
     if(b.id==="exp-guardar"){
-      var nom=(prompt("Nombre de la plantilla (por ejemplo, «Para publicación» o «Solo taxonomía y localidad»):", expPlantSel||"")||"").trim();
-      if(!nom) return;
-      var pl=expPlantillas();
-      if(pl[nom] && !confirm("Ya existe la plantilla «"+nom+"». ¿Reemplazarla con el orden actual?")) return;
-      pl[nom]={orden:expOrden.slice(), off:Object.keys(expOff)}; expPlantillasGuardar(pl); expPlantSel=nom; expGuardar(); expPintar(); return;
+      var act=expPlantillaActual(), nom=(prompt("Nombre de la plantilla (por ejemplo, «Para publicación» o «Solo taxonomía y localidad»):", act&&act!==EXP_PREDET?act:"")||"").trim();
+      if(!nombreValido(nom)) return;
+      var d=expPlantLeer();
+      if(d.plantillas[nom] && !confirm("Ya existe la plantilla «"+nom+"». ¿Reemplazarla con el orden actual?")) return;
+      d.plantillas[nom]={orden:expOrden.slice(), off:Object.keys(expOff), t:Date.now()}; delete d.borradas[nom]; expPlantEscribir(d); expPintar(); expSincronizar(true); return;
+    }
+    if(b.id==="exp-renombrar"){
+      var viejo=expPlantillaActual(); if(!viejo || viejo===EXP_PREDET) return;
+      var nuevo=(prompt("Nuevo nombre para la plantilla «"+viejo+"»:", viejo)||"").trim();
+      if(!nuevo || nuevo===viejo || !nombreValido(nuevo)) return;
+      var d2=expPlantLeer();
+      if(d2.plantillas[nuevo] && !confirm("Ya existe la plantilla «"+nuevo+"». ¿Reemplazarla?")) return;
+      var ahora=Date.now(); d2.plantillas[nuevo]=Object.assign({}, d2.plantillas[viejo], {t:ahora}); delete d2.plantillas[viejo]; d2.borradas[viejo]=ahora; delete d2.borradas[nuevo];
+      expPlantEscribir(d2); expPintar(); expSincronizar(true); return;
     }
     if(b.id==="exp-borrar"){
-      if(!expPlantSel || !confirm("¿Eliminar la plantilla «"+expPlantSel+"»?")) return;
-      var p2=expPlantillas(); delete p2[expPlantSel]; expPlantillasGuardar(p2); expPlantSel=""; expPintar(); return;
+      var nb=expPlantillaActual(); if(!nb || nb===EXP_PREDET || !confirm("¿Eliminar la plantilla «"+nb+"»? También se quitará de los demás equipos que usan esta Carpeta local.")) return;
+      var d3=expPlantLeer(); delete d3.plantillas[nb]; d3.borradas[nb]=Date.now(); expPlantEscribir(d3); expPintar(); expSincronizar(true); return;
     }
-    if(b.classList.contains("exp-chip")){
-      var n=b.getAttribute("data-n"); if(expOff[n]) delete expOff[n]; else expOff[n]=1; cambiado();
+    if(b.id==="exp-todos"){ expOff={}; expGuardar(); expPintar(); return; }
+    if(b.id==="exp-ninguno"){ expOrden.forEach(function(x){ expOff[x]=1; }); expGuardar(); expPintar(); return; }
+    if(a==="alterna"){ if(expOff[n]) delete expOff[n]; else expOff[n]=1; expGuardar(); expPintar(); return; }
+    if(a==="izq" || a==="der"){ expMoverRelativo(n, a==="izq"?-1:1); return; }
+    if(a==="grupo-on" || a==="grupo-off"){
+      var g=expGrupos()[parseInt(b.getAttribute("data-g"),10)]; if(!g) return;
+      var q=stdNorm(expFiltro);
+      g[1].filter(function(x){ return !q || stdNorm(x).indexOf(q)>-1; }).forEach(function(x){ if(a==="grupo-on") delete expOff[x]; else expOff[x]=1; });
+      expGuardar(); expPintar();
     }
   });
   cont.addEventListener("change", function(ev){
-    if(ev.target.id!=="exp-plant") return;
-    var nom=ev.target.value, pl=expPlantillas();
-    if(!nom || !pl[nom]){ expPlantSel=""; expPintar(); return; }
-    var e=expNormalizar(pl[nom].orden, pl[nom].off, false); expOrden=e.orden; expOff=e.off; expPlantSel=nom; expGuardar(); expPintar();
+    var t=ev.target;
+    if(t.id==="exp-plant"){
+      if(t.value===EXP_PREDET){ expPredeterminado(); expGuardar(); expPintar(); return; }
+      var pl=expPlantLeer().plantillas[t.value];
+      if(pl) expAplicar(expNormalizar(pl.orden, pl.off, false)); else expPintar();
+    } else if(t.id==="exp-vista"){ expLS(EXP_VISTA, t.value); expPintar(); }
+    else if(t.id==="exp-flechas"){ expLS(EXP_FLECHAS, t.checked?"1":"0"); expPintar(); }
   });
-  // arrastrar y soltar: el botón arrastrado queda antes o después del botón sobre el que se suelta
+  cont.addEventListener("input", function(ev){ if(ev.target.id==="exp-filtro"){ expFiltro=ev.target.value; expPintar(); } });
+  // arrastrar y soltar: el campo arrastrado queda antes o después de aquel sobre el que se suelta
   cont.addEventListener("dragstart", function(ev){
-    var b=ev.target.closest && ev.target.closest(".exp-chip"); if(!b) return;
-    expArrastre=b.getAttribute("data-n"); b.classList.add("arrastrando");
+    var c=ev.target.closest && ev.target.closest(".exp-chip"); if(!c || !c.draggable) return;
+    expArrastre=c.getAttribute("data-n"); c.classList.add("arrastrando");
     try{ ev.dataTransfer.setData("text/plain", expArrastre); ev.dataTransfer.effectAllowed="move"; }catch(e){}
   });
   cont.addEventListener("dragover", function(ev){
     if(!expArrastre) return;
     ev.preventDefault();
     Array.prototype.forEach.call(cont.querySelectorAll(".exp-chip.antes,.exp-chip.despues"), function(c){ c.classList.remove("antes","despues"); });
-    var b=ev.target.closest && ev.target.closest(".exp-chip");
-    if(b && b.getAttribute("data-n")!==expArrastre){ var r=b.getBoundingClientRect(); b.classList.add(ev.clientX<r.left+r.width/2 ? "antes" : "despues"); }
+    var c=ev.target.closest && ev.target.closest(".exp-chip");
+    if(c && c.getAttribute("data-n")!==expArrastre){ var r=c.getBoundingClientRect(); c.classList.add(ev.clientX<r.left+r.width/2 ? "antes" : "despues"); }
   });
   cont.addEventListener("drop", function(ev){
     if(!expArrastre) return;
     ev.preventDefault();
-    var b=ev.target.closest && ev.target.closest(".exp-chip"), mover=expArrastre; expArrastre="";
+    var c=ev.target.closest && ev.target.closest(".exp-chip"), mover=expArrastre; expArrastre="";
     var o=expOrden.filter(function(n){ return n!==mover; });
-    if(b && b.getAttribute("data-n")!==mover){
-      var r=b.getBoundingClientRect(), i=o.indexOf(b.getAttribute("data-n"));
+    if(c && c.getAttribute("data-n")!==mover){
+      var r=c.getBoundingClientRect(), i=o.indexOf(c.getAttribute("data-n"));
       o.splice(ev.clientX<r.left+r.width/2 ? i : i+1, 0, mover);
-    } else if(!b) o.push(mover);
-    else o.splice(expOrden.indexOf(mover), 0, mover);
-    expOrden=o; cambiado();
+    } else if(!c) o.push(mover);
+    else return;
+    expOrden=o; expGuardar(); expPintar();
   });
   cont.addEventListener("dragend", function(){
     expArrastre="";
     Array.prototype.forEach.call(cont.querySelectorAll(".exp-chip"), function(c){ c.classList.remove("arrastrando","antes","despues"); });
   });
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) expSincronizar(false); });
   expPintar();
 })();
 function listaConsultaDescarga(){
   var m=new Set(marcadosConsulta()), lista=resultadosConsulta();
   return m.size ? lista.filter(function(r){ return m.has(r.id); }) : lista;
 }
-function filasConsulta(){ return filasDeLista(listaConsultaDescarga()); }
+function filasConsulta(){ return filasDeLista(listaConsultaDescarga(), expColumnas()); }
 function csvDeFilas(filas, sinBom){
   return (sinBom?"":"﻿")+filas.map(function(f){ return f.map(function(v){ v=String(v); return /[",\r\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(","); }).join("\r\n")+"\r\n";
 }
@@ -8957,6 +9073,7 @@ function impResolver(res){
 var impElem=function(id){ return document.getElementById(id); };
 function impMensaje(t,mal){ var e=impElem("imp-msg"); if(e){ e.textContent=t||""; e.style.color=mal?"var(--danger)":""; } }
 async function impCargarArchivo(file){
+  imp.plantillaNombre="";
   if(modoAcceso!=="admin") return;
   try{
     impMensaje("Leyendo «"+file.name+"»…");
@@ -9478,12 +9595,25 @@ function impPintarOpciones(){
     +'<details class="imp-fijos"><summary>Plantillas de emparejamiento (para planillas con el mismo formato)</summary>'
     +'<div class="imp-ayuda"><p><strong>Para qué sirve.</strong> No le pone nombre a la importación. Guarda tu trabajo de emparejado (qué columna va a qué campo, los valores repetidos y la regla de duplicados) para reutilizarlo.</p>'
     +'<p><strong>Ejemplo.</strong> Cada mes recibes una planilla de Opiliones con las mismas columnas. La primera vez emparejas todo y guardas la plantilla «Planilla Opiliones». Los meses siguientes cargas la planilla, eliges la plantilla, pulsas «Aplicar» y todos los pares quedan confirmados de una vez.</p>'
-    +'<p>Las plantillas se guardan en este navegador. Cada columna se reconoce por su nombre de encabezado.</p></div>'
+    +'<p>Se guardan solo cuando tú lo pides, con el nombre que elijas, y se comparten con los equipos que usan la misma Carpeta local. Cada columna se reconoce por su nombre de encabezado. También alimentan «Traducir a una planilla emparejada».</p></div>'
     +'<div class="imp-fila-opc"><input type="text" id="imp-nombre-guardar" placeholder="Nombre (por ejemplo: Planilla Opiliones)" class="nav"><button type="button" class="btn tenue small" id="imp-guardar">Guardar plantilla con el emparejado actual</button></div>'
-    +(nombres.length?'<div class="imp-fila-opc"><select id="imp-guardados">'+nombres.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'</select><button type="button" class="btn tenue small" id="imp-aplicar">Aplicar</button><button type="button" class="btn tenue small" id="imp-borrar-guardado">Borrar</button></div>':'<p class="nota">Aún no hay plantillas guardadas en este navegador.</p>')+'</details>';
+    +(nombres.length?'<div class="imp-fila-opc"><select id="imp-guardados">'+nombres.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("")+'</select><button type="button" class="btn tenue small" id="imp-aplicar">Aplicar</button><button type="button" class="btn tenue small" id="imp-borrar-guardado">Borrar</button></div>':'<p class="nota">Aún no hay plantillas guardadas.</p>')+'</details>';
 }
-function impLeerGuardados(){ try{ return JSON.parse(localStorage.getItem("libroCatalogo_mapeosImport")||"{}"); }catch(e){ return {}; } }
-function impEscribirGuardados(o){ try{ localStorage.setItem("libroCatalogo_mapeosImport",JSON.stringify(o)); }catch(e){ registrarError("guardar emparejados de importación", e); } }
+// Plantillas de emparejamiento: {plantillas:{nombre:{mapas,fijos,clave,politica,minLlenos,esquema,t}}, borradas:{nombre:t}}.
+// Se comparten por la Carpeta local (Registros/_configuracion.json, clave plantillasEmparejamiento). El esquema (orden de columnas de la planilla) sirve a «Traducir a una planilla emparejada».
+var IMP_PL_CLAVE="libroCatalogo_mapeosImport2";
+function impPlantLeer(){
+  try{ var o=JSON.parse(localStorage.getItem(IMP_PL_CLAVE)||"null"); if(o && o.plantillas) return {plantillas:o.plantillas, borradas:o.borradas||{}}; }catch(e){}
+  var r={plantillas:{},borradas:{}}, t=Date.now();   // migra lo guardado hasta la v0.9.80
+  try{ var v=JSON.parse(localStorage.getItem("libroCatalogo_mapeosImport")||"{}"); Object.keys(v).forEach(function(n){ if(v[n] && v[n].mapas){ r.plantillas[n]=v[n]; r.plantillas[n].t=t; } }); }catch(e){}
+  try{ var e0=JSON.parse(localStorage.getItem("libroCatalogo_esquemasPlanilla")||"{}"); Object.keys(e0).forEach(function(n){ if(e0[n] && e0[n].cols){ r.plantillas[n]=r.plantillas[n]||{t:t}; r.plantillas[n].esquema=e0[n]; } }); }catch(e){}
+  if(Object.keys(r.plantillas).length) impPlantEscribir(r);
+  return r;
+}
+function impPlantEscribir(o){ try{ localStorage.setItem(IMP_PL_CLAVE,JSON.stringify(o)); }catch(e){ registrarError("guardar plantillas de emparejamiento", e); } }
+function impLeerGuardados(){   // solo las que sirven para emparejar al importar
+  var pl=impPlantLeer().plantillas, r={}; Object.keys(pl).forEach(function(n){ if(pl[n].mapas) r[n]=pl[n]; }); return r;
+}
 function impPintarResultado(){
   var res=imp.resultado, rs=res.resolucion, tipos=Object.keys(res.avisos), sinConf=imp.mapas.filter(function(m){ return !m.conf; }).length;
   var h=(sinConf?'<p class="nota imp-alerta">Atención: '+sinConf+' emparejamiento(s) propuesto(s) todavía sin confirmar se están usando en esta importación. Confírmalos o quítalos antes de importar.</p>':'')+'<div class="imp-resumen"><strong>Vista previa</strong><ul><li>'+rs.nuevos.length+' registro(s) nuevo(s)</li>'
@@ -9499,8 +9629,7 @@ function impPintarResultado(){
     +res.registros.slice(0,8).map(function(r){ return '<tr><td>'+r.__fila+'</td>'+cols.map(function(c){ return '<td>'+escapeHtml(impValorClave(r,c[1])||"")+'</td>'; }).join("")+'</tr>'; }).join("")+'</tbody></table></div>';
   var tot=rs.nuevos.length+rs.actualizados.length;
   h+='<label class="imp-resp"><input type="checkbox" id="imp-respaldo" '+(registros.length?'checked':'disabled')+'> Descargar un zip de respaldo de los registros actuales antes de importar</label>';
-  var nomEsq=String(imp.nombreArchivo||"Planilla").replace(/\.[^.]+$/,"")+(imp.hojaNombre&&imp.hojaNombre!==imp.nombreArchivo?" - "+imp.hojaNombre:"");
-  h+='<label class="imp-resp"><input type="checkbox" id="imp-esq-chk" checked> Conservar esta planilla emparejada (orden original de columnas, incluidas las ignoradas) para traducir después registros nuevos a su formato. Nombre: <input type="text" id="imp-esq-nombre" class="nav" value="'+escapeHtml(nomEsq)+'"></label>';
+  h+='<p class="nota">Para traducir después registros nuevos al formato de esta planilla, guarda antes la plantilla de emparejamiento (paso de opciones, «Plantillas de emparejamiento»).</p>';
   h+='<div class="barra-botones"><button type="button" class="btn" id="imp-importar"'+(tot?'':' disabled')+'>Importar '+tot+' registro(s)</button></div>';
   return h;
 }
@@ -9520,10 +9649,9 @@ async function impImportar(){
     respaldoPrevio("Respaldo_antes_de_importar_");
   }
   var lista=rs.nuevos.map(function(r){ var o=clonar(r); delete o.__clave; delete o.__fila; o.id=nuevoId(); return o; }).concat(rs.actualizados);
-  var esqNom=(impElem("imp-esq-chk")&&impElem("imp-esq-chk").checked)?(impElem("imp-esq-nombre").value||"").trim():"";
+  var esqNom=imp.plantillaNombre||"";
   if(esqNom) lista.forEach(function(o){ if(o.origenImportacion) o.origenImportacion.esquema=esqNom; });
   var r=fusionarRegistros(lista);
-  if(esqNom) await esqGuardar(esqConstruir(esqNom));
   var txt="Importación lista: "+r.nuevos+" nuevo(s)"+(r.actualizados?" y "+r.actualizados+" actualizado(s)":"")+"."+sufijoRepetidos(r)+" Quedan agrupados como una sesión de ingreso de hoy en Gestión de Datos.";
   impMensaje(txt); mensajeCarpeta(txt);
   registrarActividad("importacion","planilla "+imp.nombreArchivo+" · "+r.nuevos+" nuevos, "+r.actualizados+" actualizados");
@@ -9543,6 +9671,7 @@ function impAplicarPlantilla(nombre){
   imp.mapas=[]; var sin=0;
   cfg.mapas.forEach(function(m){ var c=porNombre[normTxt(m.nombre)]; if(!c||!impObjetivo(m.target)){ sin++; return; } var nm=impNuevoMapa(c.i,m.target,true); nm.opts=JSON.parse(JSON.stringify(m.opts)); impAutoValores(nm); imp.mapas.push(nm); });
   imp.fijos=cfg.fijos||[]; imp.clave=(cfg.clave||[]).filter(function(k){ return imp.mapas.some(function(m){ return m.target===k; }); }); imp.politica=cfg.politica||"omitir"; imp.minLlenos=cfg.minLlenos==null?3:cfg.minLlenos; imp.resultado=null;
+  imp.plantillaNombre=nombre;
   impMensaje("Plantilla «"+nombre+"» aplicada"+(sin?" ("+sin+" columna(s) guardadas no están en esta planilla)":"")+"."); impPintar();
 }
 function iniciarImportador(){
@@ -9635,14 +9764,20 @@ function iniciarImportador(){
     else if(t.hasAttribute("data-fijo-quitar")){ imp.fijos.splice(parseInt(t.getAttribute("data-fijo-quitar"),10),1); imp.resultado=null; impPintar(); }
     else if(t.id==="imp-guardar"){
       var nom=(impElem("imp-nombre-guardar").value||"").trim(); if(!nom){ impMensaje("Escribe un nombre para guardar el emparejamiento.",true); return; }
-      var g=impLeerGuardados(); g[nom]={mapas:imp.mapas.map(function(m){ return {nombre:imp.cols[m.col].nombre,target:m.target,opts:m.opts}; }),fijos:imp.fijos,clave:imp.clave,politica:imp.politica,minLlenos:imp.minLlenos};
-      impEscribirGuardados(g); impMensaje("Emparejamiento «"+nom+"» guardado en este navegador."); impPintar();
+      var d=impPlantLeer();
+      if(d.plantillas[nom] && !confirm("Ya existe la plantilla «"+nom+"». ¿Reemplazarla con el emparejado actual?")) return;
+      d.plantillas[nom]={mapas:imp.mapas.map(function(m){ return {nombre:imp.cols[m.col].nombre,target:m.target,opts:m.opts}; }),fijos:imp.fijos,clave:imp.clave,politica:imp.politica,minLlenos:imp.minLlenos,esquema:esqConstruir(nom),t:Date.now()};
+      delete d.borradas[nom]; impPlantEscribir(d); imp.plantillaNombre=nom;
+      impMensaje("Plantilla «"+nom+"» guardada"+(carpetaHandle?" y compartida con la Carpeta local.":" en este navegador.")); impPintar(); esqRefrescar(); expSincronizar(true);
     }
     else if(t.id==="imp-aplicar"){ impAplicarPlantilla(impElem("imp-guardados").value); }
     else if(t.hasAttribute("data-plantilla")){ impAplicarPlantilla(t.getAttribute("data-plantilla")); }
     else if(t.hasAttribute("data-paso")){ var pn=parseInt(t.getAttribute("data-paso"),10); if(pn>1&&!imp.prevOk) return; imp.paso=pn; impPintar(); var cc=impElem("imp-cont"); if(cc&&cc.scrollIntoView) cc.scrollIntoView({block:"start"}); }
     else if(t.hasAttribute("data-anexar")){ impAsignar(parseInt(t.getAttribute("data-anexar"),10),"@obs"); var sg3=impPendientesManual()[0]; if(imp.paso===2) imp.foco=sg3?sg3.i:null; impPintar(); }
-    else if(t.id==="imp-borrar-guardado"){ var g3=impLeerGuardados(); delete g3[impElem("imp-guardados").value]; impEscribirGuardados(g3); impPintar(); }
+    else if(t.id==="imp-borrar-guardado"){
+      var nb=impElem("imp-guardados").value; if(!nb || !confirm("¿Borrar la plantilla «"+nb+"»? También se quitará de los demás equipos que usan esta Carpeta local.")) return;
+      var d3=impPlantLeer(); delete d3.plantillas[nb]; d3.borradas[nb]=Date.now(); impPlantEscribir(d3); impPintar(); esqRefrescar(); expSincronizar(true);
+    }
   });
   // arrastrar y soltar
   cont.addEventListener("dragstart", function(e){ var c=e.target.closest&&e.target.closest(".imp-col-card"); if(!c) return; impDrag=parseInt(c.getAttribute("data-col"),10); try{ e.dataTransfer.setData("text/plain",String(impDrag)); e.dataTransfer.effectAllowed="copy"; }catch(er){} });
@@ -10012,10 +10147,12 @@ instalarAyudasCampos();
 iniciarSelectsOtro();
 
 async function descargarConsulta(formato){
+  var colsExp=expColumnas();
+  if(!colsExp.length){ alert("No hay campos elegidos para descargar. Se eligen en Sistema, Gestión de datos, Exportar datos, «Elegir los campos y su orden»."); return; }
   var filas=filasConsulta();
   if(filas.length<2){ alert("No hay resultados para descargar."); return; }
   var nombre=nombreDescarga("Consulta", contenidoDeLista(listaConsultaDescarga()), formato);
-  var blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas);
+  var blob = formato==="csv" ? new Blob([csvDeFilas(filas)],{type:"text/csv;charset=utf-8"}) : xlsxDeFilas(filas, colsExp.map(function(c){ return c[2]||""; }));
   var url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(function(){ URL.revokeObjectURL(url); },30000);
@@ -10029,9 +10166,9 @@ async function descargarConsulta(formato){
 }
 
 // ---------- Planillas emparejadas: esquemas guardados y traducción de registros a su formato ----------
-var ESQ_CLAVE="libroCatalogo_esquemasPlanilla";
-function esqLeer(){ try{ return JSON.parse(localStorage.getItem(ESQ_CLAVE)||"{}"); }catch(e){ return {}; } }
-function esqEscribir(o){ try{ localStorage.setItem(ESQ_CLAVE,JSON.stringify(o)); }catch(e){ registrarError("guardar esquemas de planilla", e); } }
+function esqLeer(){   // esquemas de las plantillas que los traen
+  var pl=impPlantLeer().plantillas, r={}; Object.keys(pl).forEach(function(n){ if(pl[n].esquema){ r[n]=pl[n].esquema; r[n].nombre=n; } }); return r;
+}
 function esqConstruir(nombre){
   var cols=imp.cols.map(function(c){
     var ms=imp.mapas.filter(function(m){ return m.col===c.i; });
@@ -10044,27 +10181,8 @@ function esqConstruir(nombre){
   });
   return {nombre:nombre, archivo:imp.nombreArchivo, hoja:imp.hojaNombre||"", filaEnc:imp.filaEnc, creado:new Date().toISOString(), cols:cols};
 }
-async function esqGuardar(es){
-  var g=esqLeer(); g[es.nombre]=es; esqEscribir(g);
-  if(carpetaHandle && await permisoCarpeta(false)){
-    try{ await escribirArchivo("Importaciones", sanitizarNombre(es.nombre)+".esquema.json", new Blob([JSON.stringify(es,null,1)],{type:"application/json"})); }catch(e){}
-  }
-  esqRefrescar();
-}
-async function esqCargarCarpeta(){
-  if(!carpetaHandle) return;
-  try{
-    var d=await carpetaHandle.getDirectoryHandle("Importaciones"), g=esqLeer(), cambio=false;
-    for await (var ent of d.values()){
-      if(ent.kind!=="file"||!/\.esquema\.json$/i.test(ent.name)) continue;
-      try{ var es=JSON.parse(await (await ent.getFile()).text()); if(es&&es.nombre&&es.cols&&!g[es.nombre]){ g[es.nombre]=es; cambio=true; } }catch(e){}
-    }
-    if(cambio) esqEscribir(g);
-  }catch(e){}
-}
 async function esqRefrescar(){
   var det=document.getElementById("cons-esq"); if(!det) return;
-  await esqCargarCarpeta();
   var g=esqLeer(), nombres=Object.keys(g), sel=document.getElementById("esq-sel"), previo=sel.value;
   det.classList.toggle("oculto", !nombres.length||modoAcceso!=="admin");
   sel.innerHTML=nombres.map(function(n){ return '<option>'+escapeHtml(n)+'</option>'; }).join("");
@@ -10179,10 +10297,6 @@ function esqIniciar(){
   var det=document.getElementById("cons-esq"); if(!det||det._ini) return; det._ini=true;
   document.getElementById("esq-btn").addEventListener("click", esqTraducir);
   document.getElementById("esq-sel").addEventListener("change", esqActualizarInfo);
-  document.getElementById("esq-quitar").addEventListener("click", function(){
-    var n=document.getElementById("esq-sel").value; if(!n||!confirm("¿Olvidar la planilla emparejada «"+n+"»? Los registros no se modifican.")) return;
-    var g=esqLeer(); delete g[n]; esqEscribir(g); esqRefrescar();
-  });
 }
 
 // ---------- Importar zip de Libreta de Campo ----------

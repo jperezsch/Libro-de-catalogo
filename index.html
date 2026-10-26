@@ -616,6 +616,16 @@
   .gbif-det-cuerpo .gbif-acciones{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
   .ficha-valor{color:#14201a;font-weight:500;font-size:15.5px;white-space:pre-wrap;}
   .ficha-campo{align-items:baseline;}
+  /* v0.9.85: ficha de consulta con encabezados discretos en columna alineada y valores protagonistas */
+  .ficha-campo{grid-template-columns:minmax(150px,210px) 1fr !important;gap:2px 18px !important;padding:9px 6px !important;border-bottom:none !important;align-items:baseline !important;}
+  .ficha-campo:nth-child(even){background:rgba(47,93,58,.045);}
+  .ficha-label{justify-self:end !important;text-align:right;background:transparent !important;color:#6b7a6c !important;font-weight:600 !important;font-size:11.5px !important;letter-spacing:.9px !important;padding:2px 14px 2px 0 !important;border-right:2px solid #cfd8c8;border-radius:0 !important;align-self:baseline !important;width:100%;box-sizing:border-box;}
+  .ficha-valor{color:#101a14 !important;font-weight:450 !important;font-size:16px !important;line-height:1.4;}
+  .ficha-campo.clave .ficha-valor{font-size:18px !important;font-weight:650 !important;}
+  .ficha-valor.mono{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:15px !important;}
+  .ficha-body summary{border-bottom:2px solid transparent;}
+  .ficha-body details[open]>summary{border-bottom:2px solid #2f5d3a;}
+  .media-titulo{border-bottom:2px solid #2f5d3a;padding-bottom:5px;}
   .ficha-linea-institucion{text-align:center;font-family:var(--serif);font-size:15.5px;font-weight:700;letter-spacing:.3px;color:var(--ink);margin:2px 0;}
   .exp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px;}
   .exp-chip{font-family:var(--sans);font-size:12px;border:1px solid #b9b39a;background:#f4f0e2;color:#2b2b2b;border-radius:14px;padding:3px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
@@ -1511,7 +1521,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.84";
+var APP_VERSION = "v0.9.85";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -3150,7 +3160,8 @@ function formatearFechaHora(iso){
 }
 function fichaCampo(label, valor){
   if(valor===undefined || valor===null || valor==="") return "";
-  return '<div class="ficha-campo"><span class="ficha-label">'+escapeHtml(label)+'</span><span class="ficha-valor">'+escapeHtml(valor)+'</span></div>';
+  var clave=/cat[aá]logo/i.test(label), mono=/^(latitud|longitud|fecha|hora|n[uú]mero de entrada|n\.º de|altitud|coordenadas)/i.test(label);
+  return '<div class="ficha-campo'+(clave?' clave':'')+'"><span class="ficha-label">'+escapeHtml(label)+'</span><span class="ficha-valor'+(mono?' mono':'')+'">'+escapeHtml(valor)+'</span></div>';
 }
 function fichaCampos(pares, r){
   var html="";

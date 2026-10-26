@@ -1521,7 +1521,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.85";
+var APP_VERSION = "v0.9.86";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -9194,12 +9194,11 @@ function impResolver(res){
 var impElem=function(id){ return document.getElementById(id); };
 function impMensaje(t,mal){ var e=impElem("imp-msg"); if(e){ e.textContent=t||""; e.style.color=mal?"var(--danger)":""; } }
 async function impCargarArchivo(file){
-  imp.plantillaNombre="";
   if(modoAcceso!=="admin") return;
   try{
     impMensaje("Leyendo «"+file.name+"»…");
     var buf=await file.arrayBuffer(), nombre=file.name, esXlsx=/\.xlsx?m?$/i.test(nombre)||(new Uint8Array(buf,0,2)[0]===0x50&&new Uint8Array(buf,0,2)[1]===0x4B);
-    imp={nombreArchivo:nombre, filaEnc:1, minLlenos:3, politica:"omitir", clave:[], fijos:[], mapas:[], hojas:null, hojaIdx:0, resultado:null, sel:null, ejem:{}, ejemApp:{}, filIzq:"", filDer:"", estIzq:"todas", estDer:"todos", ocultarConf:true, nextCid:0, paso:1, prevOk:false, autoHecho:false, sub:"auto", foco:null, tent:{}, ign:{}, desc:{}, nombres:{}, datosManual:false, filaDatos:2, verVacias:false};
+    imp={nombreArchivo:nombre, filaEnc:1, minLlenos:3, politica:"omitir", clave:[], fijos:[], mapas:[], hojas:null, hojaIdx:0, resultado:null, sel:null, ejem:{}, ejemApp:{}, filIzq:"", filDer:"", estIzq:"todas", estDer:"todos", ocultarConf:true, nextCid:0, paso:1, prevOk:false, autoHecho:false, sub:"auto", foco:null, tent:{}, ign:{}, desc:{}, nombres:{}, datosManual:false, filaDatos:2, verVacias:false, plantillaNombre:""};
     if(/\.xls$/i.test(nombre)){ impMensaje("Los archivos .xls antiguos no se pueden leer. Guárdalo como .xlsx o como CSV desde Excel.",true); imp=null; return; }
     if(esXlsx){ var libro=await impXlsx(buf); imp.hojas=libro.hojas; if(!imp.hojas.length) throw new Error("El libro no tiene hojas."); imp.hojaIdx=0; imp.filas=await imp.hojas[0].leer(); imp.hojaNombre=imp.hojas[0].nombre; }
     else { imp.filas=impCsv(impDecodificar(buf)); imp.hojaNombre=""; }

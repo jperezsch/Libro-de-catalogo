@@ -43,7 +43,7 @@
   .operador-actual-wrap input::placeholder{color:rgba(242,239,228,.55);}
   .operador-actual-wrap input:focus{outline:2px solid var(--accent-2);outline-offset:1px;}
   nav#tabs{background:var(--paper-2);border-bottom:1px solid var(--line);box-shadow:0 2px 6px rgba(38,51,43,.05);}
-  #tabs-inner{display:flex;overflow-x:auto;max-width:var(--ancho-max);margin:0 auto;padding:8px var(--gutter) 0;gap:6px;}
+  #tabs-inner{display:flex;overflow-x:auto;overflow-y:hidden;max-width:var(--ancho-max);margin:0 auto -3px;padding:8px var(--gutter) 3px;gap:6px;}
   nav#tabs{background:#d9d2b6;border-bottom:3px solid var(--accent);}
   nav#tabs button{font-family:var(--sans);font-size:15.5px;font-weight:700;padding:11px 22px;background:#fffdf8;border:1.5px solid var(--line-fuerte);border-bottom:none;border-radius:9px 9px 0 0;color:var(--ink);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;}
   body.sin-sesion{overflow:hidden;}
@@ -651,6 +651,25 @@
   .campo.opc details.det-obs.con-texto>summary .lbl span.name::after{content:" ●";color:#d99a00;}
   details.det-obs[open]>textarea{margin-top:6px;}
   .par-obs{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;align-items:start;} @media(max-width:700px){.par-obs{grid-template-columns:1fr;}}
+  /* v0.9.91: pestañas por grupo, título de Gestión de Datos, alertas por color, presencia en la Carpeta local */
+  nav#tabs button[data-tab="consultas"]{background:#d6e8ee;border-color:#4f8296;color:#17475a;margin-right:40px;position:relative;}
+  nav#tabs button[data-tab="consultas"]::before{content:"";position:absolute;right:-24px;top:6px;bottom:0;width:2px;background:#a99f80;border-radius:2px;}
+  nav#tabs button[data-tab="consultas"]:hover{background:#bcd9e3;color:#17475a;border-color:#4f8296;}
+  nav#tabs button[data-tab="consultas"].active{background:#1f6178;border-color:#1f6178;color:#fff;}
+  nav#tabs button[data-tab="sistema"]{background:#e8e2cd;border:1.5px dashed #8c8466;border-bottom:none;color:#4a4636;font-weight:600;margin-left:40px;position:relative;}
+  nav#tabs button[data-tab="sistema"]::before{content:"";position:absolute;left:-24px;top:6px;bottom:0;width:2px;background:#a99f80;border-radius:2px;}
+  nav#tabs button[data-tab="sistema"]:hover{background:#d9d2b6;color:#4a4636;border-color:#8c8466;}
+  nav#tabs button[data-tab="sistema"].active{background:#5b5846;border:1.5px solid #5b5846;border-bottom:none;color:#fff;}
+  #det-gestion>summary{font-size:24px;color:var(--ink);padding-bottom:8px;border-bottom:3px solid var(--accent);margin-bottom:10px;}
+  .alertas-fila .alerta-prestamos{border-left-width:6px;}
+  .alertas-fila .alerta-prestamos#alerta-monitoreo:not(.hay-vencidos){background:#e8f3f7;border-color:#5f9db5;} .alerta-prestamos#alerta-monitoreo:not(.hay-vencidos) summary{color:#17475a;}
+  .alertas-fila .alerta-prestamos#alerta-seguimientos:not(.hay-vencidos){background:#efe9f8;border-color:#8f78c2;} .alerta-prestamos#alerta-seguimientos:not(.hay-vencidos) summary{color:#4b3380;}
+  .alerta-prestamos#alerta-prestamos:not(.hay-vencidos) summary{color:#7a4d00;}
+  .carpeta-presencia{margin:8px 0 12px;font-size:13.5px;}
+  .carpeta-presencia .pres-fila{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;padding:4px 0;border-bottom:1px dashed var(--line);}
+  .pres-punto{width:9px;height:9px;border-radius:50%;background:#a9a38c;display:inline-block;flex:none;} .pres-punto.on{background:#2e8b57;box-shadow:0 0 0 3px rgba(46,139,87,.22);}
+  .pres-hora{margin-left:auto;color:var(--ink-soft);font-size:12.5px;} .pres-fila.ahora .pres-hora{color:#1f6b45;font-weight:700;}
+  .carpeta-compartida-etq{display:inline-block;margin-left:8px;padding:1px 10px;border-radius:999px;font-family:var(--sans);font-size:12px;font-weight:700;background:#e4f1ea;color:#1f6b45;border:1px solid #9cc9b0;vertical-align:middle;}
   nav#tabs button.tab-atencion::after{content:" ●";color:#d99a00;}
   .atencion{outline:3px solid #e0a800;outline-offset:3px;border-radius:6px;background:#fff9e0;animation:atencion-pulso 1.6s ease-in-out 3;}
   @keyframes atencion-pulso{0%,100%{outline-color:#e0a800;}50%{outline-color:#ffe08a;}}
@@ -939,6 +958,7 @@
         </div>
         <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de la localidad</span><span class="key">observacionesLocalidad → dwc:locationRemarks</span></span></summary><textarea class="nav" data-f="observacionesLocalidad"></textarea></details></div>
         <div class="campo req"><div class="lbl"><span class="name">Fecha de colecta</span><span class="key">fechaColecta</span></div><input type="date" class="nav" data-f="fechaColecta"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Hora de colecta</span><span class="key">horaColecta → dwc:eventTime</span></div><input type="time" class="nav" data-f="horaColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Colector</span><span class="key">colector</span></div><input class="nav sugerido" data-f="colector"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Coordenadas originales</span><span class="key">coordenadasOriginales → dwc:verbatimCoordinates</span></div><input class="nav" data-f="coordenadasOriginales"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Latitud</span><span class="key">lat</span></div><input class="nav" data-f="lat"></div>
@@ -946,14 +966,12 @@
         <p class="nota coord-aviso oculto" id="coord-aviso"></p>
         <div class="campo opc"><div class="lbl"><span class="name">Altitud/profundidad (m)</span><span class="key">altitud_m</span></div><input class="nav" data-f="altitud_m" placeholder="profundidad en negativo, ej. -35"></div>
         <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de georreferenciación</span><span class="key">observacionesGeoref → dwc:georeferenceRemarks</span></span></summary><textarea class="nav" data-f="observacionesGeoref"></textarea></details></div>
-        <div class="campo opc"><div class="lbl"><span class="name">Hora de colecta</span><span class="key">horaColecta → dwc:eventTime</span></div><input type="time" class="nav" data-f="horaColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hábitat</span><span class="key">habitat → dwc:habitat</span></div><input class="nav sugerido" data-f="habitat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Microhábitat</span><span class="key">microhabitat</span></div><input class="nav sugerido" data-f="microhabitat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Método de recolección</span><span class="key">metodoColecta → dwc:samplingProtocol</span></div><input class="nav sugerido" data-f="metodoColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Estación</span><span class="key">estacion</span></div><input class="nav" data-f="estacion"></div>
         <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones del evento de colecta</span><span class="key">observacionesEvento → dwc:eventRemarks</span></span></summary><textarea class="nav" data-f="observacionesEvento"></textarea></details></div>
       </div>
-      <p class="nota">Sugerencia automática de región/provincia/comuna desde coordenadas: pendiente de implementar.</p>
     </div>
 
     <div class="bloque">
@@ -1221,7 +1239,7 @@
       <h2>Versión</h2>
       <p>Libro de Catálogo <strong id="ver-texto">v0.9.61</strong> · borrador de trabajo</p>
       <div class="barra-botones">
-        <button class="btn secundario" id="btn-actualizar">Buscar actualización</button>
+        <button class="btn btn-fuerte" id="btn-actualizar">Buscar actualización</button>
         <button class="btn secundario oculto" id="btn-instalar">Instalar como app</button>
       </div>
       <p class="nota" id="estado-actualizacion"></p>
@@ -1476,8 +1494,8 @@
     </details>
 
     <details class="bloque bloque-desp" id="det-carpeta">
-      <summary>Carpeta local <button type="button" class="ayuda-btn" data-ayuda="ayuda-carpeta" aria-label="Ayuda" title="Ayuda">?</button></summary>
-      <div class="ayuda-panel oculto" id="ayuda-carpeta">Es la carpeta de este equipo donde la app guarda una copia de cada registro, las fotos y los archivos asociados. Los datos siguen guardándose también en el navegador. Funciona en Chrome y Edge. «Ver carpeta local» abre el selector de archivos del sistema ya ubicado en esa carpeta, porque el navegador no puede abrir el Explorador de archivos; si eliges un archivo, se abre en una pestaña nueva.<br><strong>Ubicación recomendada:</strong> créala directamente en la unidad C: (por ejemplo C:\Libro_de_Catalogo), no dentro de Documentos, Escritorio ni OneDrive. Así todos los equipos usan la misma ruta corta y se evitan bloqueos del navegador.</div>
+      <summary>Carpeta local<span class="carpeta-compartida-etq oculto" id="carpeta-badge"></span> <button type="button" class="ayuda-btn" data-ayuda="ayuda-carpeta" aria-label="Ayuda" title="Ayuda">?</button></summary>
+      <div class="ayuda-panel oculto" id="ayuda-carpeta">Es la carpeta de este equipo donde la app guarda una copia de cada registro, las fotos y los archivos asociados. Los datos siguen guardándose también en el navegador. Funciona en Chrome y Edge. «Ver carpeta local» abre el selector de archivos del sistema ya ubicado en esa carpeta, porque el navegador no puede abrir el Explorador de archivos; si eliges un archivo, se abre en una pestaña nueva.<br><strong>Ubicación recomendada:</strong> créala directamente en la unidad C: (por ejemplo C:\Libro_de_Catalogo), no dentro de Documentos, Escritorio ni OneDrive. Así todos los equipos usan la misma ruta corta y se evitan bloqueos del navegador. Cuando varios equipos usan la misma carpeta (por ejemplo, en una unidad de red o sincronizada en la nube), la app lo detecta y muestra qué otros equipos la usan y cuáles están conectados en este momento; para eso cada equipo anota un latido cada minuto en Registros/_presencia.</div>
 
       <div class="carpeta-estado" id="carpeta-estado-caja">
         <span class="punto"></span>
@@ -1489,6 +1507,8 @@
           <button class="btn small tenue oculto" id="btn-carpeta-desconectar">Desconectar</button>
         </span>
       </div>
+
+      <div class="carpeta-presencia" id="carpeta-presencia"></div>
 
       <div class="carpeta-acciones">
         <div class="accion-card oculto" id="ac-sincronizar">
@@ -1564,7 +1584,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.90";
+var APP_VERSION = "v0.9.91";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1636,6 +1656,7 @@ function unirCalificador(cal, nombre){
 function htmlATexto(h){
   return String(h==null?"":h).replace(/<[^>]+>/g,"").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,"&");
 }
+function pl(n,s,p){ return n+" "+(n===1?s:p); }
 function escapeHtml(s){
   return String(s==null?"":s).replace(/[&<>"']/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
@@ -3367,9 +3388,9 @@ function construirFicha(r){
     ["Número de campo","numeroCampo"], ["Taxón (referencia)","taxon"],
     ["Localidad (verbatim)","localidadVerbatim"], ["Localidad","localidad"],
     ["Región","region"], ["Provincia","provincia"], ["Comuna","comuna"],
-    ["Fecha de colecta","fechaColecta"], ["Colector","colector"],
+    ["Fecha de colecta","fechaColecta"], ["Hora de colecta","horaColecta"], ["Colector","colector"],
     ["Coordenadas originales","coordenadasOriginales"], ["Latitud","lat"], ["Longitud","lng"], ["Altitud/profundidad (m)","altitud_m"],
-    ["Hora de colecta","horaColecta"], ["Hábitat","habitat"], ["Microhábitat","microhabitat"],
+    ["Hábitat","habitat"], ["Microhábitat","microhabitat"],
     ["Método de recolección","metodoColecta"], ["Estación","estacion"],
     ["Observaciones de la localidad","observacionesLocalidad"], ["Observaciones de georreferenciación","observacionesGeoref"], ["Observaciones del evento de colecta","observacionesEvento"]
   ], r);
@@ -5872,6 +5893,7 @@ function actualizarUICarpeta(){
   else if(carpetaEstado==="permiso") txt="«"+nombre+"»: falta tu permiso para seguir guardando.";
   else txt="Conectada: «"+nombre+"»"+(ultimaEscritura ? " · última escritura "+ultimaEscritura : "");
   est.textContent=txt;
+  presenciaAsegurar();
   var caja=document.getElementById("carpeta-estado-caja");
   if(caja){ caja.classList.remove("est-ok","est-permiso"); if(carpetaHandle) caja.classList.add(carpetaEstado==="permiso" ? "est-permiso" : "est-ok"); }
   var bElegir=document.getElementById("btn-carpeta-elegir");
@@ -6274,7 +6296,7 @@ async function abrirDocsIngreso(){
     var d=await docCargar(n); actual=d.items;
     var nEj=registros.filter(function(r){ return sanitizarNombre(r.numeroAccesion||"")===carpetaE; }).length + ((typeof activoId!=="undefined" && activoId===null) ? 1 : 0);
     var hayCarpeta=!!carpetaHandle, pend=(await docPendientes()).length, nNav=actual.filter(function(a){ return a.enNavegador; }).length;
-    var h='<div class="bib-caja"><div class="bib-cab"><strong>Documentos del ingreso</strong> <span class="nota">N.º de entrada <b>'+escapeHtml(n)+'</b> · '+nEj+' ejemplar(es) con este número</span></div>'
+    var h='<div class="bib-caja"><div class="bib-cab"><strong>Documentos del ingreso</strong> <span class="nota">N.º de entrada <b>'+escapeHtml(n)+'</b> · '+pl(nEj,'ejemplar','ejemplares')+' con este número</span></div>'
       +'<p class="nota" style="margin:0;">Valen para todos los ejemplares de esta entrada. Carpeta: <code>Entradas/'+escapeHtml(carpetaE)+'/</code>'+(hayCarpeta?'':' · <strong>Carpeta local sin conectar</strong>: solo se verán los guardados temporalmente en el navegador.')+'</p>';
     if(admin) h+='<div class="docs-nuevo"><select id="docs-cat" title="Categoría">'+DOC_CATEGORIAS.map(function(c){ return '<option>'+escapeHtml(c)+'</option>'; }).join("")+'</select><input id="docs-desc" placeholder="Descripción (opcional)"><button type="button" class="btn small" id="docs-add">Agregar archivos…</button></div>';
     h+='<div class="bib-lista" id="docs-lista">';
@@ -6943,7 +6965,7 @@ function pintarSeguimientos(){
     if(segEdit===rg.id && !rg.manual){ h+=segEditorHtml(rg); return; }
     var n=idx.porRegla[rg.id].length;
     h+='<div class="seg-regla'+(rg.activa?'':' inactiva')+'" data-id="'+escapeHtml(rg.id)+'">'+(rg.manual ? '<span class="nota">Siempre activa</span>' : '<label title="Activar o desactivar la regla"><input type="checkbox" data-s="activa"'+(rg.activa?' checked':'')+'> Activa</label>')
-      +'<span class="seg-nom">'+escapeHtml(rg.nombre)+'</span><span class="seg-res">'+escapeHtml(rg.manual ? "Anotados ejemplar por ejemplar en Manejo, bloque Monitoreo" : segResumenRegla(rg))+'</span><span class="seg-n">'+n.toLocaleString("es-CL")+' ejemplar(es)</span>'
+      +'<span class="seg-nom">'+escapeHtml(rg.nombre)+'</span><span class="seg-res">'+escapeHtml(rg.manual ? "Anotados ejemplar por ejemplar en Manejo, bloque Monitoreo" : segResumenRegla(rg))+'</span><span class="seg-n">'+n.toLocaleString("es-CL")+(n===1?' ejemplar':' ejemplares')+'</span>'
       +'<button type="button" class="btn tenue small" data-s="ver"'+(n?'':' disabled')+'>'+(segAbierta===rg.id?'Ocultar':'Ver')+'</button>'
       +(rg.manual ? '' : '<button type="button" class="btn tenue small" data-s="editar">Editar</button><button type="button" class="btn tenue small" data-s="borrar">Eliminar</button>')+'</div>';
     if(segAbierta===rg.id){
@@ -7081,7 +7103,7 @@ function pintarAlertas(){
   var venc=lp.filter(function(x){ return x.dias<0; }).length, ab=bp.open;
   bp.classList.toggle("oculto", !lp.length); bp.classList.toggle("hay-vencidos", venc>0);
   if(lp.length){
-    var h='<summary>⏰ Préstamos: '+(venc? venc+' vencido(s), ':'')+(lp.length-venc)+' por vencer</summary>';
+    var h='<summary>⏰ Préstamos: '+(venc? venc+(venc===1?' vencido, ':' vencidos, '):'')+(lp.length-venc)+' por vencer</summary>';
     lp.slice(0,ALERTA_MAX_FILAS).forEach(function(x,i){
       var cat=construirCatalogoCompleto(x.reg) || x.reg.numeroCampo || "(sin catálogo)";
       h+='<div class="al-fila"><span class="al-dias '+(x.dias<0?'venc':(x.dias<=7?'pronto':''))+'">'+textoDias(x.dias)+'</span><span>'+escapeHtml(cat)+' · '+escapeHtml(x.p.solicitante||"sin solicitante")+' · '+escapeHtml(x.p.fechaDevolucionEsperada)+'</span>'
@@ -7098,7 +7120,7 @@ function pintarAlertas(){
   var atr=lm.filter(function(x){ return x.dias<0; }).length, ab2=bm.open;
   bm.classList.toggle("oculto", !lm.length); bm.classList.toggle("hay-vencidos", atr>0);
   if(lm.length){
-    var h2='<summary>🔎 Monitoreo: '+(atr? atr+' atrasado(s), ':'')+(lm.length-atr)+' próximo(s)</summary>';
+    var h2='<summary>🔎 Monitoreo: '+(atr? atr+(atr===1?' atrasado, ':' atrasados, '):'')+(lm.length-atr)+((lm.length-atr)===1?' próximo':' próximos')+'</summary>';
     lm.slice(0,ALERTA_MAX_FILAS).forEach(function(x,i){
       var cat=construirCatalogoCompleto(x.reg) || x.reg.numeroCampo || "(sin catálogo)";
       h2+='<div class="al-fila"><span class="al-dias '+(x.dias<0?'venc':(x.dias<=7?'pronto':''))+'">'+textoDiasMon(x.dias)+'</span><span>'+escapeHtml(cat)+' · '+escapeHtml(x.reg.ubicacionColeccion||"sin ubicación")+' · '+escapeHtml(x.reg.monitoreoProxima)+'</span>'
@@ -7115,8 +7137,8 @@ function pintarAlertas(){
   if(bs){
     var abs=bs.open; bs.classList.toggle("oculto", !ls.length);
     if(ls.length){
-      var h3='<summary>🚩 Seguimientos: '+ls.length+' regla(s) con ejemplares pendientes</summary>';
-      ls.forEach(function(x){ h3+='<div class="al-fila"><span class="al-dias">'+x.n.toLocaleString("es-CL")+' ejemplar(es)</span><span>'+escapeHtml(x.regla.nombre)+(x.venc ? ' ('+x.venc+' con revisión vencida o de hoy)' : '')+'</span><a href="#" class="al-enlace" data-as-ver="'+escapeHtml(x.regla.id)+'">Ver lista en Sistema</a></div>'; });
+      var h3='<summary>🚩 Seguimientos: '+ls.length+(ls.length===1?' regla con ejemplares pendientes':' reglas con ejemplares pendientes')+'</summary>';
+      ls.forEach(function(x){ h3+='<div class="al-fila"><span class="al-dias">'+x.n.toLocaleString("es-CL")+(x.n===1?' ejemplar':' ejemplares')+'</span><span>'+escapeHtml(x.regla.nombre)+(x.venc ? ' ('+x.venc+' con revisión vencida o de hoy)' : '')+'</span><a href="#" class="al-enlace" data-as-ver="'+escapeHtml(x.regla.id)+'">Ver lista en Sistema</a></div>'; });
       bs.innerHTML=h3; bs.open=abs;
       bs.querySelectorAll("[data-as-ver]").forEach(function(b){ b.onclick=function(e){ e.preventDefault(); verSeguimiento(b.getAttribute("data-as-ver")); }; });
     }
@@ -7124,7 +7146,7 @@ function pintarAlertas(){
   fila.classList.toggle("oculto", !lp.length && !lm.length && !ls.length);
   var tot=lp.length+lm.length+ls.length, vac=document.getElementById("alertas-vacio");
   if(vac) vac.classList.toggle("oculto", tot>0);
-  if(ins){ ins.textContent=tot; ins.classList.toggle("oculto", !tot); ins.title=lp.length+" préstamo(s), "+lm.length+" monitoreo(s) y "+ls.length+" regla(s) de seguimiento por atender"; }
+  if(ins){ ins.textContent=tot; ins.classList.toggle("oculto", !tot); ins.title=pl(lp.length,"préstamo","préstamos")+", "+pl(lm.length,"monitoreo","monitoreos")+" y "+pl(ls.length,"regla de seguimiento","reglas de seguimiento")+" por atender"; }
 }
 
 // ---------- Monitoreo: eventos por ejemplar y sesión de monitoreo ----------
@@ -7213,7 +7235,7 @@ function abrirSesionMonitoreo(preset){
   function pintarLista(){
     var el=$("ses-lista"); el.innerHTML="";
     st.lista=calcLista();
-    $("ses-n").textContent=st.lista.length+" ejemplar(es)";
+    $("ses-n").textContent=pl(st.lista.length,"ejemplar","ejemplares");
     if(!st.lista.length) el.innerHTML='<p class="nota" style="padding:10px;">Ningún ejemplar coincide. Prueba con «Todos los ejemplares» o cambia el filtro.</p>';
     st.lista.slice(0,300).forEach(function(r){
       var f=document.createElement("div"); f.className="ses-fila";
@@ -7254,7 +7276,7 @@ function abrirSesionMonitoreo(preset){
   $("ses-aplicar").onclick=function(){
     var rs=marcadosOrdenados(); if(!rs.length) return;
     var reg=modo()==="reg", pf=$("ses-pf").value;
-    if(!confirm("Se modificarán "+rs.length+" ejemplar(es). ¿Continuar?")) return;
+    if(!confirm("Se modificarán "+pl(rs.length,"ejemplar","ejemplares")+". ¿Continuar?")) return;
     var fn=fechasNuevas(rs), ahora=new Date().toISOString(), n=0, omit=0, perOn=$("ses-per-on").checked;
     rs.forEach(function(r){
       if(editando && activoId===r.id){ omit++; return; }
@@ -7273,7 +7295,7 @@ function abrirSesionMonitoreo(preset){
     registrarActividad("edicion","sesión de monitoreo en "+n+" registros ("+(reg?"registro":"programación")+")");
     if(carpetaHandle) sincronizarCarpeta(false);
     st.marc.clear(); st.fila={};
-    $("ses-msg").textContent="Listo: "+n+" ejemplar(es) actualizados"+(omit?"; "+omit+" omitido(s) por estar abiertos en edición":"")+".";
+    $("ses-msg").textContent="Listo: "+pl(n,"ejemplar actualizado","ejemplares actualizados")+(omit?"; "+omit+" omitido(s) por estar abiertos en edición":"")+".";
     pintarLista();
   };
   $("ses-cerrar").onclick=function(){ dlg.close(); };
@@ -7400,6 +7422,70 @@ function docIniciar(){
   document.addEventListener("click", function(e){ if(!e.target.closest(".doc-buscador")) docCerrarLista(); });
 }
 docIniciar();
+
+// Presencia en la Carpeta local: cada equipo anota en Registros/_presencia/<equipo>.json un latido por minuto. Vale 3 minutos.
+var PRES_DIR="Registros/_presencia", PRES_VALIDEZ=180000, PRES_LATIDO=60000, presenciaTimer=null, presenciaDatos=[], presenciaDesde=null, presenciaClave="", presenciaOcupada=false;
+function presenciaPersona(){ return operadorActual()||nombreSesion||""; }
+async function presenciaLeer(){
+  var lista=[];
+  try{
+    var d=await docDirExistente(["Registros","_presencia"]);
+    for await (var h of d.values()){
+      if(h.kind!=="file" || !/\.json$/i.test(h.name)) continue;
+      try{ var o=JSON.parse(await (await h.getFile()).text()); if(o && o.equipo && o.latido) lista.push(o); }catch(e){}
+    }
+  }catch(e){}
+  presenciaDatos=lista;
+}
+async function presenciaEscribir(salio){
+  var antes=ultimaEscritura;
+  try{
+    var o={equipo:idEquipo(), persona:presenciaPersona(), modo:modoAcceso, desde:presenciaDesde||(presenciaDesde=new Date().toISOString()), latido:new Date().toISOString(), version:APP_VERSION};
+    if(salio) o.salio=new Date().toISOString();
+    await escribirArchivo(PRES_DIR, idEquipo()+".json", JSON.stringify(o), true);
+  }catch(e){}
+  ultimaEscritura=antes;
+}
+async function presenciaLatir(){
+  if(presenciaOcupada || !modoAcceso || !carpetaHandle || carpetaEstado!=="ok") return;
+  presenciaOcupada=true;
+  try{ if(await permisoCarpeta(false)){ await presenciaEscribir(false); await presenciaLeer(); } }catch(e){}
+  presenciaOcupada=false; presenciaPintar();
+}
+function presenciaAsegurar(){
+  var activo=!!(carpetaHandle && carpetaEstado==="ok" && modoAcceso);
+  if(!activo){ if(presenciaTimer){ clearInterval(presenciaTimer); presenciaTimer=null; } presenciaClave=""; presenciaDatos=[]; presenciaPintar(); return; }
+  var clave=carpetaHandle.name+"|"+modoAcceso;
+  if(presenciaClave!==clave){ presenciaClave=clave; presenciaDesde=null; presenciaLatir(); }
+  if(!presenciaTimer) presenciaTimer=setInterval(presenciaLatir, PRES_LATIDO);
+}
+function presenciaHora(iso){ try{ return new Date(iso).toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit"}); }catch(e){ return ""; } }
+function presenciaPintar(){
+  var cont=document.getElementById("carpeta-presencia"), badge=document.getElementById("carpeta-badge"); if(!cont) return;
+  var activo=!!(carpetaHandle && carpetaEstado==="ok");
+  var yo=idEquipo(), otros=presenciaDatos.filter(function(x){ return x.equipo!==yo; });
+  var vivo=function(x){ return !x.salio && (Date.now()-Date.parse(x.latido))<PRES_VALIDEZ; };
+  var ahora=otros.filter(vivo);
+  if(!activo){ cont.innerHTML=""; if(badge) badge.classList.add("oculto"); return; }
+  if(badge){
+    badge.classList.toggle("oculto", !otros.length);
+    badge.textContent="compartida"+(ahora.length ? " · "+pl(ahora.length,"equipo conectado","equipos conectados")+" ahora" : "");
+  }
+  if(!otros.length){
+    cont.innerHTML='<p class="nota">No se detectan otros equipos en esta carpeta. Si la compartes con otros computadores, aquí aparecerán los equipos que la usan y quiénes están conectados en este momento. Este equipo es <b>'+escapeHtml(yo)+'</b>.</p>';
+    return;
+  }
+  otros.sort(function(a,b){ return (vivo(b)?1:0)-(vivo(a)?1:0) || (Date.parse(b.latido)-Date.parse(a.latido)); });
+  var h='<p><strong>Carpeta compartida con '+pl(otros.length,"equipo más","equipos más")+'.</strong> '+(ahora.length ? "Conectados ahora: "+ahora.map(function(x){ return escapeHtml(x.persona||x.equipo); }).join(", ")+"." : "Ningún otro equipo está conectado en este momento.")+'</p>';
+  otros.forEach(function(x){
+    var on=vivo(x), fin=x.salio||x.latido;
+    h+='<div class="pres-fila'+(on?' ahora':'')+'"><span class="pres-punto'+(on?' on':'')+'"></span><span><b>'+escapeHtml(x.persona||"(sin nombre)")+'</b> · '+escapeHtml(x.equipo)+(x.modo?' · '+escapeHtml(x.modo==="admin"?"administrador":"consulta"):'')+'</span><span class="pres-hora">'+(on?'conectado ahora, desde las '+escapeHtml(presenciaHora(x.desde)):'última conexión '+escapeHtml(formatearFechaHora(fin)))+'</span></div>';
+  });
+  h+='<p class="nota">Este equipo es <b>'+escapeHtml(yo)+'</b>. Se considera conectado a quien anotó su latido en los últimos 3 minutos.</p>';
+  cont.innerHTML=h;
+}
+window.addEventListener("focus", function(){ if(presenciaTimer) presenciaLatir(); });
+window.addEventListener("pagehide", function(){ if(presenciaClave) presenciaEscribir(true); });
 
 // Bloqueos de edición: Registros/_bloqueos/<id>.json avisa que otra persona (u otra pestaña) está editando el registro.
 // Es un aviso, no un impedimento: vale 3 minutos desde el último latido y se renueva cada minuto mientras se edita.
@@ -7854,7 +7940,7 @@ function textoResultado(t){
   if(t.movidos) m.push(t.movidos+" archivo(s) ordenados");
   if(t.faltan) m.push(t.faltan+" no se encontraron en la Carpeta local");
   if(t.errores) m.push(t.errores+" con error de copia");
-  if(t.sinClasificar) m.push(t.sinClasificar+" ejemplar(es) omitidos por clasificación incompleta");
+  if(t.sinClasificar) m.push(pl(t.sinClasificar,"ejemplar omitido","ejemplares omitidos")+" por clasificación incompleta");
   return m.length ? m.join("; ")+"." : "Todos los archivos ya estaban en la carpeta que les corresponde.";
 }
 async function reordenarEjemplarActual(solo){ if(modoAcceso!=="admin") return;
@@ -7885,7 +7971,7 @@ async function reordenarTodos(){ if(modoAcceso!=="admin") return;
     alert("Todos los archivos ya están en la carpeta que les corresponde.");
     return;
   }
-  if(!confirm("Se ordenarán los archivos de "+pend.length+" ejemplar(es) según corresponda (fotos en la carpeta de su ejemplar, PDF y otros archivos en la suya).\n\nCada archivo se copia a su carpeta nueva, se comprueba la copia y recién entonces se retira el original (si ningún otro ejemplar lo usa). Las carpetas que queden vacías se eliminan.\n\n¿Continuar?")) return;
+  if(!confirm("Se ordenarán los archivos de "+pl(pend.length,"ejemplar","ejemplares")+" según corresponda (fotos en la carpeta de su ejemplar, PDF y otros archivos en la suya).\n\nCada archivo se copia a su carpeta nueva, se comprueba la copia y recién entonces se retira el original (si ningún otro ejemplar lo usa). Las carpetas que queden vacías se eliminan.\n\n¿Continuar?")) return;
   var tot={movidos:0, faltan:0, errores:0, sinClasificar:0};
   var origenes=[];
   for(var i=0;i<pend.length;i++){
@@ -10740,7 +10826,7 @@ async function importarZipLibreta(file, yaEnEntradas){ if(modoAcceso!=="admin") 
     nuevos.forEach(function(r){ espejarRegistro(r); });
     unicos(porReparar.map(function(x){ return x.r; })).forEach(function(r){ espejarRegistro(r); });
     refrescarPanelesRegistros();
-    alert("Importación lista: "+nuevos.length+" ejemplar(es) agregados"+(reparadas?", "+reparadas+" foto(s) de ejemplares ya registrados completadas":"")+(copiadas?", "+copiadas+" foto(s) copiadas a Fotos/":"")+(enNavegador?", "+enNavegador+" foto(s) guardadas en este navegador":"")+
+    alert("Importación lista: "+pl(nuevos.length,"ejemplar agregado","ejemplares agregados")+(reparadas?", "+reparadas+" foto(s) de ejemplares ya registrados completadas":"")+(copiadas?", "+copiadas+" foto(s) copiadas a Fotos/":"")+(enNavegador?", "+enNavegador+" foto(s) guardadas en este navegador":"")+
       (faltan?". No se encontraron "+faltan+" foto(s) dentro del zip":"")+
       ".\n\nCompleta ahora los datos de ingreso, preparación y catalogado de cada registro.");
   }catch(e){

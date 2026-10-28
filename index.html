@@ -642,6 +642,8 @@
   #exp-lista > .exp-chip{margin:0 6px 6px 0;}
   .exp-chip.vacio .exp-tg{font-style:italic;}
   .aviso-duplicado{background:#fff7d6;border:1px solid #d9b83a;border-radius:8px;padding:8px 12px;margin:6px 0 10px;font-size:13.5px;}
+  details.det-pub{grid-column:1/-1;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:#fbfaf4;} details.det-pub>summary{cursor:pointer;font-weight:700;color:var(--green-dark,#2f5d3f);padding:2px 0;} details.det-pub[open]>summary{margin-bottom:8px;}
+  nav#tabs button.tab-atencion::after{content:" ●";color:#d99a00;}
   .atencion{outline:3px solid #e0a800;outline-offset:3px;border-radius:6px;background:#fff9e0;animation:atencion-pulso 1.6s ease-in-out 3;}
   @keyframes atencion-pulso{0%,100%{outline-color:#e0a800;}50%{outline-color:#ffe08a;}}
   .exp-chip.off{background:transparent;color:#7a7660;border-style:dashed;opacity:.75;}
@@ -1053,6 +1055,9 @@
         <div class="campo req"><div class="lbl"><span class="name">Tipo nomenclatural</span><span class="key">tipoNomenclatural</span></div>
           <select class="nav" data-f="tipoNomenclatural"><option value="">No aplica</option><option>Holotipo</option><option>Paratipo</option><option>Sintipo</option><option>Neotipo</option></select>
         </div>
+        <details class="det-pub full" id="det-publicacion">
+          <summary>Publicación original y PDF de publicaciones asociadas</summary>
+          <div class="grid">
         <div class="campo opc full"><div class="lbl"><span class="name">Publicación original</span><span class="key">publicacionOriginal</span></div><input class="nav" data-f="publicacionOriginal"></div>
         <div class="campo opc full">
           <div class="lbl"><span class="name">PDF de publicaciones asociadas</span><span class="key">publicacionesPdf → associatedReferences · carpeta Publicaciones/</span></div>
@@ -1060,6 +1065,8 @@
           <button type="button" class="btn small secundario" id="btn-add-pdf">+ Asociar PDF…</button>
           <p class="nota">Todos los PDF se guardan una sola vez en la carpeta única Publicaciones de la Carpeta local (sin subcarpetas por clasificación) y cada ejemplar solo registra la ruta. Al asociar, eliges de la lista de PDF ya guardados (con búsqueda y letras) o subes uno nuevo desde el PC. Un mismo PDF puede asociarse a varios ejemplares. Convención de nombre: Autor_etal_AÑO_Palabras_clave.pdf (ejemplo: Perez_etal_2024_Gonyleptidae_Chile.pdf).</p>
         </div>
+          </div>
+        </details>
       </div>
     </div>
 
@@ -1535,7 +1542,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.87";
+var APP_VERSION = "v0.9.88";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1551,6 +1558,7 @@ var activoId = null;   // id del registro guardado que se está viendo (null = b
 var borrador = null;   // copia de trabajo del formulario; nada se persiste hasta Guardar o Actualizar
 var editando = true;   // true = campos habilitados (borrador nuevo, o registro existente en edición); false = modo consulta (solo lectura)
 var origenDuplicado = false;   // true = el borrador actual (activoId null) partió de "Duplicar", no es un registro en blanco
+var origenDuplicadoFirma = null; // firma del duplicado recién creado: sirve para saber si el usuario cambió algo antes de guardarlo
 var origenDuplicadoId = null;  // id del registro del que se duplicó, para comparar y advertir si se guarda sin cambios
 
 function nuevoId(){ return "r" + Date.now() + Math.random().toString(36).slice(2,8); }
@@ -4187,17 +4195,19 @@ function gbifCeldaHtml(g){
 function usarClasificacionExterna(clasif, fuente){
   if(!clasif || !editando || !borrador) return;
   var etiquetas={phylum:"Phylum",clase:"Clase",orden:"Orden",familia:"Familia",genero:"Género"};
-  var cambios=[], difieren=[];
-  Object.keys(etiquetas).forEach(function(k){
-    var v=clasif[k]; if(!v) return;
-    cambios.push(k);
-    if(borrador[k] && borrador[k]!==v) difieren.push(etiquetas[k]+": «"+borrador[k]+"» → «"+v+"»");
+  var claves=Object.keys(etiquetas), hay=false, difieren=[];
+  claves.forEach(function(k){ if(clasif[k]) hay=true; });
+  if(!hay){ alert(fuente+" no entrega clasificación para este nombre."); return; }
+  // La clasificación nueva reemplaza a la anterior por completo: los niveles que la fuente no entrega quedan vacíos.
+  claves.forEach(function(k){
+    var v=clasif[k]||"";
+    if((borrador[k]||"")!==v && borrador[k]) difieren.push(etiquetas[k]+": «"+borrador[k]+"» → "+(v?"«"+v+"»":"(vacío, "+fuente+" no lo entrega)"));
   });
-  if(!cambios.length){ alert(fuente+" no entrega clasificación para este nombre."); return; }
-  if(difieren.length && !confirm("Se reemplazarán estos valores de la Clasificación:\n\n"+difieren.join("\n")+"\n\n¿Continuar?")) return;
-  cambios.forEach(function(k){
-    borrador[k]=clasif[k];
-    var el=document.querySelector('[data-f="'+k+'"]'); if(el) el.value=clasif[k];
+  if(difieren.length && !confirm("La Clasificación se reemplazará por completo con la de "+fuente+". Estos valores cambian:\n\n"+difieren.join("\n")+"\n\n¿Continuar?")) return;
+  claves.forEach(function(k){
+    var v=clasif[k]||"";
+    borrador[k]=v;
+    var el=document.querySelector('[data-f="'+k+'"]'); if(el) el.value=v;
   });
   pintarAvisoClasif(); refrescarPanelesRegistros();
 }
@@ -4750,6 +4760,17 @@ function aplicarModoFormulario(){
   bloqueoSincronizar();
 }
 
+function firmaRegistro(r){
+  var ign={id:1,creadoEn:1,modificadoEn:1,modificadoPor:1,catalogador:1};
+  function norm(v){
+    if(Array.isArray(v)){ var a=v.map(norm).filter(function(x){ return x!==undefined; }); return a.length?a:undefined; }
+    if(v && typeof v==="object"){ var o={}; Object.keys(v).sort().forEach(function(k){ var x=norm(v[k]); if(x!==undefined) o[k]=x; }); return Object.keys(o).length?o:undefined; }
+    if(v===null || v===undefined) return undefined;
+    var t=String(v).trim(); return t==="" ? undefined : t;
+  }
+  var base={}; Object.keys(r||{}).forEach(function(k){ if(!ign[k]) base[k]=r[k]; });
+  return JSON.stringify(norm(base)||{});
+}
 function crearDuplicadoDesde(origen){
   activoId = null;               // se comporta como un registro nuevo: no existe en la lista hasta presionar Guardar
   origenDuplicadoId = origen.id || null;
@@ -4760,12 +4781,17 @@ function crearDuplicadoDesde(origen){
   origenDuplicado = true;
   cargarRegistroEnFormulario();
   refrescarPanelesRegistros();
+  origenDuplicadoFirma = firmaRegistro(borrador);
   irAEntradaDuplicado();
 }
 // Tras duplicar: va al inicio de Entrada y destaca lo que más probablemente cambia en otro individuo del mismo evento de recolección.
 // Es solo un llamado de atención: no condiciona el guardado.
+function marcarPestanasAtencion(){
+  document.querySelectorAll("nav#tabs button[data-tab]").forEach(function(b){ var pn=document.getElementById("tab-"+b.getAttribute("data-tab")); b.classList.toggle("tab-atencion", !!(pn && pn.querySelector(".atencion"))); });
+}
 function limpiarResaltadoDuplicado(){
   document.querySelectorAll(".atencion").forEach(function(e){ e.classList.remove("atencion"); });
+  marcarPestanasAtencion();
   var a=document.getElementById("aviso-duplicado"); if(a){ a.classList.add("oculto"); a.textContent=""; }
 }
 function irAEntradaDuplicado(){
@@ -4774,26 +4800,27 @@ function irAEntradaDuplicado(){
   var objetivos=["catalogo","individuos","cantidadMachos","cantidadHembras","cantidadJuveniles","cantidadNoSexados"].map(function(k){ var el=document.querySelector('[data-f="'+k+'"]'); return el&&el.closest(".campo"); });
   objetivos.push(document.getElementById("lista-determinaciones"));
   objetivos.forEach(function(e){ if(!e) return; e.classList.add("atencion"); var d=e.parentNode&&e.parentNode.closest&&e.parentNode.closest("details"); while(d){ d.open=true; d=d.parentNode&&d.parentNode.closest&&d.parentNode.closest("details"); } });
+  marcarPestanasAtencion();
   var a=document.getElementById("aviso-duplicado");
-  if(a){ a.classList.remove("oculto"); a.textContent="Registro duplicado. Se destacaron el N.º de catálogo, el conteo de individuos, el sexo y las determinaciones, que es lo que más probablemente cambia en otro individuo del mismo evento de recolección (por ejemplo, en muestras mixtas). Para guardar es obligatorio un N.º de catálogo distinto del original; el resto del resalte es solo un aviso."; }
+  if(a){ a.classList.remove("oculto"); a.textContent="Registro duplicado. Se destacaron el N.º de catálogo, el conteo de individuos, el desglose por sexo y las determinaciones, que es lo que más probablemente cambia en otro individuo del mismo evento de recolección (por ejemplo, en muestras mixtas). Los campos destacados están en las pestañas Preparación (Conteo de individuos) y Depósito (N.º de catálogo, desglose por sexo y determinaciones), que llevan un punto ámbar mientras tengan algo destacado. Para guardar, el duplicado debe diferir del original en al menos un dato (por ejemplo el N.º de catálogo, la determinación o el conteo de individuos); el resalte es solo un aviso."; }
   try{ window.scrollTo(0,0); var t=document.getElementById("tab-entrada"); if(t&&t.scrollIntoView) t.scrollIntoView({block:"start"}); }catch(e){}
 }
 document.addEventListener("input", function(e){
-  var el=e.target.closest&&e.target.closest(".atencion"); if(el) el.classList.remove("atencion");
+  var el=e.target.closest&&e.target.closest(".atencion"); if(el){ el.classList.remove("atencion"); marcarPestanasAtencion(); }
 });
 document.addEventListener("click", function(e){
-  var el=e.target.closest&&e.target.closest("#lista-determinaciones.atencion"); if(el && e.target.closest("button")) el.classList.remove("atencion");
+  var el=e.target.closest&&e.target.closest("#lista-determinaciones.atencion"); if(el && e.target.closest("button")){ el.classList.remove("atencion"); marcarPestanasAtencion(); }
 });
 function accionDuplicarComoNuevo(){ if(modoAcceso!=="admin") return;
   if(!borrador || activoId===null) return;
-  var ok = confirm("Se creará un nuevo registro con los mismos datos que tienes ahora en el formulario. El registro original no se modifica. No olvides cambiar el número de catálogo (u otro dato que deba diferenciarlo). ¿Continuar?");
+  var ok = confirm("Se creará un nuevo registro con los mismos datos que tienes ahora en el formulario. El registro original no se modifica. Para guardarlo tendrás que cambiar al menos un dato respecto del original (por ejemplo el número de catálogo o la determinación). ¿Continuar?");
   if(!ok) return;
   crearDuplicadoDesde(borrador);
 }
 function duplicarDesdeLista(id){ if(modoAcceso!=="admin") return;
   var r = registroPorId(id);
   if(!r) return;
-  var ok = confirm("Se creará un nuevo registro con los mismos datos que este. El original no se modifica. No olvides cambiar el número de catálogo (u otro dato que deba diferenciarlo). ¿Continuar?");
+  var ok = confirm("Se creará un nuevo registro con los mismos datos que este. El original no se modifica. Para guardarlo tendrás que cambiar al menos un dato respecto del original (por ejemplo el número de catálogo o la determinación). ¿Continuar?");
   if(!ok) return;
   crearDuplicadoDesde(r);
 }
@@ -4875,13 +4902,18 @@ function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   if(!permitirCatalogo(borrador)) return;
   colRegistrarUso(borrador.coleccionNombre);
   if(origenDuplicadoId){
-    var base = registroPorId(origenDuplicadoId);
-    var nuevoCat=String(borrador.catalogo||"").trim();
-    if(base && (!nuevoCat || claveCatalogo(base)===claveCatalogo(borrador))){
-      alert("Para guardar un duplicado hay que cambiar el N.º de catálogo: debe ser propio y distinto del registro del que partiste ("+resumenLinea1(etiquetaRegistro(base))+").");
-      var ci=document.querySelector('[data-f="catalogo"]'); if(ci){ try{ activarTab("entrada"); ci.scrollIntoView({block:"center"}); ci.focus(); }catch(e){} }
+    var baseCat = registroPorId(origenDuplicadoId);
+    if(baseCat && String(borrador.catalogo||"").trim() && claveCatalogo(baseCat)===claveCatalogo(borrador)){
+      alert("El N.º de catálogo es el mismo del registro del que partiste ("+resumenLinea1(etiquetaRegistro(baseCat))+"). Un número de catálogo identifica a un solo registro: cámbialo, o déjalo vacío si el ejemplar todavía no está catalogado.");
+      var cj=document.querySelector('[data-f="catalogo"]'); if(cj){ try{ activarTab("deposito"); cj.scrollIntoView({block:"center"}); cj.focus(); }catch(e){} }
       return;
     }
+  }
+  if(origenDuplicadoId && origenDuplicadoFirma!==null && firmaRegistro(borrador)===origenDuplicadoFirma){
+    var base = registroPorId(origenDuplicadoId);
+    alert("Este duplicado es idéntico al registro del que partiste"+(base?" ("+resumenLinea1(etiquetaRegistro(base))+")":"")+". Para guardarlo como registro independiente, modifica al menos un dato: por ejemplo el N.º de catálogo, la determinación, el conteo de individuos o los datos de terreno.");
+    var ci=document.querySelector('[data-f="catalogo"]'); if(ci){ try{ activarTab("entrada"); ci.scrollIntoView({block:"center"}); ci.focus(); }catch(e){} }
+    return;
   }
   var nuevo=clonar(borrador);
   nuevo.id=nuevoId();
@@ -4893,7 +4925,7 @@ function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   activoId=nuevo.id;
   borrador=clonar(nuevo);
   origenDuplicado=false;
-  origenDuplicadoId=null;
+  origenDuplicadoId=null; origenDuplicadoFirma=null;
   if(siguienteTab===null) editando=false; // "Finalizar guardado": el registro recién creado pasa a modo consulta
   persistir();
   espejarRegistro(nuevo);

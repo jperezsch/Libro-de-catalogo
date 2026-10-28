@@ -642,7 +642,7 @@
   #exp-lista > .exp-chip{margin:0 6px 6px 0;}
   .exp-chip.vacio .exp-tg{font-style:italic;}
   .aviso-duplicado{background:#fff7d6;border:1px solid #d9b83a;border-radius:8px;padding:8px 12px;margin:6px 0 10px;font-size:13.5px;}
-  details.det-pub{grid-column:1/-1;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:#fbfaf4;} details.det-pub>summary{cursor:pointer;font-weight:700;color:var(--green-dark,#2f5d3f);padding:2px 0;} details.det-pub[open]>summary{margin-bottom:8px;}
+  details.det-pub{grid-column:1/-1;border:1px dashed var(--line);border-radius:8px;padding:3px 10px;background:transparent;} details.det-pub>summary{cursor:pointer;font-weight:500;font-size:13px;color:var(--ink-soft);padding:2px 0;} details.det-pub>summary:hover{color:var(--ink);} details.det-pub[open]>summary{margin-bottom:8px;}
   nav#tabs button.tab-atencion::after{content:" ●";color:#d99a00;}
   .atencion{outline:3px solid #e0a800;outline-offset:3px;border-radius:6px;background:#fff9e0;animation:atencion-pulso 1.6s ease-in-out 3;}
   @keyframes atencion-pulso{0%,100%{outline-color:#e0a800;}50%{outline-color:#ffe08a;}}
@@ -929,6 +929,7 @@
           <input class="nav oculto" data-f="comuna" id="input-comuna-cl" placeholder="Escribe la comuna/zona">
           <button type="button" class="btn tenue small oculto" id="btn-comuna-lista" style="margin-top:4px;">▸ Elegir de la lista</button>
         </div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones de la localidad</span><span class="key">observacionesLocalidad → dwc:locationRemarks</span></div><textarea class="nav" data-f="observacionesLocalidad"></textarea></div>
         <div class="campo req"><div class="lbl"><span class="name">Fecha de colecta</span><span class="key">fechaColecta</span></div><input type="date" class="nav" data-f="fechaColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Colector</span><span class="key">colector</span></div><input class="nav sugerido" data-f="colector"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Coordenadas originales</span><span class="key">coordenadasOriginales → dwc:verbatimCoordinates</span></div><input class="nav" data-f="coordenadasOriginales"></div>
@@ -936,11 +937,13 @@
         <div class="campo opc"><div class="lbl"><span class="name">Longitud</span><span class="key">lng</span></div><input class="nav" data-f="lng"></div>
         <p class="nota coord-aviso oculto" id="coord-aviso"></p>
         <div class="campo opc"><div class="lbl"><span class="name">Altitud/profundidad (m)</span><span class="key">altitud_m</span></div><input class="nav" data-f="altitud_m" placeholder="profundidad en negativo, ej. -35"></div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones de georreferenciación</span><span class="key">observacionesGeoref → dwc:georeferenceRemarks</span></div><textarea class="nav" data-f="observacionesGeoref"></textarea></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hora de colecta</span><span class="key">horaColecta → dwc:eventTime</span></div><input type="time" class="nav" data-f="horaColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hábitat</span><span class="key">habitat → dwc:habitat</span></div><input class="nav sugerido" data-f="habitat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Microhábitat</span><span class="key">microhabitat</span></div><input class="nav sugerido" data-f="microhabitat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Método de recolección</span><span class="key">metodoColecta → dwc:samplingProtocol</span></div><input class="nav sugerido" data-f="metodoColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Estación</span><span class="key">estacion</span></div><input class="nav" data-f="estacion"></div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones del evento de colecta</span><span class="key">observacionesEvento → dwc:eventRemarks</span></div><textarea class="nav" data-f="observacionesEvento"></textarea></div>
       </div>
       <p class="nota">Sugerencia automática de región/provincia/comuna desde coordenadas: pendiente de implementar.</p>
     </div>
@@ -964,6 +967,8 @@
         <div class="campo req"><div class="lbl"><span class="name">Tipo de accesión</span><span class="key">tipoAccesion</span></div>
           <select class="nav" data-f="tipoAccesion"><option value="">—</option><option>Colecta propia</option><option>Donación</option><option>Compra</option><option>Intercambio</option><option>Depósito</option></select>
         </div>
+
+        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones de ingreso</span><span class="key">observacionesIngreso</span></div><textarea class="nav" data-f="observacionesIngreso"></textarea></div>
       </div>
       <div class="docs-ingreso"><button type="button" class="btn secundario small" id="btn-docs-ingreso">📎 Documentos del ingreso</button><span class="nota" id="docs-ingreso-resumen"></span></div>
     </div>
@@ -996,6 +1001,8 @@
           <select class="nav" data-f="condicionEjemplar"><option value="">—</option><option>Excelente</option><option>Bueno</option><option>Regular</option><option>Malo</option><option>Deteriorado</option><option>Dañado</option><option>Fragmentario</option><option>Incompleto</option><option>Desarticulado</option><option>Desmembrado</option><option>Parcial</option><option>Restos</option><option>Sin determinar</option></select>
         </div>
         <div class="campo opc"><div class="lbl"><span class="name">Conteo de individuos</span><span class="key">individuos</span></div><input class="nav" data-f="individuos"></div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones de preparación</span><span class="key">observacionesPreparacion → dwc:preparationRemarks</span></div><textarea class="nav" data-f="observacionesPreparacion"></textarea></div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Comentarios de condición del ejemplar</span><span class="key">observacionesCondicion</span></div><textarea class="nav" data-f="observacionesCondicion"></textarea></div>
       </div>
     </div>
 
@@ -1055,6 +1062,8 @@
         <div class="campo req"><div class="lbl"><span class="name">Tipo nomenclatural</span><span class="key">tipoNomenclatural</span></div>
           <select class="nav" data-f="tipoNomenclatural"><option value="">No aplica</option><option>Holotipo</option><option>Paratipo</option><option>Sintipo</option><option>Neotipo</option></select>
         </div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Comentarios del tipo nomenclatural</span><span class="key">observacionesTipo</span></div><textarea class="nav" data-f="observacionesTipo"></textarea></div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones del catalogador</span><span class="key">observacionesCatalogacion</span></div><textarea class="nav" data-f="observacionesCatalogacion"></textarea></div>
         <details class="det-pub full" id="det-publicacion">
           <summary>Publicación original y PDF de publicaciones asociadas</summary>
           <div class="grid">
@@ -1129,6 +1138,7 @@
           </select>
         </div>
         <div class="campo opc" id="campo-ubicacion-coleccion"><div class="lbl"><span class="name">Ubicación en colección</span><span class="key">ubicacionColeccion</span></div><input class="nav" data-f="ubicacionColeccion" placeholder="gabinete, caja…"></div>
+        <div class="campo opc full"><div class="lbl"><span class="name">Comentarios de ubicación</span><span class="key">observacionesUbicacion</span></div><textarea class="nav" data-f="observacionesUbicacion"></textarea></div>
       </div>
 
       <div class="banda-baja oculto" id="panel-baja">
@@ -1542,7 +1552,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.88";
+var APP_VERSION = "v0.9.89";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1886,6 +1896,17 @@ var DEF_CAMPOS = {
   responsableBaja:"Persona que autorizó o realizó la baja.",
   observacionesBaja:"Notas sobre el estado o la ubicación actual del ejemplar, y sobre la baja si la hubo.",
   observaciones:"Notas generales del registro. DwC: occurrenceRemarks.",
+  observacionesLocalidad:"Comentarios sobre el sitio de colecta: cómo llegar, descripción del lugar, cambios de nombre o dudas sobre la toponimia. DwC: locationRemarks.",
+  observacionesGeoref:"Cómo se obtuvo o corrigió la coordenada: tomada de un mapa, estimada desde la localidad o convertida de otro datum, con su fuente y precisión. DwC: georeferenceRemarks.",
+  observacionesEvento:"Comentarios sobre la colecta: clima, esfuerzo de muestreo, circunstancias e incidencias. DwC: eventRemarks.",
+  observacionesIngreso:"Estado del material al llegar, condiciones del legado y acuerdos con el donante. Es un dato interno y no se exporta a Darwin Core.",
+  observacionesPreparacion:"Comentarios sobre el procedimiento: fijador usado, tiempos, incidentes y tratamientos posteriores. Se exporta junto con los datos de conservación. DwC: preparationRemarks.",
+  observacionesCondicion:"Detalle de la condición del ejemplar: daños, partes faltantes, deterioro. Se exporta dentro de preparationRemarks.",
+  observacionesTipo:"Designación, publicación del tipo y relación con otros tipos. Se exporta dentro de identificationRemarks, junto al tipo nomenclatural (typeStatus).",
+  observacionesCatalogacion:"Dudas o tareas pendientes del catalogador. Es un dato interno y no se exporta a Darwin Core.",
+  observacionesUbicacion:"Aclaraciones sobre dónde está el ejemplar: caja compartida, ubicación provisoria o ejemplar fuera de lugar. Es un dato interno y no se exporta a Darwin Core.",
+  "@comentDet":"Justificación de esa determinación: caracteres diagnósticos, dudas y claves usadas. Cada determinación guarda sus propios comentarios y en Darwin Core se exportan los de la vigente. DwC: identificationRemarks.",
+  "L:submuestras.comentarios":"Estado del tejido o vial, extracción realizada y otras aclaraciones de la submuestra. Es un dato interno y no se exporta a Darwin Core.",
   "@nombre":"Nombre científico de la determinación vigente, que es la más reciente de la lista de determinaciones. Con este nombre se muestra el ejemplar en las consultas.",
   "@calificador":"Marca de incertidumbre del nombre: cf. (comparar con), aff. (afín a), ? (dudoso), sp. (especie sin identificar), sp. nov. (especie nueva), indet. (indeterminado), s.l. (sensu lato), s.str. (sensu stricto) o incertae sedis (posición incierta).",
   "@determinador":"Persona que identificó el ejemplar en esa determinación.",
@@ -1948,7 +1969,7 @@ var GLOS_EXTRA = [
   {k:"adjuntos.comentario", l:"Otro archivo: Aclaración", g:"Otros archivos"}, {k:"adjuntos.archivo", l:"Otro archivo: Archivo", g:"Otros archivos"}
 ];
 function claveAyudaLista(tipo,key){
-  if(tipo==="determinaciones") return {nombreCientifico:"@nombre",determinador:"@determinador",fechaDeterminacion:"@fechaDet",calificador:"@calificador"}[key]||"";
+  if(tipo==="determinaciones") return {nombreCientifico:"@nombre",determinador:"@determinador",fechaDeterminacion:"@fechaDet",calificador:"@calificador",comentarios:"@comentDet"}[key]||"";
   if(tipo==="submuestras"||tipo==="prestamos"||tipo==="usos"||tipo==="monitoreos"||tipo==="seguimientos") return "L:"+tipo+"."+key;
   return tipo+"."+key;
 }
@@ -3115,7 +3136,8 @@ var listasCfg = {
     {key:"nombreCientifico",label:"Nombre científico",req:true},
     {key:"determinador",label:"Determinador",req:true},
     {key:"fechaDeterminacion",label:"Fecha",type:"date",req:true},
-    {key:"calificador",label:"Calificador",type:"select",options:["cf.","aff.","?","sp.","sp. nov.","indet.","s.l.","s.str.","incertae sedis"]}
+    {key:"calificador",label:"Calificador",type:"select",options:["cf.","aff.","?","sp.","sp. nov.","indet.","s.l.","s.str.","incertae sedis"]},
+    {key:"comentarios",label:"Comentarios de la determinación",type:"textarea",full:true}
   ]},
   submuestras: {contenedorId:"lista-submuestras", campos:[
     {key:"tipoSubmuestra",label:"Tipo de submuestra"},
@@ -3123,6 +3145,7 @@ var listasCfg = {
     {key:"metodoConservacion",label:"Método de conservación"},
     {key:"ubicacionAlmacenamiento",label:"Ubicación de almacenamiento"},
     {key:"numeroVial",label:"Número de vial"},
+    {key:"comentarios",label:"Comentarios de la submuestra",type:"textarea",full:true},
     {key:"destinoUso",label:"Destino de uso"}
   ]},
   fotos: {contenedorId:"lista-fotos", campos:[
@@ -3334,7 +3357,8 @@ function construirFicha(r){
     ["Fecha de colecta","fechaColecta"], ["Colector","colector"],
     ["Coordenadas originales","coordenadasOriginales"], ["Latitud","lat"], ["Longitud","lng"], ["Altitud/profundidad (m)","altitud_m"],
     ["Hora de colecta","horaColecta"], ["Hábitat","habitat"], ["Microhábitat","microhabitat"],
-    ["Método de recolección","metodoColecta"], ["Estación","estacion"]
+    ["Método de recolección","metodoColecta"], ["Estación","estacion"],
+    ["Observaciones de la localidad","observacionesLocalidad"], ["Observaciones de georreferenciación","observacionesGeoref"], ["Observaciones del evento de colecta","observacionesEvento"]
   ], r);
   if(r.origenLibreta){
     var o=r.origenLibreta;
@@ -3349,12 +3373,14 @@ function construirFicha(r){
   var recepcion = fichaCampos([
     ["Número de entrada","numeroAccesion"], ["Fecha de recepción","fechaRecepcion"],
     ["Procedencia","procedencia"], ["Destino","destino"], ["Condición de la accesión","condicionAccesion"],
-    ["Legatario","legatario"], ["Proyecto / iniciativa de origen","proyectoOrigen"], ["Tipo de accesión","tipoAccesion"]
+    ["Legatario","legatario"], ["Proyecto / iniciativa de origen","proyectoOrigen"], ["Tipo de accesión","tipoAccesion"],
+    ["Observaciones de ingreso","observacionesIngreso"]
   ], r);
 
   var preparacionCampos = fichaCampos([
     ["Tipo de colección","tipoColeccion"], ["Medio de fijado","medioFijado"], ["Conservación","conservacion"],
-    ["Preparación","preparacion"], ["Condición del ejemplar","condicionEjemplar"], ["Conteo de individuos","individuos"]
+    ["Preparación","preparacion"], ["Condición del ejemplar","condicionEjemplar"], ["Conteo de individuos","individuos"],
+    ["Observaciones de preparación","observacionesPreparacion"], ["Comentarios de condición del ejemplar","observacionesCondicion"]
   ], r);
   var tablaSubmuestras = fichaTablaLista("submuestras", r.submuestras);
   var tablaFotos = fichaTablaLista("fotos", r.fotos);
@@ -3371,7 +3397,7 @@ function construirFicha(r){
   var determinacionHtml = tablaDeterminaciones + clasificacion;
 
   var coleccionTexto = [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ");
-  var catalogado = fichaCampo("Catálogo", construirCatalogoCompleto(r)) + fichaCampos([["Fecha de catalogación","fechaCatalogacion"], ["Catalogador","catalogador"], ["Tipo nomenclatural","tipoNomenclatural"], ["Publicación original","publicacionOriginal"]], r);
+  var catalogado = fichaCampo("Catálogo", construirCatalogoCompleto(r)) + fichaCampos([["Fecha de catalogación","fechaCatalogacion"], ["Catalogador","catalogador"], ["Tipo nomenclatural","tipoNomenclatural"], ["Comentarios del tipo nomenclatural","observacionesTipo"], ["Observaciones del catalogador","observacionesCatalogacion"], ["Publicación original","publicacionOriginal"]], r);
   if(coleccionTexto) catalogado = fichaCampo("Colección", coleccionTexto) + catalogado;
 
   var biologicos = fichaCampos([
@@ -3379,7 +3405,7 @@ function construirFicha(r){
     ["Asociaciones biológicas","asociacionesBiologicas"], ["Observaciones biológicas","observacionesBiologicas"]
   ], r);
 
-  var manejoCampos = fichaCampos([["Estado","estadoUbicacion"], ["Ubicación en colección","ubicacionColeccion"]], r);
+  var manejoCampos = fichaCampos([["Estado","estadoUbicacion"], ["Ubicación en colección","ubicacionColeccion"], ["Comentarios de ubicación","observacionesUbicacion"]], r);
   if(r.estadoUbicacion==="Baja"){
     manejoCampos += fichaCampos([
       ["Número de baja","numeroBaja"], ["Fecha de baja","fechaBaja"], ["Tipo de baja","tipoBaja"],
@@ -4466,7 +4492,8 @@ function pintarLista(tipo){
         (c.options||[]).forEach(function(o){ var op=document.createElement("option"); op.value=o; op.textContent=o; input.appendChild(op); });
         var vAct=entrada[c.key]; if(vAct && (c.options||[]).indexOf(vAct)<0){ var op2=document.createElement("option"); op2.value=vAct; op2.textContent=vAct; input.appendChild(op2); }   // valor antiguo o importado
         input.disabled = !editando;
-      } else { input=document.createElement("input"); input.type=c.type||"text"; input.readOnly = !editando; }
+      } else if(c.type==="textarea"){ input=document.createElement("textarea"); input.rows=2; input.readOnly = !editando; }
+      else { input=document.createElement("input"); input.type=c.type||"text"; input.readOnly = !editando; }
       input.className="nav"; input.value=entrada[c.key]||""; input.setAttribute("data-key", c.key); input._anterior=input.value;
       input.addEventListener("input", function(){
         entrada[c.key]=input.value; refrescarPanelesRegistros(); actualizarPrev();
@@ -7899,6 +7926,12 @@ var CONS_CAMPOS = [
   campoSimple("habitat","Hábitat","Terreno"), campoSimple("microhabitat","Microhábitat","Terreno"),
   campoSimple("metodoColecta","Método de recolección","Terreno"), campoSimple("estacion","Estación","Terreno"),
   campoSimple("altitud_m","Altitud/profundidad (m)","Terreno"), campoSimple("coordenadasOriginales","Coordenadas originales","Terreno"),
+  campoSimple("observacionesLocalidad","Observaciones de la localidad","Terreno"), campoSimple("observacionesGeoref","Observaciones de georreferenciación","Terreno"),
+  campoSimple("observacionesEvento","Observaciones del evento de colecta","Terreno"), campoSimple("observacionesIngreso","Observaciones de ingreso","Entrada"),
+  campoSimple("observacionesPreparacion","Observaciones de preparación","Preparación"), campoSimple("observacionesCondicion","Comentarios de condición del ejemplar","Preparación"),
+  campoSimple("observacionesTipo","Comentarios del tipo nomenclatural","Depósito"), campoSimple("observacionesCatalogacion","Observaciones del catalogador","Depósito"),
+  campoSimple("observacionesUbicacion","Comentarios de ubicación","Manejo"),
+  CF("comentariosDet","Comentarios de la determinación","Depósito",false,function(r){ return listaVals(r,"determinaciones","comentarios"); }),
   campoSimple("numeroAccesion","N.º de entrada","Entrada",true), campoSimple("procedencia","Procedencia","Entrada"),
   campoSimple("destino","Destino","Entrada"), campoSimple("condicionAccesion","Condición de la accesión","Entrada"),
   campoSimple("legatario","Legatario","Entrada"), campoSimple("proyectoOrigen","Proyecto de origen","Entrada"),
@@ -8216,6 +8249,12 @@ var CONS_COLUMNAS = [
   ["Legatario",function(r){ return r.legatario; }], ["Proyecto / iniciativa de origen",function(r){ return r.proyectoOrigen; }],
   ["Fecha de catalogación",function(r){ return r.fechaCatalogacion; }], ["Catalogador",function(r){ return r.catalogador; }],
   ["Observaciones",function(r){ return r.observaciones; }], ["Observaciones biológicas",function(r){ return r.observacionesBiologicas; }],
+  ["Observaciones de la localidad",function(r){ return r.observacionesLocalidad; }], ["Observaciones de georreferenciación",function(r){ return r.observacionesGeoref; }],
+  ["Observaciones del evento de colecta",function(r){ return r.observacionesEvento; }], ["Observaciones de ingreso",function(r){ return r.observacionesIngreso; }],
+  ["Observaciones de preparación",function(r){ return r.observacionesPreparacion; }], ["Comentarios de condición del ejemplar",function(r){ return r.observacionesCondicion; }],
+  ["Comentarios del tipo nomenclatural",function(r){ return r.observacionesTipo; }], ["Observaciones del catalogador",function(r){ return r.observacionesCatalogacion; }],
+  ["Comentarios de ubicación",function(r){ return r.observacionesUbicacion; }],
+  ["Comentarios de la determinación",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].comentarios:""; }],
   ["Asociaciones biológicas",function(r){ return r.asociacionesBiologicas; }], ["Publicación original",function(r){ return r.publicacionOriginal; }],
   ["N.º de fotos",function(r){ return (r.fotos||[]).filter(function(f){ return f.archivo; }).length; },"n"],
   ["PDF de publicaciones",function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }).join("; "); }],
@@ -8591,8 +8630,14 @@ function preparacionesDwc(r){
   return partes.join(" | ");
 }
 function observacionPreparacion(r){
-  return [["Conservación",r.conservacion],["Medio de fijado",r.medioFijado],["Preparación",r.preparacion],["Tipo de colección",r.tipoColeccion],["Condición del ejemplar",r.condicionEjemplar]]
+  var base=[["Conservación",r.conservacion],["Medio de fijado",r.medioFijado],["Preparación",r.preparacion],["Tipo de colección",r.tipoColeccion],["Condición del ejemplar",r.condicionEjemplar]]
     .filter(function(x){ return x[1]; }).map(function(x){ return x[0]+": "+x[1]; }).join("; ");
+  var libres=[r.observacionesCondicion?("Condición: "+r.observacionesCondicion):"", r.observacionesPreparacion||""].filter(Boolean).join("; ");
+  return [base,libres].filter(Boolean).join(". ");
+}
+function comentariosIdentificacion(r){
+  var d=vigenteDet(r);
+  return [d&&d.comentarios?d.comentarios:"", r.observacionesTipo?("Tipo nomenclatural: "+r.observacionesTipo):""].filter(Boolean).join("; ");
 }
 // sexo y estado de desarrollo se arman concatenando los contadores, como en el registro histórico del AZI ("37 M, 24 H", "3 H, 203 Juv.")
 function sexoDwc(r){
@@ -8617,6 +8662,7 @@ var DWC_COLUMNAS = [
   ["eventTime",function(r){ return r.horaColecta; }],
   ["habitat",function(r){ return r.habitat; }],
   ["samplingProtocol",function(r){ return r.metodoColecta; }],
+  ["eventRemarks",function(r){ return r.observacionesEvento; }],
   ["country",function(r){ return (r.lat||r.lng||r.localidad||r.localidadVerbatim||r.region)?"Chile":""; }],
   ["countryCode",function(r){ return (r.lat||r.lng||r.localidad||r.localidadVerbatim||r.region)?"CL":""; }],
   ["stateProvince",function(r){ return r.region; }],
@@ -8624,10 +8670,12 @@ var DWC_COLUMNAS = [
   ["municipality",function(r){ return r.comuna; }],
   ["locality",function(r){ return r.localidad; }],
   ["verbatimLocality",function(r){ return r.localidadVerbatim; }],
+  ["locationRemarks",function(r){ return r.observacionesLocalidad; }],
   ["decimalLatitude",function(r){ var c=coordenadasRegistro(r); return c?c.lat:""; }],
   ["decimalLongitude",function(r){ var c=coordenadasRegistro(r); return c?c.lng:""; }],
   ["geodeticDatum",function(r){ return coordenadasRegistro(r)?"WGS84":""; }],
   ["verbatimCoordinates",function(r){ return r.coordenadasOriginales; }],
+  ["georeferenceRemarks",function(r){ return r.observacionesGeoref; }],
   ["verbatimElevation",function(r){ return r.altitud_m; }],
   ["minimumElevationInMeters",function(r){ return numLimpio(r.altitud_m); }],
   ["scientificName",function(r){ var d=vigenteDet(r); return d?d.nombreCientifico:(r.taxon||""); }],
@@ -8637,6 +8685,7 @@ var DWC_COLUMNAS = [
   ["family",function(r){ return r.familia; }], ["genus",function(r){ return r.genero; }],
   ["identifiedBy",function(r){ var d=vigenteDet(r); return d?d.determinador:""; }],
   ["dateIdentified",function(r){ var d=vigenteDet(r); return d?d.fechaDeterminacion:""; }],
+  ["identificationRemarks",comentariosIdentificacion],
   ["typeStatus",function(r){ return r.tipoNomenclatural; }],
   ["namePublishedIn",function(r){ return r.publicacionOriginal; }],
   ["individualCount",function(r){ return numLimpio(r.individuos); }],
@@ -8868,6 +8917,7 @@ var IMP_ESPECIALES = [
   {k:"@calificador", l:"Calificador de la determinación (cf., aff., sp. nov.)", g:"Determinación y especiales", tipo:"lista", opciones:["cf.","aff.","?","sp.","sp. nov."]},
   {k:"@determinador", l:"Determinador", g:"Determinación y especiales", tipo:"texto"},
   {k:"@fechaDet", l:"Fecha de determinación", g:"Determinación y especiales", tipo:"fecha"},
+  {k:"@comentDet", l:"Comentarios de la determinación vigente", g:"Determinación y especiales", tipo:"texto"},
   {k:"@prevDet", l:"Determinación anterior (nombre)", g:"Determinación y especiales", tipo:"texto"},
   {k:"@sexo", l:"Sexo y estado (texto como «2 ♂ 1 ♀ 1 ninfa»)", g:"Determinación y especiales", tipo:"sexo"},
   {k:"@coord", l:"Coordenadas en una sola columna (latitud y longitud)", g:"Determinación y especiales", tipo:"coordpar"},
@@ -9017,7 +9067,7 @@ var IMP_SINONIMOS = {
   "@nombre":["scientificname","nombrecientifico","especie","taxon","nombre"],
   "@determinador":["identifiedby","determinador","determinadopor"], "@fechaDet":["dateidentified","fechadeterminacion","fechadeterminacion"],
   "@prevDet":["previousidentification","determinacionanterior"],
-  "@obs":["eventremarks"], "@operador":["operador","operadoractual","ingresadopor","registradopor","catalogador","modificadopor","digitador"], "@sexo":["sexo","sex","sexoyestado","lifestage"], tipoNomenclatural:["typestatus","tiponomenclatural","tipo"],
+  "@obs":[], "@operador":["operador","operadoractual","ingresadopor","registradopor","catalogador","modificadopor","digitador"], "@sexo":["sexo","sex","sexoyestado","lifestage"], tipoNomenclatural:["typestatus","tiponomenclatural","tipo"],
   individuos:["individualcount","individuos","nindividuos","cantidad"],
   estadoUbicacion:["disposition","estado","estadoubicacion"], region:["region","stateprovince"], provincia:["provincia","county"], comuna:["comuna","municipality"],
   localidad:["locality","localidad"], localidadVerbatim:["verbatimlocality","localidadverbatim"],
@@ -9025,7 +9075,9 @@ var IMP_SINONIMOS = {
   fechaColecta:["eventdate","fechacolecta","fechadecolecta","fecha"], colector:["recordedby","colector","colectores","colectadopor"],
   legatario:["legatee","legatario"], metodoColecta:["samplingprotocol","metodocolecta","metododerecoleccion"], habitat:["habitat"],
   tipoColeccion:["preparations","tipocoleccion","preparaciones"], asociacionesBiologicas:["associatedtaxa","asociacionesbiologicas"],
-  observacionesBiologicas:["organismremarks","observacionesbiologicas"], observaciones:["occurrenceremarks","observaciones","notas","remarks"],
+  observacionesBiologicas:["organismremarks","observacionesbiologicas"], observacionesEvento:["eventremarks","observacionesdelevento"], observacionesLocalidad:["locationremarks","observacionesdelalocalidad"],
+  observacionesGeoref:["georeferenceremarks","observacionesdegeorreferenciacion"], observacionesPreparacion:["preparationremarks","observacionesdepreparacion"], observacionesIngreso:["accessionremarks","observacionesdeingreso"],
+  observacionesCondicion:["conditionremarks"], "@comentDet":["identificationremarks","comentariosdeterminacion","comentariosdeladeterminacion"], observaciones:["occurrenceremarks","observaciones","notas","remarks"],
   procedencia:["basisofrecord","procedencia"], altitud_m:["altitud","elevation","verbatimelevation","altitudm","minimumelevationinmeters","profundidad","depth","profundidadmaxima","profundidadminima","minimumdepthinmeters","maximumdepthinmeters"],
   fechaRecepcion:["fechaingreso","fecharecepcion","fechadeingreso"], horaColecta:["eventtime","hora","horacolecta"]
 };
@@ -9151,7 +9203,7 @@ function impConstruir(){
   imp.datos.forEach(function(row){
     var llenos=0; imp.mapas.forEach(function(m){ var c=imp.cols[m.col]; if(!c.constante && row.v[m.col]!=="") llenos++; });
     if(llenos<imp.minLlenos){ filasOmitidas.push(row.fila); return; }
-    var r=registroVacioBase(), anexos=[], det={nombreCientifico:"",determinador:"",fechaDeterminacion:"",calificador:""}, prev=null, hayDet=false, listasFila={}, opFila="";
+    var r=registroVacioBase(), anexos=[], det={nombreCientifico:"",determinador:"",fechaDeterminacion:"",calificador:"",comentarios:""}, prev=null, hayDet=false, listasFila={}, opFila="";
     function poner(k,v){ if(v===""||v==null) return; if(k.indexOf("L:")===0){ var q=k.slice(2).split("."); var li=listasFila[q[0]]=listasFila[q[0]]||{}; if(li[q[1]]===undefined) li[q[1]]=String(v); return; } if(r[k]!==undefined && r[k]!=="") return; r[k]=String(v); }
     function anexar(etq,v){ anexos.push(etq+": "+v); }
     orden.forEach(function(i){
@@ -9161,6 +9213,7 @@ function impConstruir(){
       if(k==="@operador"){ if(!opFila) opFila=raw; return; }
       if(k==="@nombre"){ if(!det.nombreCientifico){ det.nombreCientifico=raw; hayDet=true; } return; }
       if(k==="@determinador"){ if(!det.determinador){ det.determinador=raw; hayDet=true; } return; }
+      if(k==="@comentDet"){ if(!det.comentarios){ det.comentarios=raw; hayDet=true; } return; }
       if(k==="@prevDet"){ prev=raw; return; }
       if(k==="@calificador"){ var v=impValorLista(m,o,raw); if(v&&!det.calificador){ det.calificador=v; hayDet=true; } return; }
       if(k==="@fechaDet"){ var f=impFecha(raw,detFmt[i].fmt); if(f.ok){ if(!det.fechaDeterminacion){ det.fechaDeterminacion=f.val; hayDet=true; } } else enError("Fecha no interpretable"); return; }
@@ -9502,6 +9555,7 @@ function impEjemplosApp(o,n){
       case "@calificador": if(u) add(u.calificador); break;
       case "@determinador": if(u) add(u.determinador); break;
       case "@fechaDet": if(u) add(u.fechaDeterminacion); break;
+      case "@comentDet": if(u) add(u.comentarios); break;
       case "@prevDet": if(d.length>1) add(d[d.length-2].nombreCientifico); break;
       case "@sexo": var p=[]; if(r.cantidadMachos) p.push(r.cantidadMachos+" ♂"); if(r.cantidadHembras) p.push(r.cantidadHembras+" ♀"); if(r.cantidadJuveniles) p.push(r.cantidadJuveniles+" juv."); if(r.cantidadNoSexados) p.push(r.cantidadNoSexados+" ns"); if(p.length) add(p.join(" ")); break;
       case "@coord": if(r.lat&&r.lng) add(r.lat+", "+r.lng); break;
@@ -9685,7 +9739,7 @@ function impSimValores(c,o){
         case "coordpar": vals.forEach(function(v){ if(impCoordPar(v)) ok++; }); r=ok/vals.length; break;
         case "sexo": vals.forEach(function(v){ if(impSexo(v).ok) ok++; }); r=ok/vals.length; break;
         case "lista": vals.forEach(function(v){ if(impCoincidencia(v,o).modo==="opt") ok++; }); r=ok/vals.length; break;
-        case "texto": if(o.k!=="@obs"){ var cj=impConjuntoApp(o.k); if(cj.n>=3){ vals.forEach(function(v){ if(cj.set[impNorm(v)]) ok++; }); r=ok/vals.length; } } break;
+        case "texto": if(o.k!=="@obs" && o.k!=="@comentDet"){ var cj=impConjuntoApp(o.k); if(cj.n>=3){ vals.forEach(function(v){ if(cj.set[impNorm(v)]) ok++; }); r=ok/vals.length; } } break;
       }
     }catch(e){ r=null; }
   }
@@ -10414,6 +10468,7 @@ function esqValorCampo(r,e){
   if(k==="@determinador") return u?u.determinador:"";
   if(k==="@fechaDet") return u&&u.fechaDeterminacion?esqFecha(u.fechaDeterminacion,e.fmt):"";
   if(k==="@calificador") return u?esqInverso(u.calificador,e):"";
+  if(k==="@comentDet") return u?(u.comentarios||""):"";
   if(k==="@prevDet") return d.length>1?d[d.length-2].nombreCientifico:"";
   if(k==="@operador") return r.modificadoPor||"";
   if(k==="@obs") return "";

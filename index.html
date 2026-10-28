@@ -643,6 +643,14 @@
   .exp-chip.vacio .exp-tg{font-style:italic;}
   .aviso-duplicado{background:#fff7d6;border:1px solid #d9b83a;border-radius:8px;padding:8px 12px;margin:6px 0 10px;font-size:13.5px;}
   details.det-pub{grid-column:1/-1;border:1px dashed var(--line);border-radius:8px;padding:3px 10px;background:transparent;} details.det-pub>summary{cursor:pointer;font-weight:500;font-size:13px;color:var(--ink-soft);padding:2px 0;} details.det-pub>summary:hover{color:var(--ink);} details.det-pub[open]>summary{margin-bottom:8px;}
+  details.det-obs>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:6px;padding:2px 0;} details.det-obs>summary::-webkit-details-marker{display:none;}
+  details.det-obs>summary::before{content:"▸";color:var(--ink-soft);font-size:12px;} details.det-obs[open]>summary::before{content:"▾";}
+  .campo.opc details.det-obs>summary .lbl{display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-height:0;margin:0;}
+  .campo.opc details.det-obs>summary .lbl span.name{font-size:13.5px;font-weight:500;color:var(--ink-soft);}
+  .campo.opc details.det-obs>summary .lbl span.key{font-size:10.5px;}
+  .campo.opc details.det-obs.con-texto>summary .lbl span.name::after{content:" ●";color:#d99a00;}
+  details.det-obs[open]>textarea{margin-top:6px;}
+  .par-obs{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;align-items:start;} @media(max-width:700px){.par-obs{grid-template-columns:1fr;}}
   nav#tabs button.tab-atencion::after{content:" ●";color:#d99a00;}
   .atencion{outline:3px solid #e0a800;outline-offset:3px;border-radius:6px;background:#fff9e0;animation:atencion-pulso 1.6s ease-in-out 3;}
   @keyframes atencion-pulso{0%,100%{outline-color:#e0a800;}50%{outline-color:#ffe08a;}}
@@ -929,7 +937,7 @@
           <input class="nav oculto" data-f="comuna" id="input-comuna-cl" placeholder="Escribe la comuna/zona">
           <button type="button" class="btn tenue small oculto" id="btn-comuna-lista" style="margin-top:4px;">▸ Elegir de la lista</button>
         </div>
-        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones de la localidad</span><span class="key">observacionesLocalidad → dwc:locationRemarks</span></div><textarea class="nav" data-f="observacionesLocalidad"></textarea></div>
+        <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de la localidad</span><span class="key">observacionesLocalidad → dwc:locationRemarks</span></span></summary><textarea class="nav" data-f="observacionesLocalidad"></textarea></details></div>
         <div class="campo req"><div class="lbl"><span class="name">Fecha de colecta</span><span class="key">fechaColecta</span></div><input type="date" class="nav" data-f="fechaColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Colector</span><span class="key">colector</span></div><input class="nav sugerido" data-f="colector"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Coordenadas originales</span><span class="key">coordenadasOriginales → dwc:verbatimCoordinates</span></div><input class="nav" data-f="coordenadasOriginales"></div>
@@ -937,13 +945,13 @@
         <div class="campo opc"><div class="lbl"><span class="name">Longitud</span><span class="key">lng</span></div><input class="nav" data-f="lng"></div>
         <p class="nota coord-aviso oculto" id="coord-aviso"></p>
         <div class="campo opc"><div class="lbl"><span class="name">Altitud/profundidad (m)</span><span class="key">altitud_m</span></div><input class="nav" data-f="altitud_m" placeholder="profundidad en negativo, ej. -35"></div>
-        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones de georreferenciación</span><span class="key">observacionesGeoref → dwc:georeferenceRemarks</span></div><textarea class="nav" data-f="observacionesGeoref"></textarea></div>
+        <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de georreferenciación</span><span class="key">observacionesGeoref → dwc:georeferenceRemarks</span></span></summary><textarea class="nav" data-f="observacionesGeoref"></textarea></details></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hora de colecta</span><span class="key">horaColecta → dwc:eventTime</span></div><input type="time" class="nav" data-f="horaColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Hábitat</span><span class="key">habitat → dwc:habitat</span></div><input class="nav sugerido" data-f="habitat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Microhábitat</span><span class="key">microhabitat</span></div><input class="nav sugerido" data-f="microhabitat"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Método de recolección</span><span class="key">metodoColecta → dwc:samplingProtocol</span></div><input class="nav sugerido" data-f="metodoColecta"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Estación</span><span class="key">estacion</span></div><input class="nav" data-f="estacion"></div>
-        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones del evento de colecta</span><span class="key">observacionesEvento → dwc:eventRemarks</span></div><textarea class="nav" data-f="observacionesEvento"></textarea></div>
+        <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones del evento de colecta</span><span class="key">observacionesEvento → dwc:eventRemarks</span></span></summary><textarea class="nav" data-f="observacionesEvento"></textarea></details></div>
       </div>
       <p class="nota">Sugerencia automática de región/provincia/comuna desde coordenadas: pendiente de implementar.</p>
     </div>
@@ -968,7 +976,7 @@
           <select class="nav" data-f="tipoAccesion"><option value="">—</option><option>Colecta propia</option><option>Donación</option><option>Compra</option><option>Intercambio</option><option>Depósito</option></select>
         </div>
 
-        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones de ingreso</span><span class="key">observacionesIngreso</span></div><textarea class="nav" data-f="observacionesIngreso"></textarea></div>
+        <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de ingreso</span><span class="key">observacionesIngreso</span></span></summary><textarea class="nav" data-f="observacionesIngreso"></textarea></details></div>
       </div>
       <div class="docs-ingreso"><button type="button" class="btn secundario small" id="btn-docs-ingreso">📎 Documentos del ingreso</button><span class="nota" id="docs-ingreso-resumen"></span></div>
     </div>
@@ -1001,8 +1009,10 @@
           <select class="nav" data-f="condicionEjemplar"><option value="">—</option><option>Excelente</option><option>Bueno</option><option>Regular</option><option>Malo</option><option>Deteriorado</option><option>Dañado</option><option>Fragmentario</option><option>Incompleto</option><option>Desarticulado</option><option>Desmembrado</option><option>Parcial</option><option>Restos</option><option>Sin determinar</option></select>
         </div>
         <div class="campo opc"><div class="lbl"><span class="name">Conteo de individuos</span><span class="key">individuos</span></div><input class="nav" data-f="individuos"></div>
-        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones de preparación</span><span class="key">observacionesPreparacion → dwc:preparationRemarks</span></div><textarea class="nav" data-f="observacionesPreparacion"></textarea></div>
-        <div class="campo opc full"><div class="lbl"><span class="name">Comentarios de condición del ejemplar</span><span class="key">observacionesCondicion</span></div><textarea class="nav" data-f="observacionesCondicion"></textarea></div>
+        <div class="par-obs">
+        <div class="campo opc"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de preparación</span><span class="key">observacionesPreparacion → dwc:preparationRemarks</span></span></summary><textarea class="nav" data-f="observacionesPreparacion"></textarea></details></div>
+        <div class="campo opc"><details class="det-obs"><summary><span class="lbl"><span class="name">Comentarios de condición del ejemplar</span><span class="key">observacionesCondicion</span></span></summary><textarea class="nav" data-f="observacionesCondicion"></textarea></details></div>
+        </div>
       </div>
     </div>
 
@@ -1062,8 +1072,10 @@
         <div class="campo req"><div class="lbl"><span class="name">Tipo nomenclatural</span><span class="key">tipoNomenclatural</span></div>
           <select class="nav" data-f="tipoNomenclatural"><option value="">No aplica</option><option>Holotipo</option><option>Paratipo</option><option>Sintipo</option><option>Neotipo</option></select>
         </div>
-        <div class="campo opc full"><div class="lbl"><span class="name">Comentarios del tipo nomenclatural</span><span class="key">observacionesTipo</span></div><textarea class="nav" data-f="observacionesTipo"></textarea></div>
-        <div class="campo opc full"><div class="lbl"><span class="name">Observaciones del catalogador</span><span class="key">observacionesCatalogacion</span></div><textarea class="nav" data-f="observacionesCatalogacion"></textarea></div>
+        <div class="par-obs">
+        <div class="campo opc"><details class="det-obs"><summary><span class="lbl"><span class="name">Comentarios del tipo nomenclatural</span><span class="key">observacionesTipo</span></span></summary><textarea class="nav" data-f="observacionesTipo"></textarea></details></div>
+        <div class="campo opc"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones del catalogador</span><span class="key">observacionesCatalogacion</span></span></summary><textarea class="nav" data-f="observacionesCatalogacion"></textarea></details></div>
+        </div>
         <details class="det-pub full" id="det-publicacion">
           <summary>Publicación original y PDF de publicaciones asociadas</summary>
           <div class="grid">
@@ -1138,7 +1150,7 @@
           </select>
         </div>
         <div class="campo opc" id="campo-ubicacion-coleccion"><div class="lbl"><span class="name">Ubicación en colección</span><span class="key">ubicacionColeccion</span></div><input class="nav" data-f="ubicacionColeccion" placeholder="gabinete, caja…"></div>
-        <div class="campo opc full"><div class="lbl"><span class="name">Comentarios de ubicación</span><span class="key">observacionesUbicacion</span></div><textarea class="nav" data-f="observacionesUbicacion"></textarea></div>
+        <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Comentarios de ubicación</span><span class="key">observacionesUbicacion</span></span></summary><textarea class="nav" data-f="observacionesUbicacion"></textarea></details></div>
       </div>
 
       <div class="banda-baja oculto" id="panel-baja">
@@ -1552,7 +1564,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.89";
+var APP_VERSION = "v0.9.90";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -3128,6 +3140,7 @@ document.addEventListener("input", function(e){
   actualizarAvisoConteo();
 });
 
+document.addEventListener("input", function(e){ var d=e.target.closest&&e.target.closest("details.det-obs"); if(d) d.classList.toggle("con-texto", !!e.target.value.trim()); });
 // ---------- listas repetibles ----------
 var TIPOS_FOTO=["Ejemplar capturado","Ejemplar en su hábitat","Ejemplar vivo en laboratorio","Espécimen conservado","Vista dorsal","Vista ventral","Vista lateral","Vista frontal","Detalle morfológico","Genitalia o estructura interna","Etiqueta del ejemplar","Hábitat o paisaje","Microscopía","Terreno"];
 var MOTIVOS_ARCHIVO=["Descripción original","Redescripción","Mención"];
@@ -4523,7 +4536,10 @@ function pintarLista(tipo){
           });
         }
       });
-      campoDiv.appendChild(input);
+      if(c.type==="textarea"){
+        var dt=document.createElement("details"); dt.className="det-obs"+(input.value?" con-texto":""); dt.open=!!input.value;
+        var sm=document.createElement("summary"); lbl.className="lbl"; sm.appendChild(lbl); dt.appendChild(sm); dt.appendChild(input); campoDiv.appendChild(dt);
+      } else campoDiv.appendChild(input);
       grid.appendChild(campoDiv);
     });
     fila.appendChild(grid);
@@ -4640,6 +4656,7 @@ function cargarRegistroEnFormulario(){
     if(el.closest(".fila-repetible")) return;
     el.value = r ? (r[el.getAttribute("data-f")]||"") : "";
   });
+  document.querySelectorAll("details.det-obs").forEach(function(d){ var t=d.querySelector("textarea"), h=!!(t&&t.value.trim()); d.classList.toggle("con-texto",h); d.open=h; });
   sincronizarSelectsOtro();
   Object.keys(listasCfg).forEach(pintarLista);
   actualizarVisibilidadEstado();

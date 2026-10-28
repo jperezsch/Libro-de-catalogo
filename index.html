@@ -656,10 +656,10 @@
   nav#tabs button[data-tab="consultas"]::before{content:"";position:absolute;right:-24px;top:6px;bottom:0;width:2px;background:#a99f80;border-radius:2px;}
   nav#tabs button[data-tab="consultas"]:hover{background:#bcd9e3;color:#17475a;border-color:#4f8296;}
   nav#tabs button[data-tab="consultas"].active{background:#1f6178;border-color:#1f6178;color:#fff;}
-  nav#tabs button[data-tab="sistema"]{background:#e8e2cd;border:1.5px dashed #8c8466;border-bottom:none;color:#4a4636;font-weight:600;margin-left:40px;position:relative;}
+  nav#tabs button[data-tab="sistema"]{background:#ece6d3;border-color:#a99f80;margin-left:40px;position:relative;}
   nav#tabs button[data-tab="sistema"]::before{content:"";position:absolute;left:-24px;top:6px;bottom:0;width:2px;background:#a99f80;border-radius:2px;}
-  nav#tabs button[data-tab="sistema"]:hover{background:#d9d2b6;color:#4a4636;border-color:#8c8466;}
-  nav#tabs button[data-tab="sistema"].active{background:#5b5846;border:1.5px solid #5b5846;border-bottom:none;color:#fff;}
+  nav#tabs button[data-tab="sistema"]:hover{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-2);}
+  nav#tabs button[data-tab="sistema"].active{background:var(--accent);border-color:var(--accent);color:#fff;}
   #det-gestion>summary{font-size:24px;color:var(--ink);padding-bottom:8px;border-bottom:3px solid var(--accent);margin-bottom:10px;}
   .alertas-fila .alerta-prestamos{border-left-width:6px;}
   .alertas-fila .alerta-prestamos#alerta-monitoreo:not(.hay-vencidos){background:#e8f3f7;border-color:#5f9db5;} .alerta-prestamos#alerta-monitoreo:not(.hay-vencidos) summary{color:#17475a;}
@@ -1584,7 +1584,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.91";
+var APP_VERSION = "v0.9.92";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 

@@ -645,7 +645,7 @@
   details.det-pub{grid-column:1/-1;border:1px dashed var(--line);border-radius:8px;padding:3px 10px;background:transparent;} details.det-pub>summary{cursor:pointer;font-weight:500;font-size:13px;color:var(--ink-soft);padding:2px 0;} details.det-pub>summary:hover{color:var(--ink);} details.det-pub[open]>summary{margin-bottom:8px;}
   details.det-obs>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:6px;padding:2px 0;} details.det-obs>summary::-webkit-details-marker{display:none;}
   details.det-obs>summary::before{content:"▸";color:var(--ink-soft);font-size:12px;} details.det-obs[open]>summary::before{content:"▾";}
-  .campo.opc details.det-obs>summary .lbl{display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-height:0;margin:0;}
+  .campo.opc details.det-obs>summary .lbl{display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;justify-content:flex-start;gap:2px 8px;min-height:0;margin:0;}
   .campo.opc details.det-obs>summary .lbl span.name{font-size:13.5px;font-weight:500;color:var(--ink-soft);}
   .campo.opc details.det-obs>summary .lbl span.key{font-size:10.5px;}
   .campo.opc details.det-obs.con-texto>summary .lbl span.name::after{content:" ●";color:#d99a00;}
@@ -670,6 +670,25 @@
   .pres-punto{width:9px;height:9px;border-radius:50%;background:#a9a38c;display:inline-block;flex:none;} .pres-punto.on{background:#2e8b57;box-shadow:0 0 0 3px rgba(46,139,87,.22);}
   .pres-hora{margin-left:auto;color:var(--ink-soft);font-size:12.5px;} .pres-fila.ahora .pres-hora{color:#1f6b45;font-weight:700;}
   .carpeta-compartida-etq{display:inline-block;margin-left:8px;padding:1px 10px;border-radius:999px;font-family:var(--sans);font-size:12px;font-weight:700;background:#e4f1ea;color:#1f6b45;border:1px solid #9cc9b0;vertical-align:middle;}
+  /* v0.9.93: Consultas, Seguimientos y títulos de comentarios */
+  .cons-rotulo{margin:0 0 6px;font-size:13.5px;color:var(--ink-soft);} .cons-rotulo span{display:inline-block;background:#1f6178;color:#fff;font-weight:700;letter-spacing:.4px;text-transform:uppercase;font-size:12px;padding:3px 11px;border-radius:999px;margin-right:8px;}
+  body:not(.modo-admin) .cons-rotulo{display:none;}
+  .cons-sup>.bloque,body:not(.modo-admin) #tab-consultas .cons-sup>.bloque{background:#eaf3f7;border:1.5px solid #8fb4c4;border-left:7px solid #1f6178;}
+  .cons-sup>.bloque h2{color:#17475a;}
+  .cons-flecha{text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#1f6178;margin:10px 0 6px;}
+  .bloque-res{border-left:7px solid #1f6178;background:#fff;}
+  .cons-acciones .btn{background:var(--accent);color:#fff;border:1.5px solid var(--accent);font-weight:700;font-size:14px;padding:8px 14px;box-shadow:0 2px 5px rgba(38,51,43,.25);}
+  .cons-acciones .btn:hover{background:var(--ink);border-color:var(--ink);color:#fff;transform:translateY(-1px);}
+  .cons-acciones label{font-weight:700;font-size:14px;color:var(--ink);} .cons-acciones select{font-size:14px;font-weight:600;}
+  #cons-marcar-todos{border:1.5px solid var(--accent);color:var(--accent);font-weight:700;background:#fff;}
+  .seg-item{border:1.5px solid var(--line-fuerte);border-radius:10px;margin:12px 0;background:#fffdf8;overflow:hidden;box-shadow:0 1px 3px rgba(38,51,43,.10);}
+  .seg-item .seg-regla{border-bottom:0;padding:9px 12px;background:#f1eddc;}
+  .seg-item.abierta{border:2px solid var(--accent);box-shadow:0 3px 10px rgba(38,51,43,.22);}
+  .seg-item.abierta .seg-regla{background:var(--accent);color:#fff;} .seg-item.abierta .seg-regla .seg-res{color:#e8efe9;} .seg-item.abierta .seg-regla .btn{background:#fff;}
+  .seg-item .seg-lista{margin:0;padding:0 12px;background:#fff;} .seg-item .seg-lista th{background:var(--accent-soft);color:var(--accent);padding:6px 8px;} .seg-item .seg-lista tbody tr:nth-child(even){background:#f6f3e6;}
+  .seg-item .barra-botones{padding:8px 12px 10px;background:#fff;border-top:1px dashed var(--line);margin:0;}
+  .campo.opc details.det-obs>summary .lbl span.name{font-size:14.5px;font-weight:600;color:var(--ink);}
+  .campo.opc details.det-obs>summary .lbl span.key{font-size:11.5px;}
   nav#tabs button.tab-atencion::after{content:" ●";color:#d99a00;}
   .atencion{outline:3px solid #e0a800;outline-offset:3px;border-radius:6px;background:#fff9e0;animation:atencion-pulso 1.6s ease-in-out 3;}
   @keyframes atencion-pulso{0%,100%{outline-color:#e0a800;}50%{outline-color:#ffe08a;}}
@@ -887,6 +906,7 @@
 
   <!-- CONSULTAS -->
   <section class="tabpanel" id="tab-consultas">
+    <p class="cons-rotulo"><span>🔍 Buscadores</span> lo que escribas o marques aquí define los resultados que aparecen más abajo</p>
     <div class="cons-sup">
     <div class="bloque">
       <h2>Buscar en la colección <button type="button" class="ayuda-btn" data-ayuda="ayuda-consultas" aria-label="Ayuda" title="Ayuda">?</button></h2>
@@ -908,11 +928,12 @@
       <button type="button" class="btn tenue small" id="doc-actualizar">Actualizar índice</button>
     </div>
     </div>
-    <div class="bloque">
+    <div class="cons-flecha" aria-hidden="true">▼ Resultados de los buscadores ▼</div>
+    <div class="bloque bloque-res">
       <div class="cons-cab">
         <h2 id="cons-titulo">Resultados</h2>
         <div class="cons-acciones">
-          <label>Ordenar por <select id="cons-orden"><option value="catalogo">N.º de catálogo</option><option value="campo">N.º de campo</option><option value="nombre">Nombre científico</option><option value="localidad">Localidad</option><option value="fecha">Fecha de colecta</option></select></label>
+          <label>Ordenar por <select id="cons-orden"><option value="catalogo">N.º de catálogo</option><option value="campo">N.º de campo</option><option value="nombre">Nombre científico</option><option value="localidad">Localidad</option><option value="fecha">Fecha de colecta</option><option value="ingreso">Fecha de ingreso</option><option value="entrada">N.º de entrada</option></select></label>
           <button type="button" class="btn small secundario" id="cons-csv" title="Archivo de texto separado por comas, abre en Excel y sirve para GBIF">Descargar CSV</button>
           <button type="button" class="btn small secundario" id="cons-xlsx" title="Planilla de Excel">Descargar Excel</button>
           <button type="button" class="btn small secundario" id="cons-fotos" title="Descarga un zip con las fotos de los registros seleccionados (o de todos los resultados), todas juntas en una carpeta simple">🖼️ Descargar fotos</button>
@@ -1584,7 +1605,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.92";
+var APP_VERSION = "v0.9.93";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -6964,6 +6985,7 @@ function pintarSeguimientos(){
   [SEG_MANUAL].concat(datos.reglas).forEach(function(rg){
     if(segEdit===rg.id && !rg.manual){ h+=segEditorHtml(rg); return; }
     var n=idx.porRegla[rg.id].length;
+    h+='<div class="seg-item'+(segAbierta===rg.id?' abierta':'')+'">';
     h+='<div class="seg-regla'+(rg.activa?'':' inactiva')+'" data-id="'+escapeHtml(rg.id)+'">'+(rg.manual ? '<span class="nota">Siempre activa</span>' : '<label title="Activar o desactivar la regla"><input type="checkbox" data-s="activa"'+(rg.activa?' checked':'')+'> Activa</label>')
       +'<span class="seg-nom">'+escapeHtml(rg.nombre)+'</span><span class="seg-res">'+escapeHtml(rg.manual ? "Anotados ejemplar por ejemplar en Manejo, bloque Monitoreo" : segResumenRegla(rg))+'</span><span class="seg-n">'+n.toLocaleString("es-CL")+(n===1?' ejemplar':' ejemplares')+'</span>'
       +'<button type="button" class="btn tenue small" data-s="ver"'+(n?'':' disabled')+'>'+(segAbierta===rg.id?'Ocultar':'Ver')+'</button>'
@@ -6980,6 +7002,7 @@ function pintarSeguimientos(){
         +(ids.length>lim?'<button type="button" class="btn tenue small" data-s="mas">Mostrar 100 más ('+lim+' de '+ids.length+')</button>':'')
         +(!rg.manual && registros.some(function(r){ return (r.seguimientosExcluidos||[]).indexOf(rg.id)>-1; })?'<button type="button" class="btn tenue small" data-s="restablecer">Restablecer exclusiones</button>':'')+'</div>';
     }
+    h+='</div>';
   });
   if(!datos.reglas.length) h+='<p class="nota">No hay reglas. Crea una o agrega las plantillas.</p>';
   cont.innerHTML=h;
@@ -8119,9 +8142,19 @@ function resultadosConsulta(){
     if(o==="fecha") return r.fechaColecta||"";
     if(o==="localidad") return normTxt(r.localidad||r.localidadVerbatim);
     if(o==="campo") return normTxt(r.numeroCampo);
+    if(o==="ingreso") return r.fechaRecepcion||"";
+    if(o==="entrada") return normTxt(r.numeroAccesion);
     return normTxt(construirCatalogoCompleto(r)||r.catalogo||"~"+(r.numeroCampo||""));
   }
   var cmp = o==="campo"||o==="catalogo" ? function(a,b){ return clave(a).localeCompare(clave(b),"es",{numeric:true}); } : function(a,b){ return clave(a)<clave(b)?-1:clave(a)>clave(b)?1:0; };
+  if(o==="ingreso"||o==="entrada"){   // sin dato al final; a igual valor, por número de catálogo
+    var cmp0=o==="entrada" ? function(a,b){ return clave(a).localeCompare(clave(b),"es",{numeric:true}); } : cmp;
+    cmp=function(a,b){
+      var ea=!clave(a), eb=!clave(b); if(ea!==eb) return ea?1:-1;
+      var c=ea ? 0 : cmp0(a,b); if(c) return c;
+      return normTxt(construirCatalogoCompleto(a)||a.catalogo||"").localeCompare(normTxt(construirCatalogoCompleto(b)||b.catalogo||""),"es",{numeric:true});
+    };
+  }
   lista.sort(cmp); resCache=lista; resClave=ckey;
   return lista.slice();
 }

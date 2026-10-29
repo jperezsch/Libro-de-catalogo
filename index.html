@@ -671,12 +671,9 @@
   .pres-hora{margin-left:auto;color:var(--ink-soft);font-size:12.5px;} .pres-fila.ahora .pres-hora{color:#1f6b45;font-weight:700;}
   .carpeta-compartida-etq{display:inline-block;margin-left:8px;padding:1px 10px;border-radius:999px;font-family:var(--sans);font-size:12px;font-weight:700;background:#e4f1ea;color:#1f6b45;border:1px solid #9cc9b0;vertical-align:middle;}
   /* v0.9.93: Consultas, Seguimientos y títulos de comentarios */
-  .cons-rotulo{margin:0 0 6px;font-size:13.5px;color:var(--ink-soft);} .cons-rotulo span{display:inline-block;background:#1f6178;color:#fff;font-weight:700;letter-spacing:.4px;text-transform:uppercase;font-size:12px;padding:3px 11px;border-radius:999px;margin-right:8px;}
-  body:not(.modo-admin) .cons-rotulo{display:none;}
-  .cons-sup>.bloque,body:not(.modo-admin) #tab-consultas .cons-sup>.bloque{background:#eaf3f7;border:1.5px solid #8fb4c4;border-left:7px solid #1f6178;}
+  .cons-sup>.bloque,body:not(.modo-admin) #tab-consultas .cons-sup>.bloque{background:#f4f8fa;border:1.5px solid #cfdfe6;border-left:7px solid #9dbfcd;}
   .cons-sup>.bloque h2{color:#17475a;}
-  .cons-flecha{text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#1f6178;margin:10px 0 6px;}
-  .bloque-res{border-left:7px solid #1f6178;background:#fff;}
+  .bloque-res{border-left:7px solid #9dbfcd;background:#fff;}
   .cons-acciones .btn{background:var(--accent);color:#fff;border:1.5px solid var(--accent);font-weight:700;font-size:14px;padding:8px 14px;box-shadow:0 2px 5px rgba(38,51,43,.25);}
   .cons-acciones .btn:hover{background:var(--ink);border-color:var(--ink);color:#fff;transform:translateY(-1px);}
   .cons-acciones label{font-weight:700;font-size:14px;color:var(--ink);} .cons-acciones select{font-size:14px;font-weight:600;}
@@ -684,7 +681,7 @@
   .seg-item{border:1.5px solid var(--line-fuerte);border-radius:10px;margin:12px 0;background:#fffdf8;overflow:hidden;box-shadow:0 1px 3px rgba(38,51,43,.10);}
   .seg-item .seg-regla{border-bottom:0;padding:9px 12px;background:#f1eddc;}
   .seg-item.abierta{border:2px solid var(--accent);box-shadow:0 3px 10px rgba(38,51,43,.22);}
-  .seg-item.abierta .seg-regla{background:var(--accent);color:#fff;} .seg-item.abierta .seg-regla .seg-res{color:#e8efe9;} .seg-item.abierta .seg-regla .btn{background:#fff;}
+  
   .seg-item .seg-lista{margin:0;padding:0 12px;background:#fff;} .seg-item .seg-lista th{background:var(--accent-soft);color:var(--accent);padding:6px 8px;} .seg-item .seg-lista tbody tr:nth-child(even){background:#f6f3e6;}
   .seg-item .barra-botones{padding:8px 12px 10px;background:#fff;border-top:1px dashed var(--line);margin:0;}
   .campo.opc details.det-obs>summary .lbl span.name{font-size:14.5px;font-weight:600;color:var(--ink);}
@@ -906,7 +903,6 @@
 
   <!-- CONSULTAS -->
   <section class="tabpanel" id="tab-consultas">
-    <p class="cons-rotulo"><span>🔍 Buscadores</span> lo que escribas o marques aquí define los resultados que aparecen más abajo</p>
     <div class="cons-sup">
     <div class="bloque">
       <h2>Buscar en la colección <button type="button" class="ayuda-btn" data-ayuda="ayuda-consultas" aria-label="Ayuda" title="Ayuda">?</button></h2>
@@ -928,7 +924,6 @@
       <button type="button" class="btn tenue small" id="doc-actualizar">Actualizar índice</button>
     </div>
     </div>
-    <div class="cons-flecha" aria-hidden="true">▼ Resultados de los buscadores ▼</div>
     <div class="bloque bloque-res">
       <div class="cons-cab">
         <h2 id="cons-titulo">Resultados</h2>
@@ -1605,7 +1600,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.93";
+var APP_VERSION = "v0.9.94";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 

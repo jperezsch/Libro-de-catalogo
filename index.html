@@ -1199,11 +1199,10 @@
       <div class="grid">
         <div class="campo req"><div class="lbl"><span class="name">Estado</span><span class="key">estadoUbicacion</span></div>
           <select class="nav" id="sel-estado-ubicacion" data-f="estadoUbicacion">
-            <option value="">—</option><option>En colección</option><option>En préstamo</option><option>En laboratorio</option><option>En campo</option><option>Baja</option>
+            <option value="">—</option><option>En recepción (pre-entrada)</option><option>En tránsito (entrada)</option><option>En colección (catalogado)</option><option>En préstamo</option><option>En laboratorio</option><option>En campo</option><option>Baja</option>
           </select>
         </div>
-        <div class="campo opc" id="campo-ubicacion-transito"><div class="lbl"><span class="name">Ubicación en tránsito</span><span class="key">ubicacionTransito</span></div><input class="nav" data-f="ubicacionTransito" placeholder="depósito, criterio de orden, posición…"></div>
-        <div class="campo opc" id="campo-ubicacion-coleccion"><div class="lbl"><span class="name">Ubicación en colección</span><span class="key">ubicacionColeccion</span></div><input class="nav" data-f="ubicacionColeccion" placeholder="gabinete, caja…"></div>
+        <div class="campo opc" id="campo-ubicacion-coleccion"><div class="lbl"><span class="name">Ubicación</span><span class="key">ubicacionColeccion</span></div><input class="nav" data-f="ubicacionColeccion" placeholder="depósito, gabinete, caja, posición…"></div>
         <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Comentarios de ubicación</span><span class="key">observacionesUbicacion</span></span></summary><textarea class="nav" data-f="observacionesUbicacion"></textarea></details></div>
       </div>
 
@@ -1313,7 +1312,7 @@
       <details class="subbloque-gest" id="sub-mover">
         <summary>Mover valores entre campos (corregir una importación) <button type="button" class="ayuda-btn" data-ayuda="ayuda-mover" aria-label="Ayuda" title="Ayuda">?</button></summary>
         <div class="ayuda-panel oculto" id="ayuda-mover">Copia el contenido de un campo a otro en los registros que elijas, para corregir una columna que quedó emparejada con el campo equivocado. Primero se cuenta cuántos registros cambiarían y solo después se aplica. Por defecto vacía el campo de origen y no pisa un destino que ya tenga valor; ambas opciones se pueden cambiar. Un zip de respaldo previo queda marcado por defecto. Más abajo hay una reparación específica para determinaciones que quedaron como secundarias.</div>
-        <p class="nota">Copia el contenido de un campo a otro en los registros que elijas. Sirve para corregir una columna que se emparejó con el campo equivocado. Por ejemplo, mover «Nombre de la colección» a «Ubicación en colección». Primero se muestra cuántos registros cambiarían y no se modifica nada hasta que lo confirmes. Las listas están en orden alfabético y tienen un buscador.</p>
+        <p class="nota">Copia el contenido de un campo a otro en los registros que elijas. Sirve para corregir una columna que se emparejó con el campo equivocado. Por ejemplo, mover «Nombre de la colección» a «Ubicación». Primero se muestra cuántos registros cambiarían y no se modifica nada hasta que lo confirmes. Las listas están en orden alfabético y tienen un buscador.</p>
         <div class="imp-fila-opc mv-fila"><div><label>Mover desde</label><div class="combo" id="mv-origen" data-tipo="mv" data-id="mv-origen" data-valor=""><button type="button" class="combo-btn">Elige un campo…</button></div></div><div><label>hacia</label><div class="combo" id="mv-destino" data-tipo="mv" data-id="mv-destino" data-valor=""><button type="button" class="combo-btn">Elige un campo…</button></div></div></div>
         <div class="imp-fila-opc"><label>Registros <select id="mv-alcance"></select></label></div>
         <div class="imp-fila-opc"><label><input type="checkbox" id="mv-vaciar" checked> Vaciar el campo de origen después de mover</label><label><input type="checkbox" id="mv-reemplazar"> Reemplazar el destino si ya tiene un valor</label><label><input type="checkbox" id="mv-respaldo" checked> Descargar un zip de respaldo antes</label></div>
@@ -1620,7 +1619,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.99";
+var APP_VERSION = "v0.9.100";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1925,7 +1924,6 @@ var DEF_CAMPOS = {
   fechaRecibido:"Fecha de recepción: día en que se recibió el material y los datos de terreno (etapa Recibido), antes de asignarle N.º de entrada. Se completa sola al importar datos desde Libreta de Campo; en otros casos se anota a mano.",
   observacionesRecepcion:"Cualquier dato de interés sobre cómo se recibió el material: estado en que llegó, quién lo entregó, qué venía junto a él.",
   fechaRecepcion:"Fecha de entrada: fecha en que el material pasó a Material en Tránsito, al asignarle su N.º de entrada.",
-  ubicacionTransito:"Dónde está el material mientras sigue en tránsito (etapa Ingresado): depósito, criterio de ordenamiento (taxonómico, por origen u otro) y posición. Es provisoria; la ubicación permanente se anota en Ubicación en colección una vez catalogado.",
   procedencia:"Modo en que el material llegó a la colección: colecta, donación, depósito, canje, etc.",
   destino:"Colección o uso al que se destina el material recibido.",
   condicionAccesion:"Estado general en que llegó el material al ingresar a la institución.",
@@ -1959,8 +1957,8 @@ var DEF_CAMPOS = {
   cantidadNoSexados:"Cantidad de individuos sin sexo determinado, por ejemplo ninfas o ejemplares dañados.",
   asociacionesBiologicas:"Relación del organismo con otros: hospedador, parásito, comensal, etc. DwC: associatedTaxa.",
   observacionesBiologicas:"Notas sobre el organismo: comportamiento, coloración, estado reproductivo, etc. DwC: organismRemarks.",
-  estadoUbicacion:"Situación actual del ejemplar: en colección, en préstamo, en laboratorio, en campo o baja. DwC: disposition.",
-  ubicacionColeccion:"Lugar físico del ejemplar dentro de la colección: gabinete, estante o caja.",
+  estadoUbicacion:"Situación actual del ejemplar: en recepción (pre-entrada), en tránsito (entrada), en colección (catalogado), en préstamo, en laboratorio, en campo o baja. Es independiente de la etapa de manejo, que se calcula sola desde los números. DwC: disposition.",
+  ubicacionColeccion:"Lugar físico actual del ejemplar. Su alcance depende del Estado: en recepción o en tránsito es provisoria (depósito, criterio de ordenamiento y posición); en colección (catalogado) es exacta y permanente (gabinete, estante o caja).",
   numeroBaja:"Número del documento o acta con que se dio de baja el ejemplar.",
   fechaBaja:"Fecha en que el ejemplar salió de la colección.",
   tipoBaja:"Motivo de la baja: donación, descarte, pérdida o intercambio.",
@@ -2419,7 +2417,7 @@ var STD_DEF = [
   {g:"Lugares", id:"localidadesVerbatim", nombre:"Localidades (verbatim)", desc:"Localidades tal como figuran en la etiqueta o la libreta, sin corregir. Se ofrecen para escribir más rápido las ya usadas.", campos:[["localidadVerbatim","Localidad (verbatim)"]]},
   {g:"Lugares", id:"estaciones", nombre:"Estaciones", desc:"Estaciones o puntos de muestreo. Sus sugerencias son distintas de las de las localidades.", campos:[["estacion","Estación"]]},
   {g:"Lugares", id:"divisiones", nombre:"Regiones, provincias y comunas", desc:"Divisiones administrativas escritas a mano (las de Chile se eligen de su lista propia; esta lista sirve para otros países o zonas).", campos:[["region","Región o zona"],["provincia","Provincia o zona"],["comuna","Comuna o zona"]]},
-  {g:"Lugares", id:"ubicaciones", nombre:"Ubicaciones en la colección", desc:"Gabinetes, cajas y otras ubicaciones físicas.", campos:[["ubicacionColeccion","Ubicación en colección"],["ubicacionTransito","Ubicación en tránsito"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"],["@submuestras.ubicacionAlmacenamiento","Ubicación de almacenamiento de submuestras"]]},
+  {g:"Lugares", id:"ubicaciones", nombre:"Ubicaciones", desc:"Depósitos, gabinetes, cajas y otras ubicaciones físicas, provisorias o definitivas.", campos:[["ubicacionColeccion","Ubicación"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"],["@submuestras.ubicacionAlmacenamiento","Ubicación de almacenamiento de submuestras"]]},
   {g:"Taxonomía", id:"taxones", nombre:"Nombres científicos", desc:"Nombres científicos de las determinaciones y nombres de referencia de terreno.", campos:[["taxon","Taxón (referencia de terreno)"],["@determinaciones.nombreCientifico","Nombre científico de la determinación"]]},
   {g:"Taxonomía", id:"phylum", nombre:"Phylum", desc:"Nombres de phylum usados en la clasificación.", campos:[["phylum","Phylum"]]},
   {g:"Taxonomía", id:"clase", nombre:"Clase", desc:"Nombres de clase usados en la clasificación.", campos:[["clase","Clase"]]},
@@ -3549,7 +3547,7 @@ function construirFicha(r){
     ["Asociaciones biológicas","asociacionesBiologicas"], ["Observaciones biológicas","observacionesBiologicas"]
   ], r);
 
-  var manejoCampos = fichaCampos([["Estado","estadoUbicacion"], ["Ubicación en tránsito","ubicacionTransito"], ["Ubicación en colección","ubicacionColeccion"], ["Comentarios de ubicación","observacionesUbicacion"]], r);
+  var manejoCampos = fichaCampos([["Estado","estadoUbicacion"], ["Ubicación","ubicacionColeccion"], ["Comentarios de ubicación","observacionesUbicacion"]], r);
   if(r.estadoUbicacion==="Baja"){
     manejoCampos += fichaCampos([
       ["Número de baja","numeroBaja"], ["Fecha de baja","fechaBaja"], ["Tipo de baja","tipoBaja"],
@@ -5376,6 +5374,20 @@ function etapaManejo(r){
   if(ok(r.numeroCampo)) return "recibido";
   return "";
 }
+var ESTADO_ALIAS={"en coleccion":"En colección (catalogado)","en transito":"En tránsito (entrada)","en recepcion":"En recepción (pre-entrada)"};
+function estadoCanon(v){ var t=String(v==null?"":v).trim(); return ESTADO_ALIAS[normTxt(t)]||t; }
+// v0.9.100: un solo campo Ubicación (ubicacionColeccion) y Estados con su etapa entre paréntesis. Idempotente: se aplica al cargar y tras cada importación.
+function migrarUbicEstado(){
+  registros.forEach(function(r){
+    if(r.estadoUbicacion){ var e=estadoCanon(r.estadoUbicacion); if(e!==r.estadoUbicacion) r.estadoUbicacion=e; }
+    if(r.ubicacionTransito!==undefined){
+      var t=String(r.ubicacionTransito||"").trim(), c=String(r.ubicacionColeccion||"").trim();
+      if(t && !c) r.ubicacionColeccion=t;
+      else if(t && c && normTxt(t)!==normTxt(c)) r.observacionesUbicacion=(r.observacionesUbicacion ? r.observacionesUbicacion+"\n" : "")+"Ubicación en tránsito anterior: "+t;
+      delete r.ubicacionTransito;
+    }
+  });
+}
 function etapaTexto(r){ if(!r) return ""; return ETAPAS[etapaManejo(r)||"sinnumero"].largo; }
 function iconoEtapa(n){   // círculo que se va llenando: 1/3, 2/3, completo
   var tr={"1":'<path d="M6 6V1.8A4.2 4.2 0 0 1 9.64 8.1Z" fill="currentColor"/>',"2":'<path d="M6 6V1.8A4.2 4.2 0 1 1 2.36 8.1Z" fill="currentColor"/>',"3":'<circle cx="6" cy="6" r="4.2" fill="currentColor"/>'}[n]||"";
@@ -5742,7 +5754,7 @@ function renderResumenDatos(){
   }
 }
 function refrescarPanelesRegistros(){
-  registrosVersion++; stdAutoProg();
+  migrarUbicEstado(); registrosVersion++; stdAutoProg();
   revisarCatalogoForm(); revisarNumerosForm(); pintarAvisoCatalogosRepetidos();
   programarAlertaPrestamos();
   if(typeof pintarSegAuto==="function") pintarSegAuto();
@@ -7044,7 +7056,7 @@ var SEG_VIRT=[
 var SEG_PLANT=[
   {id:"p-prep", nombre:"Preparación y Conservación incompleta", modo:"alguna", cond:[{k:"tipoColeccion",op:"vacio"},{k:"medioFijado",op:"vacio"},{k:"preparacion",op:"vacio"},{k:"condicionEjemplar",op:"vacio"}]},
   {id:"p-cat", nombre:"Sin número de catálogo", modo:"todas", cond:[{k:"catalogo",op:"vacio"}]},
-  {id:"p-ubic", nombre:"En colección sin ubicación", modo:"todas", cond:[{k:"estadoUbicacion",op:"es",v:"En colección"},{k:"ubicacionColeccion",op:"vacio"}]},
+  {id:"p-ubic", nombre:"En colección sin ubicación", modo:"todas", cond:[{k:"estadoUbicacion",op:"es",v:"En colección (catalogado)"},{k:"ubicacionColeccion",op:"vacio"}]},
   {id:"p-sindet", nombre:"Sin determinación", modo:"todas", cond:[{k:"@sinDeterminacion",op:"si"}]},
   {id:"p-esp", nombre:"No determinado a nivel de especie", modo:"todas", cond:[{k:"@noEspecie",op:"si"}]},
   {id:"p-detor", nombre:"Sin determinador registrado", modo:"todas", cond:[{k:"@sinDeterminador",op:"si"}]},
@@ -7131,13 +7143,14 @@ function segCumple(r, c){
   if(k==="@prestamoVigente") return prestamoVigente(r);
   if(k==="@sinPrestamoVigente") return !prestamoVigente(r);
   if(k==="@diasEstado"){ var n=segDiasEstado(r); return n!==null && n>(parseFloat(c.v)||0); }
-  var v=r[k]==null ? "" : String(r[k]).trim();
+  var v=r[k]==null ? "" : String(r[k]).trim(), cv=c.v;
+  if(k==="estadoUbicacion"){ v=estadoCanon(v); cv=estadoCanon(cv); }
   switch(c.op){
     case "vacio": return v==="";
     case "novacio": return v!=="";
-    case "es": return normTxt(v)===normTxt(c.v);
-    case "noes": return normTxt(v)!==normTxt(c.v);
-    case "contiene": return normTxt(v).indexOf(normTxt(c.v))>-1;
+    case "es": return normTxt(v)===normTxt(cv);
+    case "noes": return normTxt(v)!==normTxt(cv);
+    case "contiene": return normTxt(v).indexOf(normTxt(cv))>-1;
   }
   return false;
 }
@@ -7227,7 +7240,7 @@ function segTextoCond(c){
 function segResumenRegla(rg){ return (rg.cond||[]).map(segTextoCond).join(rg.modo==="alguna" ? " o " : " y "); }
 function segCsv(rg){
   var ids=segIndice().porRegla[rg.id]||[];
-  var filas=[["N.º de catálogo","N.º de campo","Nombre","Estado","Ubicación en colección","Regla"]];
+  var filas=[["N.º de catálogo","N.º de campo","Nombre","Estado","Ubicación","Regla"]];
   ids.forEach(function(id){ var r=registroPorId(id); if(r) filas.push([construirCatalogoCompleto(r)||"", r.numeroCampo||"", nombreVigenteReg(r)||r.taxon||"", r.estadoUbicacion||"", r.ubicacionColeccion||"", rg.nombre]); });
   descargarBlob(new Blob([csvDeFilas(filas)], {type:"text/csv;charset=utf-8"}), nombreDescarga("Seguimiento", nombreSeguro(rg.nombre), "csv"));
 }
@@ -8379,7 +8392,7 @@ var CONS_CAMPOS = [
   campoSimple("publicacionOriginal","Publicación original","Depósito"),
   CF("pdf","PDF de publicaciones (nombre)","Depósito",false,function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }); }),
   campoSimple("asociacionesBiologicas","Asociaciones biológicas","Depósito"), campoSimple("observacionesBiologicas","Observaciones biológicas","Depósito"),
-  campoSimple("ubicacionTransito","Ubicación en tránsito","Manejo"), campoSimple("ubicacionColeccion","Ubicación en colección","Manejo"), campoSimple("tipoBaja","Tipo de baja","Manejo"),
+  campoSimple("ubicacionColeccion","Ubicación","Manejo"), campoSimple("tipoBaja","Tipo de baja","Manejo"),
   campoSimple("destinatario","Destinatario de la baja","Manejo"), campoSimple("numeroBaja","N.º de baja","Manejo"),
   CF("solicitante","Solicitante de préstamo","Manejo",false,function(r){ return listaVals(r,"prestamos","solicitante"); }),
   CF("evento","Evento de uso","Manejo",false,function(r){ return listaVals(r,"usos","evento"); }),
@@ -8682,7 +8695,7 @@ var CONS_COLUMNAS = [
   ["Estación",function(r){ return r.estacion; }], ["Taxón (referencia)",function(r){ return r.taxon; }],
   ["Institución",function(r){ return r.institucionAcronimo; }], ["Colección",function(r){ return r.coleccionAcronimo; }],
   ["Tipo de colección",function(r){ return r.tipoColeccion; }], ["Conservación",function(r){ return r.conservacion; }],
-  ["Estado",function(r){ return r.estadoUbicacion; }], ["Ubicación en tránsito",function(r){ return r.ubicacionTransito; }], ["Ubicación en colección",function(r){ return r.ubicacionColeccion; }],
+  ["Estado",function(r){ return r.estadoUbicacion; }], ["Ubicación",function(r){ return r.ubicacionColeccion; }],
   ["Tipo nomenclatural",function(r){ return r.tipoNomenclatural; }],
   ["Nombre de la colección",lineaColeccionUnica], ["Institución (nombre completo)",function(r){ return r.institucionNombreCompleto || (r.institucionAcronimo==="MNHNCL" ? NOMBRE_MNHNCL : ""); }],
   ["Medio de fijado",function(r){ return r.medioFijado; }], ["Preparación",function(r){ return r.preparacion; }], ["Condición del ejemplar",function(r){ return r.condicionEjemplar; }],
@@ -8719,7 +8732,7 @@ var EXP_GRUPOS=[
   ["Ejemplares y sexo",["N.º de ejemplares","Machos","Hembras","Juveniles","Sin sexo","Sexo (resumen)"]],
   ["Localidad y coordenadas",["Localidad","Localidad (verbatim)","Región","Provincia","Comuna","Latitud","Longitud","Altitud/profundidad (m)","Coordenadas originales"]],
   ["Colecta",["Fecha de colecta","Hora de colecta","Colector","Hábitat","Microhábitat","Método de recolección","Estación"]],
-  ["Colección y preparación",["Institución","Colección","Nombre de la colección","Institución (nombre completo)","Tipo de colección","Conservación","Medio de fijado","Preparación","Condición del ejemplar","Estado","Ubicación en tránsito","Ubicación en colección"]],
+  ["Colección y preparación",["Institución","Colección","Nombre de la colección","Institución (nombre completo)","Tipo de colección","Conservación","Medio de fijado","Preparación","Condición del ejemplar","Estado","Ubicación"]],
   ["Recepción y catalogación",["Fecha de recepción (terreno)","Observaciones de recepción","Fecha de entrada","Procedencia","Destino","Condición de la accesión","Tipo de accesión","Legatario","Proyecto / iniciativa de origen","Fecha de catalogación","Catalogador"]],
   ["Notas y archivos",["Observaciones","Observaciones biológicas","Asociaciones biológicas","Publicación original","N.º de fotos","PDF de publicaciones","Motivo de PDF"]]
 ];
@@ -8735,7 +8748,11 @@ function expEsVacio(n){ return /^@v\d+$/.test(n); }
 function expNombre(n){ return expEsVacio(n) ? (expEnc[n] || "columna vacía") : n; }
 // Ordena según lo guardado; los campos que la app agregó después van al final (activos en el estado actual, apagados en las plantillas).
 // Las columnas vacías (@v1, @v2…) se conservan con su encabezado opcional.
+var EXP_NOMBRES_ANTIGUOS={"Ubicación en colección":"Ubicación","Ubicación en tránsito":"Ubicación","Observaciones de ingreso":"Observaciones de entrada"};
 function expNormalizar(orden, off, nuevosActivos, enc){
+  var ren=function(n){ return EXP_NOMBRES_ANTIGUOS[n]||n; };
+  orden=(orden||[]).map(ren); off=(off||[]).map(ren);
+  if(enc){ var e2={}; Object.keys(enc).forEach(function(k){ e2[ren(k)]=enc[k]; }); enc=e2; }
   var t=expTodos(), o=[], visto={}, of={}, ec={};
   (orden||[]).forEach(function(n){ if((t.indexOf(n)>-1 || expEsVacio(n)) && !visto[n]){ visto[n]=1; o.push(n); if(expEsVacio(n) && enc && enc[n]) ec[n]=String(enc[n]); } });
   (off||[]).forEach(function(n){ if(visto[n] && !expEsVacio(n)) of[n]=1; });
@@ -9137,7 +9154,7 @@ var DWC_COLUMNAS = [
   ["lifeStage",estadoDesarrolloDwc],
   ["preparations",preparacionesDwc],
   ["preparationRemarks",observacionPreparacion],
-  ["disposition",function(r){ return r.estadoUbicacion; }],
+  ["disposition",function(r){ return String(r.estadoUbicacion||"").replace(/\s*\([^)]*\)\s*$/,""); }],
   ["associatedTaxa",function(r){ return r.asociacionesBiologicas; }],
   ["organismRemarks",function(r){ return r.observacionesBiologicas; }],
   ["occurrenceRemarks",function(r){ return r.observaciones; }],
@@ -9506,7 +9523,7 @@ var IMP_SINONIMOS = {
   institucionAcronimo:["institutioncode","institucion","acronimoinstitucion"],
   coleccionAcronimo:["collectioncode","coleccion","codigocoleccion"],
   coleccionNombre:["nombrecoleccion","nombredelacoleccion"],
-  ubicacionColeccion:["ubicacion","ubicaciondelejemplar","ubicacionencoleccion","caja","gabinete","estante"],
+  ubicacionColeccion:["ubicacion","ubicaciondelejemplar","ubicacionencoleccion","ubicacionentransito","caja","gabinete","estante"],
   phylum:["phylum","filo"], clase:["class","clase"], orden:["order","orden"], familia:["family","familia"], genero:["genus","genero"],
   "@nombre":["scientificname","nombrecientifico","especie","taxon","nombre"],
   "@determinador":["identifiedby","determinador","determinadopor"], "@fechaDet":["dateidentified","fechadeterminacion","fechadeterminacion"],
@@ -9633,7 +9650,7 @@ function impHora(v){ var m=/^(\d{1,2})[:.hH](\d{2})/.exec(String(v).trim()); if(
 
 // ---------- construir los registros ----------
 function impValorLista(m,o,raw){
-  var d=m.opts.valores[raw]||impCoincidencia(raw,o);
+  var d=m.opts.valores[raw]||impCoincidencia(ESTADO_ALIAS[normTxt(String(raw))]||raw,o);
   if(d.modo==="opt") return d.val; if(d.modo==="vacio") return ""; if(d.modo==="texto") return d.val||""; return raw;
 }
 function impConstruir(){
@@ -11486,7 +11503,7 @@ function restaurarSesionMantenida(){
   var c=document.getElementById("chk-mantener-sesion"); if(c){ c.checked=true; guardarSesionMantenida(); }
 }
 cargarDesdeIndexedDB(function(lista){
-  registros = lista || [];
+  registros = lista || []; migrarUbicEstado();
   registros.forEach(function(r){ LISTAS_REGISTRO.forEach(function(k){ if(!r[k]) r[k]=[]; }); });
   pintarSugerenciasOperador();
   if(registros.length) consultarRegistro(registros[0].id); else iniciarNuevoBorrador();

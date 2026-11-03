@@ -489,12 +489,13 @@
   button.btn.principal-fila{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
   .respaldo-linea{font-weight:600;} .respaldo-alerta{color:#a1402a;}
   .ico-arch{margin-left:6px;font-size:15px;white-space:nowrap;cursor:help;}
-  /* v0.9.95: etapa de manejo (calculada desde los números). El ícono de llenado ○ ◐ ● lleva el significado; el color lo refuerza. */
+  /* v0.9.95: etapa de manejo (calculada desde los números). El ícono de llenado círculo que se llena (1/3, 2/3, completo) lleva el significado; el color lo refuerza. */
   .chip-etapa{display:inline-block;margin-left:8px;padding:1px 9px 1px 7px;border-radius:999px;font-family:var(--sans);font-size:12px;font-weight:700;line-height:1.5;letter-spacing:.2px;white-space:nowrap;cursor:help;vertical-align:1px;border:1.5px solid currentColor;}
   .chip-etapa.et-recibido{color:#fff;background:#b3261e;border-color:#b3261e;}
   .chip-etapa.et-ingresado{color:#3d2a00;background:#f2b134;border-color:#b87d0a;}
   .chip-etapa.et-catalogado{color:#fff;background:#1b7a43;border-color:#1b7a43;}
   .chip-etapa.grande{font-size:14px;padding:2px 12px 2px 9px;margin-left:0;}
+  .sub-etapa{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;margin:16px 0 8px;}
   .ficha-linea-etapa{text-align:center;margin:6px 0 8px;}
   .barra-activo .chip-etapa{margin-left:10px;}
   button.btn.peligro{background:#fff;border-color:#a3261c;color:#a3261c;}
@@ -959,14 +960,12 @@
 
     <div class="bloque">
       <h2>Recepción y datos de terreno</h2>
-      <div class="subbloque">
-        <p class="subtitulo-mini" style="margin-top:0;">Recepción del material</p>
-        <div class="grid">
-          <div class="campo opc"><div class="lbl"><span class="name">Fecha de recepción</span><span class="key">fechaRecibido</span></div><input type="date" class="nav" data-f="fechaRecibido"></div>
-          <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de recepción</span><span class="key">observacionesRecepcion</span></span></summary><textarea class="nav" data-f="observacionesRecepcion"></textarea></details></div>
-        </div>
+      <p class="subtitulo-mini sub-etapa" style="margin-top:2px;">Recepción del material</p>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr));">
+        <div class="campo opc"><div class="lbl"><span class="name">Fecha de recepción</span><span class="key">fechaRecibido</span></div><input type="date" class="nav" data-f="fechaRecibido"></div>
+        <div class="campo opc"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de recepción</span><span class="key">observacionesRecepcion</span></span></summary><textarea class="nav" data-f="observacionesRecepcion"></textarea></details></div>
       </div>
-      <p class="subtitulo-mini">Datos de terreno</p>
+      <p class="subtitulo-mini sub-etapa">Datos de terreno</p>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Número de campo</span><span class="key">numeroCampo</span></div><input class="nav" data-f="numeroCampo"><p class="aviso-info oculto" id="campo-uso"></p></div>
         <div class="campo opc"><div class="lbl"><span class="name">Taxón (referencia de terreno)</span><span class="key">taxon</span></div><input class="nav" data-f="taxon"></div>
@@ -1028,7 +1027,7 @@
           <select class="nav" data-f="tipoAccesion"><option value="">—</option><option>Colecta propia</option><option>Donación</option><option>Compra</option><option>Intercambio</option><option>Depósito</option></select>
         </div>
 
-        <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de ingreso</span><span class="key">observacionesIngreso</span></span></summary><textarea class="nav" data-f="observacionesIngreso"></textarea></details></div>
+        <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de entrada</span><span class="key">observacionesIngreso</span></span></summary><textarea class="nav" data-f="observacionesIngreso"></textarea></details></div>
       </div>
       <div class="docs-ingreso"><button type="button" class="btn secundario small" id="btn-docs-ingreso">📎 Documentos del ingreso</button><span class="nota" id="docs-ingreso-resumen"></span></div>
     </div>
@@ -1619,7 +1618,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.96";
+var APP_VERSION = "v0.9.97";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -3517,7 +3516,7 @@ function construirFicha(r){
     ["Número de entrada","numeroAccesion"], ["Fecha de entrada","fechaRecepcion"],
     ["Procedencia","procedencia"], ["Destino","destino"], ["Condición de la accesión","condicionAccesion"],
     ["Legatario","legatario"], ["Proyecto / iniciativa de origen","proyectoOrigen"], ["Tipo de accesión","tipoAccesion"],
-    ["Observaciones de ingreso","observacionesIngreso"]
+    ["Observaciones de entrada","observacionesIngreso"]
   ], r);
 
   var preparacionCampos = fichaCampos([
@@ -5360,9 +5359,9 @@ function pintarRespaldo(){
 // Recibido: tiene N.º de campo y nada más avanzado. Ingresado (Material en Tránsito): tiene N.º de entrada.
 // Catalogado: tiene N.º de catálogo y colección (el acrónimo de colección es parte del número). Se muestra la etapa más avanzada alcanzada.
 var ETAPAS = {
-  recibido:   {n:"Recibido",   largo:"Recibido",                 ic:"○", t:"Recibido: material tal como llega de terreno, con N.º de campo y solo su información de terreno."},
-  ingresado:  {n:"Ingresado",  largo:"Ingresado (en tránsito)",  ic:"◐", t:"Ingresado (Material en Tránsito): tiene N.º de entrada y preparación con respaldo de planillas y formularios. Su ubicación es provisoria."},
-  catalogado: {n:"Catalogado", largo:"Catalogado",               ic:"●", t:"Catalogado: asignado a una colección, con N.º de catálogo y ubicación permanente."}
+  recibido:   {n:"Recibido",   largo:"Recibido",                 ic:"1", t:"Recibido: material tal como llega de terreno, con N.º de campo y solo su información de terreno."},
+  ingresado:  {n:"Ingresado",  largo:"Ingresado (en tránsito)",  ic:"2", t:"Ingresado (Material en Tránsito): tiene N.º de entrada y preparación con respaldo de planillas y formularios. Su ubicación es provisoria."},
+  catalogado: {n:"Catalogado", largo:"Catalogado",               ic:"3", t:"Catalogado: asignado a una colección, con N.º de catálogo y ubicación permanente."}
 };
 var ETAPAS_ORDEN = ["recibido","ingresado","catalogado"];
 function etapaManejo(r){
@@ -5374,10 +5373,14 @@ function etapaManejo(r){
   return "";
 }
 function etapaTexto(r){ var e=etapaManejo(r); return e ? ETAPAS[e].largo : ""; }
+function iconoEtapa(n){   // círculo que se va llenando: 1/3, 2/3, completo
+  var tr={"1":'<path d="M6 6V1.8A4.2 4.2 0 0 1 9.64 8.1Z" fill="currentColor"/>',"2":'<path d="M6 6V1.8A4.2 4.2 0 1 1 2.36 8.1Z" fill="currentColor"/>',"3":'<circle cx="6" cy="6" r="4.2" fill="currentColor"/>'}[n]||"";
+  return '<svg class="ic-etapa" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" style="vertical-align:-1px"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.3"/>'+tr+'</svg>';
+}
 function chipEtapa(r, grande){
   var e=etapaManejo(r); if(!e) return "";
   var d=ETAPAS[e];
-  return '<span class="chip-etapa et-'+e+(grande?' grande':'')+'" title="'+escapeHtml(d.t)+'">'+d.ic+' '+escapeHtml(grande?d.largo:d.n)+'</span>';
+  return '<span class="chip-etapa et-'+e+(grande?' grande':'')+'" title="'+escapeHtml(d.t)+'">'+iconoEtapa(d.ic)+' '+escapeHtml(grande?d.largo:d.n)+'</span>';
 }
 function iconosArchivos(reg){
   var lleno=function(a){ return (a||[]).filter(function(x){ return x && (typeof x==="string" ? x : (x.archivo||x.ruta)); }).length; };
@@ -8350,7 +8353,7 @@ var CONS_CAMPOS = [
   campoSimple("metodoColecta","Método de recolección","Terreno"), campoSimple("estacion","Estación","Terreno"),
   campoSimple("altitud_m","Altitud/profundidad (m)","Terreno"), campoSimple("coordenadasOriginales","Coordenadas originales","Terreno"),
   campoSimple("observacionesLocalidad","Observaciones de la localidad","Terreno"), campoSimple("observacionesGeoref","Observaciones de georreferenciación","Terreno"),
-  campoSimple("observacionesEvento","Observaciones del evento de colecta","Terreno"), campoSimple("observacionesRecepcion","Observaciones de recepción","Terreno"), campoSimple("observacionesIngreso","Observaciones de ingreso","Entrada"),
+  campoSimple("observacionesEvento","Observaciones del evento de colecta","Terreno"), campoSimple("observacionesRecepcion","Observaciones de recepción","Terreno"), campoSimple("observacionesIngreso","Observaciones de entrada","Entrada"),
   campoSimple("observacionesPreparacion","Observaciones de preparación","Preparación"), campoSimple("observacionesCondicion","Comentarios de condición del ejemplar","Preparación"),
   campoSimple("observacionesTipo","Comentarios del tipo nomenclatural","Depósito"), campoSimple("observacionesCatalogacion","Observaciones del catalogador","Depósito"),
   campoSimple("observacionesUbicacion","Comentarios de ubicación","Manejo"),
@@ -8686,7 +8689,7 @@ var CONS_COLUMNAS = [
   ["Fecha de catalogación",function(r){ return r.fechaCatalogacion; }], ["Catalogador",function(r){ return r.catalogador; }],
   ["Observaciones",function(r){ return r.observaciones; }], ["Observaciones biológicas",function(r){ return r.observacionesBiologicas; }],
   ["Observaciones de la localidad",function(r){ return r.observacionesLocalidad; }], ["Observaciones de georreferenciación",function(r){ return r.observacionesGeoref; }],
-  ["Observaciones del evento de colecta",function(r){ return r.observacionesEvento; }], ["Observaciones de ingreso",function(r){ return r.observacionesIngreso; }],
+  ["Observaciones del evento de colecta",function(r){ return r.observacionesEvento; }], ["Observaciones de entrada",function(r){ return r.observacionesIngreso; }],
   ["Observaciones de preparación",function(r){ return r.observacionesPreparacion; }], ["Comentarios de condición del ejemplar",function(r){ return r.observacionesCondicion; }],
   ["Comentarios del tipo nomenclatural",function(r){ return r.observacionesTipo; }], ["Observaciones del catalogador",function(r){ return r.observacionesCatalogacion; }],
   ["Comentarios de ubicación",function(r){ return r.observacionesUbicacion; }],
@@ -9512,7 +9515,7 @@ var IMP_SINONIMOS = {
   legatario:["legatee","legatario"], metodoColecta:["samplingprotocol","metodocolecta","metododerecoleccion"], habitat:["habitat"],
   tipoColeccion:["preparations","tipocoleccion","preparaciones"], asociacionesBiologicas:["associatedtaxa","asociacionesbiologicas"],
   observacionesBiologicas:["organismremarks","observacionesbiologicas"], observacionesEvento:["eventremarks","observacionesdelevento"], observacionesLocalidad:["locationremarks","observacionesdelalocalidad"],
-  observacionesGeoref:["georeferenceremarks","observacionesdegeorreferenciacion"], observacionesPreparacion:["preparationremarks","observacionesdepreparacion"], observacionesIngreso:["accessionremarks","observacionesdeingreso"],
+  observacionesGeoref:["georeferenceremarks","observacionesdegeorreferenciacion"], observacionesPreparacion:["preparationremarks","observacionesdepreparacion"], observacionesIngreso:["accessionremarks","observacionesdeentrada","observacionesdeingreso"],
   observacionesCondicion:["conditionremarks"], "@comentDet":["identificationremarks","comentariosdeterminacion","comentariosdeladeterminacion"], observaciones:["occurrenceremarks","observaciones","notas","remarks"],
   procedencia:["basisofrecord","procedencia"], altitud_m:["altitud","elevation","verbatimelevation","altitudm","minimumelevationinmeters","profundidad","depth","profundidadmaxima","profundidadminima","minimumdepthinmeters","maximumdepthinmeters"],
   fechaRecepcion:["fechaentrada","fechadeentrada","fechaingreso","fecharecepcion","fechadeingreso"], fechaRecibido:["fecharecepcionterreno","fecharecibido","fechaderecibido"], observacionesRecepcion:["observacionesderecepcion","observacionesrecepcion"], horaColecta:["eventtime","hora","horacolecta"]

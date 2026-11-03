@@ -489,6 +489,14 @@
   button.btn.principal-fila{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700;}
   .respaldo-linea{font-weight:600;} .respaldo-alerta{color:#a1402a;}
   .ico-arch{margin-left:6px;font-size:15px;white-space:nowrap;cursor:help;}
+  /* v0.9.95: etapa de manejo (calculada desde los números). El ícono de llenado ○ ◐ ● lleva el significado; el color lo refuerza. */
+  .chip-etapa{display:inline-block;margin-left:8px;padding:1px 9px 1px 7px;border-radius:999px;font-family:var(--sans);font-size:12px;font-weight:700;line-height:1.5;letter-spacing:.2px;white-space:nowrap;cursor:help;vertical-align:1px;border:1.5px solid currentColor;}
+  .chip-etapa.et-recibido{color:#5b6573;background:#fff;}
+  .chip-etapa.et-ingresado{color:#a14a14;background:#f8e6d6;}
+  .chip-etapa.et-catalogado{color:#fff;background:#1f6f6b;border-color:#1f6f6b;}
+  .chip-etapa.grande{font-size:14px;padding:2px 12px 2px 9px;margin-left:0;}
+  .ficha-linea-etapa{text-align:center;margin:6px 0 8px;}
+  .barra-activo .chip-etapa{margin-left:10px;}
   button.btn.peligro{background:#fff;border-color:#a3261c;color:#a3261c;}
   button.btn.peligro:disabled{opacity:.5;cursor:default;}
   .btn-borrar-compacto{background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;opacity:.7;}
@@ -704,7 +712,7 @@
   .dialog-mapa-dist{border:none;border-radius:14px;padding:0;width:97vw;max-width:1680px;height:92vh;max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden;}
   .dialog-mapa-dist::backdrop{background:rgba(20,26,22,.6);}
   .md-caja{display:flex;flex-direction:column;height:100%;background:var(--paper);}
-  .md-cab{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--paper-2);} .md-cab strong{font-family:var(--serif);font-size:19px;} .md-sub{font-size:13px;color:var(--ink-soft);flex:1;}
+  .md-cab{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--paper-2);} .md-cab strong{font-family:var(--serif);font-size:19px;} .md-sub{font-size:13px;color:var(--ink-soft);flex:1;} .md-descargar{white-space:nowrap;} .md-descargar:disabled{opacity:.6;cursor:wait;}
   .md-cuerpo{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 380px;}
   .md-mapa{position:relative;overflow:hidden;background:#1d2a33;touch-action:none;cursor:grab;min-height:300px;}
   .md-lienzo{position:absolute;inset:0;} .md-lienzo img{position:absolute;width:256px;height:256px;max-width:none;user-select:none;-webkit-user-drag:none;}
@@ -751,6 +759,8 @@
   .coord-aviso.ok{color:#1d5a2c;} .coord-aviso.aviso{color:#6b4b00;}
   .aviso-dup{grid-column:1/-1;margin:2px 0 0;font-size:13px;color:#a3261c;font-weight:600;}
   .aviso-dup button{margin-left:8px;font-weight:400;}
+  .aviso-info{margin:4px 0 0;font-size:12.5px;line-height:1.4;color:#6b4a00;background:#fff7d6;border:1px solid #d9b83a;border-radius:6px;padding:4px 8px;}
+  .aviso-info button{margin-left:6px;font-weight:400;}
   #aviso-cat-dup{border:1px solid #a3261c;background:#fbeceb;color:#7d1a12;border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:13.5px;}
   #pend-tabla table,#cb-tabla table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
   .fecha-ctl{display:flex;flex-wrap:wrap;gap:4px;align-items:stretch;position:relative;width:100%;}
@@ -950,7 +960,7 @@
     <div class="bloque">
       <h2>Datos de terreno</h2>
       <div class="grid">
-        <div class="campo opc"><div class="lbl"><span class="name">Número de campo</span><span class="key">numeroCampo</span></div><input class="nav" data-f="numeroCampo"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Número de campo</span><span class="key">numeroCampo</span></div><input class="nav" data-f="numeroCampo"><p class="aviso-info oculto" id="campo-uso"></p></div>
         <div class="campo opc"><div class="lbl"><span class="name">Taxón (referencia de terreno)</span><span class="key">taxon</span></div><input class="nav" data-f="taxon"></div>
         <div class="campo req"><div class="lbl"><span class="name">Localidad (verbatim)</span><span class="key">localidadVerbatim</span></div><input class="nav" data-f="localidadVerbatim"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Localidad</span><span class="key">localidad</span></div><input class="nav" data-f="localidad"></div>
@@ -993,8 +1003,9 @@
     <div class="bloque">
       <h2>Recepción e ingreso</h2>
       <div class="grid">
-        <div class="campo opc"><div class="lbl"><span class="name">Número de entrada</span><span class="key">numeroAccesion</span></div><input class="nav" data-f="numeroAccesion"></div>
-        <div class="campo opc"><div class="lbl"><span class="name">Fecha de recepción</span><span class="key">fechaRecepcion</span></div><input type="date" class="nav" data-f="fechaRecepcion"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Fecha de recibido</span><span class="key">fechaRecibido</span></div><input type="date" class="nav" data-f="fechaRecibido"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Número de entrada</span><span class="key">numeroAccesion</span></div><input class="nav" data-f="numeroAccesion"><p class="aviso-info oculto" id="entrada-uso"></p></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Fecha de ingreso</span><span class="key">fechaRecepcion</span></div><input type="date" class="nav" data-f="fechaRecepcion"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Procedencia</span><span class="key">procedencia</span></div>
           <select class="nav" data-f="procedencia"><option value="">—</option><option>Colecta</option><option>Donación</option><option>Depósito</option><option>Canje</option><option>Transferencia</option><option>Compra</option><option>Incautación</option><option>Rescate</option><option>Devolución</option><option>Desconocido</option></select>
         </div>
@@ -1183,6 +1194,7 @@
             <option value="">—</option><option>En colección</option><option>En préstamo</option><option>En laboratorio</option><option>En campo</option><option>Baja</option>
           </select>
         </div>
+        <div class="campo opc" id="campo-ubicacion-transito"><div class="lbl"><span class="name">Ubicación en tránsito</span><span class="key">ubicacionTransito</span></div><input class="nav" data-f="ubicacionTransito" placeholder="depósito, criterio de orden, posición…"></div>
         <div class="campo opc" id="campo-ubicacion-coleccion"><div class="lbl"><span class="name">Ubicación en colección</span><span class="key">ubicacionColeccion</span></div><input class="nav" data-f="ubicacionColeccion" placeholder="gabinete, caja…"></div>
         <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Comentarios de ubicación</span><span class="key">observacionesUbicacion</span></span></summary><textarea class="nav" data-f="observacionesUbicacion"></textarea></details></div>
       </div>
@@ -1379,7 +1391,7 @@
         <div class="cons-esq-cuerpo">
       <div class="grid">
           <div class="campo opc"><div class="lbl"><span class="name">Agrupar por</span></div>
-            <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option><option value="sesionEdicion">Sesión de edición</option></select>
+            <select class="nav" id="sel-agrupar-datos"><option value="coleccion">Colección</option><option value="sesion">Sesión de ingreso</option><option value="sesionEdicion">Sesión de edición</option><option value="etapa">Etapa de manejo</option></select>
           </div>
           <div class="campo opc"><div class="lbl"><span class="name">Filtrar por colección</span></div>
             <select class="nav" id="sel-filtro-coleccion"><option value="">Todas</option></select>
@@ -1600,7 +1612,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.94";
+var APP_VERSION = "v0.9.95";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1902,7 +1914,9 @@ var DEF_CAMPOS = {
   metodoColecta:"Técnica usada para obtener el material: colecta manual, trampa de caída, rastra, red, buceo, etc. DwC: samplingProtocol.",
   estacion:"Código o nombre de la estación de muestreo, por ejemplo de un crucero o de un proyecto.",
   numeroAccesion:"Número que identifica el ingreso (el lote recibido) a la institución. Varios ejemplares pueden compartir el mismo número de entrada. Con él se agrupan los documentos del ingreso.",
-  fechaRecepcion:"Fecha en que la institución recibió el material.",
+  fechaRecibido:"Fecha en que se recibió el material de terreno (etapa Recibido), antes de asignarle N.º de entrada.",
+  fechaRecepcion:"Fecha de ingreso: fecha en que el material pasó a Material en Tránsito, al asignarle su N.º de entrada.",
+  ubicacionTransito:"Dónde está el material mientras sigue en tránsito (etapa Ingresado): depósito, criterio de ordenamiento (taxonómico, por origen u otro) y posición. Es provisoria; la ubicación permanente se anota en Ubicación en colección una vez catalogado.",
   procedencia:"Modo en que el material llegó a la colección: colecta, donación, depósito, canje, etc.",
   destino:"Colección o uso al que se destina el material recibido.",
   condicionAccesion:"Estado general en que llegó el material al ingresar a la institución.",
@@ -2262,6 +2276,45 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   input.addEventListener("change", function(){ guardarSug(campo, input.value.trim()); });
 });
 
+// ---------- sugerencias de nombres de personas: los últimos usados van primero (v0.9.95) ----------
+// Se recuerdan por campo (colector, determinador, fotógrafo…) y en conjunto; es una preferencia de este navegador. Sin historial propio
+// se usa el orden de los registros modificados más recientemente. El resto de la lista sigue en su orden habitual.
+var PER_REC_CLAVE="libroCatalogo_perReciente";
+function perLeer(){ try{ var o=JSON.parse(localStorage.getItem(PER_REC_CLAVE)||"{}"); return {g:Array.isArray(o.g)?o.g:[], c:(o.c&&typeof o.c==="object")?o.c:{}}; }catch(e){ return {g:[],c:{}}; } }
+function perClaveCampo(inp){ var dk=inp.getAttribute("data-key"), c=dk ? inp.closest("[id^='lista-']") : null; return dk ? (c ? c.id.slice(6)+"."+dk : dk) : (inp.getAttribute("data-f")||""); }
+function perRegistrarUso(campo, valor){
+  var partes=stdPartes("personas", valor); if(!partes.length) return;
+  var o=perLeer(), a=Array.isArray(o.c[campo]) ? o.c[campo] : [];
+  partes.slice().reverse().forEach(function(p){   // el primero escrito queda como el más reciente
+    var k=stdNorm(p);
+    o.g=o.g.filter(function(x){ return stdNorm(x)!==k; }); o.g.unshift(p);
+    a=a.filter(function(x){ return stdNorm(x)!==k; }); a.unshift(p);
+  });
+  o.g=o.g.slice(0,60); o.c[campo]=a.slice(0,30);
+  try{ localStorage.setItem(PER_REC_CLAVE, JSON.stringify(o)); }catch(e){}
+}
+var perRegCache={v:-1, n:-1, lista:[]};
+function perDesdeRegistros(){   // respaldo: nombres de los registros tocados más recientemente
+  if(perRegCache.v===registrosVersion && perRegCache.n===registros.length) return perRegCache.lista;
+  var d=stdDef("personas"), vistos=Object.create(null), out=[];
+  registros.slice().sort(function(a,b){ return String(b.modificadoEn||b.creadoEn||"").localeCompare(String(a.modificadoEn||a.creadoEn||"")); }).slice(0,300).forEach(function(r){
+    d.campos.forEach(function(c){ stdValoresReg(r,c[0]).forEach(function(raw){ stdPartes("personas",raw).forEach(function(p){ var k=stdNorm(p); if(k && !vistos[k]){ vistos[k]=1; out.push(p); } }); }); });
+  });
+  perRegCache={v:registrosVersion, n:registros.length, lista:out.slice(0,80)}; return perRegCache.lista;
+}
+function perReordenar(lista, campo){
+  var o=perLeer(), orden=(o.c[campo]||[]).concat(o.g);
+  if(orden.length<8) orden=orden.concat(perDesdeRegistros());
+  var mapa=Object.create(null); lista.forEach(function(v){ var k=stdNorm(v); if(!(k in mapa)) mapa[k]=v; });
+  var salida=[], usados=Object.create(null);
+  orden.forEach(function(x){ var k=stdNorm(x); if(k in mapa && !usados[k]){ usados[k]=1; salida.push(mapa[k]); } });
+  lista.forEach(function(v){ var k=stdNorm(v); if(!usados[k]){ usados[k]=1; salida.push(v); } });
+  return salida;
+}
+document.addEventListener("change", function(e){
+  var t=e.target; if(!t || t.tagName!=="INPUT" || typeof editando==="undefined" || !editando) return;
+  if(stdListaDe(t)==="personas") perRegistrarUso(perClaveCampo(t), t.value);
+}, true);
 // ---------- sugerencias propias: reemplazan el desplegable nativo de los datalist, alineadas a la izquierda bajo el campo ----------
 (function(){
   var panel=null, activo=null, items=[], sel=-1, ignorar=false;
@@ -2269,6 +2322,10 @@ document.querySelectorAll("input.sugerido").forEach(function(input){
   function adoptar(inp){ if(inp && inp.tagName==="INPUT" && inp.hasAttribute("list")){ inp.setAttribute("data-lista",inp.getAttribute("list")); inp.removeAttribute("list"); } }
   function conLista(t){ return !!t && t.tagName==="INPUT" && (t.hasAttribute("data-lista") || !!stdListaDe(t)); }
   function valores(inp){
+    var v=valores0(inp);
+    return stdListaDe(inp)==="personas" ? perReordenar(v, perClaveCampo(inp)) : v;
+  }
+  function valores0(inp){
     var sid=stdListaDe(inp), std=sid ? stdNombres(sid) : [], esCol=(inp.id==="input-coleccion-nombre" && typeof colReordenar==="function");
     if(std.length) return esCol ? colReordenar(std.slice()) : std.slice();   // con lista estándar solo se ofrece ella
     if(sid){ var libres=stdSugerenciasLibres(sid); if(libres.length) return esCol ? colReordenar(libres) : libres; }   // lista vacía: lo ya usado en los registros
@@ -2353,7 +2410,7 @@ var STD_DEF = [
   {g:"Lugares", id:"localidadesVerbatim", nombre:"Localidades (verbatim)", desc:"Localidades tal como figuran en la etiqueta o la libreta, sin corregir. Se ofrecen para escribir más rápido las ya usadas.", campos:[["localidadVerbatim","Localidad (verbatim)"]]},
   {g:"Lugares", id:"estaciones", nombre:"Estaciones", desc:"Estaciones o puntos de muestreo. Sus sugerencias son distintas de las de las localidades.", campos:[["estacion","Estación"]]},
   {g:"Lugares", id:"divisiones", nombre:"Regiones, provincias y comunas", desc:"Divisiones administrativas escritas a mano (las de Chile se eligen de su lista propia; esta lista sirve para otros países o zonas).", campos:[["region","Región o zona"],["provincia","Provincia o zona"],["comuna","Comuna o zona"]]},
-  {g:"Lugares", id:"ubicaciones", nombre:"Ubicaciones en la colección", desc:"Gabinetes, cajas y otras ubicaciones físicas.", campos:[["ubicacionColeccion","Ubicación en colección"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"],["@submuestras.ubicacionAlmacenamiento","Ubicación de almacenamiento de submuestras"]]},
+  {g:"Lugares", id:"ubicaciones", nombre:"Ubicaciones en la colección", desc:"Gabinetes, cajas y otras ubicaciones físicas.", campos:[["ubicacionColeccion","Ubicación en colección"],["ubicacionTransito","Ubicación en tránsito"],["@monitoreos.ubicacion","Ubicación observada en monitoreo"],["@submuestras.ubicacionAlmacenamiento","Ubicación de almacenamiento de submuestras"]]},
   {g:"Taxonomía", id:"taxones", nombre:"Nombres científicos", desc:"Nombres científicos de las determinaciones y nombres de referencia de terreno.", campos:[["taxon","Taxón (referencia de terreno)"],["@determinaciones.nombreCientifico","Nombre científico de la determinación"]]},
   {g:"Taxonomía", id:"phylum", nombre:"Phylum", desc:"Nombres de phylum usados en la clasificación.", campos:[["phylum","Phylum"]]},
   {g:"Taxonomía", id:"clase", nombre:"Clase", desc:"Nombres de clase usados en la clasificación.", campos:[["clase","Clase"]]},
@@ -3375,6 +3432,32 @@ function construirClasificacionTexto(r){
   var niveles = [["Phylum","phylum"],["Clase","clase"],["Orden","orden"],["Familia","familia"],["Género","genero"]];
   return niveles.filter(function(n){ return r[n[1]]; }).map(function(n){ return n[0]+" "+r[n[1]]; }).join(": ");
 }
+// ---------- lotes de una misma entrada (v0.9.95) ----------
+function claveEntrada(r){ return String(r && r.numeroAccesion!=null ? r.numeroAccesion : "").replace(/\s+/g," ").trim().toUpperCase(); }
+function lotesDeEntrada(r){
+  var k=claveEntrada(r); if(!k) return [];
+  return registros.filter(function(o){ return claveEntrada(o)===k; });
+}
+function individuosDe(r){ var n=parseInt(r && r.individuos,10); return isNaN(n) ? 0 : n; }
+function resumenSaldoEntrada(lotes){
+  var transito=lotes.filter(function(o){ return etapaManejo(o)!=="catalogado"; }), cat=lotes.filter(function(o){ return etapaManejo(o)==="catalogado"; });
+  var suma=function(a){ return a.reduce(function(t,o){ return t+individuosDe(o); },0); };
+  return {transito:transito, cat:cat, nT:suma(transito), nC:suma(cat)};
+}
+function lotesEntradaHtml(r){
+  var lotes=lotesDeEntrada(r); if(lotes.length<2) return "";
+  var orden=function(o){ return ETAPAS_ORDEN.indexOf(etapaManejo(o)); };
+  lotes=lotes.slice().sort(function(a,b){ return orden(b)-orden(a) || String(construirCatalogoCompleto(a)||"").localeCompare(String(construirCatalogoCompleto(b)||""),"es",{numeric:true}); });
+  var res=resumenSaldoEntrada(lotes), ids=lotes.map(function(o){ return o.id; }).join(",");
+  var pl=function(n,s1,sn){ return n+" "+(n===1?s1:sn); };
+  var h='<p class="nota" style="margin:2px 0 8px;"><strong>Saldo en tránsito:</strong> '+pl(res.nT,"individuo","individuos")+' en '+pl(res.transito.length,"registro","registros")+'. <strong>Catalogados:</strong> '+pl(res.nC,"individuo","individuos")+' en '+pl(res.cat.length,"lote","lotes")+'.</p>';
+  h+='<table class="ficha-tabla"><tr><th>Registro</th><th>Etapa</th><th>Nombre científico</th><th>Individuos</th><th></th></tr>';
+  lotes.forEach(function(o){
+    var cat=construirCatalogoCompleto(o), nom=nombreVigenteReg(o);
+    h+='<tr><td>'+escapeHtml(cat||(o.numeroCampo?"campo "+o.numeroCampo:"sin catálogo"))+(o.id===r.id?' <em>(este)</em>':'')+'</td><td>'+chipEtapa(o)+'</td><td>'+(nom?nombreCientificoHtml(nom):'<em>sin determinar</em>')+'</td><td>'+(o.individuos!=null&&o.individuos!==""?escapeHtml(String(o.individuos)):'')+'</td><td>'+(o.id===r.id?'':'<button type="button" class="btn tenue small btn-lote-ver" data-id="'+o.id+'" data-ids="'+ids+'">Ver</button>')+'</td></tr>';
+  });
+  return h+'</table>';
+}
 function construirFicha(r){
   var et = etiquetaRegistro(r);
 
@@ -3392,6 +3475,7 @@ function construirFicha(r){
   if(nombreVigente) general += '<div class="ficha-subtitulo">'+nombreCientificoHtml(nombreVigente)+'</div>';
   var lineaEj=ejemplaresTexto(r);
   if(lineaEj) general += '<div class="ficha-linea-clasificacion ficha-linea-ejemplares">'+escapeHtml(lineaEj)+'</div>';
+  if(etapaManejo(r)) general += '<div class="ficha-linea-etapa">'+chipEtapa(r,true)+'</div>';
   general += fichaCampo("Número de Catálogo", construirCatalogoCompleto(r));
   general += fichaCampos([["Número de campo","numeroCampo"], ["Número de entrada","numeroAccesion"]], r);
   general += fichaCampo("Localidad (verbatim)", r.localidadVerbatim);
@@ -3421,7 +3505,7 @@ function construirFicha(r){
   }
 
   var recepcion = fichaCampos([
-    ["Número de entrada","numeroAccesion"], ["Fecha de recepción","fechaRecepcion"],
+    ["Fecha de recibido","fechaRecibido"], ["Número de entrada","numeroAccesion"], ["Fecha de ingreso","fechaRecepcion"],
     ["Procedencia","procedencia"], ["Destino","destino"], ["Condición de la accesión","condicionAccesion"],
     ["Legatario","legatario"], ["Proyecto / iniciativa de origen","proyectoOrigen"], ["Tipo de accesión","tipoAccesion"],
     ["Observaciones de ingreso","observacionesIngreso"]
@@ -3455,7 +3539,7 @@ function construirFicha(r){
     ["Asociaciones biológicas","asociacionesBiologicas"], ["Observaciones biológicas","observacionesBiologicas"]
   ], r);
 
-  var manejoCampos = fichaCampos([["Estado","estadoUbicacion"], ["Ubicación en colección","ubicacionColeccion"], ["Comentarios de ubicación","observacionesUbicacion"]], r);
+  var manejoCampos = fichaCampos([["Estado","estadoUbicacion"], ["Ubicación en tránsito","ubicacionTransito"], ["Ubicación en colección","ubicacionColeccion"], ["Comentarios de ubicación","observacionesUbicacion"]], r);
   if(r.estadoUbicacion==="Baja"){
     manejoCampos += fichaCampos([
       ["Número de baja","numeroBaja"], ["Fecha de baja","fechaBaja"], ["Tipo de baja","tipoBaja"],
@@ -3476,6 +3560,7 @@ function construirFicha(r){
 
   var body = bloqueMediaHtml(r, general, terreno, fichaSeccion("Determinación y clasificación", determinacionHtml, false))
     + fichaSeccion("Recepción e ingreso", recepcion, false)
+    + fichaSeccion("Lotes de esta entrada", lotesEntradaHtml(r), false)
     + fichaSeccion("Preparación y conservación", preparacionHtml, false)
     + fichaSeccion("Catalogado", catalogado, false)
     + fichaSeccion("Datos biológicos", biologicos, false)
@@ -3546,6 +3631,44 @@ function revisarCatalogoForm(){
     el.appendChild(b);
   }
   el.classList.remove("oculto");
+}
+// ---------- avisos de N.º de entrada y N.º de campo ya usados (v0.9.95) ----------
+// El N.º de catálogo no puede repetirse (bloquea). El de entrada y el de campo repiten a propósito entre lotes de una misma entrada o muestra: solo se informa.
+function claveCampoNum(r){ return String(r && r.numeroCampo!=null ? r.numeroCampo : "").replace(/\s+/g," ").trim().toUpperCase(); }
+function verEnConsultas(k, v){
+  if(typeof construirConsultas==="function") construirConsultas();
+  limpiarConsulta(); consEstado.f[k]=v; sincronizarCamposConsulta(); activarTab("consultas");
+}
+var ultimaRevNumeros="";
+function pintarUsoNumero(idEl, nombre, valor, otros, filtroK){
+  var el=document.getElementById(idEl); if(!el) return;
+  el.innerHTML="";
+  if(!valor || !otros.length){ el.classList.add("oculto"); return; }
+  var res=resumenSaldoEntrada(otros), n=otros.length;
+  var txt="Otros "+n+(n===1?" registro usa":" registros usan")+" "+nombre+" «"+valor+"»"+(idEl==="entrada-uso" ? " ("+res.cat.length+" catalogado(s), "+res.transito.length+" en tránsito)" : "")+". ¿Es un lote de la misma "+(idEl==="entrada-uso"?"entrada":"muestra")+"?";
+  el.appendChild(document.createTextNode(txt));
+  var b=document.createElement("button"); b.type="button"; b.className="btn tenue small"; b.textContent="Ver esos registros";
+  b.onclick=function(){ verEnConsultas(filtroK, valor); };
+  el.appendChild(b); el.classList.remove("oculto");
+}
+function revisarNumerosForm(){
+  var b=borrador, ent=b ? claveEntrada(b) : "", cam=b ? claveCampoNum(b) : "";
+  var k=(activoId||"")+"|"+ent+"|"+cam+"|"+registros.length;
+  if(k===ultimaRevNumeros) return; ultimaRevNumeros=k;
+  var propios=function(o){ return o.id!==activoId; };
+  pintarUsoNumero("entrada-uso","la entrada", ent ? String(b.numeroAccesion).trim() : "", ent ? registros.filter(function(o){ return propios(o) && claveEntrada(o)===ent; }) : [], "numeroAccesion");
+  pintarUsoNumero("campo-uso","el N.º de campo", cam ? String(b.numeroCampo).trim() : "", cam ? registros.filter(function(o){ return propios(o) && claveCampoNum(o)===cam; }) : [], "numeroCampo");
+}
+// Posible duplicado completo: otro registro con el mismo N.º de campo, nombre científico, localidad y fecha de colecta.
+function posibleDuplicadoCompleto(r, excluirId){
+  var nc=claveCampoNum(r), nom=normTxt(nombreVigenteReg(r)||""), loc=normTxt(r.localidad||r.localidadVerbatim||""), fec=String(r.fechaColecta||"").trim();
+  if(!nc || !nom || !fec) return null;
+  for(var i=0;i<registros.length;i++){
+    var o=registros[i];
+    if(o.id===r.id || o.id===excluirId) continue;
+    if(claveCampoNum(o)===nc && String(o.fechaColecta||"").trim()===fec && normTxt(nombreVigenteReg(o)||"")===nom && normTxt(o.localidad||o.localidadVerbatim||"")===loc) return o;
+  }
+  return null;
 }
 // Último control antes de guardar: el N.º de catálogo no se puede repetir nunca.
 function permitirCatalogo(r){
@@ -3806,7 +3929,7 @@ function idsHermanos(el, sel){ var p=el&&el.parentElement; return p ? Array.prot
 // Alertas de un solo registro (botón en la barra superior de la ficha de consulta)
 function alertasDeRegistro(r){
   var h="", n=0, lp=prestamosPendientes([r]), lm=monitoreosPendientes([r]), segs=[];
-  var VIRT_SEL={"@sinDeterminacion":"#lista-determinaciones","@noEspecie":"#lista-determinaciones","@sinDeterminador":"#lista-determinaciones","@sinSexar":'[data-f="cantidadMachos"]',"@prestamoVigente":"#lista-prestamos","@sinPrestamoVigente":"#lista-prestamos","@diasEstado":'[data-f="estadoUbicacion"]'};
+  var VIRT_SEL={"@sinDeterminacion":"#lista-determinaciones","@noEspecie":"#lista-determinaciones","@sinDeterminador":"#lista-determinaciones","@sinSexar":'[data-f="cantidadMachos"]',"@prestamoVigente":"#lista-prestamos","@sinPrestamoVigente":"#lista-prestamos","@diasEstado":'[data-f="estadoUbicacion"]',"@etapaRecibido":'[data-f="numeroAccesion"]',"@etapaIngresado":'[data-f="catalogo"]',"@etapaCatalogado":'[data-f="ubicacionColeccion"]',"@diasEtapa":'[data-f="fechaRecepcion"]'};
   segLeer().reglas.forEach(function(g){
     if(!g.activa || !segCoincide(r,g)) return;
     var cs=(g.cond||[]).filter(function(c){ return c && c.k; }), c1=cs.filter(function(c){ return segCumple(r,c); })[0] || cs[0];
@@ -3841,6 +3964,7 @@ function mostrarFichaConsulta(id, seq){
   dialogEl.innerHTML = construirFicha(r);
   dialogEl.querySelectorAll(".btn-abrir-adjunto").forEach(function(b){ b.onclick = function(){ abrirRuta(b.getAttribute("data-ruta")); }; });
   dialogEl.querySelectorAll(".btn-abrir-pdf").forEach(function(b){ b.onclick = function(){ abrirPdf(b.getAttribute("data-pdf")); }; });
+  dialogEl.querySelectorAll(".btn-lote-ver").forEach(function(b){ b.onclick = function(){ mostrarFichaConsulta(b.getAttribute("data-id"), b.getAttribute("data-ids").split(",")); }; });
   dialogEl.querySelector(".btn-cerrar-ficha").onclick = function(){ dialogEl.close(); };
   if(modoAcceso==="admin") montarAlertasFicha(dialogEl, r);
   var btnEd = dialogEl.querySelector(".btn-editar-desde-ficha");
@@ -4018,7 +4142,7 @@ function abrirMapaDistribucion(){
   registrarActividad("mapa","patrón de distribución · "+lista.length+" registro(s)");
   var pts=[], sinCoord=0;
   lista.forEach(function(r){ var c=coordenadasRegistro(r); if(c) pts.push({r:r,lat:c.lat,lng:c.lng,n:mapaNumInd(r.individuos)}); else sinCoord++; });
-  dlg.innerHTML='<div class="md-caja"><div class="md-cab"><strong>Patrón de distribución geográfica</strong><span class="md-sub"></span><button type="button" class="btn-cerrar-ficha" title="Cerrar" aria-label="Cerrar">✕</button></div>'
+  dlg.innerHTML='<div class="md-caja"><div class="md-cab"><strong>Patrón de distribución geográfica</strong><span class="md-sub"></span><button type="button" class="btn small md-descargar" title="Descargar el mapa con su leyenda como imagen PNG">⬇ Descargar imagen</button><button type="button" class="btn-cerrar-ficha" title="Cerrar" aria-label="Cerrar">✕</button></div>'
     +'<div class="md-cuerpo"><div class="md-mapa"><div class="md-lienzo"></div><canvas class="md-canvas"></canvas><div class="md-aviso oculto"></div><div class="md-ctl"><button type="button" data-z="1" title="Acercar">+</button><button type="button" data-z="-1" title="Alejar">−</button><button type="button" data-fit="1" title="Ajustar a los puntos">⤢</button></div><div class="md-tip oculto"></div><div class="md-pop oculto"></div><div class="md-atrib">Imagen © Esri</div></div>'
     +'<aside class="md-lado"><div class="md-resumen"></div><div class="md-opc"><label>Colorear por <select class="nav md-cat">'+MAPA_CATS.map(function(c,i){ return '<option value="'+i+'">'+c[1]+'</option>'; }).join("")+'</select></label><label><input type="checkbox" class="md-tam"> Tamaño según n.º de individuos</label></div><div class="md-leyenda"></div></aside></div></div>';
   var $=function(s){ return dlg.querySelector(s); };
@@ -4167,6 +4291,103 @@ function abrirMapaDistribucion(){
   $(".md-cat").addEventListener("change", function(){ catIdx=+this.value; calcularCategorias(); pintarLeyenda(); dibujar(); });
   $(".md-tam").addEventListener("change", dibujar);
   $(".md-leyenda").addEventListener("click", function(e){ var it=e.target.closest(".md-ley"); if(!it) return; var l=leyenda[+it.getAttribute("data-i")]; if(!l) return; ocultas[l.k]=!ocultas[l.k]; pintarLeyenda(); dibujar(); });
+
+  // ----- descargar imagen: mapa + leyenda + pie, en un PNG (v0.9.95) -----
+  function segmentosNombre(nom){
+    var d=document.createElement("div"), out=[]; d.innerHTML=nombreCientificoHtml(nom);
+    d.childNodes.forEach(function(nd){ out.push(nd.nodeType===3 ? {t:nd.nodeValue,i:false} : {t:nd.textContent,i:nd.nodeName==="I"}); });
+    return out;
+  }
+  function trazarSegmentos(c, segs, x, y, maxW, px, familia){
+    // dibuja texto con tramos en cursiva; si no cabe lo corta con «…»
+    var ancho=0, i, k;
+    for(i=0;i<segs.length;i++){
+      c.font=(segs[i].i?"italic ":"")+px+"px "+familia;
+      var t=segs[i].t, w=c.measureText(t).width;
+      if(ancho+w>maxW){
+        for(k=t.length;k>0;k--){ var tt=t.slice(0,k).replace(/\s+$/,"")+"…"; if(ancho+c.measureText(tt).width<=maxW){ c.fillText(tt,x+ancho,y); ancho+=c.measureText(tt).width; break; } }
+        return ancho;
+      }
+      c.fillText(t,x+ancho,y); ancho+=w;
+    }
+    return ancho;
+  }
+  async function traerTeselaBitmap(url){
+    var ctl=(typeof AbortController!=="undefined")?new AbortController():null, t=ctl?setTimeout(function(){ ctl.abort(); },15000):null;
+    try{ var r=await fetch(url,{mode:"cors",signal:ctl?ctl.signal:undefined}); if(!r.ok) throw new Error("HTTP "+r.status); return await createImageBitmap(await r.blob()); }
+    finally{ if(t) clearTimeout(t); }
+  }
+  async function descargarImagen(){
+    var btn=$(".md-descargar"), txt0=btn.textContent; btn.disabled=true; btn.textContent="Preparando imagen…";
+    try{
+      var W=mapa.clientWidth||600, H=mapa.clientHeight||400, S=2, n=Math.pow(2,z), FAM='system-ui,"Segoe UI",sans-serif';
+      var vis=leyenda.filter(function(l){ return !ocultas[l.k]; }), pad=14*S;
+      var nCol=Math.max(1,Math.min(3,Math.floor(W/300))), colW=(W*S-2*pad)/nCol, fila=22*S, filas=Math.ceil(vis.length/nCol);
+      var altLey=pad+28*S+filas*fila+pad/2, altPie=48*S, Wt=W*S, Ht=H*S+altLey+altPie;
+      var cv2=document.createElement("canvas"); cv2.width=Wt; cv2.height=Ht; var c=cv2.getContext("2d");
+      c.fillStyle="#ffffff"; c.fillRect(0,0,Wt,Ht);
+      // fondo del mapa y teselas (se vuelven a pedir con CORS para poder exportar el lienzo sin «contaminarlo»)
+      c.fillStyle="#cfd8d0"; c.fillRect(0,0,Wt,H*S);
+      var x0=centro.x-W/2, y0=centro.y-H/2, tx0=Math.floor(x0/256), tx1=Math.floor((x0+W)/256), ty0=Math.max(0,Math.floor(y0/256)), ty1=Math.min(n-1,Math.floor((y0+H)/256));
+      var pend=[], base=0, baseOk=0;
+      for(var ty=ty0;ty<=ty1;ty++) for(var tx=tx0;tx<=tx1;tx++){ var tw=((tx%n)+n)%n; [ESRI_CAPAS[0],ESRI_CAPAS[2]].forEach(function(cp){ pend.push({cp:cp,tx:tx,ty:ty,url:cp.url.replace("{z}",z).replace("{y}",ty).replace("{x}",tw)}); if(cp.base) base++; }); }
+      c.save(); c.beginPath(); c.rect(0,0,Wt,H*S); c.clip();
+      var res=new Array(pend.length), sig=0;
+      async function trabajador(){ while(sig<pend.length){ var i=sig++; try{ res[i]=await traerTeselaBitmap(pend[i].url); }catch(e){ res[i]=null; } } }
+      await Promise.all([1,2,3,4,5,6].map(trabajador));
+      pend.forEach(function(p,i){ if(!res[i]) return; if(p.cp.base) baseOk++; c.drawImage(res[i],Math.round((p.tx*256-x0)*S),Math.round((p.ty*256-y0)*S),256*S+1,256*S+1); });
+      c.restore();
+      var sinFondo=base>0 && !baseOk;
+      if(sinFondo){ c.fillStyle="rgba(60,70,64,.75)"; c.font="italic "+(13*S)+"px "+FAM; c.fillText("Sin imagen satelital de fondo (no se pudieron descargar las teselas)",12*S,22*S); }
+      // puntos
+      pts.forEach(function(p){
+        if(ocultas[p.lk]) return; var sp=pantalla(p), px=sp.x*S, py=sp.y*S, rr=radio(p)*S;
+        if(px<-20||py<-20||px>Wt+20||py>H*S+20) return;
+        c.beginPath(); c.arc(px,py,rr,0,6.2832); c.fillStyle=p.color; c.globalAlpha=.88; c.fill(); c.globalAlpha=1;
+        c.lineWidth=1.6*S; c.strokeStyle="#fff"; c.stroke(); c.lineWidth=.6*S; c.strokeStyle="rgba(0,0,0,.55)"; c.beginPath(); c.arc(px,py,rr+S,0,6.2832); c.stroke();
+      });
+      // escala gráfica (abajo a la derecha)
+      var latC=Math.atan(Math.sinh(Math.PI*(1-2*centro.y/(256*n))))*180/Math.PI, mPx=156543.03392*Math.cos(latC*Math.PI/180)/n, km=1;
+      [1,2,5,10,20,50,100,200,500,1000,2000,5000].forEach(function(v){ if(v*1000/mPx<=170) km=v; });
+      var lpx=km*1000/mPx*S, bx=Wt-12*S-lpx, by=H*S-16*S;
+      c.fillStyle="rgba(255,255,255,.9)"; c.fillRect(bx-6*S,by-18*S,lpx+12*S,30*S);
+      c.strokeStyle="#111"; c.lineWidth=2*S; c.beginPath(); c.moveTo(bx,by-4*S); c.lineTo(bx,by+4*S); c.lineTo(bx+lpx,by+4*S); c.lineTo(bx+lpx,by-4*S); c.stroke();
+      c.fillStyle="#111"; c.font="bold "+(12*S)+"px "+FAM; c.textAlign="center"; c.fillText(km.toLocaleString("es-CL")+" km",bx+lpx/2,by-7*S); c.textAlign="left";
+      // atribución (abajo a la izquierda)
+      c.font=(11*S)+"px "+FAM; c.lineWidth=3*S; c.strokeStyle="rgba(0,0,0,.65)"; c.fillStyle="#fff";
+      var atr="Imagen © Esri, Maxar, Earthstar Geographics"; c.strokeText(atr,8*S,H*S-8*S); c.fillText(atr,8*S,H*S-8*S);
+      // leyenda
+      var ly=H*S;
+      c.fillStyle="#f4f1e6"; c.fillRect(0,ly,Wt,altLey); c.strokeStyle="#cfc8b0"; c.lineWidth=S; c.beginPath(); c.moveTo(0,ly); c.lineTo(Wt,ly); c.stroke();
+      c.fillStyle="#26332b"; c.font="bold "+(15*S)+"px "+FAM; c.fillText("Leyenda: "+MAPA_CATS[catIdx][1],pad,ly+pad+12*S);
+      var italicas=(catIdx===0||catIdx===1);
+      vis.forEach(function(l,i){
+        var col=i%nCol, fi=Math.floor(i/nCol), cx=pad+col*colW, cy=ly+pad+28*S+fi*fila+8*S;
+        c.beginPath(); c.arc(cx+7*S,cy,6*S,0,6.2832); c.fillStyle=l.color; c.fill(); c.lineWidth=S*1.2; c.strokeStyle="rgba(0,0,0,.6)"; c.stroke();
+        var nom=l.txt||l.k, cuenta="  "+l.n+" reg. · "+l.ind+" ej.";
+        c.font=(12*S)+"px "+FAM; var wc=c.measureText(cuenta).width;
+        c.fillStyle="#26332b";
+        var segs=(catIdx===0&&!l.txt) ? segmentosNombre(nom) : [{t:nom,i:italicas&&!l.txt}];
+        var usado=trazarSegmentos(c,segs,cx+20*S,cy+4*S,colW-20*S-wc-10*S,13*S,FAM);
+        c.font=(12*S)+"px "+FAM; c.fillStyle="#6b7a70"; c.fillText(cuenta,cx+20*S+usado,cy+4*S);
+      });
+      // pie
+      var py0=H*S+altLey, inds=0; lista.forEach(function(r){ inds+=mapaNumInd(r.individuos); });
+      c.fillStyle="#ffffff"; c.fillRect(0,py0,Wt,altPie); c.strokeStyle="#cfc8b0"; c.beginPath(); c.moveTo(0,py0); c.lineTo(Wt,py0); c.stroke();
+      c.fillStyle="#26332b"; c.font="bold "+(13*S)+"px "+FAM;
+      c.fillText("Patrón de distribución: "+lista.length+" registro(s), "+pts.length+" con coordenadas"+(sinCoord?" ("+sinCoord+" sin coordenadas)":"")+", "+inds+" ejemplar(es)",pad,py0+18*S);
+      c.fillStyle="#6b7a70"; c.font=(11.5*S)+"px "+FAM;
+      c.fillText("Colores por: "+MAPA_CATS[catIdx][1]+" · "+new Date().toLocaleString("es-CL")+" · Libro de Catálogo "+APP_VERSION+(sinFondo?" · sin imagen satelital":""),pad,py0+37*S);
+      var blob=await new Promise(function(ok){ cv2.toBlob(ok,"image/png"); });
+      if(!blob) throw new Error("No se pudo generar la imagen.");
+      var url=URL.createObjectURL(blob), a=document.createElement("a");
+      a.href=url; a.download=nombreDescarga("Mapa", contenidoDeLista(lista), "png"); document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+      registrarActividad("descarga","mapa de distribución · "+lista.length+" registro(s)");
+      if(sinFondo) alert("La imagen se descargó con los puntos y la leyenda, pero sin la imagen satelital de fondo: el servidor de teselas no permitió copiarla (o no hay conexión). Puedes capturar la pantalla si necesitas el fondo.");
+    }catch(e){ registrarError("descargar imagen del mapa", e); alert("No se pudo generar la imagen del mapa: "+(e&&e.message?e.message:e)); }
+    finally{ btn.disabled=false; btn.textContent=txt0; }
+  }
+  $(".md-descargar").addEventListener("click", descargarImagen);
   $(".btn-cerrar-ficha").onclick=function(){ dlg.close(); };
   dlg.onclick=function(e){ if(e.target===dlg) dlg.close(); };
   dlg.onclose=function(){ window.removeEventListener("resize",redim); };
@@ -4978,6 +5199,30 @@ function eliminarRegistros(ids){ if(modoAcceso!=="admin") return;
 function aplicarCatalogadorSiCorresponde(obj){
   if(!obj.catalogador && obj.catalogo){ obj.catalogador = operadorActual(); }
 }
+// Al repartir un lote en tránsito por duplicación, el registro original queda como saldo: se le restan los individuos del lote nuevo
+// y, al catalogarlo, pasa a ser el último lote. Solo se ofrece si el original sigue sin catálogo y comparte el N.º de entrada.
+var SALDO_CAMPOS=[["individuos","individuos"],["cantidadMachos","machos"],["cantidadHembras","hembras"],["cantidadJuveniles","juveniles"],["cantidadNoSexados","sin sexo"]];
+function ajustarSaldoOriginal(base, nuevo){
+  if(!base || base.id===nuevo.id) return;
+  var ent=claveEntrada(nuevo); if(!ent || claveEntrada(base)!==ent) return;
+  if(String(base.catalogo||"").trim()) return;   // el original ya está catalogado: no es saldo en tránsito
+  var cambios=[], excede=false;
+  SALDO_CAMPOS.forEach(function(c){
+    var n=parseInt(nuevo[c[0]],10), b=parseInt(base[c[0]],10);
+    if(isNaN(n)||n<=0||isNaN(b)||b<=0) return;
+    if(n>b){ excede=true; return; }
+    cambios.push({k:c[0], nom:c[1], de:b, a:b-n, n:n});
+  });
+  if(!cambios.length) return;
+  if(excede){ alert("El lote nuevo lleva más individuos (o más de algún sexo) que el original en tránsito ("+resumenLinea1(etiquetaRegistro(base))+"). Revisa los conteos; el original no se ajustó."); return; }
+  var txt=cambios.map(function(c){ return "• "+c.nom+": "+c.de+" → "+c.a+" (se restan "+c.n+")"; }).join("\n");
+  var ok=confirm("El registro original ("+resumenLinea1(etiquetaRegistro(base))+") queda como saldo en tránsito de esta entrada.\n\n¿Restarle los individuos del lote que acabas de guardar?\n\n"+txt+"\n\nSi aceptas, el original conserva el resto y será el último lote al catalogarlo.");
+  if(!ok) return;
+  cambios.forEach(function(c){ base[c.k]=c.a; });
+  base.modificadoEn=new Date().toISOString(); base.modificadoPor=operadorActual();
+  if(!(parseInt(base.individuos,10)>0)) setTimeout(function(){ alert("El registro original quedó sin individuos en tránsito. Si ya no queda material, puedes eliminarlo desde Sistema, Gestión de datos."); },50);
+  espejarRegistro(base);
+}
 function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   if(!borrador) borrador=registroVacioBase();
   if(!permitirCatalogo(borrador)) return;
@@ -4996,6 +5241,9 @@ function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
     var ci=document.querySelector('[data-f="catalogo"]'); if(ci){ try{ activarTab("entrada"); ci.scrollIntoView({block:"center"}); ci.focus(); }catch(e){} }
     return;
   }
+  var posDup=posibleDuplicadoCompleto(borrador, origenDuplicadoId);
+  if(posDup && !confirm("Posible registro duplicado.\n\nYa existe otro registro con el mismo N.º de campo, nombre científico, localidad y fecha de colecta:\n"+resumenLinea1(etiquetaRegistro(posDup))+"\n\nSi es otro lote de la misma muestra (por ejemplo, separado por sexo), puedes guardarlo. ¿Guardar de todos modos?")) return;
+  var baseSaldo = origenDuplicadoId ? registroPorId(origenDuplicadoId) : null;
   var nuevo=clonar(borrador);
   nuevo.id=nuevoId();
   nuevo.creadoEn = nuevo.creadoEn || new Date().toISOString();
@@ -5003,6 +5251,7 @@ function accionGuardarNuevo(siguienteTab){ if(modoAcceso!=="admin") return;
   nuevo.modificadoPor = operadorActual();
   aplicarCatalogadorSiCorresponde(nuevo);
   registros.push(nuevo);
+  if(baseSaldo) ajustarSaldoOriginal(baseSaldo, nuevo);
   activoId=nuevo.id;
   borrador=clonar(nuevo);
   origenDuplicado=false;
@@ -5098,12 +5347,35 @@ function pintarRespaldo(){
   el.textContent=txt; el.classList.toggle("respaldo-alerta", alerta); el.classList.toggle("oculto", !txt);
   if(b) b.classList.toggle("oculto", !(o.estado==="ok" && o.pend));
 }
+// ---------- etapa de manejo (v0.9.95): se calcula desde los números, no se escribe a mano ----------
+// Recibido: tiene N.º de campo y nada más avanzado. Ingresado (Material en Tránsito): tiene N.º de entrada.
+// Catalogado: tiene N.º de catálogo y colección (el acrónimo de colección es parte del número). Se muestra la etapa más avanzada alcanzada.
+var ETAPAS = {
+  recibido:   {n:"Recibido",   largo:"Recibido",                 ic:"○", t:"Recibido: material tal como llega de terreno, con N.º de campo y solo su información de terreno."},
+  ingresado:  {n:"Ingresado",  largo:"Ingresado (en tránsito)",  ic:"◐", t:"Ingresado (Material en Tránsito): tiene N.º de entrada y preparación con respaldo de planillas y formularios. Su ubicación es provisoria."},
+  catalogado: {n:"Catalogado", largo:"Catalogado",               ic:"●", t:"Catalogado: asignado a una colección, con N.º de catálogo y ubicación permanente."}
+};
+var ETAPAS_ORDEN = ["recibido","ingresado","catalogado"];
+function etapaManejo(r){
+  if(!r) return "";
+  var ok=function(v){ return v!=null && String(v).trim()!==""; };
+  if(ok(r.catalogo) && (ok(r.coleccionAcronimo) || ok(r.coleccionNombre))) return "catalogado";
+  if(ok(r.numeroAccesion)) return "ingresado";
+  if(ok(r.numeroCampo)) return "recibido";
+  return "";
+}
+function etapaTexto(r){ var e=etapaManejo(r); return e ? ETAPAS[e].largo : ""; }
+function chipEtapa(r, grande){
+  var e=etapaManejo(r); if(!e) return "";
+  var d=ETAPAS[e];
+  return '<span class="chip-etapa et-'+e+(grande?' grande':'')+'" title="'+escapeHtml(d.t)+'">'+d.ic+' '+escapeHtml(grande?d.largo:d.n)+'</span>';
+}
 function iconosArchivos(reg){
   var lleno=function(a){ return (a||[]).filter(function(x){ return x && (typeof x==="string" ? x : (x.archivo||x.ruta)); }).length; };
   var nf=lleno(reg.fotos), npdf=(reg.publicacionesPdf||[]).filter(Boolean).length, nad=lleno(reg.adjuntos);
   var nman=lleno(reg.docsBaja); (reg.prestamos||[]).forEach(function(p){ nman+=lleno(p.docs); }); (reg.usos||[]).forEach(function(u){ nman+=lleno(u.docs); });
   var ic=function(e,t){ return '<span class="ico-arch" title="'+t+'">'+e+'</span>'; };
-  return (nf?ic("📷",nf+" foto(s) asociada(s)"):"")+(npdf?ic("📕",npdf+" PDF de publicaciones"):"")+(nad?ic("📎",nad+" otro(s) archivo(s) adjunto(s)"):"")+(nman?ic("🗂️",nman+" documento(s) de manejo (baja, préstamos, usos)"):"");
+  return chipEtapa(reg)+(nf?ic("📷",nf+" foto(s) asociada(s)"):"")+(npdf?ic("📕",npdf+" PDF de publicaciones"):"")+(nad?ic("📎",nad+" otro(s) archivo(s) adjunto(s)"):"")+(nman?ic("🗂️",nman+" documento(s) de manejo (baja, préstamos, usos)"):"");
 }
 function etiquetaRegistro(r){
   var detO = r.determinaciones && r.determinaciones.length ? r.determinaciones[r.determinaciones.length-1] : null;
@@ -5212,7 +5484,7 @@ function montarPanelRegistros(cont){
   html += '<div class="barra-activo">';
   html += '<button class="btn small btn-toggle-lista">'+(abierto?'Ocultar registros ▲':'Ver registros ('+registros.length+') ▾')+'</button>';
   html += '<span class="badge-modo badge-modo-'+modoTexto.toLowerCase()+'">'+modoTexto+'</span>';
-  html += '<span class="chip-activo"><span class="chip-titulo">Registro Actual</span>'+(etAct ? (nombreDestacadoHtml(etAct)+'<strong>'+escapeHtml(resumenLinea1(etAct))+'</strong>'+(resumenDatosSinNombre(etAct)?'<br>'+escapeHtml(resumenDatosSinNombre(etAct)):'')) : 'Sin registro activo')+'</span>';
+  html += '<span class="chip-activo"><span class="chip-titulo">Registro Actual</span>'+(etAct ? (nombreDestacadoHtml(etAct)+'<strong>'+escapeHtml(resumenLinea1(etAct))+'</strong>'+chipEtapa(borrador)+(resumenDatosSinNombre(etAct)?'<br>'+escapeHtml(resumenDatosSinNombre(etAct)):'')) : 'Sin registro activo')+'</span>';
   var sinReg = activoId===null ? ' sin-registro' : '';
   html += '<button class="btn small btn-icono btn-icono-ver btn-consultar-activo'+sinReg+(modoTexto==="Consulta"?' modo-on':'')+'" title="Consultar">👁️</button>';
   html += '<button class="btn small btn-icono btn-icono-editar btn-editar-activo'+sinReg+(modoTexto==="Editando"?' modo-on':'')+'" title="Editar">✏️</button>';
@@ -5296,6 +5568,7 @@ function coleccionDeRegistro(r){
 function sesionDeRegistro(r){
   return r.creadoEn ? r.creadoEn.slice(0,10) : "Sin sesión registrada";
 }
+function etapaDeRegistro(r){ return etapaTexto(r) || "Sin etapa"; }
 function sesionEdicionDeRegistro(r){
   return r.modificadoEn ? r.modificadoEn.slice(0,10) : "Sin edición registrada";
 }
@@ -5306,7 +5579,7 @@ function formatearNombreSesion(clave, tipo){
   var texto = d.toLocaleDateString("es-CL", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
   return "Sesión de "+(tipo||"ingreso")+" del " + texto;
 }
-var CLAVES_VACIAS = ["Sin colección asignada","Sin sesión registrada","Sin edición registrada"];
+var CLAVES_VACIAS = ["Sin colección asignada","Sin sesión registrada","Sin edición registrada","Sin etapa"];
 function valoresUnicos(fn){
   var set = new Set(registros.map(fn));
   return Array.from(set).sort(function(a,b){
@@ -5377,12 +5650,13 @@ function renderResumenDatos(){
     selFiltroEdicion.innerHTML = '<option value="">Todas</option>' + opcionesEdicion.map(function(o){ return '<option value="'+escapeHtml(o)+'"'+(o===filtroEdicionDatos?' selected':'')+'>'+escapeHtml(o)+'</option>'; }).join("");
   }
   var filtrados = registrosMostradosDatos();
-  var fnClave = agruparDatosPor==="sesion" ? sesionDeRegistro : (agruparDatosPor==="sesionEdicion" ? sesionEdicionDeRegistro : coleccionDeRegistro);
+  var fnClave = agruparDatosPor==="sesion" ? sesionDeRegistro : (agruparDatosPor==="sesionEdicion" ? sesionEdicionDeRegistro : (agruparDatosPor==="etapa" ? etapaDeRegistro : coleccionDeRegistro));
   var grupos = agruparRegistros(filtrados, fnClave);
   datosGrupos = grupos;
   var claves = Object.keys(grupos).sort(function(a,b){
     if(CLAVES_VACIAS.indexOf(a)>-1) return 1;
     if(CLAVES_VACIAS.indexOf(b)>-1) return -1;
+    if(agruparDatosPor==="etapa"){ var oe=ETAPAS_ORDEN.map(function(e){ return ETAPAS[e].largo; }); return oe.indexOf(a)-oe.indexOf(b); }   // Recibido, Ingresado, Catalogado
     return a.localeCompare(b);
   });
   datosClaves = claves;
@@ -5452,7 +5726,7 @@ function renderResumenDatos(){
 }
 function refrescarPanelesRegistros(){
   registrosVersion++; stdAutoProg();
-  revisarCatalogoForm(); pintarAvisoCatalogosRepetidos();
+  revisarCatalogoForm(); revisarNumerosForm(); pintarAvisoCatalogosRepetidos();
   programarAlertaPrestamos();
   if(typeof pintarSegAuto==="function") pintarSegAuto();
   var bAct=document.querySelector("#tabs button.active");
@@ -6744,7 +7018,11 @@ var SEG_VIRT=[
   {k:"@sinSexar", l:"No ha sido sexado (sin machos, hembras ni juveniles)", b:true},
   {k:"@prestamoVigente", l:"Tiene un préstamo vigente", b:true},
   {k:"@sinPrestamoVigente", l:"No tiene un préstamo vigente", b:true},
-  {k:"@diasEstado", l:"Días que lleva en el Estado actual", n:true}
+  {k:"@diasEstado", l:"Días que lleva en el Estado actual", n:true},
+  {k:"@etapaRecibido", l:"Etapa de manejo: Recibido", b:true},
+  {k:"@etapaIngresado", l:"Etapa de manejo: Ingresado (en tránsito)", b:true},
+  {k:"@etapaCatalogado", l:"Etapa de manejo: Catalogado", b:true},
+  {k:"@diasEtapa", l:"Días que lleva en su etapa de manejo actual (desde la fecha de recibido, de ingreso o de catalogación)", n:true}
 ];
 var SEG_PLANT=[
   {id:"p-prep", nombre:"Preparación y Conservación incompleta", modo:"alguna", cond:[{k:"tipoColeccion",op:"vacio"},{k:"medioFijado",op:"vacio"},{k:"preparacion",op:"vacio"},{k:"condicionEjemplar",op:"vacio"}]},
@@ -6756,7 +7034,10 @@ var SEG_PLANT=[
   {id:"p-sex", nombre:"Sin sexar", modo:"todas", cond:[{k:"@sinSexar",op:"si"}]},
   {id:"p-lab", nombre:"En laboratorio por más de 30 días", modo:"todas", cond:[{k:"estadoUbicacion",op:"es",v:"En laboratorio"},{k:"@diasEstado",op:">",v:"30"}]},
   {id:"p-prest", nombre:"En préstamo sin préstamo vigente", modo:"todas", cond:[{k:"estadoUbicacion",op:"es",v:"En préstamo"},{k:"@sinPrestamoVigente",op:"si"}]},
-  {id:"p-estado", nombre:"Sin Estado definido", modo:"todas", cond:[{k:"estadoUbicacion",op:"vacio"}]}
+  {id:"p-estado", nombre:"Sin Estado definido", modo:"todas", cond:[{k:"estadoUbicacion",op:"vacio"}]},
+  {id:"p-transito", nombre:"En tránsito por más de 60 días", modo:"todas", cond:[{k:"@etapaIngresado",op:"si"},{k:"@diasEtapa",op:">",v:"60"}]},
+  {id:"p-recibido", nombre:"Recibido sin ingresar por más de 30 días", modo:"todas", cond:[{k:"@etapaRecibido",op:"si"},{k:"@diasEtapa",op:">",v:"30"}]},
+  {id:"p-cat-ubic", nombre:"Catalogado sin ubicación en colección", modo:"todas", cond:[{k:"@etapaCatalogado",op:"si"},{k:"ubicacionColeccion",op:"vacio"}]}
 ];
 var SEG_OPS=[["vacio","está vacío"],["novacio","tiene dato"],["es","es"],["noes","no es"],["contiene","contiene"]];
 var SEG_GRUPOS={entrada:"Entrada", preparacion:"Preparación y conservación", deposito:"Depósito", manejo:"Manejo"};
@@ -6815,8 +7096,17 @@ function segDiasEstado(r){
   var f=new Date(iso); if(isNaN(f.getTime())) return null;
   return Math.floor((fechaHoy()-new Date(f.getFullYear(), f.getMonth(), f.getDate()))/864e5);
 }
+function segDiasEtapa(r){
+  var e=etapaManejo(r), f=e==="recibido" ? r.fechaRecibido : (e==="ingresado" ? r.fechaRecepcion : (e==="catalogado" ? r.fechaCatalogacion : ""));
+  var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(f||"")); if(!m) return null;
+  return Math.floor((fechaHoy()-new Date(+m[1], +m[2]-1, +m[3]))/864e5);
+}
 function segCumple(r, c){
   var k=c.k;
+  if(k==="@etapaRecibido") return etapaManejo(r)==="recibido";
+  if(k==="@etapaIngresado") return etapaManejo(r)==="ingresado";
+  if(k==="@etapaCatalogado") return etapaManejo(r)==="catalogado";
+  if(k==="@diasEtapa"){ var ne=segDiasEtapa(r); return ne!==null && ne>(parseFloat(c.v)||0); }
   if(k==="@sinDeterminacion") return !segDetalladas(r).length;
   if(k==="@noEspecie"){ var d=segDetalladas(r); return !segEsEspecie(d[d.length-1]); }
   if(k==="@sinDeterminador"){ var d2=segDetalladas(r), u=d2[d2.length-1]; return !u || !String(u.determinador||"").trim(); }
@@ -8042,6 +8332,9 @@ var CONS_CAMPOS = [
     return [lineaColeccionUnica(r), lineaColeccionFicha(r), nombreColeccionCompleto(r), r.coleccionNombre, r.coleccionAcronimo, [r.institucionAcronimo, r.coleccionAcronimo].filter(Boolean).join(" ")].filter(Boolean);
   }, function(r){ var l=lineaColeccionUnica(r); return l ? [l] : []; }),
   campoSimple("estadoUbicacion","Estado","Manejo",true),
+  CF("etapa","Etapa de manejo","Colección",true,function(r){ var t=etapaTexto(r); return t ? [t] : []; }),
+  CF("sesionIngreso","Sesión de ingreso (día de registro en la app)","Colección",true,function(r){ return r.creadoEn ? [String(r.creadoEn).slice(0,10)] : []; }),
+  CF("sesionEdicion","Sesión de edición (día de la última modificación)","Entrada",false,function(r){ return r.modificadoEn ? [String(r.modificadoEn).slice(0,10)] : []; }),
   // secundarios, agrupados por la pestaña de origen
   campoSimple("provincia","Provincia","Lugar",true), campoSimple("comuna","Comuna","Lugar",true),
   campoSimple("habitat","Hábitat","Terreno"), campoSimple("microhabitat","Microhábitat","Terreno"),
@@ -8069,7 +8362,7 @@ var CONS_CAMPOS = [
   campoSimple("publicacionOriginal","Publicación original","Depósito"),
   CF("pdf","PDF de publicaciones (nombre)","Depósito",false,function(r){ return (r.publicacionesPdf||[]).map(function(n){ return n.split("/").pop(); }); }),
   campoSimple("asociacionesBiologicas","Asociaciones biológicas","Depósito"), campoSimple("observacionesBiologicas","Observaciones biológicas","Depósito"),
-  campoSimple("ubicacionColeccion","Ubicación en colección","Manejo"), campoSimple("tipoBaja","Tipo de baja","Manejo"),
+  campoSimple("ubicacionTransito","Ubicación en tránsito","Manejo"), campoSimple("ubicacionColeccion","Ubicación en colección","Manejo"), campoSimple("tipoBaja","Tipo de baja","Manejo"),
   campoSimple("destinatario","Destinatario de la baja","Manejo"), campoSimple("numeroBaja","N.º de baja","Manejo"),
   CF("solicitante","Solicitante de préstamo","Manejo",false,function(r){ return listaVals(r,"prestamos","solicitante"); }),
   CF("evento","Evento de uso","Manejo",false,function(r){ return listaVals(r,"usos","evento"); }),
@@ -8077,7 +8370,7 @@ var CONS_CAMPOS = [
 ];
 var CONS_RANGOS = [
   {k:"colecta", l:"Fecha de colecta", p:true, v:function(r){ return r.fechaColecta||""; }},
-  {k:"recepcion", l:"Fecha de recepción", p:false, v:function(r){ return r.fechaRecepcion||""; }},
+  {k:"recepcion", l:"Fecha de ingreso", p:true, v:function(r){ return r.fechaRecepcion||""; }},
   {k:"catalogacion", l:"Fecha de catalogación", p:false, v:function(r){ return r.fechaCatalogacion||""; }}
 ];
 var CONS_GRUPOS = ["Terreno","Entrada","Preparación","Depósito","Manejo"];
@@ -8196,6 +8489,8 @@ var consConstruida=false;
 function opcionesCampo(c){
   var vistos={}, out=[];
   registros.forEach(function(r){ if(cumpleConsulta(r,c.k)) (c.s||c.v)(r).forEach(function(v){ v=String(v).trim(); if(v && !vistos[v]){ vistos[v]=1; out.push(v); } }); });
+  if(c.k==="etapa") return ETAPAS_ORDEN.map(function(e){ return ETAPAS[e].largo; }).filter(function(v){ return out.indexOf(v)>-1; });
+  if(c.k==="sesionIngreso" || c.k==="sesionEdicion") return out.sort().reverse().slice(0,400);   // días más recientes primero
   return out.sort(function(a,b){ return a.localeCompare(b,"es"); }).slice(0,400);
 }
 function construirConsultas(){
@@ -8214,7 +8509,7 @@ function construirConsultas(){
   var COLUMNAS=[
     ["Taxonomía",["nombre","phylum","clase","orden","familia","genero"],[]],
     ["Ubicación geográfica",["localidad","region","provincia","comuna"],[]],
-    ["Colección",["coleccion","catalogo","numeroAccesion","numeroCampo","estadoUbicacion","colector"],["colecta"]]
+    ["Colección",["coleccion","catalogo","numeroAccesion","numeroCampo","etapa","estadoUbicacion","colector","sesionIngreso"],["colecta","recepcion"]]
   ];
   COLUMNAS.forEach(function(col){
     var det=document.createElement("details"); det.className="det-carpetas cons-col-det";
@@ -8355,6 +8650,7 @@ function actualizarMarcasConsulta(){
 var CONS_COLUMNAS = [
   ["N.º de catálogo",function(r){ return construirCatalogoCompleto(r)||r.catalogo||""; }],
   ["N.º de campo",function(r){ return r.numeroCampo; }], ["N.º de entrada",function(r){ return r.numeroAccesion; }],
+  ["Etapa de manejo",etapaTexto],
   ["Nombre científico (vigente)",nombreVigenteReg],
   ["Phylum",function(r){ return r.phylum; }], ["Clase",function(r){ return r.clase; }], ["Orden",function(r){ return r.orden; }],
   ["Familia",function(r){ return r.familia; }], ["Género",function(r){ return r.genero; }],
@@ -8369,13 +8665,13 @@ var CONS_COLUMNAS = [
   ["Estación",function(r){ return r.estacion; }], ["Taxón (referencia)",function(r){ return r.taxon; }],
   ["Institución",function(r){ return r.institucionAcronimo; }], ["Colección",function(r){ return r.coleccionAcronimo; }],
   ["Tipo de colección",function(r){ return r.tipoColeccion; }], ["Conservación",function(r){ return r.conservacion; }],
-  ["Estado",function(r){ return r.estadoUbicacion; }], ["Ubicación en colección",function(r){ return r.ubicacionColeccion; }],
+  ["Estado",function(r){ return r.estadoUbicacion; }], ["Ubicación en tránsito",function(r){ return r.ubicacionTransito; }], ["Ubicación en colección",function(r){ return r.ubicacionColeccion; }],
   ["Tipo nomenclatural",function(r){ return r.tipoNomenclatural; }],
   ["Nombre de la colección",lineaColeccionUnica], ["Institución (nombre completo)",function(r){ return r.institucionNombreCompleto || (r.institucionAcronimo==="MNHNCL" ? NOMBRE_MNHNCL : ""); }],
   ["Medio de fijado",function(r){ return r.medioFijado; }], ["Preparación",function(r){ return r.preparacion; }], ["Condición del ejemplar",function(r){ return r.condicionEjemplar; }],
   ["Determinador",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].determinador:""; }],
   ["Fecha de determinación",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].fechaDeterminacion:""; }],
-  ["Fecha de recepción",function(r){ return r.fechaRecepcion; }], ["Procedencia",function(r){ return r.procedencia; }], ["Destino",function(r){ return r.destino; }],
+  ["Fecha de recibido",function(r){ return r.fechaRecibido; }], ["Fecha de recepción",function(r){ return r.fechaRecepcion; }], ["Procedencia",function(r){ return r.procedencia; }], ["Destino",function(r){ return r.destino; }],
   ["Condición de la accesión",function(r){ return r.condicionAccesion; }], ["Tipo de accesión",function(r){ return r.tipoAccesion; }],
   ["Legatario",function(r){ return r.legatario; }], ["Proyecto / iniciativa de origen",function(r){ return r.proyectoOrigen; }],
   ["Fecha de catalogación",function(r){ return r.fechaCatalogacion; }], ["Catalogador",function(r){ return r.catalogador; }],
@@ -8401,13 +8697,13 @@ function filasDeLista(lista, cols){
 var EXP_CLAVE=LS_PREFIX+"expCampos", EXP_PLANT=LS_PREFIX+"expPlantillas2", EXP_PLANT_V1=LS_PREFIX+"expPlantillas", EXP_VISTA=LS_PREFIX+"expVista", EXP_FLECHAS=LS_PREFIX+"expFlechas";
 var EXP_PREDET="Orden predeterminado", expOrden=null, expOff={}, expArrastre="", expFiltro="", expSincBusy=false, expSincUlt=0, expSincMsg="", expPlanilla="", expEnc={}, expNuevos=false, expExtra=false, expMarcar=true;
 var EXP_GRUPOS=[
-  ["Identificación",["N.º de catálogo","N.º de campo","N.º de entrada"]],
+  ["Identificación",["N.º de catálogo","N.º de campo","N.º de entrada","Etapa de manejo"]],
   ["Taxonomía",["Nombre científico (vigente)","Phylum","Clase","Orden","Familia","Género","Taxón (referencia)","Determinador","Fecha de determinación","Tipo nomenclatural"]],
   ["Ejemplares y sexo",["N.º de ejemplares","Machos","Hembras","Juveniles","Sin sexo","Sexo (resumen)"]],
   ["Localidad y coordenadas",["Localidad","Localidad (verbatim)","Región","Provincia","Comuna","Latitud","Longitud","Altitud/profundidad (m)","Coordenadas originales"]],
   ["Colecta",["Fecha de colecta","Hora de colecta","Colector","Hábitat","Microhábitat","Método de recolección","Estación"]],
-  ["Colección y preparación",["Institución","Colección","Nombre de la colección","Institución (nombre completo)","Tipo de colección","Conservación","Medio de fijado","Preparación","Condición del ejemplar","Estado","Ubicación en colección"]],
-  ["Recepción y catalogación",["Fecha de recepción","Procedencia","Destino","Condición de la accesión","Tipo de accesión","Legatario","Proyecto / iniciativa de origen","Fecha de catalogación","Catalogador"]],
+  ["Colección y preparación",["Institución","Colección","Nombre de la colección","Institución (nombre completo)","Tipo de colección","Conservación","Medio de fijado","Preparación","Condición del ejemplar","Estado","Ubicación en tránsito","Ubicación en colección"]],
+  ["Recepción y catalogación",["Fecha de recibido","Fecha de recepción","Procedencia","Destino","Condición de la accesión","Tipo de accesión","Legatario","Proyecto / iniciativa de origen","Fecha de catalogación","Catalogador"]],
   ["Notas y archivos",["Observaciones","Observaciones biológicas","Asociaciones biológicas","Publicación original","N.º de fotos","PDF de publicaciones","Motivo de PDF"]]
 ];
 function expTodos(){ return CONS_COLUMNAS.map(function(c){ return c[0]; }); }
@@ -9967,7 +10263,9 @@ function impLeerGuardados(){   // solo las que sirven para emparejar al importar
 }
 function impPintarResultado(){
   var res=imp.resultado, rs=res.resolucion, tipos=Object.keys(res.avisos), sinConf=imp.mapas.filter(function(m){ return !m.conf; }).length;
-  var h=(sinConf?'<p class="nota imp-alerta">Atención: '+sinConf+' emparejamiento(s) propuesto(s) todavía sin confirmar se están usando en esta importación. Confírmalos o quítalos antes de importar.</p>':'')+'<div class="imp-resumen"><strong>Vista previa</strong><ul><li>'+rs.nuevos.length+' registro(s) nuevo(s)</li>'
+  var vistosC={}, yaUsados=0, repArchivo=0, idxCat=indiceCatalogos();
+  rs.nuevos.forEach(function(r0){ var c0=claveCatalogo(r0); if(!c0) return; if(idxCat[c0]) yaUsados++; if(vistosC[c0]) repArchivo++; vistosC[c0]=1; });
+  var h=((yaUsados||repArchivo)?'<p class="nota imp-alerta">Atención: '+(yaUsados?yaUsados+' registro(s) nuevo(s) traen un N.º de catálogo que ya usa otro registro de la app. ':'')+(repArchivo?repArchivo+' N.º de catálogo se repite(n) dentro de la planilla. ':'')+'Esos registros se importarán sin N.º de catálogo y quedará anotado en Observaciones.</p>':'')+(sinConf?'<p class="nota imp-alerta">Atención: '+sinConf+' emparejamiento(s) propuesto(s) todavía sin confirmar se están usando en esta importación. Confírmalos o quítalos antes de importar.</p>':'')+'<div class="imp-resumen"><strong>Vista previa</strong><ul><li>'+rs.nuevos.length+' registro(s) nuevo(s)</li>'
     +(rs.actualizados.length?'<li>'+rs.actualizados.length+' existente(s) que se actualizarían</li>':'')
     +(rs.omitidos.length?'<li>'+rs.omitidos.length+' existente(s) sin cambios u omitidos</li>':'')
     +(res.omitidas.length?'<li>'+res.omitidas.length+' fila(s) omitida(s) por tener muy pocos datos o estar repetidas</li>':'')+'</ul></div>';

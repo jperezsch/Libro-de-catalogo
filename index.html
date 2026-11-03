@@ -491,9 +491,9 @@
   .ico-arch{margin-left:6px;font-size:15px;white-space:nowrap;cursor:help;}
   /* v0.9.95: etapa de manejo (calculada desde los números). El ícono de llenado ○ ◐ ● lleva el significado; el color lo refuerza. */
   .chip-etapa{display:inline-block;margin-left:8px;padding:1px 9px 1px 7px;border-radius:999px;font-family:var(--sans);font-size:12px;font-weight:700;line-height:1.5;letter-spacing:.2px;white-space:nowrap;cursor:help;vertical-align:1px;border:1.5px solid currentColor;}
-  .chip-etapa.et-recibido{color:#5b6573;background:#fff;}
-  .chip-etapa.et-ingresado{color:#a14a14;background:#f8e6d6;}
-  .chip-etapa.et-catalogado{color:#fff;background:#1f6f6b;border-color:#1f6f6b;}
+  .chip-etapa.et-recibido{color:#fff;background:#b3261e;border-color:#b3261e;}
+  .chip-etapa.et-ingresado{color:#3d2a00;background:#f2b134;border-color:#b87d0a;}
+  .chip-etapa.et-catalogado{color:#fff;background:#1b7a43;border-color:#1b7a43;}
   .chip-etapa.grande{font-size:14px;padding:2px 12px 2px 9px;margin-left:0;}
   .ficha-linea-etapa{text-align:center;margin:6px 0 8px;}
   .barra-activo .chip-etapa{margin-left:10px;}
@@ -938,7 +938,7 @@
       <div class="cons-cab">
         <h2 id="cons-titulo">Resultados</h2>
         <div class="cons-acciones">
-          <label>Ordenar por <select id="cons-orden"><option value="catalogo">N.º de catálogo</option><option value="campo">N.º de campo</option><option value="nombre">Nombre científico</option><option value="localidad">Localidad</option><option value="fecha">Fecha de colecta</option><option value="ingreso">Fecha de ingreso</option><option value="entrada">N.º de entrada</option></select></label>
+          <label>Ordenar por <select id="cons-orden"><option value="catalogo">N.º de catálogo</option><option value="campo">N.º de campo</option><option value="nombre">Nombre científico</option><option value="localidad">Localidad</option><option value="fecha">Fecha de colecta</option><option value="ingreso">Fecha de entrada</option><option value="entrada">N.º de entrada</option></select></label>
           <button type="button" class="btn small secundario" id="cons-csv" title="Archivo de texto separado por comas, abre en Excel y sirve para GBIF">Descargar CSV</button>
           <button type="button" class="btn small secundario" id="cons-xlsx" title="Planilla de Excel">Descargar Excel</button>
           <button type="button" class="btn small secundario" id="cons-fotos" title="Descarga un zip con las fotos de los registros seleccionados (o de todos los resultados), todas juntas en una carpeta simple">🖼️ Descargar fotos</button>
@@ -958,7 +958,15 @@
     <p class="aviso-duplicado oculto" id="aviso-duplicado"></p>
 
     <div class="bloque">
-      <h2>Datos de terreno</h2>
+      <h2>Recepción y datos de terreno</h2>
+      <div class="subbloque">
+        <p class="subtitulo-mini" style="margin-top:0;">Recepción del material</p>
+        <div class="grid">
+          <div class="campo opc"><div class="lbl"><span class="name">Fecha de recepción</span><span class="key">fechaRecibido</span></div><input type="date" class="nav" data-f="fechaRecibido"></div>
+          <div class="campo opc full"><details class="det-obs"><summary><span class="lbl"><span class="name">Observaciones de recepción</span><span class="key">observacionesRecepcion</span></span></summary><textarea class="nav" data-f="observacionesRecepcion"></textarea></details></div>
+        </div>
+      </div>
+      <p class="subtitulo-mini">Datos de terreno</p>
       <div class="grid">
         <div class="campo opc"><div class="lbl"><span class="name">Número de campo</span><span class="key">numeroCampo</span></div><input class="nav" data-f="numeroCampo"><p class="aviso-info oculto" id="campo-uso"></p></div>
         <div class="campo opc"><div class="lbl"><span class="name">Taxón (referencia de terreno)</span><span class="key">taxon</span></div><input class="nav" data-f="taxon"></div>
@@ -1001,11 +1009,10 @@
     </div>
 
     <div class="bloque">
-      <h2>Recepción e ingreso</h2>
+      <h2>Entrada del registro</h2>
       <div class="grid">
-        <div class="campo opc"><div class="lbl"><span class="name">Fecha de recibido</span><span class="key">fechaRecibido</span></div><input type="date" class="nav" data-f="fechaRecibido"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Número de entrada</span><span class="key">numeroAccesion</span></div><input class="nav" data-f="numeroAccesion"><p class="aviso-info oculto" id="entrada-uso"></p></div>
-        <div class="campo opc"><div class="lbl"><span class="name">Fecha de ingreso</span><span class="key">fechaRecepcion</span></div><input type="date" class="nav" data-f="fechaRecepcion"></div>
+        <div class="campo opc"><div class="lbl"><span class="name">Fecha de entrada</span><span class="key">fechaRecepcion</span></div><input type="date" class="nav" data-f="fechaRecepcion"></div>
         <div class="campo opc"><div class="lbl"><span class="name">Procedencia</span><span class="key">procedencia</span></div>
           <select class="nav" data-f="procedencia"><option value="">—</option><option>Colecta</option><option>Donación</option><option>Depósito</option><option>Canje</option><option>Transferencia</option><option>Compra</option><option>Incautación</option><option>Rescate</option><option>Devolución</option><option>Desconocido</option></select>
         </div>
@@ -1612,7 +1619,7 @@
 <script>
 (function(){
 "use strict";
-var APP_VERSION = "v0.9.95";
+var APP_VERSION = "v0.9.96";
 var LS_PREFIX = "libroCatalogo_";
 var DB_NAME = "libroCatalogoDB", DB_STORE = "registros";
 
@@ -1914,8 +1921,9 @@ var DEF_CAMPOS = {
   metodoColecta:"Técnica usada para obtener el material: colecta manual, trampa de caída, rastra, red, buceo, etc. DwC: samplingProtocol.",
   estacion:"Código o nombre de la estación de muestreo, por ejemplo de un crucero o de un proyecto.",
   numeroAccesion:"Número que identifica el ingreso (el lote recibido) a la institución. Varios ejemplares pueden compartir el mismo número de entrada. Con él se agrupan los documentos del ingreso.",
-  fechaRecibido:"Fecha en que se recibió el material de terreno (etapa Recibido), antes de asignarle N.º de entrada.",
-  fechaRecepcion:"Fecha de ingreso: fecha en que el material pasó a Material en Tránsito, al asignarle su N.º de entrada.",
+  fechaRecibido:"Fecha de recepción: día en que se recibió el material y los datos de terreno (etapa Recibido), antes de asignarle N.º de entrada. Se completa sola al importar datos desde Libreta de Campo; en otros casos se anota a mano.",
+  observacionesRecepcion:"Cualquier dato de interés sobre cómo se recibió el material: estado en que llegó, quién lo entregó, qué venía junto a él.",
+  fechaRecepcion:"Fecha de entrada: fecha en que el material pasó a Material en Tránsito, al asignarle su N.º de entrada.",
   ubicacionTransito:"Dónde está el material mientras sigue en tránsito (etapa Ingresado): depósito, criterio de ordenamiento (taxonómico, por origen u otro) y posición. Es provisoria; la ubicación permanente se anota en Ubicación en colección una vez catalogado.",
   procedencia:"Modo en que el material llegó a la colección: colecta, donación, depósito, canje, etc.",
   destino:"Colección o uso al que se destina el material recibido.",
@@ -3485,6 +3493,7 @@ function construirFicha(r){
   if(r.creadoEn) general += fichaCampo("Ingresado al sistema", formatearFechaHora(r.creadoEn));
 
   var terreno = fichaCampos([
+    ["Fecha de recepción","fechaRecibido"], ["Observaciones de recepción","observacionesRecepcion"],
     ["Número de campo","numeroCampo"], ["Taxón (referencia)","taxon"],
     ["Localidad (verbatim)","localidadVerbatim"], ["Localidad","localidad"],
     ["Región","region"], ["Provincia","provincia"], ["Comuna","comuna"],
@@ -3505,7 +3514,7 @@ function construirFicha(r){
   }
 
   var recepcion = fichaCampos([
-    ["Fecha de recibido","fechaRecibido"], ["Número de entrada","numeroAccesion"], ["Fecha de ingreso","fechaRecepcion"],
+    ["Número de entrada","numeroAccesion"], ["Fecha de entrada","fechaRecepcion"],
     ["Procedencia","procedencia"], ["Destino","destino"], ["Condición de la accesión","condicionAccesion"],
     ["Legatario","legatario"], ["Proyecto / iniciativa de origen","proyectoOrigen"], ["Tipo de accesión","tipoAccesion"],
     ["Observaciones de ingreso","observacionesIngreso"]
@@ -3559,7 +3568,7 @@ function construirFicha(r){
     + notas;
 
   var body = bloqueMediaHtml(r, general, terreno, fichaSeccion("Determinación y clasificación", determinacionHtml, false))
-    + fichaSeccion("Recepción e ingreso", recepcion, false)
+    + fichaSeccion("Entrada del registro", recepcion, false)
     + fichaSeccion("Lotes de esta entrada", lotesEntradaHtml(r), false)
     + fichaSeccion("Preparación y conservación", preparacionHtml, false)
     + fichaSeccion("Catalogado", catalogado, false)
@@ -3782,7 +3791,7 @@ function bloqueMediaHtml(r, general, terreno, determinacion){
     var grande="https://www.google.com/maps/@"+c.lat.toFixed(6)+","+c.lng.toFixed(6)+",17z/data=!3m1!1e3";
     mapa='<div class="ficha-mapa mapa-sat" data-lat="'+c.lat+'" data-lng="'+c.lng+'" role="img" aria-label="Mapa satelital del origen del ejemplar"><div class="mapa-lienzo"></div><div class="mapa-pin" title="Origen del ejemplar"></div><div class="mapa-ctl"><button type="button" data-z="1" title="Acercar" aria-label="Acercar">+</button><button type="button" data-z="-1" title="Alejar" aria-label="Alejar">−</button></div><div class="mapa-msg oculto">Sin conexión: no se pudo cargar el mapa satelital.</div><div class="mapa-attr">Imágenes y capas © Esri, Maxar, Earthstar Geographics</div></div>'
       +'<div class="media-pie"><span>Lat '+c.lat.toFixed(5)+', Lng '+c.lng.toFixed(5)+'</span><a href="'+grande+'" target="_blank" rel="noopener">Abrir en Google Maps (satélite) ↗</a></div>';
-  } else mapa='<div class="media-vacio">Este ejemplar no tiene coordenadas (latitud y longitud) en Datos de terreno, por eso no se puede mostrar el mapa.</div>';
+  } else mapa='<div class="media-vacio">Este ejemplar no tiene coordenadas (latitud y longitud) en Recepción y datos de terreno, por eso no se puede mostrar el mapa.</div>';
   var fotos=(r.fotos||[]).filter(function(f){ return /^Fotos\//.test(f.archivo||""); });
   var sinArchivo=(r.fotos||[]).filter(function(f){ return !/^Fotos\//.test(f.archivo||"") && (f.archivo||""); }).length;
   var gal;
@@ -5434,7 +5443,7 @@ function ajustarAlturaLista(cont){
   ls.style.maxHeight=Math.max(220, Math.floor(libre))+"px";
 }
 window.addEventListener("resize", function(){ var c=document.querySelector(".slot-panel-registros"); if(c) ajustarAlturaLista(c); });
-// Orden de la lista «Ver registros»: el último ingresado primero (por fecha de ingreso; a igual fecha, el que se agregó después).
+// Orden de la lista «Ver registros»: el último ingresado primero (por fecha de entrada; a igual fecha, el que se agregó después).
 function registrosRecientesPrimero(arr){
   return arr.map(function(r,i){ return {r:r,i:i}; }).sort(function(a,b){
     var x=a.r.creadoEn||"", y=b.r.creadoEn||"";
@@ -7022,7 +7031,7 @@ var SEG_VIRT=[
   {k:"@etapaRecibido", l:"Etapa de manejo: Recibido", b:true},
   {k:"@etapaIngresado", l:"Etapa de manejo: Ingresado (en tránsito)", b:true},
   {k:"@etapaCatalogado", l:"Etapa de manejo: Catalogado", b:true},
-  {k:"@diasEtapa", l:"Días que lleva en su etapa de manejo actual (desde la fecha de recibido, de ingreso o de catalogación)", n:true}
+  {k:"@diasEtapa", l:"Días que lleva en su etapa de manejo actual (desde la fecha de recepción, de entrada o de catalogación)", n:true}
 ];
 var SEG_PLANT=[
   {id:"p-prep", nombre:"Preparación y Conservación incompleta", modo:"alguna", cond:[{k:"tipoColeccion",op:"vacio"},{k:"medioFijado",op:"vacio"},{k:"preparacion",op:"vacio"},{k:"condicionEjemplar",op:"vacio"}]},
@@ -8341,7 +8350,7 @@ var CONS_CAMPOS = [
   campoSimple("metodoColecta","Método de recolección","Terreno"), campoSimple("estacion","Estación","Terreno"),
   campoSimple("altitud_m","Altitud/profundidad (m)","Terreno"), campoSimple("coordenadasOriginales","Coordenadas originales","Terreno"),
   campoSimple("observacionesLocalidad","Observaciones de la localidad","Terreno"), campoSimple("observacionesGeoref","Observaciones de georreferenciación","Terreno"),
-  campoSimple("observacionesEvento","Observaciones del evento de colecta","Terreno"), campoSimple("observacionesIngreso","Observaciones de ingreso","Entrada"),
+  campoSimple("observacionesEvento","Observaciones del evento de colecta","Terreno"), campoSimple("observacionesRecepcion","Observaciones de recepción","Terreno"), campoSimple("observacionesIngreso","Observaciones de ingreso","Entrada"),
   campoSimple("observacionesPreparacion","Observaciones de preparación","Preparación"), campoSimple("observacionesCondicion","Comentarios de condición del ejemplar","Preparación"),
   campoSimple("observacionesTipo","Comentarios del tipo nomenclatural","Depósito"), campoSimple("observacionesCatalogacion","Observaciones del catalogador","Depósito"),
   campoSimple("observacionesUbicacion","Comentarios de ubicación","Manejo"),
@@ -8370,7 +8379,7 @@ var CONS_CAMPOS = [
 ];
 var CONS_RANGOS = [
   {k:"colecta", l:"Fecha de colecta", p:true, v:function(r){ return r.fechaColecta||""; }},
-  {k:"recepcion", l:"Fecha de ingreso", p:true, v:function(r){ return r.fechaRecepcion||""; }},
+  {k:"recepcion", l:"Fecha de entrada", p:true, v:function(r){ return r.fechaRecepcion||""; }},
   {k:"catalogacion", l:"Fecha de catalogación", p:false, v:function(r){ return r.fechaCatalogacion||""; }}
 ];
 var CONS_GRUPOS = ["Terreno","Entrada","Preparación","Depósito","Manejo"];
@@ -8671,7 +8680,7 @@ var CONS_COLUMNAS = [
   ["Medio de fijado",function(r){ return r.medioFijado; }], ["Preparación",function(r){ return r.preparacion; }], ["Condición del ejemplar",function(r){ return r.condicionEjemplar; }],
   ["Determinador",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].determinador:""; }],
   ["Fecha de determinación",function(r){ var d=r.determinaciones||[]; return d.length?d[d.length-1].fechaDeterminacion:""; }],
-  ["Fecha de recibido",function(r){ return r.fechaRecibido; }], ["Fecha de recepción",function(r){ return r.fechaRecepcion; }], ["Procedencia",function(r){ return r.procedencia; }], ["Destino",function(r){ return r.destino; }],
+  ["Fecha de recepción (terreno)",function(r){ return r.fechaRecibido; }], ["Observaciones de recepción",function(r){ return r.observacionesRecepcion; }], ["Fecha de entrada",function(r){ return r.fechaRecepcion; }], ["Procedencia",function(r){ return r.procedencia; }], ["Destino",function(r){ return r.destino; }],
   ["Condición de la accesión",function(r){ return r.condicionAccesion; }], ["Tipo de accesión",function(r){ return r.tipoAccesion; }],
   ["Legatario",function(r){ return r.legatario; }], ["Proyecto / iniciativa de origen",function(r){ return r.proyectoOrigen; }],
   ["Fecha de catalogación",function(r){ return r.fechaCatalogacion; }], ["Catalogador",function(r){ return r.catalogador; }],
@@ -8703,7 +8712,7 @@ var EXP_GRUPOS=[
   ["Localidad y coordenadas",["Localidad","Localidad (verbatim)","Región","Provincia","Comuna","Latitud","Longitud","Altitud/profundidad (m)","Coordenadas originales"]],
   ["Colecta",["Fecha de colecta","Hora de colecta","Colector","Hábitat","Microhábitat","Método de recolección","Estación"]],
   ["Colección y preparación",["Institución","Colección","Nombre de la colección","Institución (nombre completo)","Tipo de colección","Conservación","Medio de fijado","Preparación","Condición del ejemplar","Estado","Ubicación en tránsito","Ubicación en colección"]],
-  ["Recepción y catalogación",["Fecha de recibido","Fecha de recepción","Procedencia","Destino","Condición de la accesión","Tipo de accesión","Legatario","Proyecto / iniciativa de origen","Fecha de catalogación","Catalogador"]],
+  ["Recepción y catalogación",["Fecha de recepción (terreno)","Observaciones de recepción","Fecha de entrada","Procedencia","Destino","Condición de la accesión","Tipo de accesión","Legatario","Proyecto / iniciativa de origen","Fecha de catalogación","Catalogador"]],
   ["Notas y archivos",["Observaciones","Observaciones biológicas","Asociaciones biológicas","Publicación original","N.º de fotos","PDF de publicaciones","Motivo de PDF"]]
 ];
 function expTodos(){ return CONS_COLUMNAS.map(function(c){ return c[0]; }); }
@@ -9506,7 +9515,7 @@ var IMP_SINONIMOS = {
   observacionesGeoref:["georeferenceremarks","observacionesdegeorreferenciacion"], observacionesPreparacion:["preparationremarks","observacionesdepreparacion"], observacionesIngreso:["accessionremarks","observacionesdeingreso"],
   observacionesCondicion:["conditionremarks"], "@comentDet":["identificationremarks","comentariosdeterminacion","comentariosdeladeterminacion"], observaciones:["occurrenceremarks","observaciones","notas","remarks"],
   procedencia:["basisofrecord","procedencia"], altitud_m:["altitud","elevation","verbatimelevation","altitudm","minimumelevationinmeters","profundidad","depth","profundidadmaxima","profundidadminima","minimumdepthinmeters","maximumdepthinmeters"],
-  fechaRecepcion:["fechaingreso","fecharecepcion","fechadeingreso"], horaColecta:["eventtime","hora","horacolecta"]
+  fechaRecepcion:["fechaentrada","fechadeentrada","fechaingreso","fecharecepcion","fechadeingreso"], fechaRecibido:["fecharecepcionterreno","fecharecibido","fechaderecibido"], observacionesRecepcion:["observacionesderecepcion","observacionesrecepcion"], horaColecta:["eventtime","hora","horacolecta"]
 };
 function impSugerir(preservar){
   var objs=impObjetivos(), tomados={}, mapas=[], base=preservar?imp.mapas.filter(function(m){ return m.conf; }):[], colsUsadas={};
@@ -11043,6 +11052,7 @@ function planillaARegistros(filas, meta){
       });
     });
     r.creadoEn=ahora; r.modificadoEn=ahora; r.modificadoPor=meta.operador||"";
+    if(!r.fechaRecibido){ var hh=new Date(); r.fechaRecibido=hh.getFullYear()+"-"+("0"+(hh.getMonth()+1)).slice(-2)+"-"+("0"+hh.getDate()).slice(-2); }
     r.origenLibreta={zip:meta.zip, importadoEn:ahora, importadoPor:meta.operador||"", sesion:f.sesion_nombre||"",
       objetivo:f.sesion_objetivo||"", participantes:f.sesion_participantes||"", zona:f.sesion_zona||"", clima:f.sesion_clima||"",
       codigoMuestreo:f.codigoMuestreo||"", filas:g.map(limpiarFilaLibreta)};

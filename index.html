@@ -180,19 +180,12 @@
   .cons-tiene label{display:inline-flex !important;flex-direction:row !important;align-items:center;gap:6px;margin:0;}
   .cons-tiene input[type=checkbox]{width:auto !important;flex:none;margin:0;}
   .cons-tiene{margin:6px 0 10px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:14px;}
-  /* v0.9.101: botón ≠ de cada filtro y bloque Numeración */
-  .cons-col .campo .lbl,.cons-grid .campo .lbl{flex-direction:row;align-items:center;justify-content:flex-start;gap:6px;}
-  .cons-neg{flex:none;width:auto;align-self:center;margin-left:2px;border:1px solid var(--line);background:#fffdf8;color:var(--ink-soft);border-radius:6px;font-size:12px;font-weight:800;line-height:1;padding:1px 6px;cursor:pointer;vertical-align:middle;}
-  .cons-neg:hover{border-color:var(--accent-2);color:var(--accent);}
-  .cons-neg.on{background:#8a2a1e;border-color:#8a2a1e;color:#fff;}
-  .cons-num{margin:6px 0 10px;}
-  .cons-num-cuerpo{padding:4px 12px 10px;}
-  .cons-num-fila{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:6px 0;}
-  .cons-num-fila .name{min-width:132px;font-weight:700;}
-  .cons-num-fila label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0;font-size:13.5px;}
-  .cons-num-fila select,.cons-num-fila input{width:auto;font-size:13.5px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:#fff;}
-  .cons-num-fila input[type=number]{width:96px;}
-  .cons-num-fila input[type=text]{width:170px;}
+  /* v0.9.101: botón ≠ discreto, a la derecha del título de cada filtro */
+  .cons-col .campo .lbl,.cons-grid .campo .lbl{flex-direction:row;align-items:center;justify-content:space-between;gap:6px;}
+  .cons-neg{flex:none;margin-left:auto;border:0;background:transparent;color:var(--ink-soft);font-size:12px;font-weight:700;line-height:1;padding:2px 6px;border-radius:5px;cursor:pointer;opacity:.25;}
+  .campo:hover .cons-neg,.campo:focus-within .cons-neg{opacity:.7;}
+  .cons-neg:hover{opacity:1;color:var(--accent);background:var(--accent-soft);}
+  .cons-neg.on{opacity:1;background:#8a2a1e;color:#fff;}
   .cons-cab{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;}
   .cons-acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;}
   .cons-fila{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:9px;background:#fffdf8;padding:8px 12px;margin:6px 0;}
@@ -932,7 +925,7 @@
     <div class="cons-sup">
     <div class="bloque">
       <h2>Buscar en la colección <button type="button" class="ayuda-btn" data-ayuda="ayuda-consultas" aria-label="Ayuda" title="Ayuda">?</button></h2>
-      <div class="ayuda-panel oculto" id="ayuda-consultas">Cada palabra del buscador general y cada filtro estrechan el resultado anterior: primero uno, sobre eso el siguiente, hasta llegar al registro buscado. Las sugerencias de cada campo muestran solo lo que existe entre los registros que quedan. No distingue mayúsculas ni tildes. Las etiquetas bajo el buscador muestran los filtros activos y se quitan con la ✕. En cada campo, las primeras sugerencias son «(Sin dato)» y «(Con dato)» para aislar los registros donde ese campo está vacío o lleno, y el botón ≠ invierte el filtro (muestra los que no lo cumplen). El bloque «Numeración» filtra por N.º de campo, de entrada y de catálogo: con o sin número, por rango o por una lista de números.</div>
+      <div class="ayuda-panel oculto" id="ayuda-consultas">Cada palabra del buscador general y cada filtro estrechan el resultado anterior: primero uno, sobre eso el siguiente, hasta llegar al registro buscado. Las sugerencias de cada campo muestran solo lo que existe entre los registros que quedan. No distingue mayúsculas ni tildes. Las etiquetas bajo el buscador muestran los filtros activos y se quitan con la ✕. En cada campo, las primeras sugerencias son «(Sin dato)» y «(Con dato)» para aislar los registros donde ese campo está vacío o lleno, y el botón ≠ (a la derecha del título, aparece al pasar el cursor) invierte el filtro y muestra los que no lo cumplen. En N.º de catálogo, de entrada y de campo el mismo cuadro acepta un rango («45010-45030», «45010-» o «-45030») o una lista («101, 105, 230»). «Importado desde» ubica los registros que llegaron de una planilla o de un zip de Libreta de Campo; con «(Sin dato)» quedan los ingresados a mano.</div>
       <div class="cons-buscador">
         <input type="search" id="cons-texto" class="cons-in-general" placeholder="Buscar en todos los campos: nombre, localidad, colector, número, observaciones…" autocomplete="off">
         <button type="button" class="btn small tenue oculto" id="cons-limpiar">Limpiar filtros</button>
@@ -8353,6 +8346,13 @@ function nombreVigenteReg(r){
   var d=(r.determinaciones&&r.determinaciones.length)?r.determinaciones[r.determinaciones.length-1]:null;
   return d ? unirCalificador(d.calificador, d.nombreCientifico) : (r.taxon||"");
 }
+// de dónde llegó el registro: planilla Excel/CSV («Planilla: archivo · hoja») o zip de Libreta de Campo («Zip Libreta: archivo.zip»); sin dato = ingresado a mano
+function origenesReg(r){
+  var o=[], a=r.origenImportacion, z=r.origenLibreta;
+  if(a && a.archivo) o.push("Planilla: "+a.archivo+(a.hoja?" · "+a.hoja:""));
+  if(z && z.zip) o.push("Zip Libreta: "+z.zip);
+  return o;
+}
 function listaVals(r, lista, clave){ return (r[lista]||[]).map(function(x){ return x[clave]; }).filter(Boolean); }
 function CF(k,l,g,p,v,s){ return {k:k,l:l,g:g,p:p,v:v,s:s}; }
 function campoSimple(k,l,g,p){ return CF(k,l,g,p,function(r){ return r[k]!=null && r[k]!=="" ? [String(r[k])] : []; }); }
@@ -8378,6 +8378,8 @@ var CONS_CAMPOS = [
   CF("etapa","Etapa de manejo","Colección",true,function(r){ var t=etapaTexto(r); return t ? [t] : []; }),
   CF("sesionIngreso","Sesión de ingreso (día de registro en la app)","Colección",true,function(r){ return r.creadoEn ? [String(r.creadoEn).slice(0,10)] : []; }),
   CF("sesionEdicion","Sesión de edición (día de la última modificación)","Entrada",false,function(r){ return r.modificadoEn ? [String(r.modificadoEn).slice(0,10)] : []; }),
+  CF("origen","Importado desde (planilla o zip)","Colección",true,function(r){ return origenesReg(r); }),
+  CF("fechaImportacion","Fecha de importación","Entrada",false,function(r){ var f=[]; if(r.origenImportacion&&r.origenImportacion.importadoEn) f.push(String(r.origenImportacion.importadoEn).slice(0,10)); if(r.origenLibreta&&r.origenLibreta.importadoEn) f.push(String(r.origenLibreta.importadoEn).slice(0,10)); return f; }),
   // secundarios, agrupados por la pestaña de origen
   campoSimple("provincia","Provincia","Lugar",true), campoSimple("comuna","Comuna","Lugar",true),
   campoSimple("habitat","Hábitat","Terreno"), campoSimple("microhabitat","Microhábitat","Terreno"),
@@ -8411,6 +8413,7 @@ var CONS_CAMPOS = [
   CF("evento","Evento de uso","Manejo",false,function(r){ return listaVals(r,"usos","evento"); }),
   CF("responsableUso","Responsable de uso","Manejo",false,function(r){ return listaVals(r,"usos","responsable"); })
 ];
+["catalogo","numeroAccesion","numeroCampo"].forEach(function(k){ CONS_CAMPOS.filter(function(c){ return c.k===k; })[0].num=true; });
 var CONS_RANGOS = [
   {k:"colecta", l:"Fecha de colecta", p:true, v:function(r){ return r.fechaColecta||""; }},
   {k:"recepcion", l:"Fecha de entrada", p:true, v:function(r){ return r.fechaRecepcion||""; }},
@@ -8418,8 +8421,8 @@ var CONS_RANGOS = [
 ];
 var CONS_GRUPOS = ["Terreno","Entrada","Preparación","Depósito","Manejo"];
 var consSel = new Set();
-// v0.9.101: neg = campos cuyo filtro se invierte (mostrar los que NO cumplen); num = filtros de Numeración (campo, entrada, catálogo)
-var consEstado = {texto:"", f:{}, neg:{}, num:{}, r:{}, tiene:{coord:false, fotos:false, pdf:false, seg:false}, orden:"catalogo", mostrar:100};
+// v0.9.101: neg = campos cuyo filtro se invierte (mostrar los que NO cumplen)
+var consEstado = {texto:"", f:{}, neg:{}, r:{}, tiene:{coord:false, fotos:false, pdf:false, seg:false}, orden:"catalogo", mostrar:100};
 var FILTRO_SIN = "(Sin dato)", FILTRO_CON = "(Con dato)";
 // Un filtro de campo puede ser texto (coincidencia parcial), «(Sin dato)» (el campo está vacío) o «(Con dato)» (el campo tiene algo).
 function modoFiltroCampo(s){
@@ -8427,61 +8430,30 @@ function modoFiltroCampo(s){
   return n==="(sin dato)" ? "sin" : n==="(con dato)" ? "con" : "txt";
 }
 function campoTieneDato(vals){ return vals.some(function(v){ return String(v==null?"":v).trim()!==""; }); }
-var NUM_CAMPOS = [
-  {k:"campo", l:"N.º de campo", v:function(r){ return r.numeroCampo; }},
-  {k:"entrada", l:"N.º de entrada", v:function(r){ return r.numeroAccesion; }},
-  {k:"catalogo", l:"N.º de catálogo", v:function(r){ return r.catalogo; }}
-];
-function numEstado(k){ var e=consEstado.num; if(!e[k]) e[k]={m:"",d:"",h:"",l:""}; return e[k]; }
-// parte numérica final de un número con letras o guiones («MNHNCL COL-178523», «Entrada N° 45323»); null si no tiene dígitos
+// Campos numéricos (catálogo, entrada, campo): el mismo cuadro acepta texto, un rango «100-200» («100-» o «-200») o una lista «101, 105, 230».
+// Se compara la parte numérica final («Entrada N° 45323» vale 45323). Un texto con guion que no es un rango válido («2024-05») se busca como texto.
 function numeroDe(v){ var m=String(v==null?"":v).match(/\d+(?!.*\d)/); return m ? parseInt(m[0],10) : null; }
-var numListaMemo = {src:null, tx:null, nums:null};
-function numLista(src){
-  if(numListaMemo.src!==src){
+var filtroNumMemo = {q:null, f:null};
+function filtroNumerico(q){
+  if(filtroNumMemo.q===q) return filtroNumMemo.f;
+  var f=null, t=String(q||"").trim(), m=t.match(/^(\d*)\s*-\s*(\d*)$/);
+  if(m && (m[1]||m[2])){
+    var d=m[1]===""?null:parseInt(m[1],10), hh=m[2]===""?null:parseInt(m[2],10);
+    if(d==null || hh==null || d<=hh) f={d:d, h:hh};
+  }
+  if(!f && /[,;]/.test(t)){
     var tx=new Set(), nums=new Set();
-    String(src||"").split(/[\s,;|]+/).forEach(function(t){
-      t=t.trim(); if(!t) return;
-      if(/^\d+$/.test(t)) nums.add(parseInt(t,10)); else tx.add(normTxt(t));
-    });
-    numListaMemo={src:src, tx:tx, nums:nums};
+    t.split(/[,;]+/).forEach(function(x){ x=x.trim(); if(!x) return; if(/^\d+$/.test(x)) nums.add(parseInt(x,10)); else tx.add(normTxt(x)); });
+    if(tx.size+nums.size) f={tx:tx, nums:nums};
   }
-  return numListaMemo;
+  filtroNumMemo={q:q, f:f}; return f;
 }
-function numActivo(k){
-  var s=consEstado.num[k]; if(!s) return false;
-  return !!(s.m || s.d!=="" || s.h!=="" || String(s.l||"").trim());
-}
-function hayNumActivo(){ return NUM_CAMPOS.some(function(n){ return numActivo(n.k); }); }
-function numTexto(n){
-  var s=consEstado.num[n.k]; if(!numActivo(n.k)) return "";
-  var p=[];
-  if(s.m==="sin") p.push("sin número");
-  else {
-    if(s.m==="con") p.push("con número");
-    if(s.d!=="" && s.h!=="") p.push("de "+s.d+" a "+s.h); else if(s.d!=="") p.push("desde "+s.d); else if(s.h!=="") p.push("hasta "+s.h);
-    var l=numLista(s.l); if(l.tx.size+l.nums.size) p.push("lista de "+(l.tx.size+l.nums.size));
-  }
-  return p.length ? n.l+": "+p.join(", ") : "";
-}
-function cumpleNumeracion(r){
-  for(var i=0;i<NUM_CAMPOS.length;i++){
-    var n=NUM_CAMPOS[i], s=consEstado.num[n.k];
-    if(!s || !numActivo(n.k)) continue;
-    var val=String(n.v(r)==null?"":n.v(r)).trim(), tiene=val!=="";
-    if(s.m==="sin"){ if(tiene) return false; continue; }
-    if(s.m==="con" && !tiene) return false;
-    var hayRango=(s.d!=="" || s.h!==""), lista=numLista(s.l), hayLista=(lista.tx.size+lista.nums.size)>0;
-    if(!hayRango && !hayLista) continue;
-    if(!tiene) return false;
-    var num=numeroDe(val);
-    if(hayRango){
-      if(num==null) return false;
-      if(s.d!=="" && num<Number(s.d)) return false;
-      if(s.h!=="" && num>Number(s.h)) return false;
-    }
-    if(hayLista && !(lista.tx.has(normTxt(val)) || (num!=null && lista.nums.has(num)))) return false;
-  }
-  return true;
+function cumpleNumerico(vals, f){
+  return vals.some(function(v){
+    var num=numeroDe(v);
+    if(f.tx) return f.tx.has(normTxt(v)) || (num!=null && f.nums.has(num));
+    return num!=null && (f.d==null || num>=f.d) && (f.h==null || num<=f.h);
+  });
 }
 function textoFiltroCampo(c){
   var v=String(consEstado.f[c.k]||"").trim(); if(!v) return "";
@@ -8518,11 +8490,10 @@ function cumpleConsulta(r, omitir){
     var modo=modoFiltroCampo(e.f[c.k]), vals=c.v(r), cumple;
     if(modo==="sin") cumple=!campoTieneDato(vals);
     else if(modo==="con") cumple=campoTieneDato(vals);
-    else cumple=vals.some(function(v){ return normTxt(v).indexOf(q)>-1; });
+    else { var fn=c.num ? filtroNumerico(e.f[c.k]) : null; cumple=fn ? cumpleNumerico(vals,fn) : vals.some(function(v){ return normTxt(v).indexOf(q)>-1; }); }
     if(e.neg[c.k]) cumple=!cumple;
     if(!cumple) return false;
   }
-  if(!cumpleNumeracion(r)) return false;
   for(i=0;i<CONS_RANGOS.length;i++){
     var g=CONS_RANGOS[i], rg=e.r[g.k];
     if(rg && (rg.d||rg.h) && !fechaEnRango(g.v(r), rg.d, rg.h)) return false;
@@ -8537,7 +8508,7 @@ var consTimer=null;
 var resCache=null, resClave="";
 function resultadosConsulta(){
   // El mismo filtro se pedía varias veces en cada repintado; se recuerda mientras no cambien los filtros ni los registros.
-  var ce=consEstado, ckey=registrosVersion+"|"+registros.length+"|"+JSON.stringify([ce.texto,ce.f,ce.neg,ce.num,ce.r,ce.tiene,ce.orden]);
+  var ce=consEstado, ckey=registrosVersion+"|"+registros.length+"|"+JSON.stringify([ce.texto,ce.f,ce.neg,ce.r,ce.tiene,ce.orden]);
   if(resCache && resClave===ckey) return resCache.slice();
   var lista=registros.filter(function(r){ return cumpleConsulta(r); });
   var o=consEstado.orden, kc=new Map();
@@ -8580,7 +8551,7 @@ function resumenConsulta(lista){
 function topN(obj,n){ return Object.keys(obj).sort(function(a,b){ return obj[b]-obj[a] || a.localeCompare(b); }).slice(0,n).map(function(k){ return k+" ("+obj[k]+")"; }); }
 function hayFiltrosConsulta(){
   var e=consEstado;
-  return !!(e.texto.trim() || hayNumActivo() || Object.keys(e.f).some(function(k){ return e.f[k]; }) || Object.keys(e.r).some(function(k){ return e.r[k] && (e.r[k].d||e.r[k].h); }) || e.tiene.coord || e.tiene.fotos || e.tiene.pdf || e.tiene.seg);
+  return !!(e.texto.trim() || Object.keys(e.f).some(function(k){ return e.f[k]; }) || Object.keys(e.r).some(function(k){ return e.r[k] && (e.r[k].d||e.r[k].h); }) || e.tiene.coord || e.tiene.fotos || e.tiene.pdf || e.tiene.seg);
 }
 function resumenConsultaHtml(lista){
   lista=lista||registros.filter(function(r){ return cumpleConsulta(r); });
@@ -8608,7 +8579,7 @@ function opcionesCampo(c){
   registros.forEach(function(r){ if(cumpleConsulta(r,c.k)) (c.s||c.v)(r).forEach(function(v){ v=String(v).trim(); if(v && !vistos[v]){ vistos[v]=1; out.push(v); } }); });
   if(c.k==="etapa") return ETAPAS_ORDEN_VISTA.map(function(e){ return ETAPAS[e].largo; }).filter(function(v){ return out.indexOf(v)>-1; });
   var especiales=[FILTRO_SIN, FILTRO_CON];   // v0.9.101: siempre primeros en las sugerencias de cada campo
-  if(c.k==="sesionIngreso" || c.k==="sesionEdicion") return especiales.concat(out.sort().reverse().slice(0,400));   // días más recientes primero
+  if(c.k==="sesionIngreso" || c.k==="sesionEdicion" || c.k==="fechaImportacion") return especiales.concat(out.sort().reverse().slice(0,400));   // días más recientes primero
   return especiales.concat(out.sort(function(a,b){ return a.localeCompare(b,"es"); }).slice(0,400));
 }
 function construirConsultas(){
@@ -8619,19 +8590,6 @@ function construirConsultas(){
     d.innerHTML='<div class="lbl"><span class="name">'+escapeHtml(c.l)+'</span><button type="button" class="cons-neg" data-neg="'+c.k+'" title="Invertir: mostrar los registros que NO cumplen este filtro" aria-pressed="false">≠</button></div><input type="text" class="cons-in" data-k="'+c.k+'" list="dl-'+c.k+'" autocomplete="off"><datalist id="dl-'+c.k+'"></datalist>';
     return d;
   }
-  function numeracionUI(){
-    var det=document.createElement("details"); det.className="det-carpetas cons-num"; det.id="cons-num-det";
-    var h='<summary>Numeración: con o sin número, rango o lista</summary><div class="cons-num-cuerpo">';
-    NUM_CAMPOS.forEach(function(n){
-      h+='<div class="cons-num-fila" data-n="'+n.k+'"><span class="name">'+escapeHtml(n.l)+'</span>'
-        +'<select data-n="'+n.k+'" data-nl="m" title="Con o sin número"><option value="">Cualquiera</option><option value="con">Con número</option><option value="sin">Sin número</option></select>'
-        +'<label>desde <input type="number" min="0" step="1" data-n="'+n.k+'" data-nl="d" title="Número mínimo (parte numérica final)"></label>'
-        +'<label>hasta <input type="number" min="0" step="1" data-n="'+n.k+'" data-nl="h" title="Número máximo (parte numérica final)"></label>'
-        +'<label>lista <input type="text" data-n="'+n.k+'" data-nl="l" placeholder="ej. 101, 105, 230" title="Números separados por comas o espacios" autocomplete="off"></label></div>';
-    });
-    h+='<p class="nota" style="margin:6px 0 0;">Con «Sin número» se ignoran el rango y la lista. El rango y la lista comparan la parte numérica final (de «Entrada N° 45323» toma 45323) y excluyen los registros sin número. Para limitar a una colección usa el filtro Colección.</p></div>';
-    det.innerHTML=h; return det;
-  }
   function rangoUI(g){
     var d=document.createElement("div"); d.className="campo opc cons-rango";
     d.innerHTML='<div class="lbl"><span class="name">'+escapeHtml(g.l)+'</span></div><div class="cons-rango-in"><input type="date" class="cons-fecha" data-r="'+g.k+'" data-lado="d" title="Desde"><span>a</span><input type="date" class="cons-fecha" data-r="'+g.k+'" data-lado="h" title="Hasta"></div>';
@@ -8640,7 +8598,7 @@ function construirConsultas(){
   var COLUMNAS=[
     ["Taxonomía",["nombre","phylum","clase","orden","familia","genero"],[]],
     ["Ubicación geográfica",["localidad","region","provincia","comuna"],[]],
-    ["Colección",["coleccion","catalogo","numeroAccesion","numeroCampo","etapa","estadoUbicacion","colector","sesionIngreso"],["colecta","recepcion"]]
+    ["Colección",["coleccion","catalogo","numeroAccesion","numeroCampo","etapa","estadoUbicacion","colector","sesionIngreso","origen"],["colecta","recepcion"]]
   ];
   COLUMNAS.forEach(function(col){
     var det=document.createElement("details"); det.className="det-carpetas cons-col-det";
@@ -8662,7 +8620,6 @@ function construirConsultas(){
   var tiene=document.createElement("div"); tiene.className="cons-tiene";
   tiene.innerHTML='<span class="name">Solo registros con:</span> <label><input type="checkbox" data-t="coord"> coordenadas</label> <label><input type="checkbox" data-t="fotos"> fotos</label> <label><input type="checkbox" data-t="pdf"> PDF de publicaciones</label> <label><input type="checkbox" data-t="seg"> seguimiento abierto</label>';
   var bus=document.querySelector("#tab-consultas .cons-buscador"); bus.parentNode.insertBefore(tiene, bus.nextSibling);
-  tiene.parentNode.insertBefore(numeracionUI(), tiene.nextSibling);
   var tab=document.getElementById("tab-consultas");
   tab.addEventListener("click", function(e){
     var b=e.target.closest && e.target.closest("button.cons-neg"); if(!b) return;
@@ -8678,7 +8635,6 @@ function construirConsultas(){
     var t=e.target;
     if(t.id==="cons-texto"){ consEstado.texto=t.value; }
     else if(t.classList.contains("cons-in")){ consEstado.f[t.getAttribute("data-k")]=t.value; }
-    else if(t.getAttribute("data-nl")){ numEstado(t.getAttribute("data-n"))[t.getAttribute("data-nl")]=t.value; }
     else if(t.classList.contains("cons-fecha")){
       var k=t.getAttribute("data-r"); consEstado.r[k]=consEstado.r[k]||{d:"",h:""}; consEstado.r[k][t.getAttribute("data-lado")]=t.value;
     } else if(t.getAttribute("data-t")){ consEstado.tiene[t.getAttribute("data-t")]=t.checked; }
@@ -8699,7 +8655,6 @@ function construirConsultas(){
     var q=b.getAttribute("data-quitar");
     if(q==="texto") consEstado.texto="";
     else if(q.indexOf("f:")===0){ consEstado.f[q.slice(2)]=""; consEstado.neg[q.slice(2)]=false; }
-    else if(q.indexOf("n:")===0) consEstado.num[q.slice(2)]={m:"",d:"",h:"",l:""};
     else if(q.indexOf("r:")===0) consEstado.r[q.slice(2)]={d:"",h:""};
     else if(q.indexOf("t:")===0) consEstado.tiene[q.slice(2)]=false;
     sincronizarCamposConsulta(); pintarConsultas();
@@ -8724,8 +8679,6 @@ function sincronizarCamposConsulta(){
   document.getElementById("cons-texto").value=consEstado.texto;
   tab.querySelectorAll(".cons-in").forEach(function(i){ i.value=consEstado.f[i.getAttribute("data-k")]||""; });
   tab.querySelectorAll("button.cons-neg").forEach(function(b){ var on=!!consEstado.neg[b.getAttribute("data-neg")]; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
-  tab.querySelectorAll("[data-nl]").forEach(function(i){ var s=consEstado.num[i.getAttribute("data-n")]; i.value=(s&&s[i.getAttribute("data-nl")])||""; });
-  var dn=document.getElementById("cons-num-det"); if(dn && hayNumActivo()) dn.open=true;
   tab.querySelectorAll(".cons-fecha").forEach(function(i){ var g=consEstado.r[i.getAttribute("data-r")]; i.value=(g&&g[i.getAttribute("data-lado")])||""; });
   tab.querySelectorAll("[data-t]").forEach(function(i){ i.checked=!!consEstado.tiene[i.getAttribute("data-t")]; });
 }
@@ -8734,7 +8687,6 @@ function descripcionFiltros(){
   var e=consEstado, d=[];
   if(e.texto.trim()) d.push("texto: "+e.texto.trim());
   CONS_CAMPOS.forEach(function(c){ var t=textoFiltroCampo(c); if(t) d.push(t); });
-  NUM_CAMPOS.forEach(function(n){ var t=numTexto(n); if(t) d.push(t); });
   CONS_RANGOS.forEach(function(g){ var r=e.r[g.k]; if(r&&(r.d||r.h)) d.push(g.l+": "+(r.d||"…")+" a "+(r.h||"…")); });
   [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"],["seg","con seguimiento abierto"]].forEach(function(t){ if(e.tiene[t[0]]) d.push("solo "+t[1]); });
   return d.join(" | ");
@@ -8748,7 +8700,7 @@ function programarRegistroBusqueda(){
   }, 2500);
 }
 function limpiarConsulta(){
-  consEstado.texto=""; consEstado.f={}; consEstado.neg={}; consEstado.num={}; consEstado.r={}; consEstado.tiene={coord:false,fotos:false,pdf:false,seg:false}; consEstado.mostrar=100;
+  consEstado.texto=""; consEstado.f={}; consEstado.neg={}; consEstado.r={}; consEstado.tiene={coord:false,fotos:false,pdf:false,seg:false}; consEstado.mostrar=100;
   sincronizarCamposConsulta(); pintarConsultas();
 }
 function pintarConsultas(){
@@ -8756,7 +8708,6 @@ function pintarConsultas(){
   var e=consEstado, chips=[];
   if(e.texto.trim()) chips.push(["texto","Texto: "+e.texto.trim()]);
   CONS_CAMPOS.forEach(function(c){ var t=textoFiltroCampo(c); if(t) chips.push(["f:"+c.k, t]); });
-  NUM_CAMPOS.forEach(function(n){ var t=numTexto(n); if(t) chips.push(["n:"+n.k, t]); });
   CONS_RANGOS.forEach(function(g){ var r=e.r[g.k]; if(r&&(r.d||r.h)) chips.push(["r:"+g.k, g.l+": "+(r.d||"…")+" a "+(r.h||"…")]); });
   document.querySelectorAll("#tab-consultas button.cons-neg").forEach(function(b){ var on=!!consEstado.neg[b.getAttribute("data-neg")]; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on?"true":"false"); });
   [["coord","con coordenadas"],["fotos","con fotos"],["pdf","con PDF"],["seg","con seguimiento abierto"]].forEach(function(t){ if(e.tiene[t[0]]) chips.push(["t:"+t[0],"Solo "+t[1]]); });
